@@ -273,7 +273,7 @@ export default function App() {
               </a>
             </div>
           </div>
-          {allChars.length > 1 && (
+          {allChars.length >= 1 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 8 }}>
               {allChars.map(function(c) {
                 var active = c.specKey === specKey && c.charName === charName;
