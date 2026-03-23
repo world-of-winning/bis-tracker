@@ -1,0 +1,61 @@
+export var SPEC_LABEL = "야성 드루이드";
+export var SPEC_KEY = "feral-druid";
+export var SIMC_CLASS = "druid";
+export var SIMC_SPEC = "feral";
+export var SPEC_ICON = "ability_druid_catform";
+export var STORAGE_KEY = "bis-feral-druid-v1";
+
+export var THEME = {
+  accent: "#d4a017",
+  accentLight: "#e5c674",
+  accentBg: "#201803",
+  accentBorder: "#4a3808",
+  shimmer: "linear-gradient(90deg,#7f600e,#d4a017,#e5c674,#d4a017,#7f600e)",
+  btnBg: "linear-gradient(135deg,#7f600e,#d4a017)",
+};
+
+export var BIS = [
+  { slot: "머리", simcSlot: "head", en: "Voidlashed Hood", ko: "공허에 스친 두건", id: 151336, dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { slot: "목", simcSlot: "neck", en: "Barbed Ymirheim Choker", ko: "뾰족한 이미르하임 목장식", id: 50228, dungeon: "Pit of Saron", stats: ["crit","haste"] },
+  { slot: "어깨", simcSlot: "shoulder", en: "Enthralled Bonespines", ko: "마법에 걸린 해골가시", id: 251171, dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
+  { slot: "망토", simcSlot: "back", en: "Rigid Scale Greatcloak", ko: "강도 높은 미늘 큰망토", id: 258575, dungeon: "Skyreach", stats: ["crit","mastery"] },
+  { slot: "가슴", simcSlot: "chest", en: "Vest of the Howling Gale", ko: "울부짖는 강풍의 조끼", id: 251099, dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
+  { slot: "손목", simcSlot: "wrist", en: "Chewed Leather Wristguards", ko: "물어뜯긴 가죽 손목보호구", id: 50264, dungeon: "Pit of Saron", stats: ["crit","haste"] },
+  { slot: "장갑", simcSlot: "hands", en: "Gloves of Viscous Goo", ko: "농후한 찐득이 장갑", id: 251113, dungeon: "Magisters' Terrace", stats: ["crit","mastery"] },
+  { slot: "허리", simcSlot: "waist", en: "Snapvine Cinch", ko: "치악덩굴 허리끈", id: 251082, dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
+  { slot: "다리", simcSlot: "legs", en: "Legwraps of Lingering Legacies", ko: "머무는 유산의 다리싸개", id: 251087, dungeon: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "발", simcSlot: "feet", en: "Boots of Burning Focus", ko: "타오르는 집중의 장화", id: 258577, dungeon: "Skyreach", stats: ["crit","mastery"] },
+  { slot: "반지 1", simcSlot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, dungeon: "Algeth'ar Academy", stats: ["crit","haste"] },
+  { slot: "반지 2", simcSlot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
+  { slot: "장신구 1", simcSlot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, dungeon: "Algeth'ar Academy", stats: [] },
+  { slot: "장신구 2", simcSlot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, dungeon: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "무기", simcSlot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
+];
+
+export var ALTS = [
+  { forSlot: "머리", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { forSlot: "무기", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "무기", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
+  { forSlot: "반지", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", dungeon: "Pit of Saron", stats: ["crit","haste"] },
+  { forSlot: "반지", id: 251115, en: "Bifurcation Band", ko: "분기점의 고리", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "손목", id: 151315, en: "Bracers of Dark Binding", ko: "암흑의 구속 팔보호구", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { forSlot: "손목", id: 251135, en: "Fury-fletched Armlets", ko: "지옥 새김 팔찌", dungeon: "Murder Row", stats: ["crit","haste"] },
+  { forSlot: "어깨", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", dungeon: "Windrunner Spire", stats: ["haste","mastery"] },
+];
+
+export var WORST_STATS = ["vers"];
+
+export var STAT_CACHE_KEY = "feral-druid-stat-cache-v1";
+
+export var KNOWN_STATS = {
+  49807:["crit","haste"],49812:["crit","haste"],50228:["crit","haste"],50264:["crit","haste"],
+  51802:["crit","haste"],151315:["crit","haste"],151336:["crit","haste"],193701:[],
+  251077:["crit","mastery"],251082:["crit","mastery"],251087:["crit","haste"],251092:["haste","mastery"],
+  251093:["haste","mastery"],251099:["crit","mastery"],251113:["crit","mastery"],251115:["haste","mastery"],
+  251135:["crit","haste"],251168:["crit","mastery"],251171:["haste","mastery"],251217:["crit","haste"],
+  258514:["crit","mastery"],258575:["crit","mastery"],258577:["crit","mastery"],
+};
+
+export var DUNGEONS = [
+  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+];

@@ -1,0 +1,63 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.grad-text { -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0a12; }
+::-webkit-scrollbar-thumb { background: #332e22; border-radius: 3px; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+@keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+@keyframes urgPulse { 0%, 100% { box-shadow: 0 0 4px rgba(255,107,107,0.1); } 50% { box-shadow: 0 0 12px rgba(255,107,107,0.2); } }
+@keyframes altGlow { 0%, 100% { box-shadow: 0 0 4px rgba(232,168,76,0.1); } 50% { box-shadow: 0 0 12px rgba(232,168,76,0.2); } }
+
+.card-enter { animation: fadeIn 0.35s ease-out both; }
+.pfill { background-size: 200% 100%; animation: shimmer 3s ease-in-out infinite; }
+
+.ck { cursor: pointer; transition: all 0.2s; }
+.ck:hover { transform: scale(1.15); }
+
+.fbtn {
+  cursor: pointer; transition: all 0.2s;
+  border: 1px solid #2a2a3a; font-family: 'Noto Sans KR', sans-serif;
+}
+.fbtn:hover { border-color: #556666 !important; background: #1a1a2a !important; }
+.fbtn.active { border-color: #29a8d4 !important; background: #081520 !important; }
+
+.ic { transition: all 0.25s; border: 1px solid #1e1e30; }
+.ic:hover { border-color: #3a3520; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.ic.t1 { border-color: #4a2020 !important; animation: urgPulse 3s ease-in-out infinite; }
+.ic.t2 { border-color: #4a3a18 !important; animation: altGlow 3s ease-in-out infinite; }
+.ic.t3 { border-color: #204a20 !important; }
+.ic.t4 { opacity: 0.5; }
+.ic.t4:hover { opacity: 0.75; }
+.ic.altc { border-color: #4a3a18 !important; }
+
+.tog { cursor: pointer; transition: all 0.2s; user-select: none; }
+.tog:hover { background: #1a1a28 !important; }
+
+.sta {
+  width: 100%; height: 140px; resize: vertical;
+  background: #08080f; border: 1px solid #2a2a3a; border-radius: 8px;
+  color: #998866; font-family: Consolas, Monaco, monospace; font-size: 11px;
+  padding: 10px 12px; outline: none;
+}
+.sta:focus { border-color: #556666; }
+.sta::placeholder { color: #332e22; }
+
+.sb {
+  cursor: pointer; border: none; border-radius: 6px;
+  padding: 8px 18px; font-size: 13px; font-weight: 600;
+  transition: all 0.2s; font-family: 'Noto Sans KR', sans-serif;
+}
+.sb:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+.tier-btn {
+  cursor: pointer; transition: all 0.2s;
+  border: 2px solid #2a2a3a; border-radius: 8px;
+  padding: 6px 14px; background: #0c0c16;
+  font-family: 'Noto Sans KR', sans-serif; font-size: 12px; font-weight: 700;
+}
+.tier-btn:hover { filter: brightness(1.2); }
+
+/* Wowhead tooltip z-index */
+.wowhead-tooltip { z-index: 99999 !important; }
