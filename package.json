@@ -6,15 +6,27 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "release": "changelogen --release",
+    "prepare": "husky"
   },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
+  "changelogen": {
+    "repo": {
+      "provider": "github",
+      "repo": "world-of-winning/bis-tracker"
+    }
+  },
   "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "changelogen": "^0.6.2",
     "cheerio": "^1.2.0",
+    "husky": "^9.1.7",
     "vite": "^6.0.0"
   }
 }
