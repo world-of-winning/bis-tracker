@@ -24,3 +24,5 @@
 ### 🏡 Chores
 
 - Regenerate bun.lock for Cloudflare Pages compatibility (6722f54)
+- Add versioning automation with changelogen and commitlint (a53de76)
+- Add pre-commit secret detection hook
