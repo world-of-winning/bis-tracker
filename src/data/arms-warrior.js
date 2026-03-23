@@ -3,6 +3,7 @@ export var SPEC_KEY = "arms-warrior";
 export var SIMC_CLASS = "warrior";
 export var SIMC_SPEC = "arms";
 export var SPEC_ICON = "ability_warrior_savageblow";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/arms-warrior-raid-guide";
 export var STORAGE_KEY = "bis-arms-warrior-v1";
 
 export var THEME = {
@@ -52,11 +53,7 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "가슴", id: 249309, en: "Sunbound Breastplate", ko: "태양결속 가슴보호갑", dungeon: "Windrunner Spire", stats: ["crit","haste"] },
-  { forSlot: "가슴", id: 249973, en: "Relentless Rider's Cuirass", ko: "가혹한 기수의 흉갑", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "다리", id: 249960, en: "Luminant Verdict's Greaves", ko: "빛나는 선고의 경갑", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "다리", id: 249969, en: "Relentless Rider's Legguards", ko: "가혹한 기수의 다리보호대", dungeon: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
-  { forSlot: "망토", id: 250010, en: "Windwrap of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 바람포", dungeon: "Catalyst", stats: ["crit","haste"] },
-  { forSlot: "머리", id: 249961, en: "Luminant Verdict's Unwavering Gaze", ko: "빛나는 선고의 흔들림 없는 시선", dungeon: "Tier", stats: ["haste","mastery"] },
   { forSlot: "머리", id: 249970, en: "Relentless Rider's Crown", ko: "가혹한 기수의 왕관", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "무기", id: 249288, en: "Ranger-Captain's Lethal Recurve", ko: "순찰대장의 치명적인 곡궁", dungeon: "Crown of the Cosmos", stats: ["crit","haste"] },
@@ -71,10 +68,8 @@ export var ALTS = [
   { forSlot: "반지", id: 249369, en: "Bond of Light", ko: "빛의 결속", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "반지", id: 251115, en: "Bifurcation Band", ko: "분기점의 고리", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "발", id: 249332, en: "Parasite Stompers", ko: "기생 디딤장화", dungeon: "Vorasius", stats: ["haste","mastery"] },
-  { forSlot: "발", id: 249963, en: "Luminant Verdict's Sabatons", ko: "빛나는 선고의 발덮개", dungeon: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "발", id: 251107, en: "Oathsworn Stompers", ko: "서약신도 디딤장화", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 251164, en: "Amalgamation's Harness", ko: "융합체의 멜빵", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "장갑", id: 249962, en: "Luminant Verdict's Gauntlets", ko: "빛나는 선고의 건틀릿", dungeon: "Tier", stats: ["haste","vers"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -98,5 +93,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Maisara Caverns",
 ];

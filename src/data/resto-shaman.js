@@ -3,6 +3,7 @@ export var SPEC_KEY = "resto-shaman";
 export var SIMC_CLASS = "shaman";
 export var SIMC_SPEC = "restoration";
 export var SPEC_ICON = "spell_nature_magicimmunity";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/restoration-shaman-raid-guide";
 export var STORAGE_KEY = "bis-resto-shaman-v1";
 
 export var THEME = {
@@ -54,12 +55,10 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "가슴", id: 249991, en: "Primal Sentry's Scaleplate", ko: "원시 파수꾼의 비늘판금", dungeon: "Chimaerus", stats: ["crit","haste"] },
-  { forSlot: "가슴", id: 250000, en: "Frenzyward of the Black Talon", ko: "검은 갈퀴발톱의 광란수호물", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "망토", id: 250046, en: "Blind Oath's Shroud", ko: "맹목적인 맹세의 수의", dungeon: "Catalyst", stats: ["crit","vers"] },
   { forSlot: "망토", id: 251161, en: "Soulhunter's Mask", ko: "영혼사냥꾼의 가면", dungeon: "Maisara Caverns", stats: ["crit","vers"] },
   { forSlot: "머리", id: 249988, en: "Primal Sentry's Maw", ko: "원시 파수꾼의 아귀", dungeon: "Lightblinded Vanguard", stats: ["crit","haste"] },
   { forSlot: "목", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
-  { forSlot: "무기", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","vers"] },
+  { forSlot: "무기", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "무기", id: 193723, en: "Obsidian Goaltending Spire", ko: "흑요석 골대지킴이 뾰족지팡이", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "무기", id: 249293, en: "Weight of Command", ko: "지휘의 무게", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
   { forSlot: "무기", id: 258516, en: "Wand of Saprish's Gaze", ko: "사프리쉬의 시선 마법봉", dungeon: "Seat of the Triumvirate", stats: ["crit","vers"] },
@@ -70,10 +69,8 @@ export var ALTS = [
   { forSlot: "손목", id: 249304, en: "Fallen King's Cuffs", ko: "몰락한 왕의 소매장식", dungeon: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
   { forSlot: "손목", id: 251079, en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 193704, en: "Scaled Commencement Spaulders", ko: "비늘 학위 어깨덮개", dungeon: "Algeth'ar Academy", stats: ["crit","mastery"] },
-  { forSlot: "어깨", id: 249977, en: "Tempests of the Primal Core", ko: "원시 핵의 돌개바람", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "어깨", id: 249995, en: "Beacons of the Black Talon", ko: "검은 갈퀴발톱의 봉화", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "장갑", id: 249325, en: "Untethered Berserker's Grips", ko: "풀어헤쳐진 광전사의 손장갑", dungeon: "Crown of the Cosmos", stats: ["crit","mastery"] },
-  { forSlot: "장갑", id: 249989, en: "Primal Sentry's Talonguards", ko: "원시 파수꾼의 갈퀴보호대", dungeon: "Voracius", stats: ["crit","mastery"] },
+  { forSlot: "장갑", id: 249989, en: "Primal Sentry's Talonguards", ko: "원시 파수꾼의 갈퀴보호대", dungeon: "Vorasius", stats: ["crit","mastery"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -97,5 +94,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Algeth'ar Academy", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

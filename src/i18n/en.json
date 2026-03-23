@@ -42,7 +42,9 @@
     "Skyreach": "SR",
     "Seat of the Triumvirate": "SotT",
     "Algeth'ar Academy": "AA",
-    "Maisara Caverns": "MC"
+    "Maisara Caverns": "MC",
+    "Halls of Atonement": "HoA",
+    "Priory of the Sacred Flame": "PSF"
   },
   "sources": {
     "Tier": "Tier",
@@ -66,7 +68,9 @@
     "Skyreach": "Skyreach",
     "Seat of the Triumvirate": "Seat of the Triumvirate",
     "Algeth'ar Academy": "Algeth'ar Academy",
-    "Maisara Caverns": "Maisara Caverns"
+    "Maisara Caverns": "Maisara Caverns",
+    "Halls of Atonement": "Halls of Atonement",
+    "Priory of the Sacred Flame": "Priory of the Sacred Flame"
   },
   "classes": {
     "deathknight": "Death Knight",
@@ -157,8 +161,11 @@
     "avg": "Avg",
     "count": "",
     "priority": "by priority",
+    "midnight": "Midnight",
     "seasonLabel": "Half the battle is knowing what to farm",
     "seasonSub": "The other half is RNG.",
+    "guideLink": "Maxroll Guide",
+    "bisAttribution": "BiS data from",
     "feedback": "Feedback",
     "feedbackAndInquiry": "Feedback & Contact",
     "trySample": "Try Demo",

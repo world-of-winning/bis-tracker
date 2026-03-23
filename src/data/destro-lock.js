@@ -3,6 +3,7 @@ export var SPEC_KEY = "destro-lock";
 export var SIMC_CLASS = "warlock";
 export var SIMC_SPEC = "destruction";
 export var SPEC_ICON = "spell_shadow_rainoffire";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/destruction-warlock-raid-guide";
 export var STORAGE_KEY = "bis-destro-lock-v1";
 
 export var THEME = {
@@ -54,13 +55,10 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "가슴", id: 49825, en: "Palebone Robes", ko: "창백한 뼈 로브", dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "가슴", id: 250063, en: "Voidbreaker's Robe", ko: "공허파괴자의 로브", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "다리", id: 250059, en: "Voidbreaker's Britches", ko: "공허파괴자의 무릎바지", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "망토", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "목", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "목", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", dungeon: "Midnight Falls", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "무기", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","vers"] },
+  { forSlot: "무기", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "무기", id: 193723, en: "Obsidian Goaltending Spire", ko: "흑요석 골대지킴이 뾰족지팡이", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "무기", id: 249276, en: "Grimoire of the Eternal Light", ko: "영원한 빛의 고서", dungeon: "Vorasius", stats: ["crit","haste"] },
   { forSlot: "무기", id: 249293, en: "Weight of Command", ko: "지휘의 무게", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
@@ -71,7 +69,6 @@ export var ALTS = [
   { forSlot: "반지", id: 249369, en: "Bond of Light", ko: "빛의 결속", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "반지", id: 251115, en: "Bifurcation Band", ko: "분기점의 고리", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "반지", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "발", id: 250062, en: "Voidbreaker's Treads", ko: "공허파괴자의 발보호대", dungeon: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "손목", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", dungeon: "Vorasius", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 249328, en: "Echoing Void Mantle", ko: "메아리치는 공허 어깨덧옷", dungeon: "Belo'ren", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 251213, en: "Nysarra's Mantle", ko: "니사라의 어깨덧옷", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
@@ -99,5 +96,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

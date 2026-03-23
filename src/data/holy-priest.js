@@ -3,6 +3,7 @@ export var SPEC_KEY = "holy-priest";
 export var SIMC_CLASS = "priest";
 export var SIMC_SPEC = "holy";
 export var SPEC_ICON = "spell_holy_guardianspirit";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/holy-priest-raid-guide";
 export var STORAGE_KEY = "bis-holy-priest-v1";
 
 export var THEME = {
@@ -53,11 +54,10 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "가슴", id: 250045, en: "Abyssal Immolator's Dreadrobe", ko: "불태우는 심연의 공포로브", dungeon: "Tier", stats: ["haste","mastery"] },
   { forSlot: "망토", id: 249335, en: "Imperator's Banner", ko: "전제군주의 깃발", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
   { forSlot: "망토", id: 251161, en: "Soulhunter's Mask", ko: "영혼사냥꾼의 가면", dungeon: "Maisara Caverns", stats: ["crit","vers"] },
   { forSlot: "무기", id: 50227, en: "Surgeon's Needle", ko: "외과의사의 바늘", dungeon: "Pit of Saron", stats: ["crit","vers"] },
-  { forSlot: "무기", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","vers"] },
+  { forSlot: "무기", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "무기", id: 193723, en: "Obsidian Goaltending Spire", ko: "흑요석 골대지킴이 뾰족지팡이", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "무기", id: 249275, en: "Bulwark of Noble Resolve", ko: "귀족의 결의 보루 방패", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
   { forSlot: "무기", id: 249293, en: "Weight of Command", ko: "지휘의 무게", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
@@ -67,7 +67,6 @@ export var ALTS = [
   { forSlot: "반지", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "손목", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", dungeon: "Vorasius", stats: ["haste","mastery"] },
   { forSlot: "허리", id: 249319, en: "Endless March Waistwrap", ko: "끝없는 행진 허리싸개", dungeon: "Imperator Averzian", stats: ["crit","haste"] },
-  { forSlot: "허리", id: 250057, en: "Voidbreaker's Sage Cord", ko: "공허파괴자의 현자 장식끈", dungeon: "Catalyst", stats: ["crit","haste"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -89,5 +88,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Algeth'ar Academy", "Maisara Caverns",
 ];

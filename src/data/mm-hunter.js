@@ -3,6 +3,7 @@ export var SPEC_KEY = "mm-hunter";
 export var SIMC_CLASS = "hunter";
 export var SIMC_SPEC = "marksmanship";
 export var SPEC_ICON = "ability_hunter_focusedaim";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/marksmanship-hunter-raid-guide";
 export var STORAGE_KEY = "bis-mm-hunter-v1";
 
 export var THEME = {
@@ -51,11 +52,8 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "가슴", id: 250000, en: "Frenzyward of the Black Talon", ko: "검은 갈퀴발톱의 광란수호물", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "다리", id: 251215, en: "Greaves of the Divine Guile", ko: "천상의 기만의 경갑", dungeon: "Nexus-Point Xenas", stats: ["crit","mastery"] },
-  { forSlot: "망토", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "머리", id: 49824, en: "Horns of the Spurned Val'kyr", ko: "쫓겨난 발키르의 뿔", dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "머리", id: 249997, en: "Hornhelm of the Black Talon", ko: "검은 갈퀴발톱의 뿔투구", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "머리", id: 251119, en: "Vortex Visage", ko: "회오리의 안면", dungeon: "Magisters' Terrace", stats: ["crit","mastery"] },
   { forSlot: "목", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "목", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
@@ -70,12 +68,9 @@ export var ALTS = [
   { forSlot: "반지", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", dungeon: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "반지", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "발", id: 249320, en: "Sabatons of Obscurement", ko: "암연의 발덮개", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "발", id: 249990, en: "Primal Sentry's Swiftsteps", ko: "원시 파수꾼의 날쌘 발걸음", dungeon: "Catalyst", stats: ["crit","mastery"] },
   { forSlot: "손목", id: 249304, en: "Fallen King's Cuffs", ko: "몰락한 왕의 소매장식", dungeon: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
   { forSlot: "손목", id: 251079, en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
-  { forSlot: "어깨", id: 249977, en: "Tempests of the Primal Core", ko: "원시 핵의 돌개바람", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "장갑", id: 249325, en: "Untethered Berserker's Grips", ko: "풀어헤쳐진 광전사의 손장갑", dungeon: "Crown of the Cosmos", stats: ["crit","mastery"] },
-  { forSlot: "장갑", id: 249980, en: "Earthgrips of the Primal Core", ko: "원시 핵의 대지손아귀", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "허리", id: 249371, en: "Scornbane Waistguard", ko: "멸시파멸 허리보호대", dungeon: "Chimaerus", stats: ["haste","mastery"] },
 ];
 
@@ -101,5 +96,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

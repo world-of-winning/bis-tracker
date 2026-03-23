@@ -3,6 +3,7 @@ export var SPEC_KEY = "disc-priest";
 export var SIMC_CLASS = "priest";
 export var SIMC_SPEC = "discipline";
 export var SPEC_ICON = "spell_holy_powerwordshield";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/discipline-priest-raid-guide";
 export var STORAGE_KEY = "bis-disc-priest-v1";
 
 export var THEME = {
@@ -54,10 +55,6 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "가슴", id: 151303, en: "Voidbender Robe", ko: "공허술사 로브", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "가슴", id: 250045, en: "Abyssal Immolator's Dreadrobe", ko: "불태우는 심연의 공포로브", dungeon: "Tier", stats: ["haste","mastery"] },
-  { forSlot: "가슴", id: 250063, en: "Voidbreaker's Robe", ko: "공허파괴자의 로브", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "망토", id: 250010, en: "Windwrap of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 바람포", dungeon: "Catalyst", stats: ["crit","haste"] },
-  { forSlot: "망토", id: 250055, en: "Voidbreaker's Encryption", ko: "공허파괴자의 암호", dungeon: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "목", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "목", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", dungeon: "Midnight Falls", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 49802, en: "Garfrost's Two-Ton Hammer", ko: "가프로스트의 2톤 망치", dungeon: "Pit of Saron", stats: ["crit","haste"] },
@@ -78,14 +75,11 @@ export var ALTS = [
   { forSlot: "무기", id: 258525, en: "Scepter of the Endless Night", ko: "끝없는 밤의 홀", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "무기", id: 260423, en: "Arator's Swift Remembrance", ko: "아라토르의 신속한 기억", dungeon: "Crown of the Cosmos", stats: ["crit","haste"] },
   { forSlot: "반지", id: 249369, en: "Bond of Light", ko: "빛의 결속", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "발", id: 250062, en: "Voidbreaker's Treads", ko: "공허파괴자의 발보호대", dungeon: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "손목", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", dungeon: "Vorasius", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 249328, en: "Echoing Void Mantle", ko: "메아리치는 공허 어깨덧옷", dungeon: "Belo'ren", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 251085, en: "Mantle of Dark Devotion", ko: "어둠의 헌신의 어깨덧옷", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 258578, en: "Lightbinder Shoulderguards", ko: "빛의 결속자 어깨보호대", dungeon: "Skyreach", stats: ["haste","mastery"] },
-  { forSlot: "장갑", id: 250043, en: "Abyssal Immolator's Grasps", ko: "불태우는 심연의 손아귀", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "허리", id: 249319, en: "Endless March Waistwrap", ko: "끝없는 행진 허리싸개", dungeon: "Imperator Averzian", stats: ["crit","haste"] },
-  { forSlot: "허리", id: 250057, en: "Voidbreaker's Sage Cord", ko: "공허파괴자의 현자 장식끈", dungeon: "Catalyst", stats: ["crit","haste"] },
   { forSlot: "허리", id: 251102, en: "Clasp of Compliance", ko: "순응의 죔쇠띠", dungeon: "Magisters' Terrace", stats: ["haste","vers"] },
 ];
 
@@ -113,5 +107,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

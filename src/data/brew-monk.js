@@ -3,6 +3,7 @@ export var SPEC_KEY = "brew-monk";
 export var SIMC_CLASS = "monk";
 export var SIMC_SPEC = "brewmaster";
 export var SPEC_ICON = "spell_monk_brewmaster_spec";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/brewmaster-monk-raid-guide";
 export var STORAGE_KEY = "bis-brew-monk-v1";
 
 export var THEME = {
@@ -53,20 +54,17 @@ export var MYTHIC = [
 export var ALTS = [
   { forSlot: "망토", id: 49823, en: "Cloak of the Fallen Cardinal", ko: "쓰러진 추기경의 망토", dungeon: "Pit of Saron", stats: ["crit","vers"] },
   { forSlot: "망토", id: 249335, en: "Imperator's Banner", ko: "전제군주의 깃발", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "망토", id: 250046, en: "Blind Oath's Shroud", ko: "맹목적인 맹세의 수의", dungeon: "Catalyst", stats: ["crit","vers"] },
   { forSlot: "머리", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "머리", id: 151336, en: "Voidlashed Hood", ko: "공허에 스친 두건", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "목", id: 151309, en: "Necklace of the Twisting Void", ko: "뒤틀리는 공허의 목걸이", dungeon: "Seat of the Triumvirate", stats: ["haste","vers"] },
   { forSlot: "무기", id: 50227, en: "Surgeon's Needle", ko: "외과의사의 바늘", dungeon: "Pit of Saron", stats: ["crit","vers"] },
-  { forSlot: "무기", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","vers"] },
+  { forSlot: "무기", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "무기", id: 249293, en: "Weight of Command", ko: "지휘의 무게", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
   { forSlot: "무기", id: 258516, en: "Wand of Saprish's Gaze", ko: "사프리쉬의 시선 마법봉", dungeon: "Seat of the Triumvirate", stats: ["crit","vers"] },
   { forSlot: "반지", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", dungeon: "Midnight Falls", stats: ["mastery","vers"] },
   { forSlot: "반지", id: 249919, en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", dungeon: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "반지", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 250004, en: "Venom Casks of the Grim Jest", ko: "암담한 재담의 맹독 보관통", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
-  { forSlot: "어깨", id: 250022, en: "Seedpods of the Luminous Bloom", ko: "영롱한 꽃의 씨앗 깍지", dungeon: "Catalyst / Raid", stats: ["crit","mastery"] },
-  { forSlot: "어깨", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", dungeon: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 251171, en: "Enthralled Bonespines", ko: "마법에 걸린 해골가시", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
 ];
@@ -90,5 +88,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Seat of the Triumvirate", "Skyreach",
+  "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

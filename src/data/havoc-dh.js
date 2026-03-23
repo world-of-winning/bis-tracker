@@ -3,6 +3,7 @@ export var SPEC_KEY = "havoc-dh";
 export var SIMC_CLASS = "demonhunter";
 export var SIMC_SPEC = "havoc";
 export var SPEC_ICON = "ability_demonhunter_specdps";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/havoc-demon-hunter-raid-guide";
 export var STORAGE_KEY = "bis-havoc-dh-v1";
 
 export var THEME = {
@@ -29,8 +30,8 @@ export var BIS = [
   { slot: "finger2", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Umbral Plume", ko: "암영의 꽁지깃", id: 260235, source: "Belo'ren", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "main_hand", en: "Lightless Lament", ko: "빛을 잃은 탄식", id: 260408, source: "Midnight Falls & Crafted", stats: ["crit"] },
-  { slot: "off_hand", en: "Spellbreaker's Warglaive", ko: "주문파괴자의 전투검", id: 237840, source: "Midnight Falls & Crafted", stats: [] },
+  { slot: "main_hand", en: "Lightless Lament", ko: "빛을 잃은 탄식", id: 260408, source: "Midnight Falls", stats: ["crit"] },
+  { slot: "off_hand", en: "Spellbreaker's Warglaive", ko: "주문파괴자의 전투검", id: 237840, source: "Crafted", stats: [] },
 ];
 
 export var MYTHIC = [
@@ -48,16 +49,13 @@ export var MYTHIC = [
   { slot: "finger2", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, source: "Algeth'ar Academy", stats: [] },
   { slot: "trinket2", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
-  { slot: "main_hand", en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", id: 193717, source: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","vers"] },
-  { slot: "off_hand", en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", id: 251175, source: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
+  { slot: "main_hand", en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", id: 193717, source: "Algeth'ar Academy", stats: ["crit","vers"] },
+  { slot: "off_hand", en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", id: 251175, source: "Maisara Caverns", stats: ["crit","mastery"] },
 ];
 
 export var ALTS = [
-  { forSlot: "가슴", id: 250027, en: "Trunk of the Luminous Bloom", ko: "영롱한 꽃의 밑동", dungeon: "Catalyst / Raid", stats: ["crit","mastery"] },
-  { forSlot: "다리", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", dungeon: "Pit of Saron", stats: ["haste","mastery"] },
   { forSlot: "다리", id: 178819, en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", dungeon: "Halls of Atonement", stats: ["haste","mastery"] },
-  { forSlot: "다리", id: 250023, en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", dungeon: "Catalyst / Raid", stats: ["haste","mastery"] },
-  { forSlot: "머리", id: 250024, en: "Branches of the Luminous Bloom", ko: "영롱한 꽃의 나뭇가지", dungeon: "Catalyst / Raid", stats: ["haste","mastery"] },
+  { forSlot: "다리", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", dungeon: "Pit of Saron", stats: ["haste","mastery"] },
   { forSlot: "목", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "목", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 50227, en: "Surgeon's Needle", ko: "외과의사의 바늘", dungeon: "Pit of Saron", stats: ["crit","vers"] },
@@ -72,7 +70,6 @@ export var ALTS = [
   { forSlot: "반지", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "손목", id: 50264, en: "Chewed Leather Wristguards", ko: "물어뜯긴 가죽 손목보호구", dungeon: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "어깨", id: 151319, en: "Twilight's Edge Spaulders", ko: "황혼의 서슬 어깨덮개", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
-  { forSlot: "어깨", id: 250022, en: "Seedpods of the Luminous Bloom", ko: "영롱한 꽃의 씨앗 깍지", dungeon: "Catalyst / Raid", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 251171, en: "Enthralled Bonespines", ko: "마법에 걸린 해골가시", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
   { forSlot: "장갑", id: 151318, en: "Gloves of the Dark Shroud", ko: "암흑 구름의 장갑", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
 ];
@@ -98,5 +95,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Algeth'ar Academy & Maisara Caverns", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

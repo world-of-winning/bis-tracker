@@ -3,6 +3,7 @@ export var SPEC_KEY = "surv-hunter";
 export var SIMC_CLASS = "hunter";
 export var SIMC_SPEC = "survival";
 export var SPEC_ICON = "ability_hunter_camouflage";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/survival-hunter-raid-guide";
 export var STORAGE_KEY = "bis-surv-hunter-v1";
 
 export var THEME = {
@@ -29,7 +30,7 @@ export var BIS = [
   { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, source: "Algeth'ar Academy", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, source: "Windrunners Spire (Vault)", stats: ["crit","mastery"] },
+  { slot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, source: "Windrunner Spire", stats: ["crit","mastery"] },
 ];
 
 export var MYTHIC = [
@@ -51,12 +52,9 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "가슴", id: 250000, en: "Frenzyward of the Black Talon", ko: "검은 갈퀴발톱의 광란수호물", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "가슴", id: 258576, en: "Sharpeye Chestguard", ko: "뾰족눈 가슴보호대", dungeon: "Skyreach", stats: ["crit","haste"] },
   { forSlot: "다리", id: 251170, en: "Wickedweave Trousers", ko: "교활매듭 긴바지", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "망토", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "머리", id: 49824, en: "Horns of the Spurned Val'kyr", ko: "쫓겨난 발키르의 뿔", dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "머리", id: 249997, en: "Hornhelm of the Black Talon", ko: "검은 갈퀴발톱의 뿔투구", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "머리", id: 258585, en: "Sharpeye Gleam", ko: "뾰족눈 광투구", dungeon: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", dungeon: "Lightblinded Vanguard", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", dungeon: "Belo'ren", stats: ["crit","mastery"] },
@@ -64,11 +62,9 @@ export var ALTS = [
   { forSlot: "무기", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", dungeon: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "발", id: 249320, en: "Sabatons of Obscurement", ko: "암연의 발덮개", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "발", id: 249990, en: "Primal Sentry's Swiftsteps", ko: "원시 파수꾼의 날쌘 발걸음", dungeon: "Catalyst", stats: ["crit","mastery"] },
   { forSlot: "손목", id: 249304, en: "Fallen King's Cuffs", ko: "몰락한 왕의 소매장식", dungeon: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
   { forSlot: "손목", id: 251079, en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "장갑", id: 249325, en: "Untethered Berserker's Grips", ko: "풀어헤쳐진 광전사의 손장갑", dungeon: "Crown of the Cosmos", stats: ["crit","mastery"] },
-  { forSlot: "장갑", id: 249980, en: "Earthgrips of the Primal Core", ko: "원시 핵의 대지손아귀", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "허리", id: 249371, en: "Scornbane Waistguard", ko: "멸시파멸 허리보호대", dungeon: "Chimaerus", stats: ["haste","mastery"] },
 ];
 
@@ -91,5 +87,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

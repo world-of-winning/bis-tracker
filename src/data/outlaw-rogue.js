@@ -3,6 +3,7 @@ export var SPEC_KEY = "outlaw-rogue";
 export var SIMC_CLASS = "rogue";
 export var SIMC_SPEC = "outlaw";
 export var SPEC_ICON = "ability_rogue_waylay";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/outlaw-rogue-raid-guide";
 export var STORAGE_KEY = "bis-outlaw-rogue-v1";
 
 export var THEME = {
@@ -53,13 +54,8 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "가슴", id: 250027, en: "Trunk of the Luminous Bloom", ko: "영롱한 꽃의 밑동", dungeon: "Catalyst / Raid", stats: ["crit","mastery"] },
-  { forSlot: "가슴", id: 250036, en: "Devouring Reaver's Engine", ko: "포식의 파괴자 동력장치", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "가슴", id: 251099, en: "Vest of the Howling Gale", ko: "울부짖는 강풍의 조끼", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
-  { forSlot: "다리", id: 250032, en: "Devouring Reaver's Pistons", ko: "포식의 파괴자 피스톤", dungeon: "Tier", stats: ["haste","vers"] },
   { forSlot: "망토", id: 49823, en: "Cloak of the Fallen Cardinal", ko: "쓰러진 추기경의 망토", dungeon: "Pit of Saron", stats: ["crit","vers"] },
-  { forSlot: "망토", id: 250010, en: "Windwrap of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 바람포", dungeon: "Catalyst", stats: ["crit","haste"] },
-  { forSlot: "망토", id: 250046, en: "Blind Oath's Shroud", ko: "맹목적인 맹세의 수의", dungeon: "Catalyst", stats: ["crit","vers"] },
   { forSlot: "망토", id: 251161, en: "Soulhunter's Mask", ko: "영혼사냥꾼의 가면", dungeon: "Maisara Caverns", stats: ["crit","vers"] },
   { forSlot: "머리", id: 151336, en: "Voidlashed Hood", ko: "공허에 스친 두건", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "머리", id: 250015, en: "Fearsome Visage of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 무시무시한 안면", dungeon: "Lightblinded Vanguard", stats: ["crit","haste"] },
@@ -91,7 +87,6 @@ export var ALTS = [
   { forSlot: "손목", id: 249327, en: "Void-Skinned Bracers", ko: "공허로 무두질한 팔보호구", dungeon: "Vorasius", stats: ["crit","haste"] },
   { forSlot: "어깨", id: 250013, en: "Aurastones of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 기의 돌", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", dungeon: "Windrunner Spire", stats: ["haste","mastery"] },
-  { forSlot: "장갑", id: 250034, en: "Devouring Reaver's Essence Grips", ko: "포식의 파괴자 정수 손장갑", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "허리", id: 49806, en: "Flayer's Black Belt", ko: "바위갈퀴의 검은띠", dungeon: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "허리", id: 151316, en: "Cinch of the Umbral Lasher", ko: "암영 덩굴손의 허리끈", dungeon: "Seat of the Triumvirate", stats: ["haste","vers"] },
 ];
@@ -122,5 +117,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

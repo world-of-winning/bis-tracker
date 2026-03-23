@@ -3,6 +3,7 @@ export var SPEC_KEY = "blood-dk";
 export var SIMC_CLASS = "deathknight";
 export var SIMC_SPEC = "blood";
 export var SPEC_ICON = "spell_deathknight_bloodpresence";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/blood-death-knight-raid-guide";
 export var STORAGE_KEY = "bis-blood-dk-v1";
 
 export var THEME = {
@@ -54,12 +55,10 @@ export var ALTS = [
   { forSlot: "다리", id: 251118, en: "Legplates of Lingering Dusk", ko: "잔존하는 암흑의 다리갑옷", dungeon: "Magisters' Terrace", stats: ["crit","mastery"] },
   { forSlot: "망토", id: 49823, en: "Cloak of the Fallen Cardinal", ko: "쓰러진 추기경의 망토", dungeon: "Pit of Saron", stats: ["crit","vers"] },
   { forSlot: "망토", id: 249335, en: "Imperator's Banner", ko: "전제군주의 깃발", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "망토", id: 250046, en: "Blind Oath's Shroud", ko: "맹목적인 맹세의 수의", dungeon: "Catalyst", stats: ["crit","vers"] },
   { forSlot: "머리", id: 249952, en: "Night Ender's Tusks", ko: "밤의 종결자의 엄니", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "머리", id: 249961, en: "Luminant Verdict's Unwavering Gaze", ko: "빛나는 선고의 흔들림 없는 시선", dungeon: "Tier", stats: ["haste","mastery"] },
   { forSlot: "목", id: 151309, en: "Necklace of the Twisting Void", ko: "뒤틀리는 공허의 목걸이", dungeon: "Seat of the Triumvirate", stats: ["haste","vers"] },
   { forSlot: "무기", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", dungeon: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "무기", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunners Spire", stats: ["crit","mastery"] },
+  { forSlot: "무기", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", dungeon: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
@@ -67,7 +66,6 @@ export var ALTS = [
   { forSlot: "반지", id: 249336, en: "Signet of the Starved Beast", ko: "굶주린 야수의 인장", dungeon: "Vorasius", stats: ["crit","vers"] },
   { forSlot: "반지", id: 249919, en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", dungeon: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "반지", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "어깨", id: 249959, en: "Luminant Verdict's Providence Watch", ko: "빛나는 선고의 섭리의 경계", dungeon: "Tier", stats: ["crit","mastery"] },
 ];
 
 export var WORST_STATS = [];
@@ -89,5 +87,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

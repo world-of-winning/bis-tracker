@@ -3,6 +3,7 @@ export var SPEC_KEY = "feral-druid";
 export var SIMC_CLASS = "druid";
 export var SIMC_SPEC = "feral";
 export var SPEC_ICON = "ability_druid_catform";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/feral-druid-raid-guide";
 export var STORAGE_KEY = "bis-feral-druid-v1";
 
 export var THEME = {
@@ -29,7 +30,7 @@ export var BIS = [
   { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, source: "Algeth'ar Academy", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, source: "Windrunners Spire", stats: ["crit","mastery"] },
+  { slot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, source: "Windrunner Spire", stats: ["crit","mastery"] },
 ];
 
 export var MYTHIC = [
@@ -52,15 +53,9 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "가슴", id: 250009, en: "Fantastic Finery of the Grim Jest", ko: "암담한 재담의 광적인 치장", dungeon: "Chimaerus", stats: ["crit","mastery"] },
-  { forSlot: "가슴", id: 250036, en: "Devouring Reaver's Engine", ko: "포식의 파괴자 동력장치", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "다리", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", dungeon: "Pit of Saron", stats: ["haste","mastery"] },
-  { forSlot: "다리", id: 250014, en: "Swiftsweepers of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 싹쓸이 바지", dungeon: "Tier", stats: ["haste","mastery"] },
-  { forSlot: "다리", id: 250023, en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", dungeon: "Catalyst / Raid", stats: ["haste","mastery"] },
-  { forSlot: "망토", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
-  { forSlot: "망토", id: 250055, en: "Voidbreaker's Encryption", ko: "공허파괴자의 암호", dungeon: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "머리", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "머리", id: 250015, en: "Fearsome Visage of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 무시무시한 안면", dungeon: "Lightblinded Vanguard", stats: ["crit","haste"] },
-  { forSlot: "머리", id: 250033, en: "Devouring Reaver's Intake", ko: "포식의 파괴자 유입구", dungeon: "Tier", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", dungeon: "Lightblinded Vanguard", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", dungeon: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
@@ -74,7 +69,6 @@ export var ALTS = [
   { forSlot: "어깨", id: 151319, en: "Twilight's Edge Spaulders", ko: "황혼의 서슬 어깨덮개", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 250004, en: "Venom Casks of the Grim Jest", ko: "암담한 재담의 맹독 보관통", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 250013, en: "Aurastones of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 기의 돌", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
-  { forSlot: "어깨", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", dungeon: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "장갑", id: 249321, en: "Vaelgor's Fearsome Grasp", ko: "바엘고어의 섬찟한 손아귀", dungeon: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
   { forSlot: "장갑", id: 251204, en: "Corewright's Zappers", ko: "핵장인의 제어 장치", dungeon: "Nexus-Point Xenas", stats: ["haste","vers"] },
@@ -103,5 +97,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

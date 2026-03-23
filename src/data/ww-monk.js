@@ -3,6 +3,7 @@ export var SPEC_KEY = "ww-monk";
 export var SIMC_CLASS = "monk";
 export var SIMC_SPEC = "windwalker";
 export var SPEC_ICON = "spell_monk_windwalker_spec";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/windwalker-monk-raid-guide";
 export var STORAGE_KEY = "bis-ww-monk-v1";
 
 export var THEME = {
@@ -54,7 +55,6 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "다리", id: 249312, en: "Nightblade's Pantaloons", ko: "밤의 검의 통바지", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
-  { forSlot: "다리", id: 250023, en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", dungeon: "Catalyst / Raid", stats: ["haste","mastery"] },
   { forSlot: "머리", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "머리", id: 151336, en: "Voidlashed Hood", ko: "공허에 스친 두건", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "목", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", dungeon: "Midnight Falls", stats: ["haste","mastery"] },
@@ -73,7 +73,6 @@ export var ALTS = [
   { forSlot: "어깨", id: 250004, en: "Venom Casks of the Grim Jest", ko: "암담한 재담의 맹독 보관통", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", dungeon: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "장갑", id: 250007, en: "Sleight of Hand of the Grim Jest", ko: "암담한 재담의 손재주", dungeon: "Vorasius", stats: ["crit","haste"] },
-  { forSlot: "장갑", id: 250034, en: "Devouring Reaver's Essence Grips", ko: "포식의 파괴자 정수 손장갑", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "장갑", id: 251113, en: "Gloves of Viscous Goo", ko: "농후한 찐득이 장갑", dungeon: "Magisters' Terrace", stats: ["crit","mastery"] },
   { forSlot: "허리", id: 249374, en: "Scorn-Scarred Shul'ka's Belt", ko: "멸시의 자취가 남은 술카의 허리띠", dungeon: "Chimaerus", stats: ["crit","haste"] },
 ];
@@ -100,5 +99,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

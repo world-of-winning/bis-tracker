@@ -3,6 +3,7 @@ export var SPEC_KEY = "dev-evoker";
 export var SIMC_CLASS = "evoker";
 export var SIMC_SPEC = "devastation";
 export var SPEC_ICON = "classicon_evoker_devastation";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/devastation-evoker-raid-guide";
 export var STORAGE_KEY = "bis-dev-evoker-v1";
 
 export var THEME = {
@@ -57,7 +58,6 @@ export var ALTS = [
   { forSlot: "다리", id: 249324, en: "Eternal Flame Scaleguards", ko: "영원의 불꽃 비늘보호대", dungeon: "Belo'ren", stats: ["haste","mastery"] },
   { forSlot: "다리", id: 249987, en: "Primal Sentry's Legguards", ko: "원시 파수꾼의 다리보호대", dungeon: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
   { forSlot: "다리", id: 251215, en: "Greaves of the Divine Guile", ko: "천상의 기만의 경갑", dungeon: "Nexus-Point Xenas", stats: ["crit","mastery"] },
-  { forSlot: "망토", id: 250010, en: "Windwrap of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 바람포", dungeon: "Catalyst", stats: ["crit","haste"] },
   { forSlot: "머리", id: 249988, en: "Primal Sentry's Maw", ko: "원시 파수꾼의 아귀", dungeon: "Lightblinded Vanguard", stats: ["crit","haste"] },
   { forSlot: "머리", id: 251119, en: "Vortex Visage", ko: "회오리의 안면", dungeon: "Magisters' Terrace", stats: ["crit","mastery"] },
   { forSlot: "머리", id: 258585, en: "Sharpeye Gleam", ko: "뾰족눈 광투구", dungeon: "Skyreach", stats: ["crit","mastery"] },
@@ -86,7 +86,6 @@ export var ALTS = [
   { forSlot: "손목", id: 251079, en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 193704, en: "Scaled Commencement Spaulders", ko: "비늘 학위 어깨덮개", dungeon: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 249318, en: "Nullwalker's Dread Epaulettes", ko: "무위방랑자의 섬뜩한 견장", dungeon: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
-  { forSlot: "어깨", id: 249977, en: "Tempests of the Primal Core", ko: "원시 핵의 돌개바람", dungeon: "Tier", stats: ["crit","haste"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -113,5 +112,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

@@ -3,6 +3,7 @@ export var SPEC_KEY = "prot-paladin";
 export var SIMC_CLASS = "paladin";
 export var SIMC_SPEC = "protection";
 export var SPEC_ICON = "ability_paladin_shieldofthetemplar";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/protection-paladin-raid-guide";
 export var STORAGE_KEY = "bis-prot-paladin-v1";
 
 export var THEME = {
@@ -54,9 +55,7 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "가슴", id: 249955, en: "Night Ender's Breastplate", ko: "밤의 종결자의 가슴보호갑", dungeon: "Chimaerus", stats: ["crit","haste"] },
-  { forSlot: "가슴", id: 249973, en: "Relentless Rider's Cuirass", ko: "가혹한 기수의 흉갑", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "다리", id: 249951, en: "Night Ender's Chausses", ko: "밤의 종결자의 정강이싸개", dungeon: "Vaelgor & Ezzorak", stats: ["crit","haste"] },
-  { forSlot: "망토", id: 250010, en: "Windwrap of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 바람포", dungeon: "Catalyst", stats: ["crit","haste"] },
   { forSlot: "머리", id: 249952, en: "Night Ender's Tusks", ko: "밤의 종결자의 엄니", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "머리", id: 249970, en: "Relentless Rider's Crown", ko: "가혹한 기수의 왕관", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "목", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
@@ -70,14 +69,13 @@ export var ALTS = [
   { forSlot: "무기", id: 251111, en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", dungeon: "Magisters' Terrace", stats: ["crit","haste"] },
   { forSlot: "무기", id: 251162, en: "Traitor's Talon", ko: "배신자의 갈퀴발톱", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "무기", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "무기", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "무기", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 251178, en: "Ceremonial Hexblade", ko: "의식용 사술칼날", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "무기", id: 251202, en: "Reflux Reflector", ko: "역류 굴절 장치", dungeon: "Nexus-Point Xenas", stats: ["crit","vers"] },
   { forSlot: "무기", id: 260423, en: "Arator's Swift Remembrance", ko: "아라토르의 신속한 기억", dungeon: "Crown of the Cosmos", stats: ["crit","haste"] },
   { forSlot: "반지", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", dungeon: "Midnight Falls", stats: ["mastery","vers"] },
   { forSlot: "어깨", id: 50234, en: "Shoulderplates of Frozen Blood", ko: "얼어붙은 피의 어깨철갑", dungeon: "Pit of Saron", stats: ["crit","mastery"] },
   { forSlot: "장갑", id: 151332, en: "Voidclaw Gauntlets", ko: "공허발톱 건틀릿", dungeon: "Seat of the Triumvirate", stats: ["haste","vers"] },
-  { forSlot: "허리", id: 249949, en: "Night Ender's Girdle", ko: "밤의 종결자의 요대", dungeon: "Catalyst", stats: ["crit","haste"] },
 ];
 
 export var WORST_STATS = ["mastery"];
@@ -102,5 +100,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Maisara Caverns",
 ];

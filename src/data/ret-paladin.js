@@ -3,6 +3,7 @@ export var SPEC_KEY = "ret-paladin";
 export var SIMC_CLASS = "paladin";
 export var SIMC_SPEC = "retribution";
 export var SPEC_ICON = "spell_holy_auraoflight";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/retribution-paladin-raid-guide";
 export var STORAGE_KEY = "bis-ret-paladin-v1";
 
 export var THEME = {
@@ -54,10 +55,8 @@ export var ALTS = [
   { forSlot: "가슴", id: 151329, en: "Breastplate of the Dark Touch", ko: "어둠의 손길 가슴보호갑", dungeon: "The Great Vault", stats: ["haste","mastery"] },
   { forSlot: "가슴", id: 249309, en: "Sunbound Breastplate", ko: "태양결속 가슴보호갑", dungeon: "Windrunner Spire", stats: ["crit","haste"] },
   { forSlot: "가슴", id: 249955, en: "Night Ender's Breastplate", ko: "밤의 종결자의 가슴보호갑", dungeon: "Chimaerus", stats: ["crit","haste"] },
-  { forSlot: "가슴", id: 249973, en: "Relentless Rider's Cuirass", ko: "가혹한 기수의 흉갑", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "다리", id: 249951, en: "Night Ender's Chausses", ko: "밤의 종결자의 정강이싸개", dungeon: "Vaelgor & Ezzorak", stats: ["crit","haste"] },
   { forSlot: "다리", id: 249969, en: "Relentless Rider's Legguards", ko: "가혹한 기수의 다리보호대", dungeon: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
-  { forSlot: "망토", id: 250010, en: "Windwrap of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 바람포", dungeon: "Catalyst", stats: ["crit","haste"] },
   { forSlot: "머리", id: 249952, en: "Night Ender's Tusks", ko: "밤의 종결자의 엄니", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "머리", id: 249970, en: "Relentless Rider's Crown", ko: "가혹한 기수의 왕관", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Pit of Saron", stats: ["crit","haste"] },
@@ -77,7 +76,6 @@ export var ALTS = [
   { forSlot: "어깨", id: 50234, en: "Shoulderplates of Frozen Blood", ko: "얼어붙은 피의 어깨철갑", dungeon: "Pit of Saron", stats: ["crit","mastery"] },
   { forSlot: "장갑", id: 151332, en: "Voidclaw Gauntlets", ko: "공허발톱 건틀릿", dungeon: "Seat of the Triumvirate", stats: ["haste","vers"] },
   { forSlot: "허리", id: 151327, en: "Girdle of the Shadowguard", ko: "어둠수호병의 요대", dungeon: "Seat of the Triumvirate", stats: ["haste","mastery"] },
-  { forSlot: "허리", id: 249949, en: "Night Ender's Girdle", ko: "밤의 종결자의 요대", dungeon: "Catalyst", stats: ["crit","haste"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -102,5 +100,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Maisara Caverns",
 ];

@@ -3,6 +3,7 @@ export var SPEC_KEY = "prot-warrior";
 export var SIMC_CLASS = "warrior";
 export var SIMC_SPEC = "protection";
 export var SPEC_ICON = "ability_warrior_defensivestance";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/protection-warrior-raid-guide";
 export var STORAGE_KEY = "bis-prot-warrior-v1";
 
 export var THEME = {
@@ -54,10 +55,6 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "가슴", id: 249309, en: "Sunbound Breastplate", ko: "태양결속 가슴보호갑", dungeon: "Windrunner Spire", stats: ["crit","haste"] },
-  { forSlot: "가슴", id: 249973, en: "Relentless Rider's Cuirass", ko: "가혹한 기수의 흉갑", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "다리", id: 249960, en: "Luminant Verdict's Greaves", ko: "빛나는 선고의 경갑", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "망토", id: 250010, en: "Windwrap of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 바람포", dungeon: "Catalyst", stats: ["crit","haste"] },
-  { forSlot: "머리", id: 249961, en: "Luminant Verdict's Unwavering Gaze", ko: "빛나는 선고의 흔들림 없는 시선", dungeon: "Tier", stats: ["haste","mastery"] },
   { forSlot: "머리", id: 249970, en: "Relentless Rider's Crown", ko: "가혹한 기수의 왕관", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "목", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "목", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", dungeon: "Midnight Falls", stats: ["haste","mastery"] },
@@ -70,11 +67,10 @@ export var ALTS = [
   { forSlot: "무기", id: 251111, en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", dungeon: "Magisters' Terrace", stats: ["crit","haste"] },
   { forSlot: "무기", id: 251162, en: "Traitor's Talon", ko: "배신자의 갈퀴발톱", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "무기", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "무기", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "무기", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 251178, en: "Ceremonial Hexblade", ko: "의식용 사술칼날", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "무기", id: 260423, en: "Arator's Swift Remembrance", ko: "아라토르의 신속한 기억", dungeon: "Crown of the Cosmos", stats: ["crit","haste"] },
   { forSlot: "어깨", id: 251164, en: "Amalgamation's Harness", ko: "융합체의 멜빵", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "장갑", id: 249962, en: "Luminant Verdict's Gauntlets", ko: "빛나는 선고의 건틀릿", dungeon: "Tier", stats: ["haste","vers"] },
 ];
 
 export var WORST_STATS = ["mastery"];
@@ -98,5 +94,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Maisara Caverns",
 ];

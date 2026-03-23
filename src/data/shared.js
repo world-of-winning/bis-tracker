@@ -7,6 +7,8 @@ export var DUNGEON_COLORS = {
   "Seat of the Triumvirate": { b: "#4d6dca", t: "#8da8ff", g: "#0f1a3a" },
   "Algeth'ar Academy": { b: "#6daa6d", t: "#a0dda0", g: "#0f280f" },
   "Maisara Caverns": { b: "#aa6d9b", t: "#dda0cc", g: "#280f22" },
+  "Halls of Atonement": { b: "#8a5c3d", t: "#c99a6d", g: "#2a1a0f" },
+  "Priory of the Sacred Flame": { b: "#ca9a3d", t: "#ffd47d", g: "#332a0f" },
 };
 
 export var TIERS = [

@@ -3,6 +3,7 @@ export var SPEC_KEY = "aff-lock";
 export var SIMC_CLASS = "warlock";
 export var SIMC_SPEC = "affliction";
 export var SPEC_ICON = "spell_shadow_deathcoil";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/affliction-warlock-raid-guide";
 export var STORAGE_KEY = "bis-aff-lock-v1";
 
 export var THEME = {
@@ -52,12 +53,7 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "가슴", id: 250054, en: "Blind Oath's Raiment", ko: "맹목적인 맹세의 예복", dungeon: "Tier", stats: ["haste","mastery"] },
-  { forSlot: "다리", id: 250059, en: "Voidbreaker's Britches", ko: "공허파괴자의 무릎바지", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "망토", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
-  { forSlot: "망토", id: 250055, en: "Voidbreaker's Encryption", ko: "공허파괴자의 암호", dungeon: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "머리", id: 151337, en: "Shadow-Weaver's Crown", ko: "흑마술사의 관", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
-  { forSlot: "머리", id: 250051, en: "Blind Oath's Winged Crest", ko: "맹목적인 맹세의 날개 달린 문장", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "목", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "목", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", dungeon: "Midnight Falls", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 193707, en: "Final Grade", ko: "최종 학점", dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
@@ -92,5 +88,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

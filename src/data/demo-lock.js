@@ -3,6 +3,7 @@ export var SPEC_KEY = "demo-lock";
 export var SIMC_CLASS = "warlock";
 export var SIMC_SPEC = "demonology";
 export var SPEC_ICON = "spell_shadow_metamorphosis";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/demonology-warlock-raid-guide";
 export var STORAGE_KEY = "bis-demo-lock-v1";
 
 export var THEME = {
@@ -52,11 +53,7 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "가슴", id: 250054, en: "Blind Oath's Raiment", ko: "맹목적인 맹세의 예복", dungeon: "Tier", stats: ["haste","mastery"] },
-  { forSlot: "다리", id: 250059, en: "Voidbreaker's Britches", ko: "공허파괴자의 무릎바지", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "망토", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "머리", id: 151337, en: "Shadow-Weaver's Crown", ko: "흑마술사의 관", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
-  { forSlot: "머리", id: 250051, en: "Blind Oath's Winged Crest", ko: "맹목적인 맹세의 날개 달린 문장", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "목", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "목", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", dungeon: "Midnight Falls", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 193707, en: "Final Grade", ko: "최종 학점", dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
@@ -71,7 +68,6 @@ export var ALTS = [
   { forSlot: "반지", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "손목", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", dungeon: "Vorasius", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 249328, en: "Echoing Void Mantle", ko: "메아리치는 공허 어깨덧옷", dungeon: "Belo'ren", stats: ["haste","mastery"] },
-  { forSlot: "어깨", id: 250049, en: "Blind Oath's Seraphguards", ko: "맹목적인 맹세의 대천사보호대", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 251213, en: "Nysarra's Mantle", ko: "니사라의 어깨덧옷", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { forSlot: "장갑", id: 251172, en: "Vilehex Bonds", ko: "부정사술 결속대", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "허리", id: 50263, en: "Braid of Salt and Fire", ko: "빛과 소금 허리띠", dungeon: "Pit of Saron", stats: ["haste","vers"] },
@@ -99,5 +95,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

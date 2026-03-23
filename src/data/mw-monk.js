@@ -3,6 +3,7 @@ export var SPEC_KEY = "mw-monk";
 export var SIMC_CLASS = "monk";
 export var SIMC_SPEC = "mistweaver";
 export var SPEC_ICON = "spell_monk_mistweaver_spec";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/mistweaver-monk-raid-guide";
 export var STORAGE_KEY = "bis-mw-monk-v1";
 
 export var THEME = {
@@ -41,8 +42,8 @@ export var MYTHIC = [
   { slot: "chest", en: "Maledict Vest", ko: "악독한 조끼", id: 251216, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "wrist", en: "Frenzyroot Cuffs", ko: "광란뿌리 소매장식", id: 193714, source: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { slot: "hands", en: "Gloves of the Dark Shroud", ko: "암흑 구름의 장갑", id: 151318, source: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { slot: "waist", en: "Falconer's Cinch", ko: "매사냥꾼의 허리끈", id: 251166, source: "Maisara Caverns", stats: ["haste","vers"] },
   { slot: "legs", en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", id: 178819, source: "Halls of Atonement", stats: ["haste","mastery"] },
+  { slot: "waist", en: "Falconer's Cinch", ko: "매사냥꾼의 허리끈", id: 251166, source: "Maisara Caverns", stats: ["haste","vers"] },
   { slot: "feet", en: "Eclipse Espadrilles", ko: "일월식 발목화", id: 251210, source: "Nexus-Point Xenas", stats: ["haste","vers"] },
   { slot: "finger1", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "finger2", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
@@ -55,19 +56,17 @@ export var MYTHIC = [
 export var ALTS = [
   { forSlot: "다리", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", dungeon: "Pit of Saron", stats: ["haste","mastery"] },
   { forSlot: "다리", id: 249312, en: "Nightblade's Pantaloons", ko: "밤의 검의 통바지", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
-  { forSlot: "다리", id: 250023, en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", dungeon: "Catalyst / Raid", stats: ["haste","mastery"] },
   { forSlot: "망토", id: 49823, en: "Cloak of the Fallen Cardinal", ko: "쓰러진 추기경의 망토", dungeon: "Pit of Saron", stats: ["crit","vers"] },
-  { forSlot: "망토", id: 250046, en: "Blind Oath's Shroud", ko: "맹목적인 맹세의 수의", dungeon: "Catalyst", stats: ["crit","vers"] },
   { forSlot: "망토", id: 251161, en: "Soulhunter's Mask", ko: "영혼사냥꾼의 가면", dungeon: "Maisara Caverns", stats: ["crit","vers"] },
   { forSlot: "머리", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "목", id: 50228, en: "Barbed Ymirheim Choker", ko: "뾰족한 이미르하임 목장식", dungeon: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "목", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", dungeon: "Windrunner Spire", stats: ["haste","vers"] },
   { forSlot: "무기", id: 50227, en: "Surgeon's Needle", ko: "외과의사의 바늘", dungeon: "Pit of Saron", stats: ["crit","vers"] },
   { forSlot: "무기", id: 193710, en: "Spellboon Saber", ko: "주문은총 사브르", dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
-  { forSlot: "무기", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","vers"] },
+  { forSlot: "무기", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "무기", id: 193723, en: "Obsidian Goaltending Spire", ko: "흑요석 골대지킴이 뾰족지팡이", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "무기", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", dungeon: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
-  { forSlot: "무기", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", dungeon: "Midnight Falls & Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { forSlot: "무기", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 249922, en: "Tome of Alnscorned Regret", ko: "알른멸시 회한의 고서", dungeon: "Chimaerus", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 258516, en: "Wand of Saprish's Gaze", ko: "사프리쉬의 시선 마법봉", dungeon: "Seat of the Triumvirate", stats: ["crit","vers"] },
@@ -80,7 +79,6 @@ export var ALTS = [
   { forSlot: "어깨", id: 250013, en: "Aurastones of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 기의 돌", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", dungeon: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "장갑", id: 250007, en: "Sleight of Hand of the Grim Jest", ko: "암담한 재담의 손재주", dungeon: "Vorasius", stats: ["crit","haste"] },
-  { forSlot: "장갑", id: 250034, en: "Devouring Reaver's Essence Grips", ko: "포식의 파괴자 정수 손장갑", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "허리", id: 49806, en: "Flayer's Black Belt", ko: "바위갈퀴의 검은띠", dungeon: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "허리", id: 151316, en: "Cinch of the Umbral Lasher", ko: "암영 덩굴손의 허리끈", dungeon: "Seat of the Triumvirate", stats: ["haste","vers"] },
 ];
@@ -109,5 +107,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

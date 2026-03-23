@@ -3,6 +3,7 @@ export var SPEC_KEY = "balance-druid";
 export var SIMC_CLASS = "druid";
 export var SIMC_SPEC = "balance";
 export var SPEC_ICON = "spell_nature_starfall";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/balance-druid-raid-guide";
 export var STORAGE_KEY = "bis-balance-druid-v1";
 
 export var THEME = {
@@ -15,20 +16,20 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", en: "Branches of the Luminous Bloom", ko: "영롱한 꽃의 나뭇가지", id: 250024, source: "Catalyst / Raid", stats: ["haste","mastery"] },
+  { slot: "head", en: "Branches of the Luminous Bloom", ko: "영롱한 꽃의 나뭇가지", id: 250024, source: "Catalyst", stats: ["haste","mastery"] },
   { slot: "neck", en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", id: 250247, source: "Seat of the Triumvirate", stats: ["haste","mastery"] },
-  { slot: "shoulder", en: "Seedpods of the Luminous Bloom", ko: "영롱한 꽃의 씨앗 깍지", id: 250022, source: "Catalyst / Raid", stats: ["crit","mastery"] },
-  { slot: "back", en: "Draconic Nullcape", ko: "용족 무위단망토", id: 249370, source: "Vaelgor", stats: ["haste","mastery"] },
-  { slot: "chest", en: "Trunk of the Luminous Bloom", ko: "영롱한 꽃의 밑동", id: 250027, source: "Catalyst / Raid", stats: ["crit","mastery"] },
+  { slot: "shoulder", en: "Seedpods of the Luminous Bloom", ko: "영롱한 꽃의 씨앗 깍지", id: 250022, source: "Catalyst", stats: ["crit","mastery"] },
+  { slot: "back", en: "Draconic Nullcape", ko: "용족 무위단망토", id: 249370, source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
+  { slot: "chest", en: "Trunk of the Luminous Bloom", ko: "영롱한 꽃의 밑동", id: 250027, source: "Catalyst", stats: ["crit","mastery"] },
   { slot: "wrist", en: "Silvermoon Agent's Deflectors", ko: "실버문 요원의 굴절보호대", id: 244576, source: "Crafted", stats: [] },
-  { slot: "hands", en: "Arbortenders of the Luminous Bloom", ko: "영롱한 꽃의 나무지기", id: 250025, source: "Catalyst / Raid", stats: ["haste","vers"] },
+  { slot: "hands", en: "Arbortenders of the Luminous Bloom", ko: "영롱한 꽃의 나무지기", id: 250025, source: "Catalyst", stats: ["haste","vers"] },
   { slot: "waist", en: "Silvermoon Agent's Utility Belt", ko: "실버문 요원의 연장허리띠", id: 244573, source: "Crafted", stats: [] },
-  { slot: "legs", en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", id: 250023, source: "Catalyst / Raid", stats: ["haste","mastery"] },
+  { slot: "legs", en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", id: 250023, source: "Catalyst", stats: ["haste","mastery"] },
   { slot: "feet", en: "Canopy Walker's Footwraps", ko: "나무 지붕 방랑자의 발등싸개", id: 249382, source: "Windrunner Spire", stats: ["crit","mastery"] },
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "trinket2", en: "Vaelgor's Final Stare", ko: "바엘고어의 마지막 시선", id: 249346, source: "Vaelgor", stats: [] },
+  { slot: "trinket2", en: "Vaelgor's Final Stare", ko: "바엘고어의 마지막 시선", id: 249346, source: "Vaelgor & Ezzorak", stats: [] },
   { slot: "main_hand", en: "Belo'melorn, the Shattered Talon", ko: "벨로멜로른 - 으스러진 갈퀴발톱", id: 249283, source: "Belo'ren", stats: ["haste","mastery"] },
   { slot: "off_hand", en: "Tome of Alnscorned Regret", ko: "알른멸시 회한의 고서", id: 249922, source: "Chimaerus", stats: ["haste","mastery"] },
 ];
@@ -53,15 +54,11 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "가슴", id: 250009, en: "Fantastic Finery of the Grim Jest", ko: "암담한 재담의 광적인 치장", dungeon: "Chimaerus", stats: ["crit","mastery"] },
-  { forSlot: "가슴", id: 250036, en: "Devouring Reaver's Engine", ko: "포식의 파괴자 동력장치", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "가슴", id: 251099, en: "Vest of the Howling Gale", ko: "울부짖는 강풍의 조끼", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "가슴", id: 251216, en: "Maledict Vest", ko: "악독한 조끼", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { forSlot: "다리", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", dungeon: "Pit of Saron", stats: ["haste","mastery"] },
   { forSlot: "다리", id: 178819, en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", dungeon: "Halls of Atonement", stats: ["haste","mastery"] },
+  { forSlot: "다리", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", dungeon: "Pit of Saron", stats: ["haste","mastery"] },
   { forSlot: "다리", id: 249312, en: "Nightblade's Pantaloons", ko: "밤의 검의 통바지", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
-  { forSlot: "다리", id: 250014, en: "Swiftsweepers of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 싹쓸이 바지", dungeon: "Tier", stats: ["haste","mastery"] },
-  { forSlot: "망토", id: 250055, en: "Voidbreaker's Encryption", ko: "공허파괴자의 암호", dungeon: "Catalyst", stats: ["haste","mastery"] },
-  { forSlot: "머리", id: 250033, en: "Devouring Reaver's Intake", ko: "포식의 파괴자 유입구", dungeon: "Tier", stats: ["haste","mastery"] },
   { forSlot: "목", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 193707, en: "Final Grade", ko: "최종 학점", dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 193710, en: "Spellboon Saber", ko: "주문은총 사브르", dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
@@ -82,7 +79,6 @@ export var ALTS = [
   { forSlot: "어깨", id: 151319, en: "Twilight's Edge Spaulders", ko: "황혼의 서슬 어깨덮개", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 250004, en: "Venom Casks of the Grim Jest", ko: "암담한 재담의 맹독 보관통", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 250013, en: "Aurastones of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 기의 돌", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
-  { forSlot: "어깨", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", dungeon: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "장갑", id: 249321, en: "Vaelgor's Fearsome Grasp", ko: "바엘고어의 섬찟한 손아귀", dungeon: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
   { forSlot: "장갑", id: 251204, en: "Corewright's Zappers", ko: "핵장인의 제어 장치", dungeon: "Nexus-Point Xenas", stats: ["haste","vers"] },
@@ -112,5 +108,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

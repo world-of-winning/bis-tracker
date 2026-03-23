@@ -3,6 +3,7 @@ export var SPEC_KEY = "ele-shaman";
 export var SIMC_CLASS = "shaman";
 export var SIMC_SPEC = "elemental";
 export var SPEC_ICON = "spell_nature_lightning";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/elemental-shaman-raid-guide";
 export var STORAGE_KEY = "bis-ele-shaman-v1";
 
 export var THEME = {
@@ -54,12 +55,8 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "가슴", id: 249991, en: "Primal Sentry's Scaleplate", ko: "원시 파수꾼의 비늘판금", dungeon: "Chimaerus", stats: ["crit","haste"] },
-  { forSlot: "가슴", id: 250000, en: "Frenzyward of the Black Talon", ko: "검은 갈퀴발톱의 광란수호물", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "다리", id: 249987, en: "Primal Sentry's Legguards", ko: "원시 파수꾼의 다리보호대", dungeon: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
-  { forSlot: "다리", id: 249996, en: "Greaves of the Black Talon", ko: "검은 갈퀴발톱의 경갑", dungeon: "Tier", stats: ["haste","mastery"] },
   { forSlot: "다리", id: 251215, en: "Greaves of the Divine Guile", ko: "천상의 기만의 경갑", dungeon: "Nexus-Point Xenas", stats: ["crit","mastery"] },
-  { forSlot: "망토", id: 250010, en: "Windwrap of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 바람포", dungeon: "Catalyst", stats: ["crit","haste"] },
-  { forSlot: "망토", id: 250055, en: "Voidbreaker's Encryption", ko: "공허파괴자의 암호", dungeon: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "머리", id: 249988, en: "Primal Sentry's Maw", ko: "원시 파수꾼의 아귀", dungeon: "Lightblinded Vanguard", stats: ["crit","haste"] },
   { forSlot: "목", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", dungeon: "Midnight Falls", stats: ["haste","mastery"] },
   { forSlot: "목", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", dungeon: "Windrunner Spire", stats: ["haste","vers"] },
@@ -72,7 +69,7 @@ export var ALTS = [
   { forSlot: "무기", id: 251095, en: "Hurricane's Heart", ko: "태풍의 심장", dungeon: "Windrunner Spire", stats: ["crit","haste"] },
   { forSlot: "무기", id: 251162, en: "Traitor's Talon", ko: "배신자의 갈퀴발톱", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "무기", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "무기", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "무기", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 251178, en: "Ceremonial Hexblade", ko: "의식용 사술칼날", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "무기", id: 258049, en: "Viryx's Indomitable Bulwark", ko: "비릭스의 불굴의 보루 방패", dungeon: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 258525, en: "Scepter of the Endless Night", ko: "끝없는 밤의 홀", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
@@ -80,7 +77,7 @@ export var ALTS = [
   { forSlot: "반지", id: 249369, en: "Bond of Light", ko: "빛의 결속", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 50233, en: "Spurned Val'kyr Shoulderguards", ko: "쫓겨난 발키르의 어깨보호대", dungeon: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "장갑", id: 249325, en: "Untethered Berserker's Grips", ko: "풀어헤쳐진 광전사의 손장갑", dungeon: "Crown of the Cosmos", stats: ["crit","mastery"] },
-  { forSlot: "장갑", id: 249989, en: "Primal Sentry's Talonguards", ko: "원시 파수꾼의 갈퀴보호대", dungeon: "Voracius", stats: ["crit","mastery"] },
+  { forSlot: "장갑", id: 249989, en: "Primal Sentry's Talonguards", ko: "원시 파수꾼의 갈퀴보호대", dungeon: "Vorasius", stats: ["crit","mastery"] },
   { forSlot: "허리", id: 244611, en: "World Tender's Barkclasp", ko: "세계지기의 껍질죔쇠띠", dungeon: "Crafted", stats: ["haste","mastery"] },
 ];
 
@@ -107,5 +104,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Maisara Caverns",
 ];

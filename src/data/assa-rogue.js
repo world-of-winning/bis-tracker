@@ -3,6 +3,7 @@ export var SPEC_KEY = "assa-rogue";
 export var SIMC_CLASS = "rogue";
 export var SIMC_SPEC = "assassination";
 export var SPEC_ICON = "ability_rogue_deadlybrew";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/assassination-rogue-raid-guide";
 export var STORAGE_KEY = "bis-assa-rogue-v1";
 
 export var THEME = {
@@ -53,13 +54,7 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "가슴", id: 250027, en: "Trunk of the Luminous Bloom", ko: "영롱한 꽃의 밑동", dungeon: "Catalyst / Raid", stats: ["crit","mastery"] },
-  { forSlot: "가슴", id: 250036, en: "Devouring Reaver's Engine", ko: "포식의 파괴자 동력장치", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "다리", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", dungeon: "Pit of Saron", stats: ["haste","mastery"] },
-  { forSlot: "다리", id: 250014, en: "Swiftsweepers of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 싹쓸이 바지", dungeon: "Tier", stats: ["haste","mastery"] },
-  { forSlot: "다리", id: 250023, en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", dungeon: "Catalyst / Raid", stats: ["haste","mastery"] },
-  { forSlot: "망토", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
-  { forSlot: "망토", id: 250055, en: "Voidbreaker's Encryption", ko: "공허파괴자의 암호", dungeon: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "머리", id: 250015, en: "Fearsome Visage of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 무시무시한 안면", dungeon: "Lightblinded Vanguard", stats: ["crit","haste"] },
   { forSlot: "무기", id: 49802, en: "Garfrost's Two-Ton Hammer", ko: "가프로스트의 2톤 망치", dungeon: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "무기", id: 193709, en: "Vexamus' Expulsion Rod", ko: "벡사무스의 배출 마법봉", dungeon: "Algeth'ar Academy", stats: ["crit","haste"] },
@@ -67,13 +62,13 @@ export var ALTS = [
   { forSlot: "무기", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", dungeon: "Lightblinded Vanguard", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 249288, en: "Ranger-Captain's Lethal Recurve", ko: "순찰대장의 치명적인 곡궁", dungeon: "Crown of the Cosmos", stats: ["crit","haste"] },
   { forSlot: "무기", id: 249295, en: "Turalyon's False Echo", ko: "투랄리온의 마지막 메아리", dungeon: "Windrunner Spire", stats: ["crit","haste"] },
-  { forSlot: "무기", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunners Spire", stats: ["crit","mastery"] },
+  { forSlot: "무기", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 251095, en: "Hurricane's Heart", ko: "태풍의 심장", dungeon: "Windrunner Spire", stats: ["crit","haste"] },
   { forSlot: "무기", id: 251105, en: "Ward of the Spellbreaker", ko: "주문파괴자의 수호물", dungeon: "Magisters' Terrace", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 251111, en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", dungeon: "Magisters' Terrace", stats: ["crit","haste"] },
   { forSlot: "무기", id: 251162, en: "Traitor's Talon", ko: "배신자의 갈퀴발톱", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "무기", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "무기", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "무기", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 251178, en: "Ceremonial Hexblade", ko: "의식용 사술칼날", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "무기", id: 258049, en: "Viryx's Indomitable Bulwark", ko: "비릭스의 불굴의 보루 방패", dungeon: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", dungeon: "Skyreach", stats: ["crit","mastery"] },
@@ -89,7 +84,6 @@ export var ALTS = [
   { forSlot: "어깨", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", dungeon: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "장갑", id: 151318, en: "Gloves of the Dark Shroud", ko: "암흑 구름의 장갑", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "장갑", id: 249321, en: "Vaelgor's Fearsome Grasp", ko: "바엘고어의 섬찟한 손아귀", dungeon: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
-  { forSlot: "장갑", id: 250034, en: "Devouring Reaver's Essence Grips", ko: "포식의 파괴자 정수 손장갑", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "허리", id: 49806, en: "Flayer's Black Belt", ko: "바위갈퀴의 검은띠", dungeon: "Pit of Saron", stats: ["crit","haste"] },
 ];
 
@@ -118,5 +112,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

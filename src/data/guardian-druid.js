@@ -3,6 +3,7 @@ export var SPEC_KEY = "guardian-druid";
 export var SIMC_CLASS = "druid";
 export var SIMC_SPEC = "guardian";
 export var SPEC_ICON = "ability_racial_bearform";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/guardian-druid-raid-guide";
 export var STORAGE_KEY = "bis-guardian-druid-v1";
 
 export var THEME = {
@@ -52,11 +53,9 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "가슴", id: 250009, en: "Fantastic Finery of the Grim Jest", ko: "암담한 재담의 광적인 치장", dungeon: "Chimaerus", stats: ["crit","mastery"] },
-  { forSlot: "가슴", id: 250036, en: "Devouring Reaver's Engine", ko: "포식의 파괴자 동력장치", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "가슴", id: 251099, en: "Vest of the Howling Gale", ko: "울부짖는 강풍의 조끼", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "머리", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "머리", id: 250015, en: "Fearsome Visage of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 무시무시한 안면", dungeon: "Lightblinded Vanguard", stats: ["crit","haste"] },
-  { forSlot: "머리", id: 250033, en: "Devouring Reaver's Intake", ko: "포식의 파괴자 유입구", dungeon: "Tier", stats: ["haste","mastery"] },
   { forSlot: "목", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", dungeon: "Windrunner Spire", stats: ["haste","vers"] },
   { forSlot: "무기", id: 49802, en: "Garfrost's Two-Ton Hammer", ko: "가프로스트의 2톤 망치", dungeon: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "무기", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Pit of Saron", stats: ["crit","haste"] },
@@ -72,7 +71,6 @@ export var ALTS = [
   { forSlot: "어깨", id: 151319, en: "Twilight's Edge Spaulders", ko: "황혼의 서슬 어깨덮개", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 250004, en: "Venom Casks of the Grim Jest", ko: "암담한 재담의 맹독 보관통", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 250013, en: "Aurastones of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 기의 돌", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
-  { forSlot: "어깨", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", dungeon: "Windrunner Spire", stats: ["haste","mastery"] },
 ];
 
@@ -97,5 +95,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

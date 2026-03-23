@@ -184,13 +184,22 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
 
 export default function BisTracker({ spec, charName, initialSimcText, onSpecSwitch, onClear, onCharDetected }) {
   var { t } = useLocale();
-  var { BIS, MYTHIC, ALTS, KNOWN_STATS, DUNGEONS, STORAGE_KEY: BASE_STORAGE_KEY, THEME: theme, WORST_STATS, STAT_CACHE_KEY } = spec;
+  var { BIS, MYTHIC, ALTS, KNOWN_STATS, DUNGEONS, STORAGE_KEY: BASE_STORAGE_KEY, THEME: theme, WORST_STATS, STAT_CACHE_KEY, GUIDE_URL } = spec;
   // Backward compat: if MYTHIC not defined, BIS is the mythic list
   var hasTrueBis = MYTHIC && MYTHIC.length > 0;
   var trueBIS = hasTrueBis ? BIS : [];
   var mythicList = hasTrueBis ? MYTHIC : (BIS || []);
   var STORAGE_KEY = charName ? BASE_STORAGE_KEY + ":" + charName : BASE_STORAGE_KEY;
-  var [viewMode, setViewMode] = useState(hasTrueBis ? "bis" : "mythic");
+  var [viewMode, setViewMode] = useState("mythic");
+  function autoViewMode(srData, acqData, stats) {
+    if (!hasTrueBis || !srData) return null;
+    var ti = TIERS.find(function(t) { return t.key === targetTier; }) || TIERS[1];
+    var bisDone = trueBIS.filter(function(b) { return (acqData && acqData[b.id]) || calcPriority(b, srData, ti.max, stats, WORST_STATS).tier === 4; }).length;
+    var mythicDone = mythicList.filter(function(b) { return (acqData && acqData[b.id]) || calcPriority(b, srData, ti.max, stats, WORST_STATS).tier === 4; }).length;
+    var mode = bisDone / trueBIS.length >= mythicDone / mythicList.length ? "bis" : "mythic";
+    setViewMode(mode);
+    return mode;
+  }
   var activeItems = viewMode === "bis" && hasTrueBis ? trueBIS : mythicList;
   var dungeonCounts = useMemo(function() { return getDungeonCounts(activeItems, ALTS, DUNGEONS); }, [activeItems, ALTS, DUNGEONS]);
   var [acq, setAcq] = useState({});
@@ -208,19 +217,32 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
 
   useEffect(function() {
     var d = load(STORAGE_KEY);
-    if (d) { setAcq(d.acq || {}); if (d.sr) { setSr(d.sr); setSimcOpen(false); if (onCharDetected && d.sr.ci) onCharDetected(d.sr.ci.name); } else { setSimcOpen(true); } if (d.targetTier) setTargetTier(d.targetTier); }
-    else { setSimcOpen(true); }
-    var cached = load(STAT_CACHE_KEY);
-    if (cached) setRuntimeStats(cached);
+    if (d) {
+      setAcq(d.acq || {});
+      if (d.sr) { setSr(d.sr); setSimcOpen(false); if (onCharDetected && d.sr.ci) onCharDetected(d.sr.ci.name); } else { setSimcOpen(true); }
+      if (d.targetTier) setTargetTier(d.targetTier);
+      var cached = load(STAT_CACHE_KEY);
+      if (cached) setRuntimeStats(cached);
+      if (d.viewMode) { setViewMode(d.viewMode); } else if (d.sr) { autoViewMode(d.sr, d.acq || {}, Object.assign({}, KNOWN_STATS, cached || {})); }
+      if (d.filter) setFilter(d.filter);
+    } else {
+      setSimcOpen(true);
+      var cached2 = load(STAT_CACHE_KEY);
+      if (cached2) setRuntimeStats(cached2);
+    }
     setLoaded(true);
   }, [STORAGE_KEY, STAT_CACHE_KEY]);
   useEffect(function() {
     var t = setTimeout(function() { if (window.$WowheadPower && window.$WowheadPower.refreshLinks) { try { window.$WowheadPower.refreshLinks(); } catch(e) {} } }, 500);
     return function() { clearTimeout(t); };
   }, [filter, sr, targetTier, STORAGE_KEY]);
-  var sv = useCallback(function(a, s, tt) { persist(STORAGE_KEY, { acq: a, sr: s, targetTier: tt }); }, [STORAGE_KEY]);
-  var toggle = useCallback(function(id) { setAcq(function(prev) { var next = Object.assign({}, prev); next[id] = !next[id]; sv(next, sr, targetTier); return next; }); }, [sr, targetTier, sv]);
-  var changeTarget = useCallback(function(key) { setTargetTier(key); sv(acq, sr, key); }, [acq, sr, sv]);
+  var stateRef = useRef({});
+  stateRef.current = { acq: acq, sr: sr, targetTier: targetTier, viewMode: viewMode, filter: filter };
+  var sv = useCallback(function(overrides) { var d = Object.assign({}, stateRef.current, overrides); persist(STORAGE_KEY, { acq: d.acq, sr: d.sr, targetTier: d.targetTier, viewMode: d.viewMode, filter: d.filter }); }, [STORAGE_KEY]);
+  function changeView(mode) { setViewMode(mode); setFilter("all"); sv({ viewMode: mode, filter: "all" }); }
+  function changeFilter(f) { setFilter(f); sv({ filter: f }); }
+  var toggle = useCallback(function(id) { setAcq(function(prev) { var next = Object.assign({}, prev); next[id] = !next[id]; sv({ acq: next }); return next; }); }, [sv]);
+  var changeTarget = useCallback(function(key) { setTargetTier(key); sv({ targetTier: key }); }, [sv]);
   var doImport = useCallback(function(overrideText) {
     var text = overrideText || simcText;
     if (!text.trim() || importing) return;
@@ -241,8 +263,9 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       var newSr = { ci: parsed.ci, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched };
       var importName = parsed.ci.name || charName;
       var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
-      persist(saveKey, { acq: importName !== charName ? {} : acq, sr: newSr, targetTier: targetTier });
       if (importName === charName) setSr(newSr);
+      var autoMode = autoViewMode(newSr, importName !== charName ? {} : acq, mergedStats);
+      persist(saveKey, { acq: importName !== charName ? {} : acq, sr: newSr, targetTier: targetTier, viewMode: autoMode || viewMode, filter: "all" });
       setFeedback({ ok: true, msg: t("ui.gearUpdated") }); setSimcText(""); setImporting(false); setSimcOpen(false);
       if (onCharDetected) onCharDetected(importName);
     }
@@ -287,11 +310,15 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     doImport(text);
   }, [doImport, spec.SPEC_KEY, onSpecSwitch]);
   useEffect(function() {
-    setFilter("all"); setSimcText(""); setFeedback(null); setImporting(false);
+    setSimcText(""); setFeedback(null); setImporting(false);
     var d = load(STORAGE_KEY);
-    if (d) { setAcq(d.acq || {}); setSr(d.sr || null); setSimcOpen(!d.sr); if (d.targetTier) setTargetTier(d.targetTier); }
-    else { setAcq({}); setSr(null); setTargetTier("champion"); setSimcOpen(true); }
     var cached = load(STAT_CACHE_KEY); setRuntimeStats(cached || {});
+    if (d) {
+      setAcq(d.acq || {}); setSr(d.sr || null); setSimcOpen(!d.sr);
+      if (d.targetTier) setTargetTier(d.targetTier);
+      if (d.viewMode) { setViewMode(d.viewMode); } else if (d.sr) { autoViewMode(d.sr, d.acq || {}, Object.assign({}, KNOWN_STATS, cached || {})); } else { setViewMode(hasTrueBis ? "bis" : "mythic"); }
+      setFilter(d.filter || "all");
+    } else { setAcq({}); setSr(null); setTargetTier("champion"); setSimcOpen(true); setViewMode(hasTrueBis ? "bis" : "mythic"); setFilter("all"); }
   }, [STORAGE_KEY, STAT_CACHE_KEY]);
   var initialImportDone = useRef(false);
   useEffect(function() {
@@ -319,11 +346,14 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   return (
     <div style={{ maxWidth: 960, margin: "0 auto", padding: "16px 24px 24px" }}>
       <div style={{ marginBottom: 14 }}>
-        <div data-tutorial="simc-import" className="tog" onClick={function() { setSimcOpen(!simcOpen); }} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", borderRadius: 8, background: sr ? "#0c0c16" : theme.accentBg, border: "1px solid " + (sr ? "#1e1e30" : theme.accentBorder) }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "stretch" }}>
+        <div data-tutorial="simc-import" className="tog" onClick={function() { setSimcOpen(!simcOpen); }} style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", borderRadius: 8, background: sr ? "#0c0c16" : theme.accentBg, border: "1px solid " + (sr ? "#1e1e30" : theme.accentBorder) }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
           <span style={{ fontSize: 13, fontWeight: 600, color: sr ? theme.accent + "cc" : theme.accent }}>{sr ? t("ui.simcRefresh") : t("ui.simcImport")}</span>
           {!sr && <span style={{ fontSize: 11, color: theme.accent + "88" }}>{t("ui.simcPasteHint")}</span>}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#445566" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: "auto", transition: "transform .2s", transform: simcOpen ? "rotate(180deg)" : "rotate(0)" }}><polyline points="6 9 12 15 18 9" /></svg>
+        </div>
+        {GUIDE_URL && <a href={GUIDE_URL} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "8px 12px", borderRadius: 8, background: "#0c0c16", border: "1px solid #1e1e30", textDecoration: "none", fontSize: 11, fontWeight: 600, color: "#778888", whiteSpace: "nowrap" }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#778888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>{t("ui.guideLink")}</a>}
         </div>
         {simcOpen && (
           <div style={{ marginTop: 8, padding: 16, background: "#0c0c16", border: "1px solid #1e1e30", borderRadius: 8, overflow: "hidden" }}>
@@ -341,24 +371,29 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           {sr && sr.ci && sr.ci.avgIlvl ? (t("ui.avg") + " " + sr.ci.avgIlvl + " · ") : ""}
           {"BiS " + (sr ? Object.keys(sr.matched || {}).length : 0)}
           {sr && Object.keys(sr.altItems || {}).length > 0 ? " · Alt " + Object.keys(sr.altItems).length : ""}
-          {" · " + doneCount + " / " + activeItems.length}
         </span>
       </div>
       {hasTrueBis && (
         <div style={{ display: "flex", gap: 4, marginTop: 8 }}>
-          <button className={"fbtn" + (viewMode === "bis" ? " active" : "")} onClick={function() { setViewMode("bis"); setFilter("all"); }} style={{ padding: "4px 14px", borderRadius: 6, background: viewMode === "bis" ? theme.accentBg : "#0f0f18", border: "1px solid " + (viewMode === "bis" ? theme.accentBorder : "#1e1e30"), color: viewMode === "bis" ? theme.accent : "#556666", fontSize: 12, fontWeight: 700 }}>{t("ui.viewBis")}</button>
-          <button className={"fbtn" + (viewMode === "mythic" ? " active" : "")} onClick={function() { setViewMode("mythic"); setFilter("all"); }} style={{ padding: "4px 14px", borderRadius: 6, background: viewMode === "mythic" ? theme.accentBg : "#0f0f18", border: "1px solid " + (viewMode === "mythic" ? theme.accentBorder : "#1e1e30"), color: viewMode === "mythic" ? theme.accent : "#556666", fontSize: 12, fontWeight: 700 }}>{t("ui.viewMythic")}</button>
+          <button className={"fbtn" + (viewMode === "bis" ? " active" : "")} onClick={function() { changeView("bis"); }} style={{ padding: "4px 14px", borderRadius: 6, background: viewMode === "bis" ? theme.accentBg : "#0f0f18", border: "1px solid " + (viewMode === "bis" ? theme.accentBorder : "#1e1e30"), color: viewMode === "bis" ? theme.accent : "#556666", fontSize: 12, fontWeight: 700 }}>{t("ui.viewBis")}</button>
+          <button className={"fbtn" + (viewMode === "mythic" ? " active" : "")} onClick={function() { changeView("mythic"); }} style={{ padding: "4px 14px", borderRadius: 6, background: viewMode === "mythic" ? theme.accentBg : "#0f0f18", border: "1px solid " + (viewMode === "mythic" ? theme.accentBorder : "#1e1e30"), color: viewMode === "mythic" ? theme.accent : "#556666", fontSize: 12, fontWeight: 700 }}>{t("ui.viewMythic")}</button>
         </div>
       )}
-      <div data-tutorial="progress-bar" style={{ marginTop: 8 }}>
-        <div style={{ height: 6, background: "#1a1a28", borderRadius: 3, overflow: "hidden", position: "relative" }}><div style={{ position: "absolute", height: "100%", width: ((doneCount + altCount) / activeItems.length * 100) + "%", borderRadius: 3, transition: "width .4s", background: theme.accent, opacity: 0.25 }} /><div className="pfill" style={{ position: "relative", height: "100%", width: (doneCount / activeItems.length * 100) + "%", borderRadius: 3, transition: "width .4s", background: theme.shimmer, backgroundSize: "200% 100%" }} /></div>
+      <div data-tutorial="progress-bar" style={{ marginTop: 8, position: "relative" }}>
+        <div style={{ height: 20, background: "#1a1a28", borderRadius: 6, overflow: "hidden", position: "relative" }}>
+          <div style={{ position: "absolute", height: "100%", width: ((doneCount + altCount) / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: theme.accent, opacity: 0.15 }} />
+          <div className="pfill" style={{ position: "absolute", height: "100%", width: (doneCount / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: theme.shimmer, backgroundSize: "200% 100%", opacity: 0.35 }} />
+          <div style={{ position: "relative", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: doneCount === activeItems.length ? "#8dffaa" : theme.accent, letterSpacing: 1, textShadow: "0 1px 3px #0008" }}>{doneCount + " / " + activeItems.length}</span>
+          </div>
+        </div>
       </div>
       <div data-tutorial="dungeon-filters" style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
-        <button className={"fbtn" + (filter === "all" ? " active" : "")} onClick={function() { setFilter("all"); }} style={{ padding: "4px 12px", borderRadius: 6, background: filter === "all" ? theme.accentBg : "#0f0f18", color: filter === "all" ? theme.accent : "#556666", fontSize: 12, fontWeight: 600 }}>{t("ui.all")}</button>
+        <button className={"fbtn" + (filter === "all" ? " active" : "")} onClick={function() { changeFilter("all"); }} style={{ padding: "4px 12px", borderRadius: 6, background: filter === "all" ? theme.accentBg : "#0f0f18", color: filter === "all" ? theme.accent : "#556666", fontSize: 12, fontWeight: 600 }}>{t("ui.all")}</button>
         {nonDungeonSources.prep.map(function(ns) {
           var act = filter === ns.source;
           return (
-            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { setFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : "#1a102844", border: "1px solid " + (act ? "#8866aa" : "#8866aa33"), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : "#8866aa" }}>
+            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : "#1a102844", border: "1px solid " + (act ? "#8866aa" : "#8866aa33"), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : "#8866aa" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#aa88cc", display: "inline-block" }} />
               <span>{t("sources." + ns.source) || ns.source}</span>
               <span style={{ color: "#776655", fontSize: 11 }}>{ns.count}</span>
@@ -374,7 +409,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           var bisItems = activeItems.filter(function(i) { return getSource(i) === d; });
           var rem = bisItems.length - bisItems.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
           return (
-          <button key={d} className={"fbtn" + (act ? " active" : "")} onClick={function() { setFilter(act ? "all" : d); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? c2.g : (rem === 0 ? "#0d1a0d" : c2.g + "44"), border: "1px solid " + (act ? c2.b : (rem === 0 ? "#1a3a1a" : c2.b) + "33"), fontSize: 12, fontWeight: 600, color: act ? c2.t : (rem === 0 ? "#4dca6b" : c2.t) }}>
+          <button key={d} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : d); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? c2.g : (rem === 0 ? "#0d1a0d" : c2.g + "44"), border: "1px solid " + (act ? c2.b : (rem === 0 ? "#1a3a1a" : c2.b) + "33"), fontSize: 12, fontWeight: 600, color: act ? c2.t : (rem === 0 ? "#4dca6b" : c2.t) }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: rem === 0 ? "#4dca6b" : c2.b, display: "inline-block", animation: rem === 0 ? "none" : "pulse 2s infinite" }} />
             <span>{t("dungeons." + d)}</span>
             <span style={{ color: rem === 0 ? "#2a5a2a" : "#776655", fontSize: 11 }}>{rem === 0 ? "\u2713" : rem}</span>
@@ -384,7 +419,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         {nonDungeonSources.raid.map(function(ns) {
           var act = filter === ns.source;
           return (
-            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { setFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : "#1a102844", border: "1px solid " + (act ? "#8866aa" : "#8866aa33"), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : "#8866aa" }}>
+            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : "#1a102844", border: "1px solid " + (act ? "#8866aa" : "#8866aa33"), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : "#8866aa" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#8866aa", display: "inline-block" }} />
               <span>{t("sources." + ns.source) || ns.source}</span>
               <span style={{ color: "#776655", fontSize: 11 }}>{ns.count}</span>

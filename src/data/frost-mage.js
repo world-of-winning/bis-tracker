@@ -3,6 +3,7 @@ export var SPEC_KEY = "frost-mage";
 export var SIMC_CLASS = "mage";
 export var SIMC_SPEC = "frost";
 export var SPEC_ICON = "spell_frost_frostbolt02";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/frost-mage-raid-guide";
 export var STORAGE_KEY = "bis-frost-mage-v1";
 
 export var THEME = {
@@ -53,22 +54,17 @@ export var MYTHIC = [
 export var ALTS = [
   { forSlot: "가슴", id: 49825, en: "Palebone Robes", ko: "창백한 뼈 로브", dungeon: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "가슴", id: 151303, en: "Voidbender Robe", ko: "공허술사 로브", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "다리", id: 250041, en: "Abyssal Immolator's Pillars", ko: "불태우는 심연의 기둥", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "망토", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
-  { forSlot: "머리", id: 250042, en: "Abyssal Immolator's Smoldering Flames", ko: "불태우는 심연의 이글거리는 불길", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "목", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "목", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", dungeon: "Lightblinded Vanguard", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", dungeon: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "무기", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunners Spire", stats: ["crit","mastery"] },
+  { forSlot: "무기", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", dungeon: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "반지", id: 249369, en: "Bond of Light", ko: "빛의 결속", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "반지", id: 251093, en: "Omission of Light", ko: "소외된 빛", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { forSlot: "반지", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "발", id: 250062, en: "Voidbreaker's Treads", ko: "공허파괴자의 발보호대", dungeon: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "손목", id: 258580, en: "Bracers of Blazing Light", ko: "작열하는 빛의 팔보호구", dungeon: "Skyreach", stats: ["mastery","vers"] },
-  { forSlot: "어깨", id: 250049, en: "Blind Oath's Seraphguards", ko: "맹목적인 맹세의 대천사보호대", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "허리", id: 239664, en: "Arcanoweave Cord", ko: "비전매듭 장식끈", dungeon: "Crafted", stats: ["crit","haste"] },
   { forSlot: "허리", id: 249319, en: "Endless March Waistwrap", ko: "끝없는 행진 허리싸개", dungeon: "Imperator Averzian", stats: ["crit","haste"] },
 ];
@@ -93,5 +89,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

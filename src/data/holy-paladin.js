@@ -3,6 +3,7 @@ export var SPEC_KEY = "holy-paladin";
 export var SIMC_CLASS = "paladin";
 export var SIMC_SPEC = "holy";
 export var SPEC_ICON = "spell_holy_holybolt";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/holy-paladin-raid-guide";
 export var STORAGE_KEY = "bis-holy-paladin-v1";
 
 export var THEME = {
@@ -66,10 +67,8 @@ export var ALTS = [
   { forSlot: "무기", id: 251201, en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { forSlot: "반지", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", dungeon: "Midnight Falls", stats: ["mastery","vers"] },
   { forSlot: "반지", id: 249369, en: "Bond of Light", ko: "빛의 결속", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "발", id: 249963, en: "Luminant Verdict's Sabatons", ko: "빛나는 선고의 발덮개", dungeon: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "발", id: 251169, en: "Footwraps of Ill-Fate", ko: "불길한 운명의 발등싸개", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 249950, en: "Night Ender's Pauldrons", ko: "밤의 종결자의 견갑", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
-  { forSlot: "허리", id: 249958, en: "Luminant Verdict's Undaunted Emblem", ko: "빛나는 선고의 의연한 문장", dungeon: "Catalyst", stats: ["haste","mastery"] },
 ];
 
 export var WORST_STATS = ["crit"];
@@ -91,5 +90,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

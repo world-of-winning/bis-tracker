@@ -3,6 +3,7 @@ export var SPEC_KEY = "pres-evoker";
 export var SIMC_CLASS = "evoker";
 export var SIMC_SPEC = "preservation";
 export var SPEC_ICON = "classicon_evoker_preservation";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/preservation-evoker-raid-guide";
 export var STORAGE_KEY = "bis-pres-evoker-v1";
 
 export var THEME = {
@@ -57,7 +58,6 @@ export var ALTS = [
   { forSlot: "다리", id: 249324, en: "Eternal Flame Scaleguards", ko: "영원의 불꽃 비늘보호대", dungeon: "Belo'ren", stats: ["haste","mastery"] },
   { forSlot: "다리", id: 249987, en: "Primal Sentry's Legguards", ko: "원시 파수꾼의 다리보호대", dungeon: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
   { forSlot: "다리", id: 251170, en: "Wickedweave Trousers", ko: "교활매듭 긴바지", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "망토", id: 250031, en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "머리", id: 258585, en: "Sharpeye Gleam", ko: "뾰족눈 광투구", dungeon: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "목", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "목", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
@@ -67,7 +67,7 @@ export var ALTS = [
   { forSlot: "무기", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", dungeon: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", dungeon: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "무기", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunners Spire", stats: ["crit","mastery"] },
+  { forSlot: "무기", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 251174, en: "Deceiver's Rotbow", ko: "기만자의 부식활", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
@@ -77,11 +77,9 @@ export var ALTS = [
   { forSlot: "반지", id: 249919, en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", dungeon: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "반지", id: 251093, en: "Omission of Light", ko: "소외된 빛", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { forSlot: "반지", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "발", id: 249990, en: "Primal Sentry's Swiftsteps", ko: "원시 파수꾼의 날쌘 발걸음", dungeon: "Catalyst", stats: ["crit","mastery"] },
   { forSlot: "손목", id: 151321, en: "Darkfang Scale Wristguards", ko: "검은송곳니 비늘 손목보호구", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 249318, en: "Nullwalker's Dread Epaulettes", ko: "무위방랑자의 섬뜩한 견장", dungeon: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
-  { forSlot: "장갑", id: 249980, en: "Earthgrips of the Primal Core", ko: "원시 핵의 대지손아귀", dungeon: "Tier", stats: ["crit","mastery"] },
-  { forSlot: "장갑", id: 249989, en: "Primal Sentry's Talonguards", ko: "원시 파수꾼의 갈퀴보호대", dungeon: "Voracius", stats: ["crit","mastery"] },
+  { forSlot: "장갑", id: 249989, en: "Primal Sentry's Talonguards", ko: "원시 파수꾼의 갈퀴보호대", dungeon: "Vorasius", stats: ["crit","mastery"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -107,5 +105,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

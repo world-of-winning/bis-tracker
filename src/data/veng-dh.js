@@ -3,6 +3,7 @@ export var SPEC_KEY = "veng-dh";
 export var SIMC_CLASS = "demonhunter";
 export var SIMC_SPEC = "vengeance";
 export var SPEC_ICON = "ability_demonhunter_spectank";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/vengeance-demon-hunter-raid-guide";
 export var STORAGE_KEY = "bis-veng-dh-v1";
 
 export var THEME = {
@@ -57,7 +58,6 @@ export var ALTS = [
   { forSlot: "망토", id: 258575, en: "Rigid Scale Greatcloak", ko: "강도 높은 미늘 큰망토", dungeon: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "머리", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "머리", id: 250015, en: "Fearsome Visage of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 무시무시한 안면", dungeon: "Lightblinded Vanguard", stats: ["crit","haste"] },
-  { forSlot: "머리", id: 250024, en: "Branches of the Luminous Bloom", ko: "영롱한 꽃의 나뭇가지", dungeon: "Catalyst / Raid", stats: ["haste","mastery"] },
   { forSlot: "목", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", dungeon: "Midnight Falls", stats: ["haste","mastery"] },
   { forSlot: "목", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", dungeon: "Windrunner Spire", stats: ["haste","vers"] },
   { forSlot: "무기", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Pit of Saron", stats: ["crit","haste"] },
@@ -78,11 +78,9 @@ export var ALTS = [
   { forSlot: "어깨", id: 151319, en: "Twilight's Edge Spaulders", ko: "황혼의 서슬 어깨덮개", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 250004, en: "Venom Casks of the Grim Jest", ko: "암담한 재담의 맹독 보관통", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 250013, en: "Aurastones of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 기의 돌", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
-  { forSlot: "어깨", id: 250022, en: "Seedpods of the Luminous Bloom", ko: "영롱한 꽃의 씨앗 깍지", dungeon: "Catalyst / Raid", stats: ["crit","mastery"] },
   { forSlot: "어깨", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", dungeon: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "장갑", id: 151318, en: "Gloves of the Dark Shroud", ko: "암흑 구름의 장갑", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "장갑", id: 250007, en: "Sleight of Hand of the Grim Jest", ko: "암담한 재담의 손재주", dungeon: "Vorasius", stats: ["crit","haste"] },
-  { forSlot: "장갑", id: 250025, en: "Arbortenders of the Luminous Bloom", ko: "영롱한 꽃의 나무지기", dungeon: "Catalyst / Raid", stats: ["haste","vers"] },
   { forSlot: "허리", id: 49806, en: "Flayer's Black Belt", ko: "바위갈퀴의 검은띠", dungeon: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "허리", id: 251166, en: "Falconer's Cinch", ko: "매사냥꾼의 허리끈", dungeon: "Maisara Caverns", stats: ["haste","vers"] },
 ];
@@ -110,5 +108,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];

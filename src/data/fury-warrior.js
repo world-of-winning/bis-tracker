@@ -3,6 +3,7 @@ export var SPEC_KEY = "fury-warrior";
 export var SIMC_CLASS = "warrior";
 export var SIMC_SPEC = "fury";
 export var SPEC_ICON = "ability_warrior_innerrage";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/fury-warrior-raid-guide";
 export var STORAGE_KEY = "bis-fury-warrior-v1";
 
 export var THEME = {
@@ -54,28 +55,22 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "가슴", id: 249309, en: "Sunbound Breastplate", ko: "태양결속 가슴보호갑", dungeon: "Windrunner Spire", stats: ["crit","haste"] },
-  { forSlot: "가슴", id: 249973, en: "Relentless Rider's Cuirass", ko: "가혹한 기수의 흉갑", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "다리", id: 249960, en: "Luminant Verdict's Greaves", ko: "빛나는 선고의 경갑", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "다리", id: 249969, en: "Relentless Rider's Legguards", ko: "가혹한 기수의 다리보호대", dungeon: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
-  { forSlot: "망토", id: 250010, en: "Windwrap of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 바람포", dungeon: "Catalyst", stats: ["crit","haste"] },
-  { forSlot: "머리", id: 249961, en: "Luminant Verdict's Unwavering Gaze", ko: "빛나는 선고의 흔들림 없는 시선", dungeon: "Tier", stats: ["haste","mastery"] },
   { forSlot: "머리", id: 249970, en: "Relentless Rider's Crown", ko: "가혹한 기수의 왕관", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "목", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "목", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "무기", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", dungeon: "Lightblinded Vanguard", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", dungeon: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "무기", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunners Spire", stats: ["crit","mastery"] },
+  { forSlot: "무기", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 251105, en: "Ward of the Spellbreaker", ko: "주문파괴자의 수호물", dungeon: "Magisters' Terrace", stats: ["crit","mastery"] },
-  { forSlot: "무기", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "무기", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 258049, en: "Viryx's Indomitable Bulwark", ko: "비릭스의 불굴의 보루 방패", dungeon: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", dungeon: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "무기", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "반지", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", dungeon: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "반지", id: 251115, en: "Bifurcation Band", ko: "분기점의 고리", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "발", id: 249963, en: "Luminant Verdict's Sabatons", ko: "빛나는 선고의 발덮개", dungeon: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "발", id: 251107, en: "Oathsworn Stompers", ko: "서약신도 디딤장화", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 251164, en: "Amalgamation's Harness", ko: "융합체의 멜빵", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "장갑", id: 249962, en: "Luminant Verdict's Gauntlets", ko: "빛나는 선고의 건틀릿", dungeon: "Tier", stats: ["haste","vers"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -99,5 +94,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Maisara Caverns",
 ];

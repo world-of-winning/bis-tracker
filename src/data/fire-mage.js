@@ -3,6 +3,7 @@ export var SPEC_KEY = "fire-mage";
 export var SIMC_CLASS = "mage";
 export var SIMC_SPEC = "fire";
 export var SPEC_ICON = "spell_fire_firebolt02";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/fire-mage-raid-guide";
 export var STORAGE_KEY = "bis-fire-mage-v1";
 
 export var THEME = {
@@ -52,11 +53,7 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "가슴", id: 151303, en: "Voidbender Robe", ko: "공허술사 로브", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "가슴", id: 250063, en: "Voidbreaker's Robe", ko: "공허파괴자의 로브", dungeon: "Tier", stats: ["crit","haste"] },
-  { forSlot: "다리", id: 250041, en: "Abyssal Immolator's Pillars", ko: "불태우는 심연의 기둥", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "망토", id: 249370, en: "Draconic Nullcape", ko: "용족 무위단망토", dungeon: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
-  { forSlot: "망토", id: 250010, en: "Windwrap of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 바람포", dungeon: "Catalyst", stats: ["crit","haste"] },
-  { forSlot: "머리", id: 250042, en: "Abyssal Immolator's Smoldering Flames", ko: "불태우는 심연의 이글거리는 불길", dungeon: "Tier", stats: ["crit","mastery"] },
   { forSlot: "목", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", dungeon: "Midnight Falls", stats: ["haste","mastery"] },
   { forSlot: "목", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", dungeon: "Windrunner Spire", stats: ["haste","vers"] },
   { forSlot: "무기", id: 193710, en: "Spellboon Saber", ko: "주문은총 사브르", dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
@@ -70,7 +67,6 @@ export var ALTS = [
   { forSlot: "손목", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", dungeon: "Vorasius", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 249328, en: "Echoing Void Mantle", ko: "메아리치는 공허 어깨덧옷", dungeon: "Belo'ren", stats: ["haste","mastery"] },
   { forSlot: "어깨", id: 258578, en: "Lightbinder Shoulderguards", ko: "빛의 결속자 어깨보호대", dungeon: "Skyreach", stats: ["haste","mastery"] },
-  { forSlot: "장갑", id: 250043, en: "Abyssal Immolator's Grasps", ko: "불태우는 심연의 손아귀", dungeon: "Tier", stats: ["crit","haste"] },
   { forSlot: "허리", id: 251102, en: "Clasp of Compliance", ko: "순응의 죔쇠띠", dungeon: "Magisters' Terrace", stats: ["haste","vers"] },
 ];
 
@@ -95,5 +91,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
 ];
