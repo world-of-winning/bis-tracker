@@ -21,6 +21,7 @@ var CLASS_ICON = {
   demonhunter: "classicon_demonhunter", evoker: "classicon_evoker"
 };
 var CHARS_KEY = "bis-chars";
+var LAST_CHAR_KEY = "bis-last-char";
 
 var SPEC_GROUPS = (function() {
   var groups = {};
@@ -109,6 +110,10 @@ function cleanCharsIndex() {
 function findInitialChar() {
   migrateOldData();
   var index = cleanCharsIndex();
+  var last = load(LAST_CHAR_KEY);
+  if (last && index[last.specKey] && index[last.specKey].indexOf(last.charName) !== -1) {
+    return last;
+  }
   for (var i = 0; i < SPECS.length; i++) {
     var chars = index[SPECS[i].SPEC_KEY];
     if (chars && chars.length > 0) {
@@ -141,6 +146,7 @@ export default function App() {
     setSpecKey(sk);
     setCharName(cn);
     setPendingSimcText("");
+    persist(LAST_CHAR_KEY, { specKey: sk, charName: cn });
   }
 
   var handlePaste = useCallback(function(e) {
@@ -164,6 +170,7 @@ export default function App() {
       setCharName(name);
       setPendingSimcText(text);
       setLandingFeedback(null);
+      persist(LAST_CHAR_KEY, { specKey: found.SPEC_KEY, charName: name });
     } else {
       var clsName = t("classes." + result.ci.className) || result.ci.className;
       var specName = t("specs." + result.ci.spec) || result.ci.spec;
@@ -177,12 +184,14 @@ export default function App() {
     setSpecKey(newSpecKey);
     setCharName(name);
     setPendingSimcText(simcText);
+    persist(LAST_CHAR_KEY, { specKey: newSpecKey, charName: name });
   }, []);
 
   var handleCharDetected = useCallback(function(name) {
     if (name && specKey) {
       addCharToIndex(specKey, name);
       setCharsRev(function(r) { return r + 1; });
+      persist(LAST_CHAR_KEY, { specKey: specKey, charName: name });
       if (name !== charName) {
         setCharName(name);
       }
@@ -220,7 +229,7 @@ export default function App() {
     return (
       <div style={{ minHeight: "100vh", background: "linear-gradient(175deg,#08080f 0%,#0a0d1a 40%,#0f1020 100%)", color: "#d4c9a8", fontFamily: "'Noto Sans KR','Segoe UI',sans-serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
         <h1 className="grad-text" style={{ fontFamily: "'Cinzel',serif", fontSize: 32, fontWeight: 700, background: "linear-gradient(135deg,#c9a227,#e8c84c,#c9a227)", letterSpacing: 2, marginBottom: 8 }}>
-          BiS Tracker
+          BiS Tracker <span style={{ fontSize: 11, fontFamily: "'Noto Sans KR',sans-serif", fontWeight: 700, WebkitTextFillColor: "#c9a227", color: "#c9a227", background: "#c9a22718", border: "1px solid #c9a22744", borderRadius: 4, padding: "1px 6px", verticalAlign: "middle", letterSpacing: 0 }}>BETA</span>
         </h1>
         <p style={{ fontSize: 15, color: "#99887a", marginBottom: 4, fontWeight: 600 }}>{t("ui.seasonLabel")}</p>
         <p style={{ fontSize: 12, color: "#556666", marginBottom: 24 }}>{t("ui.seasonSub")}</p>
@@ -254,7 +263,7 @@ export default function App() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" /></svg>
           <a href="https://discord.gg/ry7RYjBT" target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: "#5865F2", textDecoration: "none", fontWeight: 600 }}>{t("ui.feedbackAndInquiry")}</a>
           <span style={{ color: "#223333" }}>·</span>
-          <button onClick={function() { setLocale(locale === "ko" ? "en" : "ko"); }} style={{ fontSize: 12, color: "#556666", background: "none", border: "1px solid #2a2a3a", borderRadius: 4, padding: "2px 8px", cursor: "pointer" }}>{locale === "ko" ? "EN" : "KO"}</button>
+          <button onClick={function() { setLocale(locale === "ko" ? "en" : "ko"); }} style={{ fontSize: 12, color: "#556666", background: "none", border: "1px solid #2a2a3a", borderRadius: 4, padding: "2px 8px", cursor: "pointer" }}>{locale === "ko" ? "KO" : "EN"}</button>
         </div>
       </div>
     );
@@ -266,10 +275,10 @@ export default function App() {
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <h1 className="grad-text" style={{ fontFamily: "'Cinzel',serif", fontSize: 26, fontWeight: 700, background: "linear-gradient(135deg," + spec.THEME.accent + "," + spec.THEME.accentLight + "," + spec.THEME.accent + ")", letterSpacing: 1 }}>
-              BiS Tracker
+              BiS Tracker <span style={{ fontSize: 10, fontFamily: "'Noto Sans KR',sans-serif", fontWeight: 700, WebkitTextFillColor: spec.THEME.accent, color: spec.THEME.accent, background: spec.THEME.accentBg, border: "1px solid " + spec.THEME.accent + "44", borderRadius: 4, padding: "1px 6px", verticalAlign: "middle", letterSpacing: 0 }}>BETA</span>
             </h1>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <button onClick={function() { setLocale(locale === "ko" ? "en" : "ko"); }} style={{ padding: "5px 10px", borderRadius: 6, background: "#1a1a2822", border: "1px solid #2a2a3a44", color: "#889999", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>{locale === "ko" ? "EN" : "KO"}</button>
+              <button onClick={function() { setLocale(locale === "ko" ? "en" : "ko"); }} style={{ padding: "5px 10px", borderRadius: 6, background: "#1a1a2822", border: "1px solid #2a2a3a44", color: "#889999", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>{locale === "ko" ? "KO" : "EN"}</button>
               <a href="https://discord.gg/ry7RYjBT" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "5px 12px", borderRadius: 6, background: "#5865F222", border: "1px solid #5865F244", color: "#5865F2", fontSize: 12, fontWeight: 600, textDecoration: "none", transition: "all 0.2s" }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" /></svg>
               </a>
