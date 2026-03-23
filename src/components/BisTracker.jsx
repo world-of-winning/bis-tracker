@@ -286,6 +286,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     }
   }, [initialSimcText, doImport]);
   var doneCount = useMemo(function() { return BIS.filter(function(b) { if (acq[b.id]) return true; return sr ? calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length; }, [acq, sr, targetInfo.max, allStats, BIS, WORST_STATS]);
+  var altCount = useMemo(function() { return sr ? BIS.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS); return p.tier === 2; }).length : 0; }, [acq, sr, targetInfo.max, allStats, BIS, WORST_STATS]);
   var displayBis = useMemo(function() { var items = filter === "all" ? BIS : BIS.filter(function(i) { return i.dungeon === filter; }); return sr ? sortByPriority(items, sr, targetInfo.max, allStats, WORST_STATS) : items; }, [filter, sr, targetInfo.max, allStats, BIS, WORST_STATS]);
   var displayAlts = useMemo(function() { return filter === "all" ? [] : ALTS.filter(function(a) { return a.dungeon === filter; }); }, [filter, ALTS]);
 
@@ -320,7 +321,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         </span>
       </div>
       <div style={{ marginTop: 8 }}>
-        <div style={{ height: 6, background: "#1a1a28", borderRadius: 3, overflow: "hidden" }}><div className="pfill" style={{ height: "100%", width: (doneCount / BIS.length * 100) + "%", borderRadius: 3, transition: "width .4s", background: theme.shimmer, backgroundSize: "200% 100%" }} /></div>
+        <div style={{ height: 6, background: "#1a1a28", borderRadius: 3, overflow: "hidden", position: "relative" }}><div style={{ position: "absolute", height: "100%", width: ((doneCount + altCount) / BIS.length * 100) + "%", borderRadius: 3, transition: "width .4s", background: theme.accent, opacity: 0.25 }} /><div className="pfill" style={{ position: "relative", height: "100%", width: (doneCount / BIS.length * 100) + "%", borderRadius: 3, transition: "width .4s", background: theme.shimmer, backgroundSize: "200% 100%" }} /></div>
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
         <button className={"fbtn" + (filter === "all" ? " active" : "")} onClick={function() { setFilter("all"); }} style={{ padding: "4px 12px", borderRadius: 6, background: filter === "all" ? theme.accentBg : "#0f0f18", color: filter === "all" ? theme.accent : "#556666", fontSize: 12, fontWeight: 600 }}>{t("ui.all")}</button>
