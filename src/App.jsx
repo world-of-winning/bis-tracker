@@ -304,7 +304,7 @@ export default function App() {
       <BisTracker key={specKey + ":" + charName} spec={spec} charName={charName} initialSimcText={pendingSimcText} onSpecSwitch={handleSpecSwitch} onClear={handleClear} onCharDetected={handleCharDetected} />
 
       <div style={{ maxWidth: 960, margin: "24px auto 0", padding: "0 24px 40px", textAlign: "center", fontSize: 11, color: "#223333" }}>
-        WoW Midnight · BiS Tracker
+        WoW BiS Tracker
       </div>
     </div>
   );
