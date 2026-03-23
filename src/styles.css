@@ -59,5 +59,104 @@
 }
 .tier-btn:hover { filter: brightness(1.2); }
 
+/* === Landing page overlay === */
+@keyframes moonGlow {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(201,162,39,0.3)); }
+  50% { filter: drop-shadow(0 0 28px rgba(201,162,39,0.55)) drop-shadow(0 0 60px rgba(201,162,39,0.15)); }
+}
+@keyframes emblemGlow {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(120,50,200,0.3)) drop-shadow(0 0 20px rgba(80,30,140,0.15)); }
+  50% { filter: drop-shadow(0 0 24px rgba(120,50,200,0.5)) drop-shadow(0 0 50px rgba(80,30,140,0.25)); }
+}
+@keyframes runeRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes floatUp {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: var(--p-opacity, 0.4); }
+  90% { opacity: var(--p-opacity, 0.4); }
+  100% { transform: translateY(calc(-100vh - 20px)) translateX(var(--p-drift, 20px)); opacity: 0; }
+}
+@keyframes mistDrift {
+  0%, 100% { transform: translateX(-5%) scaleX(1.1); opacity: 0.5; }
+  50% { transform: translateX(5%) scaleX(1.15); opacity: 0.7; }
+}
+@keyframes spireReveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.landing-bg {
+  position: relative; overflow: hidden;
+  min-height: 100vh;
+  background: linear-gradient(175deg,#08080f 0%,#0a0d1a 40%,#0f1020 100%);
+}
+
+.landing-moon {
+  width: 80px; height: 80px;
+  animation: moonGlow 4s ease-in-out infinite;
+  margin-bottom: 12px;
+}
+
+.landing-emblem {
+  width: 120px; height: 120px;
+  animation: emblemGlow 4s ease-in-out infinite;
+  margin-bottom: 16px;
+}
+
+.landing-particles {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 0;
+  overflow: hidden;
+}
+.landing-particle {
+  position: absolute; bottom: -10px;
+  width: var(--p-size, 3px); height: var(--p-size, 3px);
+  border-radius: 50%;
+  background: radial-gradient(circle, #e8c84c, #c9a227);
+  opacity: 0;
+  animation: floatUp var(--p-dur, 12s) var(--p-delay, 0s) linear infinite;
+  left: var(--p-left, 50%);
+}
+.landing-particle--void {
+  background: radial-gradient(circle, #C88CFF, #7832C8);
+}
+
+.landing-mist {
+  position: absolute; bottom: 0; left: -10%; right: -10%;
+  height: 25%;
+  background: radial-gradient(ellipse 120% 100% at 50% 100%, rgba(15,10,30,0.8) 0%, rgba(10,13,26,0.4) 50%, transparent 100%);
+  animation: mistDrift 8s ease-in-out infinite;
+  pointer-events: none; z-index: 0;
+}
+
+.landing-spires {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 80px; pointer-events: none; z-index: 0;
+  animation: spireReveal 1.5s ease-out both;
+}
+
+.landing-content {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 100vh; padding: 24px;
+}
+
+@media (max-width: 640px) {
+  .landing-moon { width: 54px; height: 54px; }
+  .landing-emblem { width: 80px; height: 80px; }
+  .landing-particle:nth-child(n+5) { display: none; }
+  .landing-spires { height: 50px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-moon { animation: none; filter: drop-shadow(0 0 16px rgba(201,162,39,0.4)); }
+  .landing-emblem { animation: none; filter: drop-shadow(0 0 16px rgba(120,50,200,0.35)); }
+  .landing-particle { animation: none; display: none; }
+  .landing-mist { animation: none; }
+}
+
 /* Wowhead tooltip z-index */
 .wowhead-tooltip { z-index: 99999 !important; }

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Void radial gradient -->
+    <radialGradient id="voidBg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#28104F"/>
+      <stop offset="40%" stop-color="#120830"/>
+      <stop offset="100%" stop-color="#080412"/>
+    </radialGradient>
+    
+    <!-- Glow filter -->
+    <filter id="voidGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Strong glow for M -->
+    <filter id="mGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feFlood flood-color="#7832C8" flood-opacity="0.6" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="colorBlur"/>
+      <feMerge>
+        <feMergeNode in="colorBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Ring gradient -->
+    <linearGradient id="runeGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DCC03C"/>
+      <stop offset="50%" stop-color="#B48C28"/>
+      <stop offset="100%" stop-color="#DCC03C"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="245" fill="url(#voidBg)"/>
+  
+  <!-- Void energy tendrils (subtle) -->
+  <g opacity="0.15" filter="url(#voidGlow)">
+    <path d="M256,180 Q310,200 280,256 Q350,230 300,300" stroke="#7832C8" stroke-width="3" fill="none"/>
+    <path d="M256,180 Q200,200 230,256 Q160,230 210,300" stroke="#7832C8" stroke-width="3" fill="none"/>
+    <path d="M200,200 Q230,280 180,320" stroke="#5020A0" stroke-width="2" fill="none"/>
+    <path d="M310,200 Q280,280 330,320" stroke="#5020A0" stroke-width="2" fill="none"/>
+  </g>
+  
+  <!-- Outer runed ring -->
+  <circle cx="256" cy="256" r="235" fill="none" stroke="#120830" stroke-width="30" opacity="0.8"/>
+  <circle cx="256" cy="256" r="235" fill="none" stroke="#2A1050" stroke-width="28"/>
+  
+  <!-- Ring glow edges -->
+  <circle cx="256" cy="256" r="250" fill="none" stroke="#7832C8" stroke-width="1" opacity="0.4"/>
+  <circle cx="256" cy="256" r="220" fill="none" stroke="#A050FF" stroke-width="1" opacity="0.3"/>
+  
+  <!-- Rune marks on ring -->
+  <g fill="url(#runeGold)" opacity="0.7">
+    <!-- 12 runes evenly spaced -->
+    <!-- Top -->
+    <polygon points="256,28 262,42 256,56 250,42" opacity="0.8"/>
+    <!-- Top-right -->
+    <rect x="375" y="90" width="3" height="16" transform="rotate(30,376,98)" opacity="0.6"/>
+    <!-- Right-top -->
+    <circle cx="440" cy="170" r="4" fill="none" stroke="url(#runeGold)" stroke-width="1.5" opacity="0.7"/>
+    <!-- Right -->
+    <polygon points="484,256 470,262 456,256 470,250" opacity="0.8"/>
+    <!-- Right-bottom -->
+    <rect x="440" y="335" width="3" height="16" transform="rotate(-30,441,343)" opacity="0.6"/>
+    <!-- Bottom-right -->
+    <circle cx="376" cy="415" r="4" fill="none" stroke="url(#runeGold)" stroke-width="1.5" opacity="0.7"/>
+    <!-- Bottom -->
+    <polygon points="256,484 262,470 256,456 250,470" opacity="0.8"/>
+    <!-- Bottom-left -->
+    <rect x="133" y="408" width="3" height="16" transform="rotate(30,134,416)" opacity="0.6"/>
+    <!-- Left-bottom -->
+    <circle cx="72" cy="340" r="4" fill="none" stroke="url(#runeGold)" stroke-width="1.5" opacity="0.7"/>
+    <!-- Left -->
+    <polygon points="28,256 42,262 56,256 42,250" opacity="0.8"/>
+    <!-- Left-top -->
+    <rect x="72" y="160" width="3" height="16" transform="rotate(-30,73,168)" opacity="0.6"/>
+    <!-- Top-left -->
+    <circle cx="136" cy="96" r="4" fill="none" stroke="url(#runeGold)" stroke-width="1.5" opacity="0.7"/>
+  </g>
+  
+  <!-- Thin ring decoration lines -->
+  <circle cx="256" cy="256" r="235" fill="none" stroke="url(#runeGold)" stroke-width="0.5" opacity="0.3" stroke-dasharray="8,20"/>
+  
+  <!-- Central "M" - Void Rift style -->
+  <g filter="url(#mGlow)">
+    <polyline points="148,380 148,165 160,148 170,165 256,310 342,165 352,148 364,165 364,380" 
+              fill="none" stroke="#C88CFF" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+    <polyline points="148,380 148,165 160,148 170,165 256,310 342,165 352,148 364,165 364,380" 
+              fill="none" stroke="#DCBEFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Peak tip glows -->
+  <circle cx="160" cy="148" r="12" fill="#A050FF" opacity="0.5" filter="url(#voidGlow)"/>
+  <circle cx="160" cy="148" r="5" fill="#DCBEFF" opacity="0.8"/>
+  <circle cx="352" cy="148" r="12" fill="#A050FF" opacity="0.5" filter="url(#voidGlow)"/>
+  <circle cx="352" cy="148" r="5" fill="#DCBEFF" opacity="0.8"/>
+  
+  <!-- Outer halo glow -->
+  <circle cx="256" cy="256" r="252" fill="none" stroke="#501E8C" stroke-width="3" opacity="0.2"/>
+</svg>

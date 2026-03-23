@@ -330,10 +330,104 @@ export default function App() {
 
   // Landing page: no spec selected
   if (!spec) {
+    var PARTICLES = [
+      { left: "12%", size: "2px", dur: "14s", delay: "0s", drift: "15px", opacity: 0.3, color: "void" },
+      { left: "28%", size: "3px", dur: "11s", delay: "2s", drift: "-20px", opacity: 0.5, color: "gold" },
+      { left: "45%", size: "2px", dur: "16s", delay: "4s", drift: "10px", opacity: 0.25, color: "void" },
+      { left: "62%", size: "4px", dur: "10s", delay: "1s", drift: "-15px", opacity: 0.55, color: "gold" },
+      { left: "78%", size: "2px", dur: "13s", delay: "6s", drift: "25px", opacity: 0.35, color: "void" },
+      { left: "88%", size: "3px", dur: "15s", delay: "3s", drift: "-10px", opacity: 0.4, color: "gold" },
+      { left: "35%", size: "2px", dur: "18s", delay: "8s", drift: "12px", opacity: 0.2, color: "void" },
+      { left: "55%", size: "3px", dur: "12s", delay: "5s", drift: "-18px", opacity: 0.45, color: "gold" },
+    ];
     return (
-      <div style={{ minHeight: "100vh", background: "linear-gradient(175deg,#08080f 0%,#0a0d1a 40%,#0f1020 100%)", color: "#d4c9a8", fontFamily: "'Noto Sans KR','Segoe UI',sans-serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div className="landing-bg" style={{ color: "#d4c9a8", fontFamily: "'Noto Sans KR','Segoe UI',sans-serif" }}>
+        {/* Floating particles */}
+        <div className="landing-particles">
+          {PARTICLES.map(function(p, i) {
+            return <div key={i} className={"landing-particle" + (p.color === "void" ? " landing-particle--void" : "")} style={{ "--p-left": p.left, "--p-size": p.size, "--p-dur": p.dur, "--p-delay": p.delay, "--p-drift": p.drift, "--p-opacity": p.opacity }} />;
+          })}
+        </div>
+        {/* Bottom mist */}
+        <div className="landing-mist" />
+        {/* Gothic spires silhouette */}
+        <svg className="landing-spires" viewBox="0 0 1200 80" preserveAspectRatio="none" fill="#0a0a14">
+          <polygon points="0,80 60,80 50,45 40,80 30,50 20,80 10,60" />
+          <polygon points="80,80 110,80 100,20 95,40 90,15 85,45" />
+          <polygon points="150,80 200,80 190,50 180,35 170,55 160,40" />
+          <polygon points="1000,80 1050,80 1040,40 1030,25 1020,50 1010,35" />
+          <polygon points="1100,80 1150,80 1145,55 1135,30 1125,50 1115,40 1105,60" />
+          <polygon points="1160,80 1200,80 1195,50 1185,65 1175,45" />
+          <rect x="0" y="75" width="1200" height="5" />
+        </svg>
+        <div className="landing-content">
+        {/* Midnight Void emblem */}
+        <svg className="landing-emblem" viewBox="0 0 512 512" fill="none">
+          <defs>
+            <radialGradient id="heroVoidBg" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#28104F" />
+              <stop offset="40%" stopColor="#120830" />
+              <stop offset="100%" stopColor="#080412" />
+            </radialGradient>
+            <filter id="heroVoidGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+            <filter id="heroMGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="8" result="blur" />
+              <feFlood floodColor="#7832C8" floodOpacity="0.6" result="color" />
+              <feComposite in="color" in2="blur" operator="in" result="colorBlur" />
+              <feMerge><feMergeNode in="colorBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+            <linearGradient id="heroRuneGold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#DCC03C" />
+              <stop offset="50%" stopColor="#B48C28" />
+              <stop offset="100%" stopColor="#DCC03C" />
+            </linearGradient>
+          </defs>
+          <circle cx="256" cy="256" r="245" fill="url(#heroVoidBg)" />
+          {/* Void tendrils */}
+          <g opacity="0.15" filter="url(#heroVoidGlow)">
+            <path d="M256,180 Q310,200 280,256 Q350,230 300,300" stroke="#7832C8" strokeWidth="3" fill="none" />
+            <path d="M256,180 Q200,200 230,256 Q160,230 210,300" stroke="#7832C8" strokeWidth="3" fill="none" />
+            <path d="M200,200 Q230,280 180,320" stroke="#5020A0" strokeWidth="2" fill="none" />
+            <path d="M310,200 Q280,280 330,320" stroke="#5020A0" strokeWidth="2" fill="none" />
+          </g>
+          {/* Runed ring */}
+          <circle cx="256" cy="256" r="235" fill="none" stroke="#120830" strokeWidth="30" opacity="0.8" />
+          <circle cx="256" cy="256" r="235" fill="none" stroke="#2A1050" strokeWidth="28" />
+          <circle cx="256" cy="256" r="250" fill="none" stroke="#7832C8" strokeWidth="1" opacity="0.4" />
+          <circle cx="256" cy="256" r="220" fill="none" stroke="#A050FF" strokeWidth="1" opacity="0.3" />
+          {/* Rune marks */}
+          <g fill="url(#heroRuneGold)" opacity="0.7">
+            <polygon points="256,28 262,42 256,56 250,42" opacity="0.8" />
+            <rect x="375" y="90" width="3" height="16" transform="rotate(30,376,98)" opacity="0.6" />
+            <circle cx="440" cy="170" r="4" fill="none" stroke="url(#heroRuneGold)" strokeWidth="1.5" opacity="0.7" />
+            <polygon points="484,256 470,262 456,256 470,250" opacity="0.8" />
+            <rect x="440" y="335" width="3" height="16" transform="rotate(-30,441,343)" opacity="0.6" />
+            <circle cx="376" cy="415" r="4" fill="none" stroke="url(#heroRuneGold)" strokeWidth="1.5" opacity="0.7" />
+            <polygon points="256,484 262,470 256,456 250,470" opacity="0.8" />
+            <rect x="133" y="408" width="3" height="16" transform="rotate(30,134,416)" opacity="0.6" />
+            <circle cx="72" cy="340" r="4" fill="none" stroke="url(#heroRuneGold)" strokeWidth="1.5" opacity="0.7" />
+            <polygon points="28,256 42,262 56,256 42,250" opacity="0.8" />
+            <rect x="72" y="160" width="3" height="16" transform="rotate(-30,73,168)" opacity="0.6" />
+            <circle cx="136" cy="96" r="4" fill="none" stroke="url(#heroRuneGold)" strokeWidth="1.5" opacity="0.7" />
+          </g>
+          <circle cx="256" cy="256" r="235" fill="none" stroke="url(#heroRuneGold)" strokeWidth="0.5" opacity="0.3" strokeDasharray="8,20" />
+          {/* Central M */}
+          <g filter="url(#heroMGlow)">
+            <polyline points="148,380 148,165 160,148 170,165 256,310 342,165 352,148 364,165 364,380" fill="none" stroke="#C88CFF" strokeWidth="18" strokeLinecap="round" strokeLinejoin="round" />
+            <polyline points="148,380 148,165 160,148 170,165 256,310 342,165 352,148 364,165 364,380" fill="none" stroke="#DCBEFF" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+          {/* Peak glows */}
+          <circle cx="160" cy="148" r="12" fill="#A050FF" opacity="0.5" filter="url(#heroVoidGlow)" />
+          <circle cx="160" cy="148" r="5" fill="#DCBEFF" opacity="0.8" />
+          <circle cx="352" cy="148" r="12" fill="#A050FF" opacity="0.5" filter="url(#heroVoidGlow)" />
+          <circle cx="352" cy="148" r="5" fill="#DCBEFF" opacity="0.8" />
+          <circle cx="256" cy="256" r="252" fill="none" stroke="#501E8C" strokeWidth="3" opacity="0.2" />
+        </svg>
         <h1 className="grad-text" style={{ fontFamily: "'Cinzel',serif", fontSize: 32, fontWeight: 700, background: "linear-gradient(135deg,#c9a227,#e8c84c,#c9a227)", letterSpacing: 2, marginBottom: 8 }}>
-          BiS Tracker <span style={{ fontSize: 11, fontFamily: "'Noto Sans KR',sans-serif", fontWeight: 700, WebkitTextFillColor: "#c9a227", color: "#c9a227", background: "#c9a22718", border: "1px solid #c9a22744", borderRadius: 4, padding: "1px 6px", verticalAlign: "middle", letterSpacing: 0 }}>BETA</span>
+          Midnight BiS Tracker <span style={{ fontSize: 11, fontFamily: "'Noto Sans KR',sans-serif", fontWeight: 700, WebkitTextFillColor: "#c9a227", color: "#c9a227", background: "#c9a22718", border: "1px solid #c9a22744", borderRadius: 4, padding: "1px 6px", verticalAlign: "middle", letterSpacing: 0 }}>BETA</span>
         </h1>
         <p style={{ fontSize: 15, color: "#99887a", marginBottom: 4, fontWeight: 600 }}>{t("ui.seasonLabel")}</p>
         <p style={{ fontSize: 12, color: "#556666", marginBottom: 24 }}>{t("ui.seasonSub")}</p>
@@ -375,6 +469,7 @@ export default function App() {
           <span style={{ color: "#223333" }}>·</span>
           <button onClick={function() { setLocale(locale === "ko" ? "en" : "ko"); }} style={{ fontSize: 12, color: "#556666", background: "none", border: "1px solid #2a2a3a", borderRadius: 4, padding: "2px 8px", cursor: "pointer" }}>{locale === "ko" ? "KO" : "EN"}</button>
         </div>
+        </div>
       </div>
     );
   }
@@ -385,7 +480,7 @@ export default function App() {
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <h1 className="grad-text" style={{ fontFamily: "'Cinzel',serif", fontSize: 26, fontWeight: 700, background: "linear-gradient(135deg," + spec.THEME.accent + "," + spec.THEME.accentLight + "," + spec.THEME.accent + ")", letterSpacing: 1 }}>
-              BiS Tracker <span style={{ fontSize: 10, fontFamily: "'Noto Sans KR',sans-serif", fontWeight: 700, WebkitTextFillColor: spec.THEME.accent, color: spec.THEME.accent, background: spec.THEME.accentBg, border: "1px solid " + spec.THEME.accent + "44", borderRadius: 4, padding: "1px 6px", verticalAlign: "middle", letterSpacing: 0 }}>BETA</span>
+              Midnight BiS Tracker <span style={{ fontSize: 10, fontFamily: "'Noto Sans KR',sans-serif", fontWeight: 700, WebkitTextFillColor: spec.THEME.accent, color: spec.THEME.accent, background: spec.THEME.accentBg, border: "1px solid " + spec.THEME.accent + "44", borderRadius: 4, padding: "1px 6px", verticalAlign: "middle", letterSpacing: 0 }}>BETA</span>
             </h1>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               {sampleMode && (
@@ -420,8 +515,9 @@ export default function App() {
 
       <BisTracker key={specKey + ":" + charName} spec={spec} charName={charName} initialSimcText={pendingSimcText} onSpecSwitch={handleSpecSwitch} onClear={handleClear} onCharDetected={handleCharDetected} tutorialStep={tutorialStep} />
 
-      <div style={{ maxWidth: 960, margin: "24px auto 0", padding: "0 24px 40px", textAlign: "center", fontSize: 11, color: "#223333" }}>
-        wowbis.gg
+      <div style={{ maxWidth: 960, margin: "24px auto 0", padding: "0 24px 40px", textAlign: "center", fontSize: 11, color: "#334444" }}>
+        <div>wowbis.gg</div>
+        <div style={{ marginTop: 4, color: "#223333" }}>{t("ui.bisAttribution")} <a href="https://maxroll.gg/wow/class-guides" target="_blank" rel="noopener noreferrer" style={{ color: "#445555", textDecoration: "underline" }}>Maxroll.gg</a></div>
       </div>
       <TutorialOverlay step={tutorialStep} onNext={function() { setTutorialStep(function(s) { return s >= TUTORIAL_STEPS.length - 1 ? null : s + 1; }); }} onPrev={function() { setTutorialStep(function(s) { return s <= 0 ? 0 : s - 1; }); }} onSkip={function() { setTutorialStep(null); }} />
     </div>
