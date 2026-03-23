@@ -140,6 +140,51 @@
     "seasonLabel": "Half the battle is knowing what to farm",
     "seasonSub": "The other half is RNG.",
     "feedback": "Feedback",
-    "feedbackAndInquiry": "Feedback & Contact"
+    "feedbackAndInquiry": "Feedback & Contact",
+    "trySample": "Try Demo",
+    "orTrySample": "Or try a sample first",
+    "exitSample": "Exit Demo"
+  },
+  "tutorial": {
+    "skip": "Skip",
+    "prev": "Prev",
+    "next": "Next",
+    "done": "Done",
+    "charBar": {
+      "title": "Character Bar",
+      "desc": "Switch between registered characters here.\nEach spec is tracked separately, even for the same character.\nClick an icon to switch."
+    },
+    "simc": {
+      "title": "Gear Import",
+      "desc": "Paste the text from the /simc command in-game to auto-detect your equipped gear.\nSample data is already loaded for this demo."
+    },
+    "tier": {
+      "title": "Target Item Level",
+      "desc": "Set your farming goal item level tier.\nPriorities update based on your selection, and slots that already meet the target are marked done."
+    },
+    "progress": {
+      "title": "Completion Rate",
+      "desc": "Shows how many of your 16 slots meet the target.\nSolid = BiS done, translucent = Alt equipped.\nReplacing Alts with BiS grows the solid portion."
+    },
+    "dungeon": {
+      "title": "Dungeon Filter",
+      "desc": "Click a dungeon to show only its drops.\nThe number shows remaining items to farm, sorted by priority."
+    },
+    "tier1": {
+      "title": "▲ Stat Mismatch (Top Priority)",
+      "desc": "Your equipped item has completely different secondary stats from BiS.\nBiggest performance loss — replace this first."
+    },
+    "tier2": {
+      "title": "◆ Alt Equipped",
+      "desc": "You have an alternative item with the same secondary stats as BiS.\nSmall performance gap — swap to BiS when you get it."
+    },
+    "tier3": {
+      "title": "↑ Upgrade Needed",
+      "desc": "You have the BiS item but below your target item level.\nFarm a higher difficulty of the same dungeon to upgrade."
+    },
+    "tier4": {
+      "title": "✓ Farming Done",
+      "desc": "BiS equipped at or above target item level.\nNo more farming needed for this slot!"
+    }
   }
 }

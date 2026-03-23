@@ -295,7 +295,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   return (
     <div style={{ maxWidth: 960, margin: "0 auto", padding: "16px 24px 24px" }}>
       <div style={{ marginBottom: 14 }}>
-        <div className="tog" onClick={function() { setSimcOpen(!simcOpen); }} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", borderRadius: 8, background: sr ? "#0c0c16" : theme.accentBg, border: "1px solid " + (sr ? "#1e1e30" : theme.accentBorder) }}>
+        <div data-tutorial="simc-import" className="tog" onClick={function() { setSimcOpen(!simcOpen); }} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", borderRadius: 8, background: sr ? "#0c0c16" : theme.accentBg, border: "1px solid " + (sr ? "#1e1e30" : theme.accentBorder) }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
           <span style={{ fontSize: 13, fontWeight: 600, color: sr ? theme.accent + "cc" : theme.accent }}>{sr ? t("ui.simcRefresh") : t("ui.simcImport")}</span>
           {!sr && <span style={{ fontSize: 11, color: theme.accent + "88" }}>{t("ui.simcPasteHint")}</span>}
@@ -311,7 +311,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           </div>
         )}
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+      <div data-tutorial="tier-buttons" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
         {TIERS.map(function(ti) { var sel = targetTier === ti.key; return (<button key={ti.key} className="tier-btn" onClick={function() { changeTarget(ti.key); }} style={{ borderColor: sel ? ti.color : ti.color + "44", color: ti.color, opacity: sel ? 1 : 0.5, background: sel ? ti.color + "22" : "transparent" }}>{t("tiers." + ti.key) + " (" + ti.max + ")"}</button>); })}
         <span style={{ marginLeft: "auto", fontSize: 12, color: "#556666" }}>
           {sr && sr.ci && sr.ci.avgIlvl ? (t("ui.avg") + " " + sr.ci.avgIlvl + " · ") : ""}
@@ -320,10 +320,10 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           {" · " + doneCount + " / " + BIS.length}
         </span>
       </div>
-      <div style={{ marginTop: 8 }}>
+      <div data-tutorial="progress-bar" style={{ marginTop: 8 }}>
         <div style={{ height: 6, background: "#1a1a28", borderRadius: 3, overflow: "hidden", position: "relative" }}><div style={{ position: "absolute", height: "100%", width: ((doneCount + altCount) / BIS.length * 100) + "%", borderRadius: 3, transition: "width .4s", background: theme.accent, opacity: 0.25 }} /><div className="pfill" style={{ position: "relative", height: "100%", width: (doneCount / BIS.length * 100) + "%", borderRadius: 3, transition: "width .4s", background: theme.shimmer, backgroundSize: "200% 100%" }} /></div>
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
+      <div data-tutorial="dungeon-filters" style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
         <button className={"fbtn" + (filter === "all" ? " active" : "")} onClick={function() { setFilter("all"); }} style={{ padding: "4px 12px", borderRadius: 6, background: filter === "all" ? theme.accentBg : "#0f0f18", color: filter === "all" ? theme.accent : "#556666", fontSize: 12, fontWeight: 600 }}>{t("ui.all")}</button>
         {DUNGEONS.map(function(d) {
           var cnt = dungeonCounts[d]; if (!cnt || (cnt.bis === 0 && cnt.alt === 0)) return null;

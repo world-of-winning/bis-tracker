@@ -1,10 +1,13 @@
 import { useState, useCallback } from 'react';
 import { SPECS, getSpec, findSpecBySimC } from './data/specs.js';
 import { CHANGELOG } from './data/changelog.js';
+import { getSampleChars, SAMPLE_CHARS } from './data/sample.js';
 import { load, save as persist } from './storage.js';
 import { GEAR_SLOTS } from './data/shared.js';
 import { useLocale } from './i18n/index.jsx';
 import BisTracker from './components/BisTracker.jsx';
+import TutorialOverlay from './components/TutorialOverlay.jsx';
+import { TUTORIAL_STEPS } from './data/tutorial.js';
 
 var ICON_BASE = "https://wow.zamimg.com/images/wow/icons/medium/";
 var CLASS_COLOR = {
@@ -132,6 +135,14 @@ export default function App() {
   var [landingText, setLandingText] = useState("");
   var [landingFeedback, setLandingFeedback] = useState(null);
   var [charsRev, setCharsRev] = useState(0);
+  var [tutorialStep, setTutorialStep] = useState(null);
+  var [sampleMode, setSampleMode] = useState(function() {
+    // Detect sample mode by checking if any sample character exists
+    var index = loadCharsIndex();
+    return SAMPLE_CHARS.some(function(c) {
+      return index[c.specKey] && index[c.specKey].indexOf(c.name) !== -1;
+    });
+  });
   var spec = specKey ? getSpec(specKey) : null;
   var charsIndex = cleanCharsIndex();
   var allChars = [];
@@ -177,6 +188,99 @@ export default function App() {
       setLandingFeedback({ ok: false, msg: t("ui.unsupportedSpec", { cls: clsName, spec: specName }) });
     }
   }, [t]);
+
+  var handleTrySample = useCallback(function() {
+    var samples = getSampleChars();
+    // Pre-populate storage for all sample characters
+    samples.forEach(function(s) {
+      addCharToIndex(s.spec.SPEC_KEY, s.name);
+    });
+    // Load the first sample character
+    var first = samples[0];
+    setSpecKey(first.spec.SPEC_KEY);
+    setCharName(first.name);
+    setPendingSimcText(first.simcText);
+    setLandingFeedback(null);
+    setCharsRev(function(r) { return r + 1; });
+    persist(LAST_CHAR_KEY, { specKey: first.spec.SPEC_KEY, charName: first.name });
+    // Trigger import for remaining characters via their BisTracker storage
+    samples.slice(1).forEach(function(s) {
+      var key = s.spec.STORAGE_KEY + ":" + s.name;
+      if (!load(key)) {
+        // Parse and store directly
+        var lines = s.simcText.split("\n"), gear = {}, ci = {}, pend = null;
+        var sp = "head|neck|shoulder|back|chest|wrist|hands|waist|legs|feet|finger1|finger2|trinket1|trinket2|main_hand|off_hand";
+        for (var i = 0; i < lines.length; i++) {
+          var t = lines[i].trim();
+          var cm0 = t.match(/^(paladin|warrior|mage|priest|shaman|druid|hunter|warlock|rogue|monk|deathknight|demonhunter|evoker)="(.+)"$/);
+          if (cm0) { ci.className = cm0[1]; ci.name = cm0[2]; continue; }
+          if (t.indexOf("spec=") === 0) { ci.spec = t.split("=")[1]; continue; }
+          var cm = t.match(/^#\s+(.+?)\s*\((\d+)\)\s*$/);
+          if (cm) { pend = { name: cm[1], ilvl: parseInt(cm[2], 10) }; continue; }
+          var gm = t.match(new RegExp("^(" + sp + ")=([^,]*),id=(\\d+)"));
+          if (gm) {
+            var bMatch = t.match(/bonus_id=([0-9/]+)/);
+            gear[gm[1]] = { id: parseInt(gm[3], 10), name: pend ? pend.name : "Item", ilvl: pend ? pend.ilvl : null, bonus: bMatch ? bMatch[1].replace(/\//g, ":") : null };
+            pend = null; continue;
+          }
+        }
+        var ilvls = Object.values(gear).map(function(g) { return g.ilvl || 0; }).filter(function(v) { return v > 0; });
+        ci.avgIlvl = ilvls.length > 0 ? Math.round(ilvls.reduce(function(a, b) { return a + b; }, 0) / ilvls.length) : 0;
+        // Match BIS
+        var BIS_IDS = new Set(s.spec.BIS.map(function(b) { return b.id; }));
+        var matched = {}, eqSlot = {};
+        s.spec.BIS.forEach(function(bi) {
+          var d = gear[bi.slot];
+          if (d && d.id === bi.id) { matched[bi.id] = true; eqSlot[bi.id] = d; return; }
+          if (d) eqSlot[bi.id] = d;
+        });
+        var altItems = {};
+        s.spec.BIS.forEach(function(bi) {
+          if (matched[bi.id] || !bi.stats.length) return;
+          var eq = eqSlot[bi.id]; if (!eq || eq.id === bi.id) return;
+          var es = s.spec.KNOWN_STATS[eq.id];
+          if (es && bi.stats.slice().sort().join() === es.slice().sort().join()) altItems[bi.id] = true;
+        });
+        persist(key, { acq: {}, sr: { ci: ci, eqSlot: eqSlot, bisInBag: {}, altItems: altItems, matched: matched }, targetTier: "champion" });
+      }
+    });
+    setSampleMode(true);
+    // Start tutorial after a short delay for render
+    setTimeout(function() { setTutorialStep(0); }, 500);
+  }, []);
+
+  var handleExitSample = useCallback(function() {
+    // Remove all sample character data
+    SAMPLE_CHARS.forEach(function(c) {
+      var s = SPECS.find(function(sp) { return sp.SPEC_KEY === c.specKey; });
+      if (s) {
+        removeCharFromIndex(c.specKey, c.name);
+        try { localStorage.removeItem(s.STORAGE_KEY + ":" + c.name); } catch(e) {}
+      }
+    });
+    setSampleMode(false);
+    setTutorialStep(null);
+    setCharsRev(function(r) { return r + 1; });
+    // Check if there are real characters left
+    var index = loadCharsIndex();
+    var next = null;
+    for (var i = 0; i < SPECS.length; i++) {
+      var chars = index[SPECS[i].SPEC_KEY];
+      if (chars && chars.length > 0) { next = { specKey: SPECS[i].SPEC_KEY, charName: chars[0] }; break; }
+    }
+    if (next) {
+      setSpecKey(next.specKey);
+      setCharName(next.charName);
+      setPendingSimcText("");
+    } else {
+      setSpecKey(null);
+      setCharName(null);
+      setPendingSimcText("");
+      setLandingText("");
+      setLandingFeedback(null);
+    }
+    persist(LAST_CHAR_KEY, next);
+  }, []);
 
   var handleSpecSwitch = useCallback(function(newSpecKey, simcText) {
     var result = detectSimC(simcText);
@@ -245,6 +349,12 @@ export default function App() {
               {landingFeedback.msg}
             </div>
           )}
+          <div style={{ marginTop: 16, textAlign: "center" }}>
+            <button onClick={handleTrySample}
+              style={{ padding: "10px 24px", borderRadius: 8, background: "transparent", border: "1px dashed #c9a22766", color: "#c9a227", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>
+              {t("ui.trySample")}
+            </button>
+          </div>
           <div style={{ marginTop: 20 }}>
             <div style={{ fontSize: 11, color: "#445555", marginBottom: 10 }}>{t("ui.changelog")}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
@@ -278,6 +388,9 @@ export default function App() {
               BiS Tracker <span style={{ fontSize: 10, fontFamily: "'Noto Sans KR',sans-serif", fontWeight: 700, WebkitTextFillColor: spec.THEME.accent, color: spec.THEME.accent, background: spec.THEME.accentBg, border: "1px solid " + spec.THEME.accent + "44", borderRadius: 4, padding: "1px 6px", verticalAlign: "middle", letterSpacing: 0 }}>BETA</span>
             </h1>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              {sampleMode && (
+                <button onClick={handleExitSample} style={{ padding: "5px 12px", borderRadius: 6, background: "#1a101822", border: "1px solid #3a203044", color: "#ff8d8d", fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>{t("ui.exitSample")}</button>
+              )}
               <button onClick={function() { setLocale(locale === "ko" ? "en" : "ko"); }} style={{ padding: "5px 10px", borderRadius: 6, background: "#1a1a2822", border: "1px solid #2a2a3a44", color: "#889999", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>{locale === "ko" ? "KO" : "EN"}</button>
               <a href="https://discord.gg/ry7RYjBT" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", padding: "5px 8px", borderRadius: 6, background: "#5865F222", border: "1px solid #5865F244", textDecoration: "none", transition: "all 0.2s" }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" /></svg>
@@ -288,16 +401,15 @@ export default function App() {
             </div>
           </div>
           {allChars.length >= 1 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 8 }}>
+            <div data-tutorial="char-bar" style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 8 }}>
               {allChars.map(function(c) {
                 var active = c.specKey === specKey && c.charName === charName;
-                var duped = allChars.filter(function(o) { return o.charName === c.charName; }).length > 1;
-                var specLabel = duped ? t("specs." + c.spec.SIMC_SPEC) || c.spec.SIMC_SPEC : "";
+                var specLabel = t("specs." + c.spec.SIMC_SPEC) || c.spec.SIMC_SPEC;
                 return (
                   <button key={c.specKey + ":" + c.charName} onClick={function() { if (!active) selectChar(c.specKey, c.charName); }}
                     style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 600, cursor: active ? "default" : "pointer", background: active ? c.spec.THEME.accentBg : "#0a0a14", border: "1px solid " + (active ? c.spec.THEME.accent + "66" : "#1e1e30"), color: active ? c.spec.THEME.accent : "#556666", transition: "all 0.2s" }}>
                     <img src={ICON_BASE + c.spec.SPEC_ICON + ".jpg"} alt="" style={{ width: 14, height: 14, borderRadius: 2, opacity: active ? 1 : 0.5 }} />
-                    {c.charName}{specLabel ? " · " + specLabel : ""}
+                    {c.charName + " · " + specLabel}
                   </button>
                 );
               })}
@@ -306,11 +418,12 @@ export default function App() {
         </div>
       </div>
 
-      <BisTracker key={specKey + ":" + charName} spec={spec} charName={charName} initialSimcText={pendingSimcText} onSpecSwitch={handleSpecSwitch} onClear={handleClear} onCharDetected={handleCharDetected} />
+      <BisTracker key={specKey + ":" + charName} spec={spec} charName={charName} initialSimcText={pendingSimcText} onSpecSwitch={handleSpecSwitch} onClear={handleClear} onCharDetected={handleCharDetected} tutorialStep={tutorialStep} />
 
       <div style={{ maxWidth: 960, margin: "24px auto 0", padding: "0 24px 40px", textAlign: "center", fontSize: 11, color: "#223333" }}>
         wowbis.gg
       </div>
+      <TutorialOverlay step={tutorialStep} onNext={function() { setTutorialStep(function(s) { return s >= TUTORIAL_STEPS.length - 1 ? null : s + 1; }); }} onPrev={function() { setTutorialStep(function(s) { return s <= 0 ? 0 : s - 1; }); }} onSkip={function() { setTutorialStep(null); }} />
     </div>
   );
 }
