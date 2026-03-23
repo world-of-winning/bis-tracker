@@ -2,7 +2,7 @@ export var SPEC_LABEL = "Brewmaster Monk";
 export var SPEC_KEY = "brew-monk";
 export var SIMC_CLASS = "monk";
 export var SIMC_SPEC = "brewmaster";
-export var SPEC_ICON = "spell_monk_brewmaster_spec";
+export var SPEC_ICON = "monk_stance_drunkenox";
 export var STORAGE_KEY = "bis-brew-monk-v1";
 
 export var THEME = {

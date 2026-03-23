@@ -1,8 +1,8 @@
 export var SPEC_LABEL = "Devourer Demon Hunter";
 export var SPEC_KEY = "devourer-dh";
 export var SIMC_CLASS = "demonhunter";
-export var SIMC_SPEC = "havoc";
-export var SPEC_ICON = "ability_demonhunter_spectral_sight";
+export var SIMC_SPEC = "devourer";
+export var SPEC_ICON = "classicon_demonhunter_void_64";
 export var STORAGE_KEY = "bis-devourer-dh-v1";
 
 export var THEME = {

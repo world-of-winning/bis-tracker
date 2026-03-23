@@ -2,7 +2,7 @@ export var SPEC_LABEL = "Assassination Rogue";
 export var SPEC_KEY = "assa-rogue";
 export var SIMC_CLASS = "rogue";
 export var SIMC_SPEC = "assassination";
-export var SPEC_ICON = "ability_rogue_deadlybrew";
+export var SPEC_ICON = "ability_rogue_eviscerate";
 export var STORAGE_KEY = "bis-assa-rogue-v1";
 
 export var THEME = {

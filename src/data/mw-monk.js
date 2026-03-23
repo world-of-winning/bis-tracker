@@ -2,7 +2,7 @@ export var SPEC_LABEL = "Mistweaver Monk";
 export var SPEC_KEY = "mw-monk";
 export var SIMC_CLASS = "monk";
 export var SIMC_SPEC = "mistweaver";
-export var SPEC_ICON = "spell_monk_mistweaver_spec";
+export var SPEC_ICON = "monk_stance_wiseserpent";
 export var STORAGE_KEY = "bis-mw-monk-v1";
 
 export var THEME = {

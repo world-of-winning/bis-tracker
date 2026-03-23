@@ -2,7 +2,7 @@ export var SPEC_LABEL = "Havoc Demon Hunter";
 export var SPEC_KEY = "havoc-dh";
 export var SIMC_CLASS = "demonhunter";
 export var SIMC_SPEC = "havoc";
-export var SPEC_ICON = "ability_demonhunter_spectral_sight";
+export var SPEC_ICON = "ability_demonhunter_specdps";
 export var STORAGE_KEY = "bis-havoc-dh-v1";
 
 export var THEME = {

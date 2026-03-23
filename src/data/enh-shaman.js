@@ -2,7 +2,7 @@ export var SPEC_LABEL = "Enhancement Shaman";
 export var SPEC_KEY = "enh-shaman";
 export var SIMC_CLASS = "shaman";
 export var SIMC_SPEC = "enhancement";
-export var SPEC_ICON = "spell_shaman_improvedstormstrike";
+export var SPEC_ICON = "spell_nature_lightningshield";
 export var STORAGE_KEY = "bis-enh-shaman-v1";
 
 export var THEME = {

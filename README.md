@@ -4,6 +4,8 @@
 
 BiS (Best in Slot) item tracker for WoW. Paste your SimC output to analyze gear, sort farming priorities, and view alt items per dungeon.
 
+**Live:** [wowbis.gg](https://wowbis.gg)
+
 ## Features
 
 - **SimC Import** — Paste `/simc` output to auto-analyze equipped gear

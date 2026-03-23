@@ -2,7 +2,7 @@ export var SPEC_LABEL = "Vengeance Demon Hunter";
 export var SPEC_KEY = "veng-dh";
 export var SIMC_CLASS = "demonhunter";
 export var SIMC_SPEC = "vengeance";
-export var SPEC_ICON = "ability_demonhunter_metamorphosis_tank";
+export var SPEC_ICON = "ability_demonhunter_spectank";
 export var STORAGE_KEY = "bis-veng-dh-v1";
 
 export var THEME = {
