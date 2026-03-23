@@ -358,9 +358,9 @@ export default function App() {
           <div style={{ marginTop: 20 }}>
             <div style={{ fontSize: 11, color: "#445555", marginBottom: 10 }}>{t("ui.changelog")}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-              {CHANGELOG.map(function(entry, i) {
+              {CHANGELOG.slice(0, 5).map(function(entry, i, arr) {
                 return (
-                  <div key={i} style={{ display: "flex", gap: 12, padding: "8px 0", borderBottom: i < CHANGELOG.length - 1 ? "1px solid #1a1a2a" : "none" }}>
+                  <div key={i} style={{ display: "flex", gap: 12, padding: "8px 0", borderBottom: i < arr.length - 1 ? "1px solid #1a1a2a" : "none" }}>
                     <span style={{ fontSize: 11, color: "#445555", fontFamily: "monospace", whiteSpace: "nowrap", minWidth: 80 }}>{entry.date}</span>
                     <span style={{ fontSize: 12, color: "#99887a" }}>{locale === "ko" ? entry.text.ko : entry.text.en}</span>
                   </div>

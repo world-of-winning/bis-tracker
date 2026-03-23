@@ -6,10 +6,14 @@
  *   node scripts/generate-spec-data.mjs                # all specs
  *   node scripts/generate-spec-data.mjs blood-dk       # single spec
  *   node scripts/generate-spec-data.mjs --list         # list all spec keys
+ *   node scripts/generate-spec-data.mjs --skip-done    # skip specs already in new BIS+MYTHIC format
+ *   node scripts/generate-spec-data.mjs --missing      # only specs with missing/incomplete files
+ *   node scripts/generate-spec-data.mjs --rebuild      # full rebuild: generate all + find-alts
+ *   node scripts/generate-spec-data.mjs --fix          # normalize source/dungeon names (no network)
  */
 
 import { load } from 'cheerio';
-import { writeFileSync, readFileSync, existsSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync, readdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -77,7 +81,7 @@ function resolveSlot(slotEn, weaponType) {
     if (weaponType === '2h' && resolveSlot._skipOneHand) return null;
     return mainSlot;
   }
-  if (['Weapon', 'Main Hand', 'Main hand', 'Main-Hand', 'Mainhand', 'Weapon 1'].includes(slotEn)) {
+  if (['Weapon', 'Main Hand', 'Main hand', 'Main-Hand', 'Main-hand', 'Mainhand', 'Weapon 1'].includes(slotEn)) {
     return mainSlot;
   }
   if (['Off Hand', 'Off-Hand', 'Off hand', 'Off-hand', 'Offhand', 'Shield', 'Weapon 2', 'Weapon Off-Hand'].includes(slotEn)) {
@@ -209,17 +213,8 @@ function statCacheKey(key) {
 }
 
 // ─── Maxroll.gg scraper ──────────────────────────────────────
-async function fetchMaxrollBis(slug, urlSuffix = 'mythic-plus-guide') {
-  const url = `https://maxroll.gg/wow/class-guides/${slug}-${urlSuffix}`;
-  console.log(`  Fetching ${url}...`);
-  const res = await fetch(url, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; BiSTracker/1.0)' },
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
-  const html = await res.text();
+function parseGearTables(html) {
   const $ = load(html);
-
-  // Find all tables with Slot/Item/Location headers
   const gearTables = [];
   $('table').each((_, table) => {
     const headers = [];
@@ -238,47 +233,187 @@ async function fetchMaxrollBis(slug, urlSuffix = 'mythic-plus-guide') {
       gearTables.push(rows);
     }
   });
+  return gearTables;
+}
 
-  // The farmable alternatives is the table where all locations are dungeon names
-  let farmable = null;
-  for (const rows of gearTables) {
-    const allDungeon = rows.every(r => VALID_DUNGEONS.some(d =>
-      r[2].includes(d.replace(/'/g, '')) || d.includes(r[2]) || r[2] === d
-    ));
-    if (allDungeon && rows.length >= 14) {
-      farmable = rows;
-      break;
-    }
+function isDungeonSource(raw) {
+  // Normalize fully (handles PART_FIXES, Vault stripping, & splitting, etc.)
+  const normalized = normalizeSource(raw);
+  // Check if result is a known dungeon or all & parts are dungeons
+  if (VALID_DUNGEONS.includes(normalized)) return true;
+  if (normalized.includes(' & ')) {
+    return normalized.split(' & ').every(p => VALID_DUNGEONS.includes(p.trim()));
   }
+  return false;
+}
 
-  // Fallback: if no all-dungeon table, use the second gear table (index 1)
-  if (!farmable && gearTables.length >= 2) {
-    farmable = gearTables[1];
-  }
-  if (!farmable && gearTables.length >= 1) {
-    farmable = gearTables[0];
-  }
+function isDungeonTable(rows) {
+  // Allow up to 2 non-dungeon sources (maxroll data errors)
+  const nonDungeon = rows.filter(r => !isDungeonSource(r[2]));
+  return nonDungeon.length <= 2;
+}
 
-  if (!farmable) throw new Error(`No farmable alternatives table found for ${slug}`);
-
-  return farmable.map(r => ({
+function toGearRows(rows) {
+  return rows.map(r => ({
     slotEn: r[0],
     itemName: r[1],
-    dungeon: normalizeDungeon(r[2]),
+    source: normalizeSource(r[2]),
   }));
 }
 
-function normalizeDungeon(raw) {
-  // Fix common typos from maxroll
-  const fixes = {
-    "Magister's Terrace": "Magisters' Terrace",
-    "Magisters Terrace": "Magisters' Terrace",
-    "Magisters' Terrace": "Magisters' Terrace",
-    "Seat of Triumvirate": "Seat of the Triumvirate",
-    "Algeth'ar Academy": "Algeth'ar Academy",
-    "Algethar Academy": "Algeth'ar Academy",
+// ─── Source normalization (shared by generation + --fix) ─────
+const SOURCE_FIXES = {
+  'Tier Set': 'Tier',
+  'Tier/Catalyst': 'Tier',
+  'Tier / Catalyst': 'Tier',
+  'Craft': 'Crafted',
+  'Crafting': 'Crafted',
+  'Blacksmithing': 'Crafted',
+  'Leatherworking': 'Crafted',
+  'Tailoring': 'Crafted',
+  'Jewelcrafting': 'Crafted',
+};
+
+const PART_FIXES = {
+  'Chimaerus the Undreamt God': 'Chimaerus',
+  'Chimaerus the undreamt God': 'Chimaerus',
+  'Chimaerus, the Undreamt God': 'Chimaerus',
+  'Crown of Cosmos': 'Crown of the Cosmos',
+  'The Crown of Cosmos': 'Crown of the Cosmos',
+  'Salhadaar': 'Fallen-King Salhadaar',
+  'Imperator': 'Imperator Averzian',
+  "Bel'oren": "Belo'ren",
+  "Belo'ren, Child of Al'ar": "Belo'ren",
+  'Murder Row': "Magisters' Terrace",
+  'Den of Nalorakk': "Magisters' Terrace",
+  "L'ura": 'Seat of the Triumvirate',
+  'Blinding Vale': 'Skyreach',
+  'Alleria Windrunner': 'Windrunner Spire',
+  'Nexus-Point': 'Nexus-Point Xenas',
+  'Seat': 'Seat of the Triumvirate',
+  'Academy': "Algeth'ar Academy",
+  'Seat of the Triumvirute': 'Seat of the Triumvirate',
+  'Seat of the Triumvurate': 'Seat of the Triumvirate',
+  'Widnrunner Spire': 'Windrunner Spire',
+  'Miasara Caverns': 'Maisara Caverns',
+};
+
+function normalizeSourcePart(part) {
+  const trimmed = part.trim();
+  if (PART_FIXES[trimmed]) return PART_FIXES[trimmed];
+  const noTier = trimmed.replace(/\s+Tier$/i, '');
+  if (noTier !== trimmed) {
+    if (PART_FIXES[noTier]) return PART_FIXES[noTier];
+    return noTier;
+  }
+  const d = normalizeDungeon(trimmed);
+  if (VALID_DUNGEONS.includes(d)) return d;
+  return trimmed;
+}
+
+function normalizeSource(raw) {
+  if (SOURCE_FIXES[raw]) return SOURCE_FIXES[raw];
+  if (PART_FIXES[raw]) return PART_FIXES[raw];
+  const whole = normalizeDungeon(raw);
+  if (VALID_DUNGEONS.includes(whole)) return whole;
+
+  if (raw.includes('/')) {
+    const parts = raw.split(/\s*\/\s*/);
+    const normalized = parts
+      .map(p => normalizeSourcePart(p))
+      .filter(p => !/^(The )?Great Vault$/i.test(p) && !/^Vault$/i.test(p)
+        && !/^Catalyst$/i.test(p) && !/^Tier$/i.test(p) && !/^Raid$/i.test(p));
+    const unique = [...new Set(normalized)];
+    const result = unique.join(' / ');
+    if (result && result !== raw) return result;
+  }
+
+  if (raw.includes(' & ')) {
+    const parts = raw.split(' & ');
+    const normalized = parts.map(p => normalizeSourcePart(p));
+    const result = normalized.join(' & ');
+    if (result !== raw) return result;
+  }
+
+  const single = normalizeSourcePart(raw);
+  if (single !== raw) return single;
+
+  return raw;
+}
+
+
+async function fetchMaxrollGearTables(slug, urlSuffix = 'mythic-plus-guide') {
+  const url = `https://maxroll.gg/wow/class-guides/${slug}-${urlSuffix}`;
+  console.log(`  Fetching ${url}...`);
+  let res;
+  for (let i = 0; i < 4; i++) {
+    res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; BiSTracker/1.0)' },
+    });
+    if (res.status === 403 || res.status === 429) {
+      const wait = Math.min(60000 * Math.pow(2, i), 300000);
+      console.log(`  ${res.status} rate limited, retrying in ${(wait / 1000).toFixed(0)}s... (${i + 1}/4)`);
+      await delay(wait);
+      continue;
+    }
+    break;
+  }
+  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+  const html = await res.text();
+  const gearTables = parseGearTables(html);
+
+  // Identify BiS table (first table, may contain non-dungeon sources)
+  // and Farmable table (all locations are dungeon names)
+  let bisTable = null;
+  let farmableTable = null;
+
+  for (const rows of gearTables) {
+    if (rows.length < 14) continue;
+    if (isDungeonTable(rows)) {
+      if (!farmableTable) farmableTable = rows;
+    } else {
+      if (!bisTable) bisTable = rows;
+    }
+  }
+
+  // Fallback: if only one table found, it's farmable
+  if (!farmableTable && !bisTable && gearTables.length >= 1) {
+    farmableTable = gearTables[0];
+  }
+  if (!farmableTable && bisTable) {
+    // No separate farmable table — extract dungeon-only items from BiS
+    farmableTable = null;
+  }
+
+  return {
+    bis: bisTable ? toGearRows(bisTable) : null,
+    farmable: farmableTable ? toGearRows(farmableTable) : null,
   };
-  return fixes[raw] || raw;
+}
+
+// Legacy wrapper for backward compatibility
+async function fetchMaxrollBis(slug, urlSuffix = 'mythic-plus-guide') {
+  const { farmable, bis } = await fetchMaxrollGearTables(slug, urlSuffix);
+  const rows = farmable || bis;
+  if (!rows) throw new Error(`No gear table found for ${slug}`);
+  return rows;
+}
+
+function normalizeDungeon(raw) {
+  // Strip suffixes: "(Vault)", "/ Vault", etc.
+  const stripped = raw.replace(/\s*[(/]\s*Vault\s*\)?$/i, '').trim();
+  // Normalize: strip apostrophes, collapse a/e variants (Algath'ar ↔ Algeth'ar), lowercase
+  const normalize = s => s.replace(/['']/g, '').toLowerCase().replace(/[ae]/g, 'a');
+  const norm = normalize(stripped);
+  for (const d of VALID_DUNGEONS) {
+    if (normalize(d) === norm) return d;
+  }
+  // Handle missing articles: "Seat of Triumvirate" → "Seat of the Triumvirate"
+  const dropArticle = s => s.replace(/ tha /g, ' ');
+  for (const d of VALID_DUNGEONS) {
+    if (dropArticle(normalize(d)) === dropArticle(norm)) return d;
+  }
+  return raw;
 }
 
 // ─── Item name fixes (maxroll typos) ─────────────────────────
@@ -298,31 +433,38 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function fetchWithRetry(url, opts = {}, retries = 3) {
+async function fetchWithRetry(url, opts = {}, retries = 5) {
   for (let i = 0; i < retries; i++) {
     try {
       const res = await fetch(url, {
         headers: { 'User-Agent': 'Mozilla/5.0 (compatible; BiSTracker/1.0)' },
         ...opts,
       });
+      if (res.status === 403 || res.status === 429) {
+        const wait = Math.min(60000 * Math.pow(2, i), 300000);
+        console.log(`      ${res.status} rate limited, retrying in ${(wait / 1000).toFixed(0)}s... (${i + 1}/${retries})`);
+        await delay(wait);
+        continue;
+      }
       if (!res.ok) {
-        if (i < retries - 1) { await delay(2000 * (i + 1)); continue; }
+        if (i < retries - 1) { await delay(3000 * (i + 1)); continue; }
         throw new Error(`HTTP ${res.status}`);
       }
       const text = await res.text();
       try {
         return JSON.parse(text);
       } catch {
-        // Got HTML instead of JSON (rate limited)
+        const wait = Math.min(60000 * Math.pow(2, i), 300000);
         if (i < retries - 1) {
-          console.log(`      Rate limited, retrying in ${2 * (i + 1)}s...`);
-          await delay(2000 * (i + 1));
+          console.log(`      Non-JSON response, retrying in ${(wait / 1000).toFixed(0)}s... (${i + 1}/${retries})`);
+          await delay(wait);
           continue;
         }
         throw new Error(`Non-JSON response from ${url}`);
       }
     } catch (err) {
-      if (i < retries - 1) { await delay(2000 * (i + 1)); continue; }
+      if (err.message.includes('rate limited') || err.message.includes('Non-JSON')) throw err;
+      if (i < retries - 1) { await delay(3000 * (i + 1)); continue; }
       throw err;
     }
   }
@@ -361,21 +503,21 @@ async function fetchItemTooltip(id) {
   return { ko, stats };
 }
 
-// ─── Build BIS array ─────────────────────────────────────────
-async function buildBisData(farmableRows, weaponType) {
-  const bis = [];
+// ─── Build gear array from parsed rows ──────────────────────
+async function buildGearData(gearRows, weaponType) {
+  const items = [];
   const knownStats = {};
   resetSlotCounters();
 
   // Pre-analyze: check if both 2H and 1H weapon slots exist
-  const slotNames = farmableRows.map(r => r.slotEn);
+  const slotNames = gearRows.map(r => r.slotEn);
   const has2H = slotNames.some(s => s === 'Two-Hand Weapon' || s === 'Two-Hand');
   const has1H = slotNames.some(s => s === 'One-Hand Weapon');
   // Skip 2H if both options exist and spec is not 2H
   resolveSlot._skipTwoHand = has2H && has1H && weaponType !== '2h';
   resolveSlot._skipOneHand = has2H && has1H && weaponType === '2h';
 
-  for (const row of farmableRows) {
+  for (const row of gearRows) {
     const slotEn = row.slotEn;
 
     // Handle dual weapon entries like "Mystakria's Harvester & Soulblight Cleaver"
@@ -392,7 +534,7 @@ async function buildBisData(farmableRows, weaponType) {
         if (!id) continue;
         await delay(200);
         const { ko, stats } = await fetchItemTooltip(id);
-        bis.push({ slot: slot.slot, simcSlot: slot.simcSlot, en: name, ko: ko || name, id, dungeon: row.dungeon, stats });
+        items.push({ slot: slot.simcSlot, en: name, ko: ko || name, id, source: row.source, stats });
         knownStats[id] = stats;
         await delay(200);
       }
@@ -413,13 +555,12 @@ async function buildBisData(farmableRows, weaponType) {
     await delay(200);
     const { ko, stats } = await fetchItemTooltip(id);
 
-    bis.push({
-      slot: slotInfo.slot,
-      simcSlot: slotInfo.simcSlot,
+    items.push({
+      slot: slotInfo.simcSlot,
       en: itemName,
       ko: ko || itemName,
       id,
-      dungeon: row.dungeon,
+      source: row.source,
       stats,
     });
     knownStats[id] = stats;
@@ -428,40 +569,72 @@ async function buildBisData(farmableRows, weaponType) {
   }
 
   // Post-process: for dual wield specs, if only main_hand exists, duplicate as off_hand
-  if ((weaponType === 'dual') && bis.some(b => b.simcSlot === 'main_hand') && !bis.some(b => b.simcSlot === 'off_hand')) {
-    const mainWeapon = bis.find(b => b.simcSlot === 'main_hand');
+  if ((weaponType === 'dual') && items.some(b => b.slot === 'main_hand') && !items.some(b => b.slot === 'off_hand')) {
+    const mainWeapon = items.find(b => b.slot === 'main_hand');
     const offSlots = WEAPON_SLOTS['dual'][1];
-    bis.push({ ...mainWeapon, slot: offSlots.slot, simcSlot: 'off_hand' });
+    items.push({ ...mainWeapon, slot: 'off_hand' });
   }
 
-  // Post-process: remove duplicate main_hand entries (keep first)
+  // Post-process: remove duplicate slot entries (keep first)
   const seenSlots = new Set();
   const deduped = [];
-  for (const item of bis) {
-    const key = item.simcSlot;
-    if (seenSlots.has(key)) continue;
-    seenSlots.add(key);
+  for (const item of items) {
+    if (seenSlots.has(item.slot)) continue;
+    seenSlots.add(item.slot);
     deduped.push(item);
   }
 
-  return { bis: deduped, knownStats };
+  return { items: deduped, knownStats };
+}
+
+// Legacy wrapper
+async function buildBisData(farmableRows, weaponType) {
+  // Convert legacy format (dungeon field) to new format (source field)
+  const rows = farmableRows.map(r => ({
+    slotEn: r.slotEn,
+    itemName: r.itemName,
+    source: r.source || r.dungeon,
+  }));
+  const { items, knownStats } = await buildGearData(rows, weaponType);
+  // Map back to legacy format with dungeon field
+  const bis = items.map(i => ({ ...i, dungeon: i.source }));
+  return { bis, knownStats };
 }
 
 // ─── Generate JS file content ────────────────────────────────
-function generateJs(spec, bis, knownStats) {
-  const theme = makeTheme(spec.accent);
-  const dungeons = [...new Set(bis.map(b => b.dungeon))];
-  // Sort: new (Midnight) dungeons first, then old
+function generateItemLine(item) {
+  return `  { slot: ${JSON.stringify(item.slot)}, en: ${JSON.stringify(item.en)}, ko: ${JSON.stringify(item.ko)}, id: ${item.id}, source: ${JSON.stringify(item.source)}, stats: ${JSON.stringify(item.stats)} },\n`;
+}
+
+function sortDungeons(dungeons) {
   const midnightDungeons = ["Nexus-Point Xenas", "Windrunner Spire", "Maisara Caverns"];
-  dungeons.sort((a, b) => {
+  return dungeons.slice().sort((a, b) => {
     const aNew = midnightDungeons.includes(a) ? 0 : 1;
     const bNew = midnightDungeons.includes(b) ? 0 : 1;
     if (aNew !== bNew) return aNew - bNew;
     return a.localeCompare(b);
   });
+}
+
+function generateFullJs(spec, bisItems, mythicItems, knownStats, worstStatsStr) {
+  const theme = makeTheme(spec.accent);
+  // Collect all sources — dungeons are for DUNGEONS array, others for SOURCES
+  const allItems = [...(bisItems || []), ...(mythicItems || [])];
+  const allSources = [...new Set(allItems.map(b => b.source))];
+  const dungeons = sortDungeons(allSources.filter(s => isDungeonSource(s)));
+  const nonDungeonSources = [...new Set((bisItems || []).map(b => b.source).filter(s => !isDungeonSource(s)))];
+
+  // Preserve existing SPEC_LABEL if available (avoid overwriting English with Korean)
+  let specLabel = spec.label;
+  const existingPath = resolve(DATA_DIR, `${spec.key}.js`);
+  if (existsSync(existingPath)) {
+    const existing = readFileSync(existingPath, 'utf8');
+    const labelMatch = existing.match(/SPEC_LABEL = "([^"]+)"/);
+    if (labelMatch) specLabel = labelMatch[1];
+  }
 
   let out = '';
-  out += `export var SPEC_LABEL = ${JSON.stringify(spec.label)};\n`;
+  out += `export var SPEC_LABEL = ${JSON.stringify(specLabel)};\n`;
   out += `export var SPEC_KEY = ${JSON.stringify(spec.key)};\n`;
   out += `export var SIMC_CLASS = ${JSON.stringify(spec.simcClass)};\n`;
   out += `export var SIMC_SPEC = ${JSON.stringify(spec.simcSpec)};\n`;
@@ -478,20 +651,36 @@ function generateJs(spec, bis, knownStats) {
   out += `};\n`;
   out += '\n';
 
-  // BIS
-  out += `export var BIS = [\n`;
-  for (const item of bis) {
-    out += `  { slot: ${JSON.stringify(item.slot)}, simcSlot: ${JSON.stringify(item.simcSlot)}, en: ${JSON.stringify(item.en)}, ko: ${JSON.stringify(item.ko)}, id: ${item.id}, dungeon: ${JSON.stringify(item.dungeon)}, stats: ${JSON.stringify(item.stats)} },\n`;
+  // BIS (true best in slot — may include raid, crafting, catalyst sources)
+  if (bisItems && bisItems.length > 0) {
+    out += `export var BIS = [\n`;
+    for (const item of bisItems) out += generateItemLine(item);
+    out += `];\n`;
+  } else {
+    out += `export var BIS = [];\n`;
   }
-  out += `];\n`;
   out += '\n';
 
-  // ALTS (empty for now)
+  // MYTHIC (farmable dungeon alternatives)
+  if (mythicItems && mythicItems.length > 0) {
+    out += `export var MYTHIC = [\n`;
+    for (const item of mythicItems) out += generateItemLine(item);
+    out += `];\n`;
+  } else {
+    out += `export var MYTHIC = [];\n`;
+  }
+  out += '\n';
+
+  // ALTS (populated separately by find-alts.mjs or --rebuild)
   out += `export var ALTS = [];\n`;
   out += '\n';
 
-  // WORST_STATS (empty by default, will need manual review)
-  out += `export var WORST_STATS = [];\n`;
+  // WORST_STATS (preserved from existing file, or empty — needs manual review)
+  if (worstStatsStr) {
+    out += worstStatsStr + '\n';
+  } else {
+    out += `export var WORST_STATS = [];\n`;
+  }
   out += '\n';
 
   out += `export var STAT_CACHE_KEY = ${JSON.stringify(statCacheKey(spec.key))};\n`;
@@ -516,18 +705,98 @@ function generateJs(spec, bis, knownStats) {
   return out;
 }
 
+// ─── Preserve WORST_STATS from existing file ─────────────────
+function readPreservedWorstStats(specKey) {
+  const path = resolve(DATA_DIR, `${specKey}.js`);
+  if (!existsSync(path)) return null;
+  const content = readFileSync(path, 'utf8');
+  const worstMatch = content.match(/export var WORST_STATS = \[([^]*?)\];/);
+  if (worstMatch && worstMatch[1].trim().length > 0) {
+    return `export var WORST_STATS = [${worstMatch[1]}];`;
+  }
+  return null;
+}
+
+// ─── Compare crawled data with existing file ─────────────────
+function extractExistingNames(content, varName) {
+  const m = content.match(new RegExp(`export var ${varName} = \\[([^]*?)\\];`));
+  if (!m) return [];
+  const names = [];
+  const re = /en:\s*"([^"]+)"/g;
+  let match;
+  while ((match = re.exec(m[1]))) names.push(match[1]);
+  return names.sort();
+}
+
+function rowNames(rows) {
+  if (!rows) return [];
+  return rows.map(r => r.itemName).sort();
+}
+
+function arraysEqual(a, b) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
 // ─── Main ────────────────────────────────────────────────────
 async function processSpec(spec) {
   console.log(`\n=== Processing ${spec.key} (${spec.label}) ===`);
 
   try {
-    const farmable = await fetchMaxrollBis(spec.slug, spec.urlSuffix);
-    console.log(`  Found ${farmable.length} farmable items`);
+    // Try mythic-plus-guide first (has both BiS + Farmable tables)
+    const suffix = spec.urlSuffix || 'mythic-plus-guide';
+    const { bis: bisRows, farmable: farmableRows } = await fetchMaxrollGearTables(spec.slug, suffix);
 
-    const { bis, knownStats } = await buildBisData(farmable, spec.weaponType);
-    console.log(`  Resolved ${bis.length} items with IDs and stats`);
+    // Compare crawled data with existing file — skip Wowhead lookups if unchanged
+    const existingPath = resolve(DATA_DIR, `${spec.key}.js`);
+    if (existsSync(existingPath)) {
+      const existing = readFileSync(existingPath, 'utf8');
+      const existingBis = extractExistingNames(existing, 'BIS');
+      const existingMythic = extractExistingNames(existing, 'MYTHIC');
+      const crawledBis = rowNames(bisRows);
+      const crawledMythic = rowNames(farmableRows);
 
-    const js = generateJs(spec, bis, knownStats);
+      const bisMatch = arraysEqual(existingBis, crawledBis);
+      const mythicMatch = arraysEqual(existingMythic, crawledMythic);
+
+      if (bisMatch && mythicMatch && existingBis.length >= 14 && existingMythic.length >= 14) {
+        console.log(`  No changes from maxroll — skipping Wowhead lookups`);
+        return 'unchanged';
+      }
+      if (!bisMatch) console.log(`  BIS changed: ${existingBis.length} → ${crawledBis.length} items`);
+      if (!mythicMatch) console.log(`  MYTHIC changed: ${existingMythic.length} → ${crawledMythic.length} items`);
+    }
+
+    const allKnownStats = {};
+    let bisItems = null;
+    let mythicItems = null;
+
+    // Build BiS data (true best in slot — raid/catalyst/crafting included)
+    if (bisRows && bisRows.length >= 14) {
+      console.log(`  Found ${bisRows.length} BiS items`);
+      const { items, knownStats } = await buildGearData(bisRows, spec.weaponType);
+      bisItems = items;
+      Object.assign(allKnownStats, knownStats);
+      console.log(`  Resolved ${items.length} BiS items with IDs and stats`);
+    }
+
+    // Build Mythic data (farmable dungeon alternatives)
+    if (farmableRows && farmableRows.length >= 14) {
+      console.log(`  Found ${farmableRows.length} farmable items`);
+      // Reset slot counters between builds
+      const { items, knownStats } = await buildGearData(farmableRows, spec.weaponType);
+      mythicItems = items;
+      Object.assign(allKnownStats, knownStats);
+      console.log(`  Resolved ${items.length} mythic items with IDs and stats`);
+    }
+
+    if (!bisItems && !mythicItems) {
+      throw new Error(`No gear tables found for ${spec.slug}`);
+    }
+
+    const worstStatsStr = readPreservedWorstStats(spec.key);
+    const js = generateFullJs(spec, bisItems, mythicItems, allKnownStats, worstStatsStr);
     const outPath = resolve(DATA_DIR, `${spec.key}.js`);
     writeFileSync(outPath, js, 'utf8');
     console.log(`  Written: ${outPath}`);
@@ -548,7 +817,118 @@ if (args.includes('--list')) {
   process.exit(0);
 }
 
+// --fix: normalize source/dungeon names locally (no network)
+if (args.includes('--fix')) {
+  const SKIP_FILES = new Set(['shared.js', 'specs.js', 'sample.js', 'tutorial.js', 'changelog.js']);
+  const fixTarget = args.find(a => !a.startsWith('--'));
+  const files = readdirSync(DATA_DIR)
+    .filter(f => f.endsWith('.js') && !SKIP_FILES.has(f))
+    .filter(f => !fixTarget || f === `${fixTarget}.js`);
+
+  // Korean SPEC_LABEL → English mapping
+  const LABEL_EN = {};
+  for (const s of SPECS) {
+    // Derive English label from slug: "blood-death-knight" → "Blood Death Knight"
+    LABEL_EN[s.key] = s.slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+  // Manual overrides for non-obvious names
+  Object.assign(LABEL_EN, {
+    'bm-hunter': 'Beast Mastery Hunter',
+    'mm-hunter': 'Marksmanship Hunter',
+    'surv-hunter': 'Survival Hunter',
+    'brew-monk': 'Brewmaster Monk',
+    'ww-monk': 'Windwalker Monk',
+    'mw-monk': 'Mistweaver Monk',
+    'ele-shaman': 'Elemental Shaman',
+    'enh-shaman': 'Enhancement Shaman',
+    'resto-shaman': 'Restoration Shaman',
+    'resto-druid': 'Restoration Druid',
+    'dev-evoker': 'Devastation Evoker',
+    'pres-evoker': 'Preservation Evoker',
+    'aug-evoker': 'Augmentation Evoker',
+    'aff-lock': 'Affliction Warlock',
+    'demo-lock': 'Demonology Warlock',
+    'destro-lock': 'Destruction Warlock',
+    'assa-rogue': 'Assassination Rogue',
+    'sub-rogue': 'Subtlety Rogue',
+    'disc-priest': 'Discipline Priest',
+    'prot-paladin': 'Protection Paladin',
+    'ret-paladin': 'Retribution Paladin',
+    'prot-warrior': 'Protection Warrior',
+    'devourer-dh': 'Devourer Demon Hunter',
+    'veng-dh': 'Vengeance Demon Hunter',
+  });
+
+  let totalChanges = 0;
+  for (const file of files) {
+    const filePath = resolve(DATA_DIR, file);
+    const original = readFileSync(filePath, 'utf8');
+    const changes = [];
+    let content = original;
+
+    // Fix Korean SPEC_LABEL → English
+    const specKey = file.replace('.js', '');
+    const expectedLabel = LABEL_EN[specKey];
+    if (expectedLabel) {
+      content = content.replace(/(SPEC_LABEL = )"([^"]+)"/, (match, prefix, current) => {
+        if (current !== expectedLabel) {
+          changes.push(`SPEC_LABEL: ${current} → ${expectedLabel}`);
+          return `${prefix}"${expectedLabel}"`;
+        }
+        return match;
+      });
+    }
+
+    // Normalize source/dungeon field values
+    content = content.replace(/((?:source|dungeon):\s*)"([^"]+)"/g, (match, prefix, value) => {
+      const normalized = normalizeSource(value);
+      if (normalized !== value) {
+        changes.push(`${value} → ${normalized}`);
+        return `${prefix}"${normalized}"`;
+      }
+      return match;
+    });
+
+    // Fill empty WORST_STATS with ["vers"] for non-tank specs
+    const TANK_SPECS = new Set(['blood', 'vengeance', 'guardian', 'brewmaster', 'protection']);
+    const specMatch = content.match(/SIMC_SPEC = "([^"]+)"/);
+    const simcSpec = specMatch ? specMatch[1] : '';
+    if (!TANK_SPECS.has(simcSpec)) {
+      content = content.replace(/export var WORST_STATS = \[\];/, (match) => {
+        changes.push(`WORST_STATS: [] → ["vers"]`);
+        return 'export var WORST_STATS = ["vers"];';
+      });
+    }
+
+    // Normalize DUNGEONS array values
+    content = content.replace(/(export var DUNGEONS = \[)([^]*?)(\];)/g, (match, start, body, end) => {
+      const newBody = body.replace(/"([^"]+)"/g, (m, val) => {
+        const n = normalizeDungeon(val);
+        if (VALID_DUNGEONS.includes(n) && n !== val) {
+          changes.push(`DUNGEONS: ${val} → ${n}`);
+          return `"${n}"`;
+        }
+        return m;
+      });
+      return start + newBody + end;
+    });
+
+    if (changes.length > 0) {
+      totalChanges += changes.length;
+      console.log(`${file}: ${changes.length} changes`);
+      for (const c of changes) console.log(`  ${c}`);
+      writeFileSync(filePath, content, 'utf8');
+    }
+  }
+
+  if (totalChanges === 0) console.log('All sources are already normalized.');
+  else console.log(`\nFixed ${totalChanges} source values across ${files.length} files.`);
+  process.exit(0);
+}
+
 const onlyMissing = args.includes('--missing');
+const skipDone = args.includes('--skip-done');
+const rebuild = args.includes('--rebuild');
 const targetKey = args.find(a => !a.startsWith('--'));
 let targets = targetKey
   ? SPECS.filter(s => s.key === targetKey)
@@ -568,18 +948,95 @@ if (onlyMissing) {
   console.log(`Found ${targets.length} specs to (re-)generate`);
 }
 
-if (targets.length === 0) {
+const needsAlts = [];
+if (skipDone) {
+  const before = targets.length;
+  targets = targets.filter(s => {
+    const path = resolve(DATA_DIR, `${s.key}.js`);
+    if (!existsSync(path)) return true;
+    const content = readFileSync(path, 'utf8');
+    const countSlots = (varName) => {
+      const m = content.match(new RegExp(`export var ${varName} = \\[([^]*?)\\];`));
+      return m ? (m[1].match(/slot:/g) || []).length : 0;
+    };
+    const bisCount = countSlots('BIS');
+    const mythicCount = countSlots('MYTHIC');
+    if (bisCount >= 14 && mythicCount >= 14) {
+      // BIS+MYTHIC done, but check if ALTS is empty
+      const altsMatch = content.match(/export var ALTS = \[([^]*?)\];/);
+      const altsCount = altsMatch ? (altsMatch[1].match(/forSlot:/g) || []).length : 0;
+      if (altsCount < 1) needsAlts.push(s.key);
+      return false; // skip generation
+    }
+    return true;
+  });
+  console.log(`Skipping ${before - targets.length} already done, ${targets.length} remaining`);
+  if (needsAlts.length > 0) {
+    console.log(`${needsAlts.length} specs need ALTS populated`);
+  }
+}
+
+if (targets.length === 0 && needsAlts.length === 0) {
+  if (skipDone || onlyMissing) {
+    console.log('All specs are already up to date.');
+    process.exit(0);
+  }
   console.error(`Unknown spec key: ${targetKey}`);
   console.error('Use --list to see available specs');
   process.exit(1);
 }
 
 let success = 0, fail = 0;
+const writtenKeys = [];
+const failed = [];
 for (const spec of targets) {
-  const ok = await processSpec(spec);
-  if (ok) success++; else fail++;
+  const result = await processSpec(spec);
+  if (result === true) { success++; writtenKeys.push(spec.key); }
+  else if (result === 'unchanged') { success++; }
+  else { fail++; failed.push(spec); }
   // Delay between specs to avoid rate limiting
-  if (targets.length > 1) await delay(2000);
+  if (targets.length > 1) await delay(3000);
 }
 
-console.log(`\nDone: ${success} succeeded, ${fail} failed out of ${targets.length}`);
+// Retry failed specs once after a longer cooldown
+if (failed.length > 0) {
+  console.log(`\nRetrying ${failed.length} failed specs after 60s cooldown...`);
+  await delay(60000);
+  for (const spec of failed) {
+    const result = await processSpec(spec);
+    if (result === true) { success++; fail--; writtenKeys.push(spec.key); }
+    else if (result === 'unchanged') { success++; fail--; }
+    if (failed.length > 1) await delay(5000);
+  }
+}
+
+console.log(`\nDone: ${success} succeeded (${writtenKeys.length} written), ${fail} failed out of ${targets.length}`);
+
+// Run find-alts for specs that were actually written or need ALTS
+const allNeedAlts = [...new Set([...needsAlts, ...writtenKeys])];
+
+// Run find-alts for specs needing ALTS (--skip-done or --rebuild)
+if (allNeedAlts.length > 0) {
+  console.log(`\n=== Running find-alts for ${allNeedAlts.length} specs ===`);
+  const { execSync } = await import('child_process');
+  const findAltsScript = resolve(__dirname, 'find-alts.mjs');
+  for (const key of allNeedAlts) {
+    try {
+      execSync(`node ${findAltsScript} ${key}`, { encoding: 'utf8', stdio: 'inherit' });
+    } catch (err) {
+      console.error(`find-alts failed for ${key}:`, err.message);
+    }
+  }
+}
+
+// --rebuild: auto-run find-alts after generation (all specs)
+if (rebuild && success > 0) {
+  console.log('\n=== Running find-alts to populate ALTS data ===');
+  const { execSync } = await import('child_process');
+  const findAltsScript = resolve(__dirname, 'find-alts.mjs');
+  try {
+    const output = execSync(`node ${findAltsScript}`, { encoding: 'utf8', stdio: 'inherit' });
+  } catch (err) {
+    console.error('find-alts failed:', err.message);
+  }
+}

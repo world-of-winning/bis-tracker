@@ -62,12 +62,25 @@ function parseSpecFile(filePath) {
   const bisItems = [];
   const bisMatch = content.match(/export var BIS = \[([^]*?)\];/);
   if (bisMatch) {
-    const re = /\{\s*slot:\s*"([^"]+)",\s*simcSlot:\s*"([^"]+)",\s*en:\s*"([^"]+)",\s*ko:\s*"([^"]+)",\s*id:\s*(\d+),\s*dungeon:\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])/g;
+    const re = /\{\s*slot:\s*"([^"]+)",\s*(?:simcSlot:\s*"([^"]+)",\s*)?en:\s*"([^"]+)",\s*ko:\s*"([^"]+)",\s*id:\s*(\d+),\s*(?:dungeon|source):\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])/g;
     let m;
     while ((m = re.exec(bisMatch[1]))) {
       bisItems.push({
-        slot: m[1], simcSlot: m[2], en: m[3], ko: m[4],
+        slot: m[1], simcSlot: m[2] || m[1], en: m[3], ko: m[4],
         id: parseInt(m[5]), dungeon: m[6], stats: JSON.parse(m[7]),
+      });
+    }
+  }
+
+  // Also index MYTHIC items (farmable dungeon alternatives)
+  const mythicMatch = content.match(/export var MYTHIC = \[([^]*?)\];/);
+  if (mythicMatch) {
+    const re = /\{\s*slot:\s*"([^"]+)",\s*en:\s*"([^"]+)",\s*ko:\s*"([^"]+)",\s*id:\s*(\d+),\s*source:\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])/g;
+    let m;
+    while ((m = re.exec(mythicMatch[1]))) {
+      bisItems.push({
+        slot: m[1], simcSlot: m[1], en: m[2], ko: m[3],
+        id: parseInt(m[4]), dungeon: m[5], stats: JSON.parse(m[6]),
       });
     }
   }
@@ -77,8 +90,9 @@ function parseSpecFile(filePath) {
 
 // ─── Build global item index ─────────────────────────────────
 function buildItemIndex() {
+  const SKIP_FILES = new Set(['shared.js', 'specs.js', 'sample.js', 'tutorial.js', 'changelog.js']);
   const files = readdirSync(DATA_DIR).filter(f =>
-    f.endsWith('.js') && f !== 'shared.js' && f !== 'specs.js'
+    f.endsWith('.js') && !SKIP_FILES.has(f)
   );
 
   // Map: normalizedSlot → Map(itemId → itemInfo)
@@ -211,8 +225,9 @@ const targetKey = args[0];
 console.log('Building global item index...');
 const index = buildItemIndex();
 
+const SKIP_FILES_MAIN = new Set(['shared.js', 'specs.js', 'sample.js', 'tutorial.js', 'changelog.js']);
 const specFiles = readdirSync(DATA_DIR)
-  .filter(f => f.endsWith('.js') && f !== 'shared.js' && f !== 'specs.js')
+  .filter(f => f.endsWith('.js') && !SKIP_FILES_MAIN.has(f))
   .map(f => f.replace('.js', ''));
 
 const targets = targetKey ? [targetKey] : specFiles;

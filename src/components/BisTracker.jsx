@@ -10,11 +10,12 @@ function sameStats(a, b) {
   var x = a.slice().sort(), y = b.slice().sort();
   return x.every(function(v, i) { return v === y[i]; });
 }
+function getSource(item) { return item.source || item.dungeon; }
 function getDungeonCounts(BIS, ALTS, dungeons) {
   var c = {};
   dungeons.forEach(function(d) { c[d] = { bis: 0, alt: 0 }; });
-  BIS.forEach(function(b) { if (c[b.dungeon]) c[b.dungeon].bis++; });
-  ALTS.forEach(function(a) { if (c[a.dungeon]) c[a.dungeon].alt++; });
+  BIS.forEach(function(b) { var s = getSource(b); if (c[s]) c[s].bis++; });
+  ALTS.forEach(function(a) { var s = getSource(a); if (c[s]) c[s].alt++; });
   return c;
 }
 function parseSimC(text) {
@@ -101,7 +102,7 @@ function calcDungeonScore(dungeon, BIS, ALTS, sr, targetIlvl, stats, worstStats,
   if (!sr) return 0;
   var score = 0;
   BIS.forEach(function(bi) {
-    if (bi.dungeon !== dungeon) return;
+    if (getSource(bi) !== dungeon) return;
     var p = calcPriority(bi, sr, targetIlvl, stats, worstStats);
     if (acq[bi.id] && p.tier !== 4) p = { tier: 4 };
     if (p.tier === 4) return;
@@ -110,7 +111,7 @@ function calcDungeonScore(dungeon, BIS, ALTS, sr, targetIlvl, stats, worstStats,
     score += base + (p.deficit || 0) + (p.worst ? 10 : 0);
   });
   ALTS.forEach(function(a) {
-    if (a.dungeon !== dungeon) return;
+    if (getSource(a) !== dungeon) return;
     score += 2;
   });
   return score;
@@ -125,7 +126,9 @@ function StatPills({ stats: itemStats }) {
 
 function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, worstStats, targetBonus }) {
   var { t, itemName, locale } = useLocale();
-  var c = DC[item.dungeon] || DC["Pit of Saron"];
+  var itemSource = getSource(item);
+  var isDungeon = !!DC[itemSource];
+  var c = DC[itemSource] || { b: "#8866aa", t: "#c4aadd", g: "#1a1028" };
   var eq = !isAlt && sr && sr.eqSlot ? sr.eqSlot[item.id] : null;
   var hasDiff = eq && eq.id !== item.id;
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
@@ -145,7 +148,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6, flexWrap: "wrap" }}>
             <span style={{ fontSize: 10, fontWeight: 700, color: isAlt ? "#e8a84c" : theme.accent, background: isAlt ? "#2a1f10" : theme.accentBg, padding: "2px 7px", borderRadius: 3, border: "1px solid " + (isAlt ? "#5a4020" : theme.accentBorder) }}>{isAlt ? "ALT \u00B7 " + t("slots." + item.forSlot) : t("slots." + item.slot)}</span>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: c.g, color: c.t, border: "1px solid " + c.b + "44" }}>{t("dungeons." + item.dungeon)}</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: c.g, color: c.t, border: "1px solid " + c.b + "44" }}>{isDungeon ? t("dungeons." + itemSource) : (t("sources." + itemSource) || itemSource)}</span>
             <StatPills stats={item.stats} />
           </div>
           <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + (targetBonus ? "&bonus=" + targetBonus : "")} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: tier === 4 ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: tier === 4 ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
@@ -181,9 +184,15 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
 
 export default function BisTracker({ spec, charName, initialSimcText, onSpecSwitch, onClear, onCharDetected }) {
   var { t } = useLocale();
-  var { BIS, ALTS, KNOWN_STATS, DUNGEONS, STORAGE_KEY: BASE_STORAGE_KEY, THEME: theme, WORST_STATS, STAT_CACHE_KEY } = spec;
+  var { BIS, MYTHIC, ALTS, KNOWN_STATS, DUNGEONS, STORAGE_KEY: BASE_STORAGE_KEY, THEME: theme, WORST_STATS, STAT_CACHE_KEY } = spec;
+  // Backward compat: if MYTHIC not defined, BIS is the mythic list
+  var hasTrueBis = MYTHIC && MYTHIC.length > 0;
+  var trueBIS = hasTrueBis ? BIS : [];
+  var mythicList = hasTrueBis ? MYTHIC : (BIS || []);
   var STORAGE_KEY = charName ? BASE_STORAGE_KEY + ":" + charName : BASE_STORAGE_KEY;
-  var dungeonCounts = useMemo(function() { return getDungeonCounts(BIS, ALTS, DUNGEONS); }, [BIS, ALTS, DUNGEONS]);
+  var [viewMode, setViewMode] = useState(hasTrueBis ? "bis" : "mythic");
+  var activeItems = viewMode === "bis" && hasTrueBis ? trueBIS : mythicList;
+  var dungeonCounts = useMemo(function() { return getDungeonCounts(activeItems, ALTS, DUNGEONS); }, [activeItems, ALTS, DUNGEONS]);
   var [acq, setAcq] = useState({});
   var [filter, setFilter] = useState("all");
   var [simcOpen, setSimcOpen] = useState(false);
@@ -222,7 +231,13 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     var currentStats = Object.assign({}, KNOWN_STATS, runtimeStats);
     var unknownIds = allIds.filter(function(id, i) { return allIds.indexOf(id) === i && currentStats[id] === undefined; });
     function finishImport(mergedStats) {
-      var result = matchBiS(BIS, parsed.gear, parsed.bag, mergedStats);
+      // Match against all known items (true BiS + mythic, deduplicated by id)
+      var allBisItems = [];
+      var seenIds = new Set();
+      [].concat(trueBIS, mythicList).forEach(function(item) {
+        if (!seenIds.has(item.id)) { seenIds.add(item.id); allBisItems.push(item); }
+      });
+      var result = matchBiS(allBisItems, parsed.gear, parsed.bag, mergedStats);
       var newSr = { ci: parsed.ci, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched };
       var importName = parsed.ci.name || charName;
       var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
@@ -285,10 +300,19 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       doImport(initialSimcText);
     }
   }, [initialSimcText, doImport]);
-  var doneCount = useMemo(function() { return BIS.filter(function(b) { if (acq[b.id]) return true; return sr ? calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length; }, [acq, sr, targetInfo.max, allStats, BIS, WORST_STATS]);
-  var altCount = useMemo(function() { return sr ? BIS.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS); return p.tier === 2; }).length : 0; }, [acq, sr, targetInfo.max, allStats, BIS, WORST_STATS]);
-  var displayBis = useMemo(function() { var items = filter === "all" ? BIS : BIS.filter(function(i) { return i.dungeon === filter; }); return sr ? sortByPriority(items, sr, targetInfo.max, allStats, WORST_STATS) : items; }, [filter, sr, targetInfo.max, allStats, BIS, WORST_STATS]);
-  var displayAlts = useMemo(function() { return filter === "all" ? [] : ALTS.filter(function(a) { return a.dungeon === filter; }); }, [filter, ALTS]);
+  var doneCount = useMemo(function() { return activeItems.filter(function(b) { if (acq[b.id]) return true; return sr ? calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length; }, [acq, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
+  var altCount = useMemo(function() { return sr ? activeItems.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS); return p.tier === 2; }).length : 0; }, [acq, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
+  var displayBis = useMemo(function() { var items = filter === "all" ? activeItems : activeItems.filter(function(i) { return getSource(i) === filter; }); return sr ? sortByPriority(items, sr, targetInfo.max, allStats, WORST_STATS) : items; }, [filter, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
+  var displayAlts = useMemo(function() { return filter === "all" ? [] : ALTS.filter(function(a) { return getSource(a) === filter; }); }, [filter, ALTS]);
+  var nonDungeonSources = useMemo(function() {
+    var sources = {};
+    activeItems.forEach(function(item) { var s = getSource(item); if (!DC[s]) sources[s] = (sources[s] || 0) + 1; });
+    var all = Object.keys(sources).map(function(s) { return { source: s, count: sources[s] }; });
+    var prep = all.filter(function(s) { return /^Tier/i.test(s.source) || s.source === "Crafted"; });
+    prep.sort(function(a, b) { return (/^Tier/i.test(a.source) ? 0 : 1) - (/^Tier/i.test(b.source) ? 0 : 1); });
+    var raid = all.filter(function(s) { return !/^Tier/i.test(s.source) && s.source !== "Crafted"; });
+    return { prep: prep, raid: raid };
+  }, [activeItems]);
 
   if (!loaded) return (<div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0a0a12", color: theme.accent }}><span style={{ fontFamily: "'Cinzel', serif", fontSize: 18 }}>{t("ui.loading")}</span></div>);
 
@@ -317,20 +341,37 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           {sr && sr.ci && sr.ci.avgIlvl ? (t("ui.avg") + " " + sr.ci.avgIlvl + " · ") : ""}
           {"BiS " + (sr ? Object.keys(sr.matched || {}).length : 0)}
           {sr && Object.keys(sr.altItems || {}).length > 0 ? " · Alt " + Object.keys(sr.altItems).length : ""}
-          {" · " + doneCount + " / " + BIS.length}
+          {" · " + doneCount + " / " + activeItems.length}
         </span>
       </div>
+      {hasTrueBis && (
+        <div style={{ display: "flex", gap: 4, marginTop: 8 }}>
+          <button className={"fbtn" + (viewMode === "bis" ? " active" : "")} onClick={function() { setViewMode("bis"); setFilter("all"); }} style={{ padding: "4px 14px", borderRadius: 6, background: viewMode === "bis" ? theme.accentBg : "#0f0f18", border: "1px solid " + (viewMode === "bis" ? theme.accentBorder : "#1e1e30"), color: viewMode === "bis" ? theme.accent : "#556666", fontSize: 12, fontWeight: 700 }}>{t("ui.viewBis")}</button>
+          <button className={"fbtn" + (viewMode === "mythic" ? " active" : "")} onClick={function() { setViewMode("mythic"); setFilter("all"); }} style={{ padding: "4px 14px", borderRadius: 6, background: viewMode === "mythic" ? theme.accentBg : "#0f0f18", border: "1px solid " + (viewMode === "mythic" ? theme.accentBorder : "#1e1e30"), color: viewMode === "mythic" ? theme.accent : "#556666", fontSize: 12, fontWeight: 700 }}>{t("ui.viewMythic")}</button>
+        </div>
+      )}
       <div data-tutorial="progress-bar" style={{ marginTop: 8 }}>
-        <div style={{ height: 6, background: "#1a1a28", borderRadius: 3, overflow: "hidden", position: "relative" }}><div style={{ position: "absolute", height: "100%", width: ((doneCount + altCount) / BIS.length * 100) + "%", borderRadius: 3, transition: "width .4s", background: theme.accent, opacity: 0.25 }} /><div className="pfill" style={{ position: "relative", height: "100%", width: (doneCount / BIS.length * 100) + "%", borderRadius: 3, transition: "width .4s", background: theme.shimmer, backgroundSize: "200% 100%" }} /></div>
+        <div style={{ height: 6, background: "#1a1a28", borderRadius: 3, overflow: "hidden", position: "relative" }}><div style={{ position: "absolute", height: "100%", width: ((doneCount + altCount) / activeItems.length * 100) + "%", borderRadius: 3, transition: "width .4s", background: theme.accent, opacity: 0.25 }} /><div className="pfill" style={{ position: "relative", height: "100%", width: (doneCount / activeItems.length * 100) + "%", borderRadius: 3, transition: "width .4s", background: theme.shimmer, backgroundSize: "200% 100%" }} /></div>
       </div>
       <div data-tutorial="dungeon-filters" style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
         <button className={"fbtn" + (filter === "all" ? " active" : "")} onClick={function() { setFilter("all"); }} style={{ padding: "4px 12px", borderRadius: 6, background: filter === "all" ? theme.accentBg : "#0f0f18", color: filter === "all" ? theme.accent : "#556666", fontSize: 12, fontWeight: 600 }}>{t("ui.all")}</button>
+        {nonDungeonSources.prep.map(function(ns) {
+          var act = filter === ns.source;
+          return (
+            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { setFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : "#1a102844", border: "1px solid " + (act ? "#8866aa" : "#8866aa33"), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : "#8866aa" }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#aa88cc", display: "inline-block" }} />
+              <span>{t("sources." + ns.source) || ns.source}</span>
+              <span style={{ color: "#776655", fontSize: 11 }}>{ns.count}</span>
+            </button>
+          );
+        })}
+        {(nonDungeonSources.prep.length > 0) && <span style={{ width: 1, height: 20, background: "#2a2a3a", alignSelf: "center" }} />}
         {DUNGEONS.map(function(d) {
           var cnt = dungeonCounts[d]; if (!cnt || (cnt.bis === 0 && cnt.alt === 0)) return null;
-          return { dungeon: d, score: sr ? calcDungeonScore(d, BIS, ALTS, sr, targetInfo.max, allStats, WORST_STATS, acq) : 0 };
+          return { dungeon: d, score: sr ? calcDungeonScore(d, activeItems, ALTS, sr, targetInfo.max, allStats, WORST_STATS, acq) : 0 };
         }).filter(Boolean).sort(function(a, b) { return b.score - a.score; }).map(function(item) {
           var d = item.dungeon, c2 = DC[d], cnt = dungeonCounts[d], act = filter === d;
-          var bisItems = BIS.filter(function(i) { return i.dungeon === d; });
+          var bisItems = activeItems.filter(function(i) { return getSource(i) === d; });
           var rem = bisItems.length - bisItems.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
           return (
           <button key={d} className={"fbtn" + (act ? " active" : "")} onClick={function() { setFilter(act ? "all" : d); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? c2.g : (rem === 0 ? "#0d1a0d" : c2.g + "44"), border: "1px solid " + (act ? c2.b : (rem === 0 ? "#1a3a1a" : c2.b) + "33"), fontSize: 12, fontWeight: 600, color: act ? c2.t : (rem === 0 ? "#4dca6b" : c2.t) }}>
@@ -339,6 +380,17 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             <span style={{ color: rem === 0 ? "#2a5a2a" : "#776655", fontSize: 11 }}>{rem === 0 ? "\u2713" : rem}</span>
             {cnt.alt > 0 && <span style={{ color: "#e8a84c", fontSize: 10 }}>{"+" + cnt.alt}</span>}
           </button>); })}
+        {nonDungeonSources.raid.length > 0 && <span style={{ width: 1, height: 20, background: "#2a2a3a", alignSelf: "center" }} />}
+        {nonDungeonSources.raid.map(function(ns) {
+          var act = filter === ns.source;
+          return (
+            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { setFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : "#1a102844", border: "1px solid " + (act ? "#8866aa" : "#8866aa33"), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : "#8866aa" }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#8866aa", display: "inline-block" }} />
+              <span>{t("sources." + ns.source) || ns.source}</span>
+              <span style={{ color: "#776655", fontSize: 11 }}>{ns.count}</span>
+            </button>
+          );
+        })}
       </div>
       {sr && (
         <div style={{ display: "flex", gap: 12, marginTop: 8, fontSize: 10, color: "#556666", flexWrap: "wrap" }}>
@@ -349,12 +401,19 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           <span style={{ color: "#445555" }}>{t("ui.deficitInfo", { max: targetInfo.max })}</span>
         </div>
       )}
-      {filter !== "all" && DC[filter] && (
+      {filter !== "all" && (
         <div style={{ padding: "8px 0" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 8, background: DC[filter].g + "cc", border: "1px solid " + DC[filter].b + "44" }}>
-            <span style={{ fontSize: 18, fontWeight: 700, color: DC[filter].t, fontFamily: "'Cinzel',serif" }}>{t("dungeonsFull." + filter)}</span>
-            <span style={{ marginLeft: "auto", fontSize: 12, color: "#778888" }}>{"BiS " + displayBis.length}{displayAlts.length > 0 ? " + Alt " + displayAlts.length : ""}{sr && " \u00B7 " + t("ui.priority")}</span>
-          </div>
+          {DC[filter] ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 8, background: DC[filter].g + "cc", border: "1px solid " + DC[filter].b + "44" }}>
+              <span style={{ fontSize: 18, fontWeight: 700, color: DC[filter].t, fontFamily: "'Cinzel',serif" }}>{t("dungeonsFull." + filter)}</span>
+              <span style={{ marginLeft: "auto", fontSize: 12, color: "#778888" }}>{"BiS " + displayBis.length}{displayAlts.length > 0 ? " + Alt " + displayAlts.length : ""}{sr && " \u00B7 " + t("ui.priority")}</span>
+            </div>
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 8, background: "#1a1028cc", border: "1px solid #8866aa44" }}>
+              <span style={{ fontSize: 18, fontWeight: 700, color: "#c4aadd", fontFamily: "'Cinzel',serif" }}>{filter}</span>
+              <span style={{ marginLeft: "auto", fontSize: 12, color: "#778888" }}>{"BiS " + displayBis.length}{sr && " \u00B7 " + t("ui.priority")}</span>
+            </div>
+          )}
         </div>
       )}
       <div style={{ marginTop: 12 }}>
