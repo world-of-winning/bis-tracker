@@ -9,7 +9,10 @@ var LocaleContext = createContext();
 
 export function LocaleProvider({ children }) {
   var [locale, setLocaleState] = useState(function() {
-    return load(LOCALE_KEY) || "ko";
+    var saved = load(LOCALE_KEY);
+    if (saved) return saved;
+    var lang = (navigator.language || navigator.userLanguage || "ko").toLowerCase();
+    return lang.indexOf("ko") === 0 ? "ko" : "en";
   });
 
   var setLocale = useCallback(function(loc) {

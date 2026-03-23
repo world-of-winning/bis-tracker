@@ -126,6 +126,7 @@ export default function App() {
   var [pendingSimcText, setPendingSimcText] = useState("");
   var [landingText, setLandingText] = useState("");
   var [landingFeedback, setLandingFeedback] = useState(null);
+  var [charsRev, setCharsRev] = useState(0);
   var spec = specKey ? getSpec(specKey) : null;
   var charsIndex = cleanCharsIndex();
   var allChars = [];
@@ -181,6 +182,7 @@ export default function App() {
   var handleCharDetected = useCallback(function(name) {
     if (name && specKey) {
       addCharToIndex(specKey, name);
+      setCharsRev(function(r) { return r + 1; });
       if (name !== charName) {
         setCharName(name);
       }
