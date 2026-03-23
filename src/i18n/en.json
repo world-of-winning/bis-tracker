@@ -133,6 +133,7 @@
     "tierUpgradeNeeded": "Upgrade needed",
     "deficitInfo": "(−N) = Gap from target {max}",
     "supportedSpecs": "Supported Specializations",
+    "changelog": "Changelog",
     "avg": "Avg",
     "count": "",
     "priority": "by priority",

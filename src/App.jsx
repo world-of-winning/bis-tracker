@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { SPECS, getSpec, findSpecBySimC } from './data/specs.js';
+import { CHANGELOG } from './data/changelog.js';
 import { load, save as persist } from './storage.js';
 import { GEAR_SLOTS } from './data/shared.js';
 import { useLocale } from './i18n/index.jsx';
@@ -234,27 +235,13 @@ export default function App() {
             </div>
           )}
           <div style={{ marginTop: 20 }}>
-            <div style={{ fontSize: 11, color: "#445555", marginBottom: 10 }}>{t("ui.supportedSpecs")}</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-              {Object.keys(SPEC_GROUPS).map(function(cls) {
-                var specs = SPEC_GROUPS[cls];
-                var clsColor = CLASS_COLOR[cls] || "#888";
+            <div style={{ fontSize: 11, color: "#445555", marginBottom: 10 }}>{t("ui.changelog")}</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+              {CHANGELOG.map(function(entry, i) {
                 return (
-                  <div key={cls} style={{ background: "#0a0a14", border: "1px solid #1e1e30", borderRadius: 8, padding: "10px 14px", minWidth: 140 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                      <img src={ICON_BASE + CLASS_ICON[cls] + ".jpg"} alt={t("classes." + cls)} style={{ width: 22, height: 22, borderRadius: 4, border: "1px solid " + clsColor + "44" }} />
-                      <span style={{ fontSize: 13, fontWeight: 700, color: clsColor }}>{t("classes." + cls)}</span>
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 4, paddingLeft: 4 }}>
-                      {specs.map(function(s) {
-                        return (
-                          <div key={s.SPEC_KEY} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                            <img src={ICON_BASE + s.SPEC_ICON + ".jpg"} alt={s.SPEC_LABEL} style={{ width: 18, height: 18, borderRadius: 3, border: "1px solid " + s.THEME.accent + "44" }} />
-                            <span style={{ fontSize: 12, color: s.THEME.accent, fontWeight: 600 }}>{t("specs." + s.SIMC_SPEC)}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
+                  <div key={i} style={{ display: "flex", gap: 12, padding: "8px 0", borderBottom: i < CHANGELOG.length - 1 ? "1px solid #1a1a2a" : "none" }}>
+                    <span style={{ fontSize: 11, color: "#445555", fontFamily: "monospace", whiteSpace: "nowrap", minWidth: 80 }}>{entry.date}</span>
+                    <span style={{ fontSize: 12, color: "#99887a" }}>{locale === "ko" ? entry.text.ko : entry.text.en}</span>
                   </div>
                 );
               })}
