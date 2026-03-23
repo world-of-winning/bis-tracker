@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { load, save as persist } from '../storage.js';
-import { DUNGEON_COLORS as DC, DUNGEON_SHORT as DS, TIERS, STAT_KO as SK, GEAR_SLOTS, fetchItemStats } from '../data/shared.js';
-import { findSpecBySimC, CLASS_KO, SPEC_KO } from '../data/specs.js';
+import { DUNGEON_COLORS as DC, TIERS, GEAR_SLOTS, fetchItemStats } from '../data/shared.js';
+import { findSpecBySimC } from '../data/specs.js';
+import { useLocale } from '../i18n/index.jsx';
 
 function sameStats(a, b) {
   if (!a || !b || !a.length || !b.length) return false;
@@ -50,7 +51,7 @@ function matchBiS(BIS, gear, bag, stats) {
   var BIS_IDS = new Set(BIS.map(function(i) { return i.id; }));
   var matched = {}, eqSlot = {}, bisInBag = {}, altItems = {};
   BIS.forEach(function(bi) {
-    var s = bi.simcSlot, d = gear[s];
+    var s = bi.slot, d = gear[s];
     if (d && d.id === bi.id) { matched[bi.id] = true; eqSlot[bi.id] = d; return; }
     if (s.indexOf("finger") === 0 || s.indexOf("trinket") === 0) {
       var alt = s.endsWith("1") ? s.replace("1", "2") : s.replace("2", "1");
@@ -82,8 +83,8 @@ function calcPriority(bisItem, sr, targetIlvl, stats, worstStats) {
   var eqIlvl = (eq && eq.ilvl) ? eq.ilvl : 0;
   var deficit = Math.max(0, targetIlvl - eqIlvl);
   var worst = eq ? hasWorstStat(eq.id, stats, worstStats) : false;
-  if (inBag) { var bI = inBag.ilvl || 0, bD = Math.max(0, targetIlvl - bI); if (bD <= 0) return { tier: 4, deficit: 0, ilvl: bI, label: "\uAC00\uBC29 \uC644\uB8CC", color: "#4dca6b", worst: false }; return { tier: 3, deficit: bD, ilvl: bI, label: "\uAC00\uBC29 " + bI, color: "#caca3d", worst: false }; }
-  if (isBis) { if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, label: "\uC644\uB8CC", color: "#4dca6b", worst: false }; return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#6dca8b", worst: false }; }
+  if (inBag) { var bI = inBag.ilvl || 0, bD = Math.max(0, targetIlvl - bI); if (bD <= 0) return { tier: 4, deficit: 0, ilvl: bI, labelKey: "bagDone", color: "#4dca6b", worst: false }; return { tier: 3, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#caca3d", worst: false }; }
+  if (isBis) { if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", worst: false }; return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#6dca8b", worst: false }; }
   if (isAlt) return { tier: 2, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", worst: worst };
   return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl > 0 ? eqIlvl + "" : "\u2014", color: worst ? "#ff4444" : "#ff6b6b", worst: worst };
 }
@@ -96,13 +97,34 @@ function sortByPriority(items, sr, t, stats, worstStats) {
   });
 }
 
+function calcDungeonScore(dungeon, BIS, ALTS, sr, targetIlvl, stats, worstStats, acq) {
+  if (!sr) return 0;
+  var score = 0;
+  BIS.forEach(function(bi) {
+    if (bi.dungeon !== dungeon) return;
+    var p = calcPriority(bi, sr, targetIlvl, stats, worstStats);
+    if (acq[bi.id] && p.tier !== 4) p = { tier: 4 };
+    if (p.tier === 4) return;
+    // tier 1 (능력치 불일치) = 40 + deficit, tier 2 (alt 장착) = 20 + deficit, tier 3 (등급↑) = 5 + deficit
+    var base = p.tier === 1 ? 40 : p.tier === 2 ? 20 : 5;
+    score += base + (p.deficit || 0) + (p.worst ? 10 : 0);
+  });
+  ALTS.forEach(function(a) {
+    if (a.dungeon !== dungeon) return;
+    score += 2;
+  });
+  return score;
+}
+
 function StatPills({ stats: itemStats }) {
+  var { t } = useLocale();
   if (!itemStats || !itemStats.length) return null;
   var colors = { crit: { bg: "#2a1a1a", fg: "#e88", bd: "#4a2222" }, haste: { bg: "#1a2a1a", fg: "#8e8", bd: "#224a22" }, mastery: { bg: "#1a1a2a", fg: "#88e", bd: "#22224a" }, vers: { bg: "#2a2a1a", fg: "#ee8", bd: "#4a4a22" } };
-  return (<span style={{ display: "inline-flex", gap: 2 }}>{itemStats.map(function(s) { var c = colors[s]; return (<span key={s} style={{ display: "inline-flex", padding: "1px 5px", borderRadius: 3, fontSize: 9, fontWeight: 700, background: c.bg, color: c.fg, border: "1px solid " + c.bd }}>{SK[s]}</span>); })}</span>);
+  return (<span style={{ display: "inline-flex", gap: 2 }}>{itemStats.map(function(s) { var c = colors[s]; return (<span key={s} style={{ display: "inline-flex", padding: "1px 5px", borderRadius: 3, fontSize: 9, fontWeight: 700, background: c.bg, color: c.fg, border: "1px solid " + c.bd }}>{t("stats." + s)}</span>); })}</span>);
 }
 
 function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, worstStats, targetBonus }) {
+  var { t, itemName, locale } = useLocale();
   var c = DC[item.dungeon] || DC["Pit of Saron"];
   var eq = !isAlt && sr && sr.eqSlot ? sr.eqSlot[item.id] : null;
   var hasDiff = eq && eq.id !== item.id;
@@ -114,32 +136,33 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
   var bgs = { 0: "linear-gradient(135deg, #101018, " + c.g + "88)", 1: "linear-gradient(135deg, #140e0e, #1a0f0f)", 2: "linear-gradient(135deg, #14120a, #1a150d)", 3: "linear-gradient(135deg, #0e140e, #0f1a0f)", 4: "linear-gradient(135deg, #0d120d, #0a100a)" };
   var acs = { 0: c.b, 1: "#ff6b6b", 2: "#c9a227", 3: "#4dca6b", 4: "#1a3a1a" };
   var icons = { 1: "\u25B2", 2: "\u25C6", 3: "\u2191", 4: "\u2713" };
-  var tierLabels = { 1: "", 2: "", 3: "\uB4F1\uAE09\u2191 \uD544\uC694", 4: "" };
+  var pLabel = p ? (p.labelKey ? t("ui." + p.labelKey) : p.label) : "";
+  var whLocale = locale === "ko" ? "/ko" : "";
   return (
     <div className={cardClass} style={{ animationDelay: (idx * .04) + "s", background: isAlt ? bgs[2] : (bgs[tier] || bgs[0]), borderRadius: 10, padding: "14px 16px", position: "relative", overflow: "hidden" }}>
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: (tier >= 1 && tier <= 2) ? 3 : 2, background: isAlt ? "#c9a227" : (acs[tier] || c.b), opacity: tier <= 2 ? .9 : (tier === 4 ? .3 : .6) }} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 10, fontWeight: 700, color: isAlt ? "#e8a84c" : theme.accent, background: isAlt ? "#2a1f10" : theme.accentBg, padding: "2px 7px", borderRadius: 3, border: "1px solid " + (isAlt ? "#5a4020" : theme.accentBorder) }}>{isAlt ? "ALT \u00B7 " + item.forSlot : item.slot}</span>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: c.g, color: c.t, border: "1px solid " + c.b + "44" }}>{DS[item.dungeon]}</span>
+            <span style={{ fontSize: 10, fontWeight: 700, color: isAlt ? "#e8a84c" : theme.accent, background: isAlt ? "#2a1f10" : theme.accentBg, padding: "2px 7px", borderRadius: 3, border: "1px solid " + (isAlt ? "#5a4020" : theme.accentBorder) }}>{isAlt ? "ALT \u00B7 " + t("slots." + item.forSlot) : t("slots." + item.slot)}</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: c.g, color: c.t, border: "1px solid " + c.b + "44" }}>{t("dungeons." + item.dungeon)}</span>
             <StatPills stats={item.stats} />
           </div>
-          <a href={"https://www.wowhead.com/ko/item=" + item.id + (targetBonus ? "&bonus=" + targetBonus : "")} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: tier === 4 ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: tier === 4 ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{item.ko}</a>
-          <div style={{ fontSize: 11.5, color: tier === 4 ? "#445533" : "#776655", marginBottom: 6 }}>{item.en}</div>
+          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + (targetBonus ? "&bonus=" + targetBonus : "")} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: tier === 4 ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: tier === 4 ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
+          <div style={{ fontSize: 11.5, color: tier === 4 ? "#445533" : "#776655", marginBottom: 6 }}>{locale === "ko" ? item.en : item.ko}</div>
           {!isAlt && p && tier > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: tier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : tier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : tier === 3 ? "linear-gradient(135deg,#102a15,#0f1a0f)" : "#0d1a0d", border: "1px solid " + (tier === 1 ? "#6a2020" : tier === 2 ? "#6a5020" : tier === 3 ? "#206a30" : "#1a3a1a"), color: p.color }}>
-                <span style={{ fontSize: 10 }}>{icons[tier]}</span><span>{p.label}</span>
+                <span style={{ fontSize: 10 }}>{icons[tier]}</span><span>{pLabel}</span>
                 {p.deficit > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + p.deficit + "\uFF09"}</span>}
               </div>
-              {tier < 4 && tierLabels[tier] && <span style={{ fontSize: 9, color: "#665544" }}>{tierLabels[tier]}</span>}
+              {tier === 3 && p.labelKey !== "bag" && p.labelKey !== "bagDone" && <span style={{ fontSize: 9, color: "#665544" }}>{t("ui.tierUpgradeNeeded")}</span>}
               {hasDiff && eq && (
-                <a href={"https://www.wowhead.com/ko/item=" + eq.id + (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: isSimcAlt ? "#1a1508" : "#1a1520", border: "1px solid " + (isSimcAlt ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: isSimcAlt ? "#c9a040" : "#aa7799", whiteSpace: "nowrap" }}>
+                <a href={"https://www.wowhead.com" + whLocale + "/item=" + eq.id + (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: isSimcAlt ? "#1a1508" : "#1a1520", border: "1px solid " + (isSimcAlt ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: isSimcAlt ? "#c9a040" : "#aa7799", whiteSpace: "nowrap" }}>
                   <span>{eq.name}</span>
                   {allStats[eq.id] && allStats[eq.id].length > 0 && allStats[eq.id].map(function(s) {
                     var isW = worstStats && worstStats.indexOf(s) >= 0;
-                    return (<span key={s} style={{ fontSize: 9, color: isW ? "#ff4444" : "#776655" }}>{isW ? "\u26A0" : "\u00B7"}{SK[s]}</span>);
+                    return (<span key={s} style={{ fontSize: 9, color: isW ? "#ff4444" : "#776655" }}>{isW ? "\u26A0" : "\u00B7"}{t("stats." + s)}</span>);
                   })}
                 </a>
               )}
@@ -156,7 +179,8 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
   );
 }
 
-export default function BisTracker({ spec, charName, initialSimcText, onSpecSwitch, onClear, onImport }) {
+export default function BisTracker({ spec, charName, initialSimcText, onSpecSwitch, onClear, onCharDetected }) {
+  var { t } = useLocale();
   var { BIS, ALTS, KNOWN_STATS, DUNGEONS, STORAGE_KEY: BASE_STORAGE_KEY, THEME: theme, WORST_STATS, STAT_CACHE_KEY } = spec;
   var STORAGE_KEY = charName ? BASE_STORAGE_KEY + ":" + charName : BASE_STORAGE_KEY;
   var dungeonCounts = useMemo(function() { return getDungeonCounts(BIS, ALTS, DUNGEONS); }, [BIS, ALTS, DUNGEONS]);
@@ -175,7 +199,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
 
   useEffect(function() {
     var d = load(STORAGE_KEY);
-    if (d) { setAcq(d.acq || {}); if (d.sr) { setSr(d.sr); setSimcOpen(false); if (onImport && d.sr.ci) onImport({ name: d.sr.ci.name, avgIlvl: d.sr.ci.avgIlvl, bisCount: Object.keys(d.sr.matched || {}).length, altCount: Object.keys(d.sr.altItems || {}).length }); } else { setSimcOpen(true); } if (d.targetTier) setTargetTier(d.targetTier); }
+    if (d) { setAcq(d.acq || {}); if (d.sr) { setSr(d.sr); setSimcOpen(false); if (onCharDetected && d.sr.ci) onCharDetected(d.sr.ci.name); } else { setSimcOpen(true); } if (d.targetTier) setTargetTier(d.targetTier); }
     else { setSimcOpen(true); }
     var cached = load(STAT_CACHE_KEY);
     if (cached) setRuntimeStats(cached);
@@ -192,7 +216,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     var text = overrideText || simcText;
     if (!text.trim() || importing) return;
     var parsed = parseSimC(text);
-    if (!parsed.cnt) { setFeedback({ ok: false, msg: "\uC7A5\uBE44 \uB370\uC774\uD130\uB97C \uCC3E\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4." }); return; }
+    if (!parsed.cnt) { setFeedback({ ok: false, msg: t("ui.noGearData") }); return; }
     var allIds = Object.values(parsed.gear).map(function(g) { return g.id; });
     parsed.bag.forEach(function(b) { allIds.push(b.id); });
     var currentStats = Object.assign({}, KNOWN_STATS, runtimeStats);
@@ -204,12 +228,12 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
       persist(saveKey, { acq: importName !== charName ? {} : acq, sr: newSr, targetTier: targetTier });
       if (importName === charName) setSr(newSr);
-      setFeedback({ ok: true, msg: "\uC7A5\uBE44 \uB370\uC774\uD130\uAC00 \uAC31\uC2E0\uB418\uC5C8\uC2B5\uB2C8\uB2E4." }); setSimcText(""); setImporting(false); setSimcOpen(false);
-      if (onImport) onImport({ name: importName, avgIlvl: parsed.ci.avgIlvl, bisCount: Object.keys(result.matched).length, altCount: Object.keys(result.altItems).length });
+      setFeedback({ ok: true, msg: t("ui.gearUpdated") }); setSimcText(""); setImporting(false); setSimcOpen(false);
+      if (onCharDetected) onCharDetected(importName);
     }
     if (unknownIds.length > 0) {
       setImporting(true);
-      setFeedback({ ok: true, msg: unknownIds.length + "\uAC1C \uC544\uC774\uD15C \uC2A4\uD0EF \uC870\uD68C \uC911..." });
+      setFeedback({ ok: true, msg: t("ui.fetchingStats", { count: unknownIds.length }) });
       fetchItemStats(unknownIds).then(function(fetched) {
         var newRuntime = Object.assign({}, runtimeStats);
         Object.keys(fetched).forEach(function(id) { newRuntime[id] = fetched[id] !== null ? fetched[id] : []; });
@@ -219,7 +243,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       });
     } else { finishImport(currentStats); }
   }, [simcText, acq, targetTier, sv, BIS, KNOWN_STATS, runtimeStats, importing, STAT_CACHE_KEY, BASE_STORAGE_KEY, STORAGE_KEY, charName]);
-  var clearSimc = useCallback(function() { setSr(null); setFeedback(null); setSimcOpen(true); persist(STORAGE_KEY, null); if (onImport) onImport(null); if (onClear) onClear(); }, [STORAGE_KEY, onClear, onImport]);
+  var clearSimc = useCallback(function() { setSr(null); setFeedback(null); setSimcOpen(true); persist(STORAGE_KEY, null); if (onClear) onClear(); }, [STORAGE_KEY, onClear]);
   var handlePaste = useCallback(function(e) {
     var text = e.clipboardData.getData('text');
     if (!text || !text.trim()) return;
@@ -227,16 +251,16 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     e.preventDefault();
     if (parsed.cnt === 0) {
       setSimcText(text);
-      setFeedback({ ok: false, msg: "\uC7A5\uBE44 \uB370\uC774\uD130\uB97C \uCC3E\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4." });
+      setFeedback({ ok: false, msg: t("ui.noGearData") });
       return;
     }
     if (parsed.ci.className && parsed.ci.spec) {
       var detected = findSpecBySimC(parsed.ci.className, parsed.ci.spec);
       if (!detected) {
-        var clsName = CLASS_KO[parsed.ci.className] || parsed.ci.className;
-        var specName = SPEC_KO[parsed.ci.spec] || parsed.ci.spec;
+        var clsName = t("classes." + parsed.ci.className) || parsed.ci.className;
+        var specName = t("specs." + parsed.ci.spec) || parsed.ci.spec;
         setSimcText(text);
-        setFeedback({ ok: false, msg: clsName + " " + specName + " \uC740(\uB294) \uC544\uC9C1 \uC9C0\uC6D0\uB418\uC9C0 \uC54A\uB294 \uC804\uBB38\uD654\uC785\uB2C8\uB2E4." });
+        setFeedback({ ok: false, msg: t("ui.unsupportedSpec", { cls: clsName, spec: specName }) });
         return;
       }
       if (detected.SPEC_KEY !== spec.SPEC_KEY && onSpecSwitch) {
@@ -265,74 +289,86 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var displayBis = useMemo(function() { var items = filter === "all" ? BIS : BIS.filter(function(i) { return i.dungeon === filter; }); return sr ? sortByPriority(items, sr, targetInfo.max, allStats, WORST_STATS) : items; }, [filter, sr, targetInfo.max, allStats, BIS, WORST_STATS]);
   var displayAlts = useMemo(function() { return filter === "all" ? [] : ALTS.filter(function(a) { return a.dungeon === filter; }); }, [filter, ALTS]);
 
-  if (!loaded) return (<div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0a0a12", color: theme.accent }}><span style={{ fontFamily: "'Cinzel', serif", fontSize: 18 }}>{"\uBD88\uB7EC\uC624\uB294 \uC911..."}</span></div>);
+  if (!loaded) return (<div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0a0a12", color: theme.accent }}><span style={{ fontFamily: "'Cinzel', serif", fontSize: 18 }}>{t("ui.loading")}</span></div>);
 
   return (
     <div style={{ maxWidth: 960, margin: "0 auto", padding: "16px 24px 24px" }}>
       <div style={{ marginBottom: 14 }}>
         <div className="tog" onClick={function() { setSimcOpen(!simcOpen); }} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", borderRadius: 8, background: sr ? "#0c0c16" : theme.accentBg, border: "1px solid " + (sr ? "#1e1e30" : theme.accentBorder) }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
-          <span style={{ fontSize: 13, fontWeight: 600, color: sr ? theme.accent + "cc" : theme.accent }}>{sr ? "SimC \uAC31\uC2E0" : "SimC \uAC00\uC838\uC624\uAE30"}</span>
-          {!sr && <span style={{ fontSize: 11, color: theme.accent + "88" }}>{"\u2014 /simc \uCD9C\uB825\uC744 \uBD99\uC5EC\uB123\uC5B4 \uC7A5\uBE44\uB97C \uBE44\uAD50\uD558\uC138\uC694"}</span>}
+          <span style={{ fontSize: 13, fontWeight: 600, color: sr ? theme.accent + "cc" : theme.accent }}>{sr ? t("ui.simcRefresh") : t("ui.simcImport")}</span>
+          {!sr && <span style={{ fontSize: 11, color: theme.accent + "88" }}>{t("ui.simcPasteHint")}</span>}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#445566" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: "auto", transition: "transform .2s", transform: simcOpen ? "rotate(180deg)" : "rotate(0)" }}><polyline points="6 9 12 15 18 9" /></svg>
         </div>
         {simcOpen && (
           <div style={{ marginTop: 8, padding: 16, background: "#0c0c16", border: "1px solid #1e1e30", borderRadius: 8, overflow: "hidden" }}>
-            <textarea className="sta" value={simcText} onChange={function(e) { setSimcText(e.target.value); }} onPaste={handlePaste} placeholder={'/simc 출력 전체를 여기에 붙여넣으세요'} />
+            <textarea className="sta" value={simcText} onChange={function(e) { setSimcText(e.target.value); }} onPaste={handlePaste} placeholder={t("ui.simcPlaceholder")} />
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
               {feedback && <span style={{ fontSize: 12, fontWeight: 600, color: feedback.ok ? "#8dffaa" : "#ff8d8d" }}>{feedback.msg}</span>}
-              {sr && <button className="sb" onClick={clearSimc} style={{ marginLeft: "auto", padding: "3px 10px", background: "#1a1520", border: "1px solid #2a2030", color: "#886678", fontSize: 11 }}>{"\uCD08\uAE30\uD654"}</button>}
+              {sr && <button className="sb" onClick={clearSimc} style={{ marginLeft: "auto", padding: "3px 10px", background: "#1a1520", border: "1px solid #2a2030", color: "#886678", fontSize: 11 }}>{t("ui.reset")}</button>}
             </div>
           </div>
         )}
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-        {TIERS.map(function(t) { var sel = targetTier === t.key; return (<button key={t.key} className="tier-btn" onClick={function() { changeTarget(t.key); }} style={{ borderColor: sel ? t.color : t.color + "44", color: t.color, opacity: sel ? 1 : 0.5, background: sel ? t.color + "22" : "transparent" }}>{t.ko + " (" + t.max + ")"}</button>); })}
-        <span style={{ marginLeft: "auto", fontSize: 12, color: "#556666" }}>{doneCount + " / " + BIS.length}</span>
+        {TIERS.map(function(ti) { var sel = targetTier === ti.key; return (<button key={ti.key} className="tier-btn" onClick={function() { changeTarget(ti.key); }} style={{ borderColor: sel ? ti.color : ti.color + "44", color: ti.color, opacity: sel ? 1 : 0.5, background: sel ? ti.color + "22" : "transparent" }}>{t("tiers." + ti.key) + " (" + ti.max + ")"}</button>); })}
+        <span style={{ marginLeft: "auto", fontSize: 12, color: "#556666" }}>
+          {sr && sr.ci && sr.ci.avgIlvl ? (t("ui.avg") + " " + sr.ci.avgIlvl + " · ") : ""}
+          {"BiS " + (sr ? Object.keys(sr.matched || {}).length : 0)}
+          {sr && Object.keys(sr.altItems || {}).length > 0 ? " · Alt " + Object.keys(sr.altItems).length : ""}
+          {" · " + doneCount + " / " + BIS.length}
+        </span>
       </div>
       <div style={{ marginTop: 8 }}>
         <div style={{ height: 6, background: "#1a1a28", borderRadius: 3, overflow: "hidden" }}><div className="pfill" style={{ height: "100%", width: (doneCount / BIS.length * 100) + "%", borderRadius: 3, transition: "width .4s", background: theme.shimmer, backgroundSize: "200% 100%" }} /></div>
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
-        <button className={"fbtn" + (filter === "all" ? " active" : "")} onClick={function() { setFilter("all"); }} style={{ padding: "4px 12px", borderRadius: 6, background: filter === "all" ? theme.accentBg : "#0f0f18", color: filter === "all" ? theme.accent : "#556666", fontSize: 12, fontWeight: 600 }}>{"\uC804\uCCB4"}</button>
-        {DUNGEONS.map(function(d) { var c2 = DC[d], cnt = dungeonCounts[d]; if (!cnt || (cnt.bis === 0 && cnt.alt === 0)) return null; var act = filter === d; var bisItems = BIS.filter(function(i) { return i.dungeon === d; }); var rem = bisItems.length - bisItems.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length; return (
+        <button className={"fbtn" + (filter === "all" ? " active" : "")} onClick={function() { setFilter("all"); }} style={{ padding: "4px 12px", borderRadius: 6, background: filter === "all" ? theme.accentBg : "#0f0f18", color: filter === "all" ? theme.accent : "#556666", fontSize: 12, fontWeight: 600 }}>{t("ui.all")}</button>
+        {DUNGEONS.map(function(d) {
+          var cnt = dungeonCounts[d]; if (!cnt || (cnt.bis === 0 && cnt.alt === 0)) return null;
+          return { dungeon: d, score: sr ? calcDungeonScore(d, BIS, ALTS, sr, targetInfo.max, allStats, WORST_STATS, acq) : 0 };
+        }).filter(Boolean).sort(function(a, b) { return b.score - a.score; }).map(function(item) {
+          var d = item.dungeon, c2 = DC[d], cnt = dungeonCounts[d], act = filter === d;
+          var bisItems = BIS.filter(function(i) { return i.dungeon === d; });
+          var rem = bisItems.length - bisItems.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
+          return (
           <button key={d} className={"fbtn" + (act ? " active" : "")} onClick={function() { setFilter(act ? "all" : d); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? c2.g : (rem === 0 ? "#0d1a0d" : c2.g + "44"), border: "1px solid " + (act ? c2.b : (rem === 0 ? "#1a3a1a" : c2.b) + "33"), fontSize: 12, fontWeight: 600, color: act ? c2.t : (rem === 0 ? "#4dca6b" : c2.t) }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: rem === 0 ? "#4dca6b" : c2.b, display: "inline-block", animation: rem === 0 ? "none" : "pulse 2s infinite" }} />
-            <span>{DS[d]}</span>
+            <span>{t("dungeons." + d)}</span>
             <span style={{ color: rem === 0 ? "#2a5a2a" : "#776655", fontSize: 11 }}>{rem === 0 ? "\u2713" : rem}</span>
             {cnt.alt > 0 && <span style={{ color: "#e8a84c", fontSize: 10 }}>{"+" + cnt.alt}</span>}
           </button>); })}
       </div>
       {sr && (
         <div style={{ display: "flex", gap: 12, marginTop: 8, fontSize: 10, color: "#556666", flexWrap: "wrap" }}>
-          <span><span style={{ color: "#ff6b6b" }}>{"\u25B2"}</span>{" \uB2A5\uB825\uCE58 \uBD88\uC77C\uCE58"}</span>
-          <span><span style={{ color: "#e8a84c" }}>{"\u25C6"}</span>{" Alt \uC7A5\uCC29"}</span>
-          <span><span style={{ color: "#6dca8b" }}>{"\u2191"}</span>{" BiS \uB4F1\uAE09\u2191"}</span>
-          <span><span style={{ color: "#4dca6b" }}>{"\u2713"}</span>{" \uC644\uB8CC"}</span>
-          <span style={{ color: "#445555" }}>{"\uFF08\u2212N\uFF09 = \uBAA9\uD45C " + targetInfo.max + " \uB300\uBE44 \uAC2D"}</span>
+          <span><span style={{ color: "#ff6b6b" }}>{"\u25B2"}</span>{" " + t("ui.tierStatMismatch")}</span>
+          <span><span style={{ color: "#e8a84c" }}>{"\u25C6"}</span>{" " + t("ui.tierAltEquipped")}</span>
+          <span><span style={{ color: "#6dca8b" }}>{"\u2191"}</span>{" " + t("ui.tierBisUpgrade")}</span>
+          <span><span style={{ color: "#4dca6b" }}>{"\u2713"}</span>{" " + t("ui.tierDone")}</span>
+          <span style={{ color: "#445555" }}>{t("ui.deficitInfo", { max: targetInfo.max })}</span>
         </div>
       )}
       {filter !== "all" && DC[filter] && (
         <div style={{ padding: "8px 0" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 8, background: DC[filter].g + "cc", border: "1px solid " + DC[filter].b + "44" }}>
-            <span style={{ fontSize: 18, fontWeight: 700, color: DC[filter].t, fontFamily: "'Cinzel',serif" }}>{filter}</span>
-            <span style={{ marginLeft: "auto", fontSize: 12, color: "#778888" }}>{"BiS " + displayBis.length}{displayAlts.length > 0 ? " + Alt " + displayAlts.length : ""}{sr && " \u00B7 \uC6B0\uC120\uC21C\uC704\uC21C"}</span>
+            <span style={{ fontSize: 18, fontWeight: 700, color: DC[filter].t, fontFamily: "'Cinzel',serif" }}>{t("dungeonsFull." + filter)}</span>
+            <span style={{ marginLeft: "auto", fontSize: 12, color: "#778888" }}>{"BiS " + displayBis.length}{displayAlts.length > 0 ? " + Alt " + displayAlts.length : ""}{sr && " \u00B7 " + t("ui.priority")}</span>
           </div>
         </div>
       )}
       <div style={{ marginTop: 12 }}>
-        {filter !== "all" && displayBis.length > 0 && <div style={{ fontSize: 11, fontWeight: 700, color: theme.accent, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>{"BiS \uC544\uC774\uD15C"}</div>}
+        {filter !== "all" && displayBis.length > 0 && <div style={{ fontSize: 11, fontWeight: 700, color: theme.accent, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>{t("ui.bisItems")}</div>}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
           {displayBis.map(function(item, idx) {
             var p = sr ? calcPriority(item, sr, targetInfo.max, allStats, WORST_STATS) : null;
-            if (acq[item.id] && p && p.tier !== 4) p = { tier: 4, deficit: 0, ilvl: p.ilvl, label: "\uC644\uB8CC", color: "#4dca6b", worst: false };
+            if (acq[item.id] && p && p.tier !== 4) p = { tier: 4, deficit: 0, ilvl: p.ilvl, labelKey: "done", color: "#4dca6b", worst: false };
             return <ItemCard key={item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} worstStats={WORST_STATS} targetBonus={targetInfo.bonus} />;
           })}
         </div>
         {displayAlts.length > 0 && (
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#e8a84c", marginTop: 20, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 8 }}>
-              <span>{"Alt \u2014 \uB3D9\uC77C \uBCF4\uC870 \uB2A5\uB825\uCE58"}</span><span style={{ height: 1, flex: 1, background: "#3a3020" }} />
+              <span>{t("ui.altSameStats")}</span><span style={{ height: 1, flex: 1, background: "#3a3020" }} />
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
               {displayAlts.map(function(item, idx) {

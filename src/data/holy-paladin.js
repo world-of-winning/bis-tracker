@@ -1,4 +1,4 @@
-export var SPEC_LABEL = "신성 성기사";
+export var SPEC_LABEL = "Holy Paladin";
 export var SPEC_KEY = "holy-paladin";
 export var SIMC_CLASS = "paladin";
 export var SIMC_SPEC = "holy";
@@ -15,32 +15,32 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "머리", simcSlot: "head", en: "Gutcrusher Greathelm", ko: "내장분쇄자 철갑투구", id: 258579, dungeon: "Skyreach", stats: ["mastery","vers"] },
-  { slot: "목", simcSlot: "neck", en: "Necklace of the Twisting Void", ko: "뒤틀리는 공허의 목걸이", id: 151309, dungeon: "Seat of the Triumvirate", stats: ["haste","vers"] },
-  { slot: "어깨", simcSlot: "shoulder", en: "Amalgamation's Harness", ko: "융합체의 멜빵", id: 251164, dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
-  { slot: "망토", simcSlot: "back", en: "Fluxweave Cloak", ko: "융제매듭 망토", id: 251206, dungeon: "Nexus-Point Xenas", stats: ["mastery","vers"] },
-  { slot: "가슴", simcSlot: "chest", en: "Breastplate of the Dark Touch", ko: "어둠의 손길 가슴보호갑", id: 151329, dungeon: "Seat of the Triumvirate", stats: ["haste","mastery"] },
-  { slot: "손목", simcSlot: "wrist", en: "Trollhunter's Bands", ko: "트롤사냥꾼의 손목매듭", id: 263193, dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
-  { slot: "장갑", simcSlot: "hands", en: "Voidclaw Gauntlets", ko: "공허발톱 건틀릿", id: 151332, dungeon: "Seat of the Triumvirate", stats: ["haste","vers"] },
-  { slot: "허리", simcSlot: "waist", en: "Girdle of the Shadowguard", ko: "어둠수호병의 요대", id: 151327, dungeon: "Seat of the Triumvirate", stats: ["haste","mastery"] },
-  { slot: "다리", simcSlot: "legs", en: "Lightscarred Cuisses", ko: "빛흉터 다리가리개", id: 251208, dungeon: "Nexus-Point Xenas", stats: ["haste","vers"] },
-  { slot: "발", simcSlot: "feet", en: "Oathsworn Stompers", ko: "서약신도 디딤장화", id: 251107, dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { slot: "반지 1", simcSlot: "finger1", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { slot: "반지 2", simcSlot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { slot: "장신구 1", simcSlot: "trinket1", en: "Emerald Coach's Whistle", ko: "에메랄드 감독의 호루라기", id: 193718, dungeon: "Algeth'ar Academy", stats: [] },
-  { slot: "장신구 2", simcSlot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, dungeon: "Windrunner Spire", stats: ["crit","haste"] },
-  { slot: "무기", simcSlot: "main_hand", en: "Spellboon Saber", ko: "주문은총 사브르", id: 193710, dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
-  { slot: "방패", simcSlot: "off_hand", en: "Crawth's Scaleguard", ko: "크로스의 비늘보호대", id: 258531, dungeon: "Algeth'ar Academy", stats: ["mastery","vers"] },
+  { slot: "head", en: "Gutcrusher Greathelm", ko: "내장분쇄자 철갑투구", id: 258579, dungeon: "Skyreach", stats: ["mastery","vers"] },
+  { slot: "neck", en: "Necklace of the Twisting Void", ko: "뒤틀리는 공허의 목걸이", id: 151309, dungeon: "Seat of the Triumvirate", stats: ["haste","vers"] },
+  { slot: "shoulder", en: "Amalgamation's Harness", ko: "융합체의 멜빵", id: 251164, dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
+  { slot: "back", en: "Fluxweave Cloak", ko: "융제매듭 망토", id: 251206, dungeon: "Nexus-Point Xenas", stats: ["mastery","vers"] },
+  { slot: "chest", en: "Breastplate of the Dark Touch", ko: "어둠의 손길 가슴보호갑", id: 151329, dungeon: "Seat of the Triumvirate", stats: ["haste","mastery"] },
+  { slot: "wrist", en: "Trollhunter's Bands", ko: "트롤사냥꾼의 손목매듭", id: 263193, dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
+  { slot: "hands", en: "Voidclaw Gauntlets", ko: "공허발톱 건틀릿", id: 151332, dungeon: "Seat of the Triumvirate", stats: ["haste","vers"] },
+  { slot: "waist", en: "Girdle of the Shadowguard", ko: "어둠수호병의 요대", id: 151327, dungeon: "Seat of the Triumvirate", stats: ["haste","mastery"] },
+  { slot: "legs", en: "Lightscarred Cuisses", ko: "빛흉터 다리가리개", id: 251208, dungeon: "Nexus-Point Xenas", stats: ["haste","vers"] },
+  { slot: "feet", en: "Oathsworn Stompers", ko: "서약신도 디딤장화", id: 251107, dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { slot: "finger1", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
+  { slot: "trinket1", en: "Emerald Coach's Whistle", ko: "에메랄드 감독의 호루라기", id: 193718, dungeon: "Algeth'ar Academy", stats: [] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, dungeon: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "main_hand", en: "Spellboon Saber", ko: "주문은총 사브르", id: 193710, dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
+  { slot: "off_hand", en: "Crawth's Scaleguard", ko: "크로스의 비늘보호대", id: 258531, dungeon: "Algeth'ar Academy", stats: ["mastery","vers"] },
 ];
 
 export var ALTS = [
-  { forSlot: "목", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", dungeon: "Windrunner Spire", stats: ["haste","vers"] },
-  { forSlot: "무기", id: 193707, en: "Final Grade", ko: "최종 학점", dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
-  { forSlot: "무기", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "무기", id: 251174, en: "Deceiver's Rotbow", ko: "기만자의 부식활", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "무기", id: 251201, en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { forSlot: "무기", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", dungeon: "Skyreach", stats: ["haste","mastery"] },
-  { forSlot: "발", id: 251169, en: "Footwraps of Ill-Fate", ko: "불길한 운명의 발등싸개", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", dungeon: "Windrunner Spire", stats: ["haste","vers"] },
+  { forSlot: "weapon", id: 193707, en: "Final Grade", ko: "최종 학점", dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 251174, en: "Deceiver's Rotbow", ko: "기만자의 부식활", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 251201, en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", dungeon: "Skyreach", stats: ["haste","mastery"] },
+  { forSlot: "feet", id: 251169, en: "Footwraps of Ill-Fate", ko: "불길한 운명의 발등싸개", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
 ];
 
 export var WORST_STATS = ["crit"];

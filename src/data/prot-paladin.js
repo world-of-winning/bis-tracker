@@ -1,4 +1,4 @@
-export var SPEC_LABEL = "보호 성기사";
+export var SPEC_LABEL = "Protection Paladin";
 export var SPEC_KEY = "prot-paladin";
 export var SIMC_CLASS = "paladin";
 export var SIMC_SPEC = "protection";
@@ -15,34 +15,34 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "머리", simcSlot: "head", en: "Skeleton Lord's Cranium", ko: "해골 군주의 두개골", id: 49819, dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { slot: "목", simcSlot: "neck", en: "Barbed Ymirheim Choker", ko: "뾰족한 이미르하임 목장식", id: 50228, dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { slot: "어깨", simcSlot: "shoulder", en: "Searing Spaulders", ko: "작열하는 어깨덮개", id: 251157, dungeon: "Nexus-Point Xenas", stats: ["crit","haste"] },
-  { slot: "망토", simcSlot: "back", en: "Defiant Defender's Drape", ko: "저항하는 수호자의 외투", id: 260312, dungeon: "Magisters' Terrace", stats: ["crit","haste"] },
-  { slot: "가슴", simcSlot: "chest", en: "Frost Wyrm Ribcage", ko: "서리고룡 뼈갑옷", id: 50272, dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { slot: "손목", simcSlot: "wrist", en: "Kasreth's Bindings", ko: "카스레스의 결속띠", id: 251203, dungeon: "Nexus-Point Xenas", stats: ["crit","vers"] },
-  { slot: "장갑", simcSlot: "hands", en: "Embergrove Grasps", ko: "잿불숲 손아귀", id: 251081, dungeon: "Windrunner Spire", stats: ["crit","haste"] },
-  { slot: "허리", simcSlot: "waist", en: "Bent Gold Belt", ko: "구부러진 황금띠", id: 49808, dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { slot: "다리", simcSlot: "legs", en: "Lightscarred Cuisses", ko: "빛흉터 다리가리개", id: 251208, dungeon: "Nexus-Point Xenas", stats: ["haste","vers"] },
-  { slot: "발", simcSlot: "feet", en: "Sabatons of Furious Revenge", ko: "격노한 복수의 발덮개", id: 251091, dungeon: "Windrunner Spire", stats: ["crit","vers"] },
-  { slot: "반지 2", simcSlot: "finger2", en: "Purloined Wedding Ring", ko: "훔친 결혼반지", id: 49812, dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { slot: "장신구 1", simcSlot: "trinket1", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, dungeon: "Windrunner Spire", stats: ["crit","haste"] },
-  { slot: "장신구 2", simcSlot: "trinket2", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, dungeon: "Skyreach", stats: [] },
-  { slot: "무기", simcSlot: "main_hand", en: "Scepter of the Endless Night", ko: "끝없는 밤의 홀", id: 258525, dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { slot: "방패", simcSlot: "off_hand", en: "Viryx's Indomitable Bulwark", ko: "비릭스의 불굴의 보루 방패", id: 258049, dungeon: "Skyreach", stats: ["crit","mastery"] },
+  { slot: "head", en: "Skeleton Lord's Cranium", ko: "해골 군주의 두개골", id: 49819, dungeon: "Pit of Saron", stats: ["crit","haste"] },
+  { slot: "neck", en: "Barbed Ymirheim Choker", ko: "뾰족한 이미르하임 목장식", id: 50228, dungeon: "Pit of Saron", stats: ["crit","haste"] },
+  { slot: "shoulder", en: "Searing Spaulders", ko: "작열하는 어깨덮개", id: 251157, dungeon: "Nexus-Point Xenas", stats: ["crit","haste"] },
+  { slot: "back", en: "Defiant Defender's Drape", ko: "저항하는 수호자의 외투", id: 260312, dungeon: "Magisters' Terrace", stats: ["crit","haste"] },
+  { slot: "chest", en: "Frost Wyrm Ribcage", ko: "서리고룡 뼈갑옷", id: 50272, dungeon: "Pit of Saron", stats: ["crit","haste"] },
+  { slot: "wrist", en: "Kasreth's Bindings", ko: "카스레스의 결속띠", id: 251203, dungeon: "Nexus-Point Xenas", stats: ["crit","vers"] },
+  { slot: "hands", en: "Embergrove Grasps", ko: "잿불숲 손아귀", id: 251081, dungeon: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "waist", en: "Bent Gold Belt", ko: "구부러진 황금띠", id: 49808, dungeon: "Pit of Saron", stats: ["crit","haste"] },
+  { slot: "legs", en: "Lightscarred Cuisses", ko: "빛흉터 다리가리개", id: 251208, dungeon: "Nexus-Point Xenas", stats: ["haste","vers"] },
+  { slot: "feet", en: "Sabatons of Furious Revenge", ko: "격노한 복수의 발덮개", id: 251091, dungeon: "Windrunner Spire", stats: ["crit","vers"] },
+  { slot: "finger2", en: "Purloined Wedding Ring", ko: "훔친 결혼반지", id: 49812, dungeon: "Pit of Saron", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, dungeon: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, dungeon: "Skyreach", stats: [] },
+  { slot: "main_hand", en: "Scepter of the Endless Night", ko: "끝없는 밤의 홀", id: 258525, dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { slot: "off_hand", en: "Viryx's Indomitable Bulwark", ko: "비릭스의 불굴의 보루 방패", id: 258049, dungeon: "Skyreach", stats: ["crit","mastery"] },
 ];
 
 export var ALTS = [
-  { forSlot: "무기", id: 49802, en: "Garfrost's Two-Ton Hammer", ko: "가프로스트의 2톤 망치", dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "무기", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "무기", id: 251095, en: "Hurricane's Heart", ko: "태풍의 심장", dungeon: "Windrunner Spire", stats: ["crit","haste"] },
-  { forSlot: "무기", id: 251105, en: "Ward of the Spellbreaker", ko: "주문파괴자의 수호물", dungeon: "Magisters' Terrace", stats: ["crit","mastery"] },
-  { forSlot: "무기", id: 251111, en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", dungeon: "Magisters' Terrace", stats: ["crit","haste"] },
-  { forSlot: "무기", id: 251162, en: "Traitor's Talon", ko: "배신자의 갈퀴발톱", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
-  { forSlot: "무기", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "무기", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "무기", id: 251178, en: "Ceremonial Hexblade", ko: "의식용 사술칼날", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
-  { forSlot: "반지", id: 251217, en: "Occlusion of Void", ko: "공허의 맞물림", dungeon: "Nexus-Point Xenas", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 49802, en: "Garfrost's Two-Ton Hammer", ko: "가프로스트의 2톤 망치", dungeon: "Pit of Saron", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Pit of Saron", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 251095, en: "Hurricane's Heart", ko: "태풍의 심장", dungeon: "Windrunner Spire", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 251105, en: "Ward of the Spellbreaker", ko: "주문파괴자의 수호물", dungeon: "Magisters' Terrace", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251111, en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", dungeon: "Magisters' Terrace", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 251162, en: "Traitor's Talon", ko: "배신자의 갈퀴발톱", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251178, en: "Ceremonial Hexblade", ko: "의식용 사술칼날", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
+  { forSlot: "ring", id: 251217, en: "Occlusion of Void", ko: "공허의 맞물림", dungeon: "Nexus-Point Xenas", stats: ["crit","haste"] },
 ];
 
 export var WORST_STATS = ["mastery"];

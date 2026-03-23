@@ -91,26 +91,3 @@ export function findSpecBySimC(className, specName) {
   }) || null;
 }
 
-export var CLASS_KO = {
-  deathknight: "죽음의 기사", demonhunter: "악마사냥꾼",
-  druid: "드루이드", evoker: "기원사", hunter: "사냥꾼",
-  mage: "마법사", monk: "수도사", paladin: "성기사",
-  priest: "사제", rogue: "도적", shaman: "주술사",
-  warlock: "흑마법사", warrior: "전사"
-};
-
-export var SPEC_KO = {
-  blood: "혈기", frost: "냉기", unholy: "부정",
-  havoc: "파멸", vengeance: "복수",
-  balance: "조화", feral: "야성", guardian: "수호", restoration: "복원",
-  devastation: "황폐", preservation: "보존", augmentation: "증강",
-  beastmastery: "야수", marksmanship: "사격", survival: "생존",
-  arcane: "비전", fire: "화염",
-  brewmaster: "양조", windwalker: "풍운", mistweaver: "운무",
-  holy: "신성", protection: "보호", retribution: "징벌",
-  discipline: "수양", shadow: "암흑",
-  assassination: "암살", outlaw: "무법", subtlety: "잠행",
-  elemental: "정기", enhancement: "고양",
-  affliction: "고통", demonology: "악마", destruction: "파괴",
-  arms: "무기", fury: "분노"
-};
