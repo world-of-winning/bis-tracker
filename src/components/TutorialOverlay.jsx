@@ -20,11 +20,23 @@ export default function TutorialOverlay({ step, onNext, onPrev, onSkip }) {
     }, 350);
   }, [stepConfig]);
 
+  var remeasure = useCallback(function() {
+    if (!stepConfig) return;
+    var el = document.querySelector(stepConfig.selector);
+    if (!el) { setRect(null); return; }
+    var r = el.getBoundingClientRect();
+    setRect({ x: r.left - 6, y: r.top - 6, w: r.width + 12, h: r.height + 12 });
+  }, [stepConfig]);
+
   useEffect(function() {
     measure();
-    window.addEventListener("resize", measure);
-    return function() { window.removeEventListener("resize", measure); };
-  }, [measure]);
+    window.addEventListener("resize", remeasure);
+    window.addEventListener("scroll", remeasure, true);
+    return function() {
+      window.removeEventListener("resize", remeasure);
+      window.removeEventListener("scroll", remeasure, true);
+    };
+  }, [measure, remeasure]);
 
   if (step === null || !stepConfig) return null;
 
