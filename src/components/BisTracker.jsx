@@ -501,12 +501,15 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           var act = filter === ns.source;
           var nsBis = activeItems.filter(function(i) { return getSource(i) === ns.source; });
           var nsBisRem = nsBis.length - nsBis.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
-          var nsRem = nsBisRem;
+          var nsAltItems = mergedAlts.filter(function(a) { return getSource(a) === ns.source; });
+          var nsAltDone = sr && sr.gear ? nsAltItems.filter(function(a) { var fs = a.forSlot; var slots = fs === "ring" ? ["finger1","finger2"] : fs === "trinket" ? ["trinket1","trinket2"] : fs === "weapon" ? ["main_hand","off_hand"] : fs === "off_hand" ? ["off_hand"] : [fs]; return slots.some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; }); }).length : 0;
+          var nsAltRem = nsAltItems.length - nsAltDone;
+          var nsRem = nsBisRem + nsAltRem;
           return (
             <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : (nsRem === 0 ? "#0d1a0d" : "#1a102844"), border: "1px solid " + (act ? "#8866aa" : (nsRem === 0 ? "#1a3a1a" : "#8866aa33")), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : (nsRem === 0 ? "#4dca6b" : "#8866aa") }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: nsRem === 0 ? "#4dca6b" : "#8866aa", display: "inline-block" }} />
               <span>{t("sources." + ns.source) || ns.source}</span>
-              {nsRem === 0 ? <span style={{ color: "#2a5a2a", fontSize: 11 }}>{"\u2713"}</span> : <span style={{ color: "#c4aadd", fontSize: 11, fontWeight: 700 }}>{nsRem}</span>}
+              {nsRem === 0 ? <span style={{ color: "#2a5a2a", fontSize: 11 }}>{"\u2713"}</span> : <span style={{ fontSize: 11 }}><span style={{ color: nsBisRem > 0 ? "#c4aadd" : "#8866aa44", fontWeight: 700 }}>{nsBisRem}</span>{nsAltRem > 0 && <span style={{ color: "#3a3a3a" }}>{" + "}</span>}{nsAltRem > 0 && <span style={{ color: "#776655", fontWeight: 400 }}>{nsAltRem}</span>}</span>}
             </button>
           );
         })}

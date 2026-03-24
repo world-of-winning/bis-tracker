@@ -200,23 +200,23 @@
     },
     "progress": {
       "title": "Completion Rate",
-      "desc": "Shows how many of your 16 slots meet the target.\nSolid = BiS done, translucent = Alt equipped.\nReplacing Alts with BiS grows the solid portion."
+      "desc": "Shows how many of your 16 slots meet the target.\nSolid bar = BiS done, green bar = M+ BiS equipped, faint bar = Alt equipped.\nAcquiring BiS grows the solid portion."
     },
     "dungeon": {
-      "title": "Dungeon Filter",
-      "desc": "Click a dungeon to show only its drops.\nThe number shows remaining items to farm, sorted by priority."
+      "title": "Source Filter",
+      "desc": "Click a dungeon/raid/crafted source to show only its items.\nBright number = BiS remaining, dim number = Alt remaining.\nHigher priority sources are sorted first."
     },
     "tier1": {
       "title": "▲ Stat Mismatch (Top Priority)",
       "desc": "Your equipped item has completely different secondary stats from BiS.\nBiggest performance loss — replace this first."
     },
     "tier2": {
-      "title": "◆ Alt Equipped",
-      "desc": "You have an alternative item with the same secondary stats as BiS.\nSmall performance gap — swap to BiS when you get it."
+      "title": "◆ Alt / M+ BiS Equipped",
+      "desc": "You have an alt with matching stats or M+ BiS equipped.\nM+ BiS shows as a green card. Swap to raid BiS when available."
     },
     "tier3": {
-      "title": "↑ Upgrade Needed",
-      "desc": "You have the BiS item but below your target item level.\nFarm a higher difficulty of the same dungeon to upgrade."
+      "title": "↑ Enhance / Next Tier Needed",
+      "desc": "You have the BiS item but below target item level.\n'Enhance needed' = upgradeable within current tier. 'Next tier needed' = re-acquire from higher content."
     },
     "tier4": {
       "title": "✓ Farming Done",
