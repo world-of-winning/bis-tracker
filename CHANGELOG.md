@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.2.2
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.1...v1.2.2)
+
+### 🚀 Enhancements
+
+- M+ bis tracking, alt card improvements, and data fixes ([27885ce](https://github.com/world-of-winning/bis-tracker/commit/27885ce))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.2.1
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.1.1...v1.2.1)
