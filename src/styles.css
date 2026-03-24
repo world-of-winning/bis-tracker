@@ -28,7 +28,7 @@
 .ic:hover { border-color: #3a3520; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
 .ic.t1 { border-color: #4a2020 !important; animation: urgPulse 3s ease-in-out infinite; }
 .ic.t2 { border-color: #4a3a18 !important; animation: altGlow 3s ease-in-out infinite; }
-.ic.t3 { border-color: #204a20 !important; }
+.ic.t3 { border-color: #4a3a18 !important; animation: altGlow 3s ease-in-out infinite; }
 .ic.t4 { opacity: 0.5; }
 .ic.t4:hover { opacity: 0.75; }
 .ic.altc { border-color: #4a3a18 !important; }

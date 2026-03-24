@@ -69,12 +69,12 @@ function calcPriority(bisItem, sr, targetIlvl, stats, worstStats) {
   var deficit = Math.max(0, targetIlvl - eqIlvl);
   var worst = eq ? hasWorstStat(eq.id, stats, worstStats) : false;
   if (inBag) { var bI = inBag.ilvl || 0, bD = Math.max(0, targetIlvl - bI); if (bD <= 0) return { tier: 4, deficit: 0, ilvl: bI, labelKey: "bagDone", color: "#4dca6b", worst: false }; return { tier: 3, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#caca3d", worst: false }; }
-  if (isBis) { if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", worst: false }; var capped = TIERS.some(function(ti) { return ti.max === eqIlvl && ti.max < targetIlvl; }); return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#6dca8b", worst: false, capped: capped }; }
+  if (isBis) { if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", worst: false }; var lowerTier = false; for (var k = 0; k < TIERS.length; k++) { if (eqIlvl <= TIERS[k].max) { lowerTier = TIERS[k].max < targetIlvl; break; } } return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", worst: false, lowerTier: lowerTier }; }
   if (isAlt) {
-    // M+ BiS equipped → always tier 2 (raid BiS is different, never truly "done")
+    // M+ BiS equipped → tier 2 (raid BiS is different, never truly "done")
     if (isAlt === "mythic") {
-      if (deficit <= 0) return { tier: 2, deficit: 0, ilvl: eqIlvl, labelKey: "mythicBisDone", color: "#6dca8b", worst: false };
-      return { tier: 2, deficit: deficit, ilvl: eqIlvl, labelKey: "mythicBis", color: "#6dca8b", worst: false };
+      if (deficit <= 0) return { tier: 2, deficit: 0, ilvl: eqIlvl, labelKey: "mythicBisDone", color: "#4dca6b", worst: false };
+      return { tier: 2, deficit: deficit, ilvl: eqIlvl, labelKey: "mythicBis", color: "#e8a84c", worst: false };
     }
     if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", worst: false };
     // Alt too far below target (more than one tier gap) → treat as wrong item
@@ -95,10 +95,13 @@ function autoSelectTier(avgIlvl) {
   }
   return TIERS[TIERS.length - 1].key;
 }
+function sortKey(p) { if (p.labelKey === "mythicBisDone") return 3.5; if (p.lowerTier) return 2; return p.tier; }
 function sortByPriority(items, sr, t, stats, worstStats) {
   return items.slice().sort(function(a, b) {
     var pa = calcPriority(a, sr, t, stats, worstStats), pb = calcPriority(b, sr, t, stats, worstStats);
-    if (pa.tier !== pb.tier) return pa.tier - pb.tier;
+    var sa = sortKey(pa), sb = sortKey(pb);
+    if (sa !== sb) return sa - sb;
+    if (pa.lowerTier !== pb.lowerTier) return pa.lowerTier ? -1 : 1;
     if (pa.worst !== pb.worst) return pa.worst ? -1 : 1;
     return pb.deficit - pa.deficit;
   });
@@ -246,14 +249,14 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
   var hasDiff = eq && eq.id !== item.id;
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
   var tier = (p && p.tier) ? p.tier : 0;
-  var isMythicBis = p && p.labelKey === "mythicBis";
-  var visualTier = isMythicBis ? 3 : tier;
+  var isMythicBisDone = p && p.labelKey === "mythicBisDone";
+  var visualTier = isMythicBisDone ? 4 : tier;
   var cardClass = "ic card-enter";
   if (visualTier === 1) cardClass += " t1"; else if (visualTier === 2) cardClass += " t2"; else if (visualTier === 3) cardClass += " t3"; else if (visualTier === 4) cardClass += " t4";
   if (isAlt && !altEquipped) cardClass += " altc";
   if (altEquipped) cardClass += " t4";
-  var bgs = { 0: "linear-gradient(135deg, #101018, " + c.g + "88)", 1: "linear-gradient(135deg, #140e0e, #1a0f0f)", 2: "linear-gradient(135deg, #14120a, #1a150d)", 3: "linear-gradient(135deg, #0e140e, #0f1a0f)", 4: "linear-gradient(135deg, #0d120d, #0a100a)" };
-  var acs = { 0: c.b, 1: "#ff6b6b", 2: "#c9a227", 3: "#4dca6b", 4: "#1a3a1a" };
+  var bgs = { 0: "linear-gradient(135deg, #101018, " + c.g + "88)", 1: "linear-gradient(135deg, #140e0e, #1a0f0f)", 2: "linear-gradient(135deg, #14120a, #1a150d)", 3: "linear-gradient(135deg, #14120a, #1a150d)", 4: "linear-gradient(135deg, #0d120d, #0a100a)" };
+  var acs = { 0: c.b, 1: "#ff6b6b", 2: "#c9a227", 3: "#c9a227", 4: "#1a3a1a" };
   var icons = { 1: "\u25B2", 2: "\u25C6", 3: "\u2191", 4: "\u2713" };
   var pLabel = p ? (p.labelKey ? t("ui." + p.labelKey) : p.label) : "";
   var whLocale = locale === "ko" ? "/ko" : "";
@@ -271,11 +274,11 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
           <div style={{ fontSize: 11.5, color: tier === 4 ? "#445533" : "#776655", marginBottom: 6 }}>{locale === "ko" ? item.en : item.ko}</div>
           {!isAlt && p && tier > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: visualTier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : visualTier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : visualTier === 3 ? "linear-gradient(135deg,#102a15,#0f1a0f)" : "#0d1a0d", border: "1px solid " + (visualTier === 1 ? "#6a2020" : visualTier === 2 ? "#6a5020" : visualTier === 3 ? "#206a30" : "#1a3a1a"), color: p.color }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: visualTier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : visualTier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : visualTier === 3 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : "#0d1a0d", border: "1px solid " + (visualTier === 1 ? "#6a2020" : visualTier === 2 ? "#6a5020" : visualTier === 3 ? "#6a5020" : "#1a3a1a"), color: p.color }}>
                 <span style={{ fontSize: 10 }}>{icons[tier]}</span><span>{pLabel}</span>
                 {p.deficit > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + p.deficit + "\uFF09"}</span>}
               </div>
-              {tier === 3 && p.labelKey !== "bag" && p.labelKey !== "bagDone" && <span style={{ fontSize: 9, color: p.capped ? "#cc8844" : "#665544" }}>{t(p.capped ? "ui.tierReacquireNeeded" : "ui.tierUpgradeNeeded")}</span>}
+              {tier === 3 && p.labelKey !== "bag" && p.labelKey !== "bagDone" && <span style={{ fontSize: 9, color: p.lowerTier ? "#cc8844" : "#665544" }}>{t(p.lowerTier ? "ui.tierReacquireNeeded" : "ui.tierUpgradeNeeded")}</span>}
               {hasDiff && eq && (
                 <a href={"https://www.wowhead.com" + whLocale + "/item=" + eq.id + (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: isSimcAlt ? "#1a1508" : "#1a1520", border: "1px solid " + (isSimcAlt ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: isSimcAlt ? "#c9a040" : "#aa7799", whiteSpace: "nowrap" }}>
                   <span>{eq.name}</span>
@@ -580,7 +583,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         <div style={{ display: "flex", gap: 12, marginTop: 8, fontSize: 10, color: "#556666", flexWrap: "wrap" }}>
           <span><span style={{ color: "#ff6b6b" }}>{"\u25B2"}</span>{" " + t("ui.tierStatMismatch")}</span>
           <span><span style={{ color: "#e8a84c" }}>{"\u25C6"}</span>{" " + t("ui.tierAltEquipped")}</span>
-          <span><span style={{ color: "#6dca8b" }}>{"\u2191"}</span>{" " + t("ui.tierBisUpgrade")}</span>
+          <span><span style={{ color: "#e8a84c" }}>{"\u2191"}</span>{" " + t("ui.tierBisUpgrade")}</span>
           <span><span style={{ color: "#4dca6b" }}>{"\u2713"}</span>{" " + t("ui.tierDone")}</span>
           <span style={{ color: "#445555" }}>{t("ui.deficitInfo", { max: targetInfo.max })}</span>
         </div>
