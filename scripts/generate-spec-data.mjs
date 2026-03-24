@@ -268,6 +268,8 @@ const SOURCE_FIXES = {
   'Tier Set': 'Tier',
   'Tier/Catalyst': 'Tier',
   'Tier / Catalyst': 'Tier',
+  'Catalyst': 'Tier',
+  'Catalyst / Raid': 'Tier',
   'Craft': 'Crafted',
   'Crafting': 'Crafted',
   'Blacksmithing': 'Crafted',
@@ -297,6 +299,7 @@ const PART_FIXES = {
   'Seat of the Triumvirute': 'Seat of the Triumvirate',
   'Seat of the Triumvurate': 'Seat of the Triumvirate',
   'Widnrunner Spire': 'Windrunner Spire',
+  'Windrunners Spire': 'Windrunner Spire',
   'Miasara Caverns': 'Maisara Caverns',
 };
 

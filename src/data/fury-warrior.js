@@ -23,7 +23,7 @@ export var BIS = [
   { slot: "chest", en: "Night Ender's Breastplate", ko: "밤의 종결자의 가슴보호갑", id: 249955, source: "Chimaerus", stats: ["crit","haste"] },
   { slot: "wrist", en: "Spellbreaker's Bracers", ko: "주문파괴자의 팔보호구", id: 237834, source: "Crafted", stats: [] },
   { slot: "hands", en: "Voidclaw Gauntlets", ko: "공허발톱 건틀릿", id: 151332, source: "Seat of the Triumvirate", stats: ["haste","vers"] },
-  { slot: "waist", en: "Night Ender's Girdle", ko: "밤의 종결자의 요대", id: 249949, source: "Catalyst", stats: ["crit","haste"] },
+  { slot: "waist", en: "Night Ender's Girdle", ko: "밤의 종결자의 요대", id: 249949, source: "Tier", stats: ["crit","haste"] },
   { slot: "legs", en: "Night Ender's Chausses", ko: "밤의 종결자의 정강이싸개", id: 249951, source: "Vaelgor & Ezzorak", stats: ["crit","haste"] },
   { slot: "feet", en: "Parasite Stompers", ko: "기생 디딤장화", id: 249332, source: "Vorasius", stats: ["haste","mastery"] },
   { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },

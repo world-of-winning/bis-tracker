@@ -53,14 +53,14 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "feet", id: 249963, en: "Luminant Verdict's Sabatons", ko: "빛나는 선고의 발덮개", source: "Catalyst", stats: ["haste","mastery"] },
+  { forSlot: "feet", id: 249963, en: "Luminant Verdict's Sabatons", ko: "빛나는 선고의 발덮개", source: "Tier", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 251169, en: "Footwraps of Ill-Fate", ko: "불길한 운명의 발등싸개", source: "Maisara Caverns", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", source: "Windrunner Spire", stats: ["haste","vers"] },
   { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", source: "Midnight Falls", stats: ["mastery","vers"] },
   { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "waist", id: 249958, en: "Luminant Verdict's Undaunted Emblem", ko: "빛나는 선고의 의연한 문장", source: "Catalyst", stats: ["haste","mastery"] },
+  { forSlot: "waist", id: 249958, en: "Luminant Verdict's Undaunted Emblem", ko: "빛나는 선고의 의연한 문장", source: "Tier", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", source: "Magisters' Terrace", stats: ["haste","mastery"] },

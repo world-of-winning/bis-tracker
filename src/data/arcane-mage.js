@@ -53,7 +53,7 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "chest", id: 151303, en: "Voidbender Robe", ko: "공허술사 로브", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "feet", id: 250062, en: "Voidbreaker's Treads", ko: "공허파괴자의 발보호대", source: "Catalyst", stats: ["haste","mastery"] },
+  { forSlot: "feet", id: 250062, en: "Voidbreaker's Treads", ko: "공허파괴자의 발보호대", source: "Tier", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },

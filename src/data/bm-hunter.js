@@ -25,7 +25,7 @@ export var BIS = [
   { slot: "hands", en: "Primal Sentry's Talonguards", ko: "원시 파수꾼의 갈퀴보호대", id: 249989, source: "Voracius", stats: ["crit","mastery"] },
   { slot: "waist", en: "Scornbane Waistguard", ko: "멸시파멸 허리보호대", id: 249371, source: "Chimaerus", stats: ["haste","mastery"] },
   { slot: "legs", en: "Primal Sentry's Legguards", ko: "원시 파수꾼의 다리보호대", id: 249987, source: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
-  { slot: "feet", en: "Primal Sentry's Swiftsteps", ko: "원시 파수꾼의 날쌘 발걸음", id: 249990, source: "Catalyst", stats: ["crit","mastery"] },
+  { slot: "feet", en: "Primal Sentry's Swiftsteps", ko: "원시 파수꾼의 날쌘 발걸음", id: 249990, source: "Tier", stats: ["crit","mastery"] },
   { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "finger2", en: "Masterwork Sin'dorei Band", ko: "걸작 신도레이 고리", id: 240949, source: "Crafted", stats: [] },
   { slot: "trinket1", en: "Radiant Plume", ko: "광휘의 꽁지깃", id: 249806, source: "Belo'ren", stats: [] },

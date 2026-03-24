@@ -54,7 +54,7 @@ export var MYTHIC = [
 export var ALTS = [
   { forSlot: "chest", id: 258576, en: "Sharpeye Chestguard", ko: "뾰족눈 가슴보호대", source: "Skyreach", stats: ["crit","haste"] },
   { forSlot: "feet", id: 249320, en: "Sabatons of Obscurement", ko: "암연의 발덮개", source: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "feet", id: 249990, en: "Primal Sentry's Swiftsteps", ko: "원시 파수꾼의 날쌘 발걸음", source: "Catalyst", stats: ["crit","mastery"] },
+  { forSlot: "feet", id: 249990, en: "Primal Sentry's Swiftsteps", ko: "원시 파수꾼의 날쌘 발걸음", source: "Tier", stats: ["crit","mastery"] },
   { forSlot: "hands", id: 249325, en: "Untethered Berserker's Grips", ko: "풀어헤쳐진 광전사의 손장갑", source: "Crown of the Cosmos", stats: ["crit","mastery"] },
   { forSlot: "head", id: 49824, en: "Horns of the Spurned Val'kyr", ko: "쫓겨난 발키르의 뿔", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "head", id: 258585, en: "Sharpeye Gleam", ko: "뾰족눈 광투구", source: "Skyreach", stats: ["crit","mastery"] },

@@ -53,7 +53,7 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "feet", id: 193715, en: "Boots of Explosive Growth", ko: "폭발적인 성장의 장화", source: "Algeth'ar Academy", stats: ["crit","haste"] },
-  { forSlot: "feet", id: 249990, en: "Primal Sentry's Swiftsteps", ko: "원시 파수꾼의 날쌘 발걸음", source: "Catalyst", stats: ["crit","mastery"] },
+  { forSlot: "feet", id: 249990, en: "Primal Sentry's Swiftsteps", ko: "원시 파수꾼의 날쌘 발걸음", source: "Tier", stats: ["crit","mastery"] },
   { forSlot: "hands", id: 249325, en: "Untethered Berserker's Grips", ko: "풀어헤쳐진 광전사의 손장갑", source: "Crown of the Cosmos", stats: ["crit","mastery"] },
   { forSlot: "head", id: 49824, en: "Horns of the Spurned Val'kyr", ko: "쫓겨난 발키르의 뿔", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "head", id: 251119, en: "Vortex Visage", ko: "회오리의 안면", source: "Magisters' Terrace", stats: ["crit","mastery"] },

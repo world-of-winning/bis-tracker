@@ -23,7 +23,7 @@ export var BIS = [
   { slot: "chest", en: "Voidbreaker's Robe", ko: "공허파괴자의 로브", id: 250063, source: "Tier", stats: ["crit","haste"] },
   { slot: "wrist", en: "Martyr's Bindings", ko: "순교자의 손목띠", id: 239648, source: "Crafted", stats: [] },
   { slot: "hands", en: "Voidbreaker's Gloves", ko: "공허파괴자의 장갑", id: 250061, source: "Tier", stats: ["haste","mastery"] },
-  { slot: "waist", en: "Voidbreaker's Sage Cord", ko: "공허파괴자의 현자 장식끈", id: 250057, source: "Catalyst", stats: ["crit","haste"] },
+  { slot: "waist", en: "Voidbreaker's Sage Cord", ko: "공허파괴자의 현자 장식끈", id: 250057, source: "Tier", stats: ["crit","haste"] },
   { slot: "legs", en: "Voidbreaker's Britches", ko: "공허파괴자의 무릎바지", id: 250059, source: "Tier", stats: ["crit","haste"] },
   { slot: "feet", en: "Dream-Scorched Striders", ko: "꿈의 불꽃 성큼장화", id: 249373, source: "Chimaerus", stats: ["crit","mastery"] },
   { slot: "finger1", en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", id: 249919, source: "Belo'ren", stats: ["crit","mastery"] },
@@ -54,7 +54,7 @@ export var MYTHIC = [
 export var ALTS = [
   { forSlot: "chest", id: 49825, en: "Palebone Robes", ko: "창백한 뼈 로브", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "chest", id: 151303, en: "Voidbender Robe", ko: "공허술사 로브", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "feet", id: 250062, en: "Voidbreaker's Treads", ko: "공허파괴자의 발보호대", source: "Catalyst", stats: ["haste","mastery"] },
+  { forSlot: "feet", id: 250062, en: "Voidbreaker's Treads", ko: "공허파괴자의 발보호대", source: "Tier", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },

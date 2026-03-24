@@ -30,7 +30,7 @@ export var BIS = [
   { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, source: "Algeth'ar Academy", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, source: "Windrunners Spire", stats: ["crit","mastery"] },
+  { slot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, source: "Windrunner Spire", stats: ["crit","mastery"] },
 ];
 
 export var MYTHIC = [
@@ -59,7 +59,7 @@ export var ALTS = [
   { forSlot: "head", id: 251140, en: "Vilefiend's Guise", ko: "썩은마귀의 복면", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", source: "Pit of Saron", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 178819, en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", source: "Halls of Atonement", stats: ["haste","mastery"] },
-  { forSlot: "legs", id: 250023, en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", source: "Catalyst / Raid", stats: ["haste","mastery"] },
+  { forSlot: "legs", id: 250023, en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", source: "Tier", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 251115, en: "Bifurcation Band", ko: "분기점의 고리", source: "Magisters' Terrace", stats: ["haste","mastery"] },

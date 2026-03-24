@@ -23,7 +23,7 @@ export var BIS = [
   { slot: "chest", en: "Abyssal Immolator's Dreadrobe", ko: "불태우는 심연의 공포로브", id: 250045, source: "Tier", stats: ["haste","mastery"] },
   { slot: "wrist", en: "Martyr's Bindings", ko: "순교자의 손목띠", id: 239648, source: "Crafted", stats: [] },
   { slot: "hands", en: "Abyssal Immolator's Grasps", ko: "불태우는 심연의 손아귀", id: 250043, source: "Tier", stats: ["crit","haste"] },
-  { slot: "waist", en: "Abyssal Immolator's Blazing Core", ko: "불태우는 심연의 이글거리는 핵", id: 250039, source: "Catalyst", stats: ["crit","mastery"] },
+  { slot: "waist", en: "Abyssal Immolator's Blazing Core", ko: "불태우는 심연의 이글거리는 핵", id: 250039, source: "Tier", stats: ["crit","mastery"] },
   { slot: "legs", en: "Abyssal Immolator's Pillars", ko: "불태우는 심연의 기둥", id: 250041, source: "Tier", stats: ["crit","haste"] },
   { slot: "feet", en: "Slippers of the Midnight Flame", ko: "한밤 화염의 끌신", id: 249305, source: "Vaelgor & Ezzorak", stats: ["crit","haste"] },
   { slot: "finger1", en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", id: 249919, source: "Belo'ren", stats: ["crit","mastery"] },
