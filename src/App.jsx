@@ -3,7 +3,7 @@ import { SPECS, getSpec, findSpecBySimC } from './data/specs.js';
 import { CHANGELOG } from './data/changelog.js';
 import { getSampleChars, SAMPLE_CHARS } from './data/sample.js';
 import { load, save as persist } from './storage.js';
-import { GEAR_SLOTS } from './data/shared.js';
+import { GEAR_SLOTS, TIERS } from './data/shared.js';
 import { useLocale } from './i18n/index.jsx';
 import BisTracker from './components/BisTracker.jsx';
 import TutorialOverlay from './components/TutorialOverlay.jsx';
@@ -126,6 +126,90 @@ function findInitialChar() {
   return null;
 }
 
+var LEGAL_CONTENT = {
+  terms: {
+    ko: {
+      title: "이용약관",
+      sections: [
+        { heading: "제1조 (목적)", body: "이 약관은 Midnight BiS Tracker(이하 '서비스')의 이용에 관한 기본적인 사항을 규정합니다." },
+        { heading: "제2조 (서비스의 내용)", body: "서비스는 World of Warcraft의 Best in Slot 아이템을 추적하기 위한 무료 도구를 제공합니다. 서비스는 Blizzard Entertainment와 공식적인 관련이 없으며, World of Warcraft 및 관련 상표는 Blizzard Entertainment, Inc.에 귀속됩니다." },
+        { heading: "제3조 (데이터 저장)", body: "모든 사용자 데이터는 브라우저의 localStorage에 저장되며, 외부 서버로 전송되지 않습니다. 브라우저 데이터를 삭제하면 저장된 정보가 사라질 수 있습니다." },
+        { heading: "제4조 (면책조항)", body: "서비스는 '있는 그대로' 제공되며, 정확성이나 완전성을 보장하지 않습니다. BiS 데이터는 Maxroll.gg 등 외부 출처를 기반으로 하며, 게임 패치에 따라 변경될 수 있습니다. 서비스 이용으로 인한 어떠한 손해에 대해서도 책임을 지지 않습니다." },
+        { heading: "제5조 (외부 서비스)", body: "서비스는 Wowhead 툴팁 API 및 스크립트를 사용합니다. 해당 외부 서비스의 이용에는 각 서비스의 이용약관 및 개인정보처리방침이 적용됩니다." },
+        { heading: "제6조 (지적재산권)", body: "서비스의 소스 코드는 GitHub에서 공개되어 있습니다. World of Warcraft 관련 콘텐츠의 저작권은 Blizzard Entertainment, Inc.에 있습니다." },
+        { heading: "제7조 (약관의 변경)", body: "본 약관은 사전 고지 없이 변경될 수 있으며, 변경된 약관은 서비스에 게시됨과 동시에 효력이 발생합니다." }
+      ]
+    },
+    en: {
+      title: "Terms of Service",
+      sections: [
+        { heading: "1. Purpose", body: "These terms govern the use of Midnight BiS Tracker (the 'Service')." },
+        { heading: "2. Service Description", body: "The Service provides a free tool for tracking Best in Slot items in World of Warcraft. The Service is not affiliated with Blizzard Entertainment. World of Warcraft and related trademarks belong to Blizzard Entertainment, Inc." },
+        { heading: "3. Data Storage", body: "All user data is stored in your browser's localStorage and is never transmitted to external servers. Clearing your browser data may result in loss of saved information." },
+        { heading: "4. Disclaimer", body: "The Service is provided 'as is' without warranty of accuracy or completeness. BiS data is based on external sources such as Maxroll.gg and may change with game patches. We are not liable for any damages resulting from use of the Service." },
+        { heading: "5. Third-Party Services", body: "The Service uses the Wowhead tooltip API and scripts. Use of these external services is subject to their respective terms of service and privacy policies." },
+        { heading: "6. Intellectual Property", body: "The Service's source code is available on GitHub. World of Warcraft content copyrights belong to Blizzard Entertainment, Inc." },
+        { heading: "7. Changes to Terms", body: "These terms may be updated without prior notice. Changes take effect upon posting to the Service." }
+      ]
+    }
+  },
+  privacy: {
+    ko: {
+      title: "개인정보처리방침",
+      sections: [
+        { heading: "제1조 (수집하는 개인정보)", body: "본 서비스는 별도의 회원가입을 요구하지 않으며, 서버에 개인정보를 수집하거나 저장하지 않습니다. 사용자가 입력한 캐릭터 정보 및 장비 데이터는 오직 브라우저의 localStorage에만 저장됩니다." },
+        { heading: "제2조 (쿠키 및 로컬 스토리지)", body: "서비스는 기능 제공을 위해 브라우저의 localStorage를 사용합니다. 이 데이터는 사용자의 기기에만 존재하며 외부로 전송되지 않습니다." },
+        { heading: "제3조 (제3자 서비스)", body: "서비스는 다음 외부 서비스를 사용하며, 각 서비스의 개인정보처리방침이 적용됩니다:\n• Wowhead (wow.zamimg.com) — 아이템 툴팁 표시 및 스탯 조회\n• Google Fonts — 웹 폰트 제공\n• Cloudflare Pages — 웹사이트 호스팅\n\n이러한 외부 서비스는 자체적으로 IP 주소 등 기본적인 접속 정보를 수집할 수 있습니다." },
+        { heading: "제4조 (데이터 삭제)", body: "브라우저의 사이트 데이터 삭제 기능을 통해 언제든지 저장된 모든 데이터를 삭제할 수 있습니다. 서비스 내 '초기화' 기능을 통해 개별 캐릭터 데이터를 삭제할 수도 있습니다." },
+        { heading: "제5조 (아동의 개인정보)", body: "본 서비스는 만 14세 미만 아동의 개인정보를 의도적으로 수집하지 않습니다." },
+        { heading: "제6조 (방침의 변경)", body: "본 개인정보처리방침은 사전 고지 없이 변경될 수 있으며, 변경 사항은 서비스에 게시됨과 동시에 효력이 발생합니다." },
+        { heading: "연락처", body: "개인정보 관련 문의는 Discord 채널을 통해 접수하실 수 있습니다." }
+      ]
+    },
+    en: {
+      title: "Privacy Policy",
+      sections: [
+        { heading: "1. Information We Collect", body: "The Service does not require registration and does not collect or store personal information on any server. Character and gear data entered by users is stored only in the browser's localStorage." },
+        { heading: "2. Cookies & Local Storage", body: "The Service uses browser localStorage to provide its functionality. This data exists only on your device and is never transmitted externally." },
+        { heading: "3. Third-Party Services", body: "The Service uses the following external services, each subject to their own privacy policies:\n• Wowhead (wow.zamimg.com) — Item tooltips and stat lookups\n• Google Fonts — Web font delivery\n• Cloudflare Pages — Website hosting\n\nThese external services may collect basic connection information such as IP addresses." },
+        { heading: "4. Data Deletion", body: "You can delete all stored data at any time through your browser's site data settings. You can also delete individual character data using the 'Reset' feature within the Service." },
+        { heading: "5. Children's Privacy", body: "The Service does not intentionally collect personal information from children under the age of 14." },
+        { heading: "6. Changes to This Policy", body: "This privacy policy may be updated without prior notice. Changes take effect upon posting to the Service." },
+        { heading: "Contact", body: "For privacy-related inquiries, please reach out through our Discord channel." }
+      ]
+    }
+  }
+};
+
+function LegalModal(props) {
+  var page = props.page;
+  var locale = props.locale;
+  var onClose = props.onClose;
+  if (!page) return null;
+  var content = LEGAL_CONTENT[page][locale] || LEGAL_CONTENT[page].en;
+  return (
+    <div onClick={onClose} style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.75)", zIndex: 10000, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div onClick={function(e) { e.stopPropagation(); }} style={{ background: "#0c0c16", border: "1px solid #2a2a3a", borderRadius: 12, maxWidth: 640, width: "100%", maxHeight: "80vh", overflow: "auto", padding: "32px 28px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#c9a227", fontFamily: "'Cinzel',serif" }}>{content.title}</h2>
+          <button onClick={onClose} style={{ background: "none", border: "1px solid #2a2a3a", borderRadius: 6, color: "#556666", fontSize: 18, cursor: "pointer", padding: "2px 10px", lineHeight: 1.2 }}>&times;</button>
+        </div>
+        {content.sections.map(function(sec, i) {
+          return (
+            <div key={i} style={{ marginBottom: 20 }}>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#998866", marginBottom: 6 }}>{sec.heading}</h3>
+              <p style={{ fontSize: 13, color: "#778888", lineHeight: 1.7, whiteSpace: "pre-line" }}>{sec.body}</p>
+            </div>
+          );
+        })}
+        <div style={{ marginTop: 16, fontSize: 11, color: "#334444", textAlign: "center" }}>
+          {locale === "ko" ? "최종 수정일: 2026년 3월 24일" : "Last updated: March 24, 2026"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   var { t, locale, setLocale } = useLocale();
   var initial = findInitialChar();
@@ -136,6 +220,7 @@ export default function App() {
   var [landingFeedback, setLandingFeedback] = useState(null);
   var [charsRev, setCharsRev] = useState(0);
   var [tutorialStep, setTutorialStep] = useState(null);
+  var [legalPage, setLegalPage] = useState(null);
   var [sampleMode, setSampleMode] = useState(function() {
     // Detect sample mode by checking if any sample character exists
     var index = loadCharsIndex();
@@ -197,6 +282,10 @@ export default function App() {
     });
     // Load the first sample character
     var first = samples[0];
+    // Pre-set target tier based on sample ilvl for the first character
+    var firstKey = first.spec.STORAGE_KEY + ":" + first.name;
+    var existing = load(firstKey);
+    if (!existing) persist(firstKey, { acq: {}, sr: null, targetTier: null });
     setSpecKey(first.spec.SPEC_KEY);
     setCharName(first.name);
     setPendingSimcText(first.simcText);
@@ -241,7 +330,13 @@ export default function App() {
           var es = s.spec.KNOWN_STATS[eq.id];
           if (es && bi.stats.slice().sort().join() === es.slice().sort().join()) altItems[bi.id] = true;
         });
-        persist(key, { acq: {}, sr: { ci: ci, eqSlot: eqSlot, bisInBag: {}, altItems: altItems, matched: matched }, targetTier: "champion" });
+        // Auto-select target tier based on avgIlvl
+        var autoTier = TIERS[TIERS.length - 1].key;
+        for (var ti = 0; ti < TIERS.length; ti++) {
+          var gap = ti < TIERS.length - 1 ? (TIERS[ti + 1].max - TIERS[ti].max) / 2 : 0;
+          if (ci.avgIlvl < TIERS[ti].max - gap) { autoTier = TIERS[ti].key; break; }
+        }
+        persist(key, { acq: {}, sr: { ci: ci, eqSlot: eqSlot, bisInBag: {}, altItems: altItems, matched: matched }, targetTier: autoTier });
       }
     });
     setSampleMode(true);
@@ -302,6 +397,33 @@ export default function App() {
     }
   }, [specKey, charName]);
 
+  var handleResetAll = useCallback(function() {
+    // Remove all character data
+    var index = loadCharsIndex();
+    Object.keys(index).forEach(function(sk) {
+      var s = SPECS.find(function(sp) { return sp.SPEC_KEY === sk; });
+      if (!s) return;
+      (index[sk] || []).forEach(function(name) {
+        try { localStorage.removeItem(s.STORAGE_KEY + ":" + name); } catch(e) {}
+      });
+    });
+    // Remove stat caches
+    SPECS.forEach(function(s) {
+      try { localStorage.removeItem(s.STAT_CACHE_KEY); } catch(e) {}
+    });
+    // Remove index and last char
+    try { localStorage.removeItem(CHARS_KEY); } catch(e) {}
+    try { localStorage.removeItem(LAST_CHAR_KEY); } catch(e) {}
+    // Reset state
+    setSpecKey(null);
+    setCharName(null);
+    setPendingSimcText("");
+    setLandingText("");
+    setLandingFeedback(null);
+    setCharsRev(function(r) { return r + 1; });
+    setLegalPage(null);
+  }, []);
+
   var handleClear = useCallback(function() {
     if (specKey && charName) {
       removeCharFromIndex(specKey, charName);
@@ -341,7 +463,7 @@ export default function App() {
       { left: "55%", size: "3px", dur: "12s", delay: "5s", drift: "-18px", opacity: 0.45, color: "gold" },
     ];
     return (
-      <div className="landing-bg" style={{ color: "#d4c9a8", fontFamily: "'Noto Sans KR','Segoe UI',sans-serif" }}>
+      <><div className="landing-bg" style={{ color: "#d4c9a8", fontFamily: "'Noto Sans KR','Segoe UI',sans-serif" }}>
         {/* Floating particles */}
         <div className="landing-particles">
           {PARTICLES.map(function(p, i) {
@@ -469,15 +591,22 @@ export default function App() {
           <span style={{ color: "#223333" }}>·</span>
           <button onClick={function() { setLocale(locale === "ko" ? "en" : "ko"); }} style={{ fontSize: 16, lineHeight: 1, background: "none", border: "1px solid #2a2a3a", borderRadius: 4, padding: "2px 6px", cursor: "pointer" }}>{locale === "ko" ? "🇰🇷" : "🇺🇸"}</button>
         </div>
+        <div style={{ marginTop: 12, fontSize: 11, color: "#334444", display: "flex", justifyContent: "center", gap: 4 }}>
+          <button onClick={function() { setLegalPage("terms"); }} style={{ background: "none", border: "none", color: "#445555", fontSize: 11, cursor: "pointer", textDecoration: "underline", fontFamily: "'Noto Sans KR',sans-serif" }}>{t("ui.terms")}</button>
+          <span>·</span>
+          <button onClick={function() { setLegalPage("privacy"); }} style={{ background: "none", border: "none", color: "#445555", fontSize: 11, cursor: "pointer", textDecoration: "underline", fontFamily: "'Noto Sans KR',sans-serif" }}>{t("ui.privacy")}</button>
+        </div>
         </div>
       </div>
+      <LegalModal page={legalPage} locale={locale} onClose={function() { setLegalPage(null); }} />
+      </>
     );
   }
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(175deg,#08080f 0%,#0a0d1a 40%,#0f1020 100%)", color: "#d4c9a8", fontFamily: "'Noto Sans KR','Segoe UI',sans-serif" }}>
-      <div style={{ padding: "24px 24px 0", background: "linear-gradient(180deg,#0c0c14 0%,transparent 100%)" }}>
-        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
+        <div style={{ padding: "24px 0 0" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <h1 className="grad-text" style={{ fontFamily: "'Cinzel',serif", fontSize: 26, fontWeight: 700, background: "linear-gradient(135deg," + spec.THEME.accent + "," + spec.THEME.accentLight + "," + spec.THEME.accent + ")", letterSpacing: 1 }}>
               Midnight BiS Tracker <span style={{ fontSize: 10, fontFamily: "'Noto Sans KR',sans-serif", fontWeight: 700, WebkitTextFillColor: spec.THEME.accent, color: spec.THEME.accent, background: spec.THEME.accentBg, border: "1px solid " + spec.THEME.accent + "44", borderRadius: 4, padding: "1px 6px", verticalAlign: "middle", letterSpacing: 0 }}>BETA</span>
@@ -511,15 +640,23 @@ export default function App() {
             </div>
           )}
         </div>
-      </div>
 
       <BisTracker key={specKey + ":" + charName} spec={spec} charName={charName} initialSimcText={pendingSimcText} onSpecSwitch={handleSpecSwitch} onClear={handleClear} onCharDetected={handleCharDetected} tutorialStep={tutorialStep} />
 
-      <div style={{ maxWidth: 960, margin: "24px auto 0", padding: "0 24px 40px", textAlign: "center", fontSize: 11, color: "#334444" }}>
+      <div style={{ marginTop: 24, paddingBottom: 40, textAlign: "center", fontSize: 11, color: "#334444" }}>
         <div>wowbis.gg</div>
         <div style={{ marginTop: 4, color: "#223333" }}>{t("ui.bisAttribution")} <a href="https://maxroll.gg/wow/class-guides" target="_blank" rel="noopener noreferrer" style={{ color: "#445555", textDecoration: "underline" }}>Maxroll.gg</a></div>
+        <div style={{ marginTop: 6, display: "flex", justifyContent: "center", gap: 4 }}>
+          <button onClick={function() { setLegalPage("terms"); }} style={{ background: "none", border: "none", color: "#445555", fontSize: 11, cursor: "pointer", textDecoration: "underline", fontFamily: "'Noto Sans KR',sans-serif" }}>{t("ui.terms")}</button>
+          <span>·</span>
+          <button onClick={function() { setLegalPage("privacy"); }} style={{ background: "none", border: "none", color: "#445555", fontSize: 11, cursor: "pointer", textDecoration: "underline", fontFamily: "'Noto Sans KR',sans-serif" }}>{t("ui.privacy")}</button>
+          <span>·</span>
+          <button onClick={function() { if (window.confirm(t("ui.resetAllConfirm"))) handleResetAll(); }} style={{ background: "none", border: "none", color: "#663333", fontSize: 11, cursor: "pointer", textDecoration: "underline", fontFamily: "'Noto Sans KR',sans-serif" }}>{t("ui.resetAll")}</button>
+        </div>
+      </div>
       </div>
       <TutorialOverlay step={tutorialStep} onNext={function() { setTutorialStep(function(s) { return s >= TUTORIAL_STEPS.length - 1 ? null : s + 1; }); }} onPrev={function() { setTutorialStep(function(s) { return s <= 0 ? 0 : s - 1; }); }} onSkip={function() { setTutorialStep(null); }} />
+      <LegalModal page={legalPage} locale={locale} onClose={function() { setLegalPage(null); }} />
     </div>
   );
 }

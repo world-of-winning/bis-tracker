@@ -10,7 +10,7 @@ function sameStats(a, b) {
   var x = a.slice().sort(), y = b.slice().sort();
   return x.every(function(v, i) { return v === y[i]; });
 }
-function getSource(item) { return item.source || item.dungeon; }
+function getSource(item) { return item.source; }
 function getDungeonCounts(BIS, ALTS, dungeons) {
   var c = {};
   dungeons.forEach(function(d) { c[d] = { bis: 0, alt: 0 }; });
@@ -48,7 +48,7 @@ function parseSimC(text) {
   ci.avgIlvl = ilvls.length > 0 ? Math.round(ilvls.reduce(function(a, b) { return a + b; }, 0) / ilvls.length) : 0;
   return { ci: ci, gear: gear, bag: bag, cnt: Object.keys(gear).length };
 }
-function matchBiS(BIS, gear, bag, stats) {
+function matchBiS(BIS, gear, bag, stats, knownBisIds) {
   var BIS_IDS = new Set(BIS.map(function(i) { return i.id; }));
   var matched = {}, eqSlot = {}, bisInBag = {}, altItems = {};
   BIS.forEach(function(bi) {
@@ -65,7 +65,8 @@ function matchBiS(BIS, gear, bag, stats) {
     if (matched[bi.id] || !bi.stats.length) return;
     var eq = eqSlot[bi.id]; if (!eq || eq.id === bi.id) return;
     var es = stats[eq.id];
-    if (es && sameStats(bi.stats, es)) altItems[bi.id] = true;
+    // Alt if same stats, OR if equipped item is BiS from the other view (raid/mythic)
+    if ((es && sameStats(bi.stats, es)) || (knownBisIds && knownBisIds.has(eq.id))) altItems[bi.id] = true;
   });
   return { matched: matched, eqSlot: eqSlot, bisInBag: bisInBag, altItems: altItems };
 }
@@ -85,9 +86,26 @@ function calcPriority(bisItem, sr, targetIlvl, stats, worstStats) {
   var deficit = Math.max(0, targetIlvl - eqIlvl);
   var worst = eq ? hasWorstStat(eq.id, stats, worstStats) : false;
   if (inBag) { var bI = inBag.ilvl || 0, bD = Math.max(0, targetIlvl - bI); if (bD <= 0) return { tier: 4, deficit: 0, ilvl: bI, labelKey: "bagDone", color: "#4dca6b", worst: false }; return { tier: 3, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#caca3d", worst: false }; }
-  if (isBis) { if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", worst: false }; return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#6dca8b", worst: false }; }
-  if (isAlt) return { tier: 2, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", worst: worst };
+  if (isBis) { if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", worst: false }; var capped = TIERS.some(function(ti) { return ti.max === eqIlvl && ti.max < targetIlvl; }); return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#6dca8b", worst: false, capped: capped }; }
+  if (isAlt) {
+    if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", worst: false };
+    // Alt too far below target (more than one tier gap) → treat as wrong item
+    var prevTier = TIERS.filter(function(t) { return t.max < targetIlvl; });
+    var prevMax = prevTier.length > 0 ? prevTier[prevTier.length - 1].max : 0;
+    if (eqIlvl < prevMax) return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: worst ? "#ff4444" : "#ff6b6b", worst: worst };
+    return { tier: 2, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", worst: worst };
+  }
   return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl > 0 ? eqIlvl + "" : "\u2014", color: worst ? "#ff4444" : "#ff6b6b", worst: worst };
+}
+// Pick the next target tier based on average equipped ilvl.
+// If avgIlvl is within reach of a tier (within half the gap to next),
+// that tier is considered achieved and we target the next one.
+function autoSelectTier(avgIlvl) {
+  for (var i = 0; i < TIERS.length; i++) {
+    var gap = i < TIERS.length - 1 ? (TIERS[i + 1].max - TIERS[i].max) / 2 : 0;
+    if (avgIlvl < TIERS[i].max - gap) return TIERS[i].key;
+  }
+  return TIERS[TIERS.length - 1].key;
 }
 function sortByPriority(items, sr, t, stats, worstStats) {
   return items.slice().sort(function(a, b) {
@@ -151,7 +169,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: c.g, color: c.t, border: "1px solid " + c.b + "44" }}>{isDungeon ? t("dungeons." + itemSource) : (t("sources." + itemSource) || itemSource)}</span>
             <StatPills stats={item.stats} />
           </div>
-          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + (targetBonus ? "&bonus=" + targetBonus : "")} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: tier === 4 ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: tier === 4 ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
+          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + (tier === 3 && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: tier === 4 ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: tier === 4 ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
           <div style={{ fontSize: 11.5, color: tier === 4 ? "#445533" : "#776655", marginBottom: 6 }}>{locale === "ko" ? item.en : item.ko}</div>
           {!isAlt && p && tier > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
@@ -159,7 +177,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
                 <span style={{ fontSize: 10 }}>{icons[tier]}</span><span>{pLabel}</span>
                 {p.deficit > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + p.deficit + "\uFF09"}</span>}
               </div>
-              {tier === 3 && p.labelKey !== "bag" && p.labelKey !== "bagDone" && <span style={{ fontSize: 9, color: "#665544" }}>{t("ui.tierUpgradeNeeded")}</span>}
+              {tier === 3 && p.labelKey !== "bag" && p.labelKey !== "bagDone" && <span style={{ fontSize: 9, color: p.capped ? "#cc8844" : "#665544" }}>{t(p.capped ? "ui.tierReacquireNeeded" : "ui.tierUpgradeNeeded")}</span>}
               {hasDiff && eq && (
                 <a href={"https://www.wowhead.com" + whLocale + "/item=" + eq.id + (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: isSimcAlt ? "#1a1508" : "#1a1520", border: "1px solid " + (isSimcAlt ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: isSimcAlt ? "#c9a040" : "#aa7799", whiteSpace: "nowrap" }}>
                   <span>{eq.name}</span>
@@ -185,23 +203,28 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
 export default function BisTracker({ spec, charName, initialSimcText, onSpecSwitch, onClear, onCharDetected }) {
   var { t } = useLocale();
   var { BIS, MYTHIC, ALTS, KNOWN_STATS, DUNGEONS, STORAGE_KEY: BASE_STORAGE_KEY, THEME: theme, WORST_STATS, STAT_CACHE_KEY, GUIDE_URL } = spec;
-  // Backward compat: if MYTHIC not defined, BIS is the mythic list
-  var hasTrueBis = MYTHIC && MYTHIC.length > 0;
-  var trueBIS = hasTrueBis ? BIS : [];
-  var mythicList = hasTrueBis ? MYTHIC : (BIS || []);
   var STORAGE_KEY = charName ? BASE_STORAGE_KEY + ":" + charName : BASE_STORAGE_KEY;
-  var [viewMode, setViewMode] = useState("mythic");
-  function autoViewMode(srData, acqData, stats) {
-    if (!hasTrueBis || !srData) return null;
-    var ti = TIERS.find(function(t) { return t.key === targetTier; }) || TIERS[1];
-    var bisDone = trueBIS.filter(function(b) { return (acqData && acqData[b.id]) || calcPriority(b, srData, ti.max, stats, WORST_STATS).tier === 4; }).length;
-    var mythicDone = mythicList.filter(function(b) { return (acqData && acqData[b.id]) || calcPriority(b, srData, ti.max, stats, WORST_STATS).tier === 4; }).length;
-    var mode = bisDone / trueBIS.length >= mythicDone / mythicList.length ? "bis" : "mythic";
-    setViewMode(mode);
-    return mode;
-  }
-  var activeItems = viewMode === "bis" && hasTrueBis ? trueBIS : mythicList;
-  var dungeonCounts = useMemo(function() { return getDungeonCounts(activeItems, ALTS, DUNGEONS); }, [activeItems, ALTS, DUNGEONS]);
+  // Merge MYTHIC items into ALTS as farmable alternatives
+  var mergedAlts = useMemo(function() {
+    if (!MYTHIC || !MYTHIC.length) return ALTS;
+    var bisIds = new Set(BIS.map(function(b) { return b.id; }));
+    var farmableAlts = MYTHIC.filter(function(m) { return !bisIds.has(m.id); }).map(function(m) {
+      var forSlot = m.slot;
+      if (forSlot.indexOf("finger") === 0) forSlot = "ring";
+      else if (forSlot.indexOf("trinket") === 0) forSlot = "trinket";
+      else if (forSlot === "main_hand" || forSlot === "off_hand") forSlot = "weapon";
+      return { forSlot: forSlot, id: m.id, en: m.en, ko: m.ko, source: m.source, stats: m.stats, farmable: true };
+    });
+    return farmableAlts.concat(ALTS);
+  }, [BIS, MYTHIC, ALTS]);
+  // All known good item IDs (BiS + MYTHIC) for alt recognition
+  var knownBisIds = useMemo(function() {
+    var ids = new Set(BIS.map(function(b) { return b.id; }));
+    if (MYTHIC) MYTHIC.forEach(function(m) { ids.add(m.id); });
+    return ids;
+  }, [BIS, MYTHIC]);
+  var activeItems = BIS;
+  var dungeonCounts = useMemo(function() { return getDungeonCounts(activeItems, mergedAlts, DUNGEONS); }, [activeItems, mergedAlts, DUNGEONS]);
   var [acq, setAcq] = useState({});
   var [filter, setFilter] = useState("all");
   var [simcOpen, setSimcOpen] = useState(false);
@@ -220,10 +243,9 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     if (d) {
       setAcq(d.acq || {});
       if (d.sr) { setSr(d.sr); setSimcOpen(false); if (onCharDetected && d.sr.ci) onCharDetected(d.sr.ci.name); } else { setSimcOpen(true); }
-      if (d.targetTier) setTargetTier(d.targetTier);
       var cached = load(STAT_CACHE_KEY);
       if (cached) setRuntimeStats(cached);
-      if (d.viewMode) { setViewMode(d.viewMode); } else if (d.sr) { autoViewMode(d.sr, d.acq || {}, Object.assign({}, KNOWN_STATS, cached || {})); }
+      if (d.targetTier) setTargetTier(d.targetTier);
       if (d.filter) setFilter(d.filter);
     } else {
       setSimcOpen(true);
@@ -237,9 +259,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     return function() { clearTimeout(t); };
   }, [filter, sr, targetTier, STORAGE_KEY]);
   var stateRef = useRef({});
-  stateRef.current = { acq: acq, sr: sr, targetTier: targetTier, viewMode: viewMode, filter: filter };
-  var sv = useCallback(function(overrides) { var d = Object.assign({}, stateRef.current, overrides); persist(STORAGE_KEY, { acq: d.acq, sr: d.sr, targetTier: d.targetTier, viewMode: d.viewMode, filter: d.filter }); }, [STORAGE_KEY]);
-  function changeView(mode) { setViewMode(mode); setFilter("all"); sv({ viewMode: mode, filter: "all" }); }
+  stateRef.current = { acq: acq, sr: sr, targetTier: targetTier, filter: filter };
+  var sv = useCallback(function(overrides) { var d = Object.assign({}, stateRef.current, overrides); persist(STORAGE_KEY, { acq: d.acq, sr: d.sr, targetTier: d.targetTier, filter: d.filter }); }, [STORAGE_KEY]);
   function changeFilter(f) { setFilter(f); sv({ filter: f }); }
   var toggle = useCallback(function(id) { setAcq(function(prev) { var next = Object.assign({}, prev); next[id] = !next[id]; sv({ acq: next }); return next; }); }, [sv]);
   var changeTarget = useCallback(function(key) { setTargetTier(key); sv({ targetTier: key }); }, [sv]);
@@ -253,20 +274,21 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     var currentStats = Object.assign({}, KNOWN_STATS, runtimeStats);
     var unknownIds = allIds.filter(function(id, i) { return allIds.indexOf(id) === i && currentStats[id] === undefined; });
     function finishImport(mergedStats) {
-      // Match against all known items (true BiS + mythic, deduplicated by id)
-      var allBisItems = [];
-      var seenIds = new Set();
-      [].concat(trueBIS, mythicList).forEach(function(item) {
-        if (!seenIds.has(item.id)) { seenIds.add(item.id); allBisItems.push(item); }
-      });
-      var result = matchBiS(allBisItems, parsed.gear, parsed.bag, mergedStats);
+      var result = matchBiS(BIS, parsed.gear, parsed.bag, mergedStats, knownBisIds);
       var newSr = { ci: parsed.ci, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched };
       var importName = parsed.ci.name || charName;
       var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
       if (importName === charName) setSr(newSr);
-      var autoMode = autoViewMode(newSr, importName !== charName ? {} : acq, mergedStats);
-      persist(saveKey, { acq: importName !== charName ? {} : acq, sr: newSr, targetTier: targetTier, viewMode: autoMode || viewMode, filter: "all" });
-      setFeedback({ ok: true, msg: t("ui.gearUpdated") }); setSimcText(""); setImporting(false); setSimcOpen(false);
+      // Auto-select target tier based on average equipped ilvl
+      var autoTier = autoSelectTier(parsed.ci.avgIlvl);
+      if (importName === charName) { setTargetTier(autoTier); }
+      persist(saveKey, { acq: importName !== charName ? {} : acq, sr: newSr, targetTier: autoTier, filter: "all" });
+      var bisSlots = {};
+      BIS.forEach(function(b) { bisSlots[b.slot] = true; });
+      var empty = Object.keys(bisSlots).filter(function(s) { return !parsed.gear[s]; });
+      var msg = t("ui.gearUpdated");
+      if (empty.length > 0) msg += "\n" + t("ui.emptySlots", { slots: empty.map(function(s) { return t("slots." + s); }).join(", ") });
+      setFeedback({ ok: empty.length === 0, msg: msg }); setSimcText(""); setImporting(false); setSimcOpen(false);
       if (onCharDetected) onCharDetected(importName);
     }
     if (unknownIds.length > 0) {
@@ -316,9 +338,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     if (d) {
       setAcq(d.acq || {}); setSr(d.sr || null); setSimcOpen(!d.sr);
       if (d.targetTier) setTargetTier(d.targetTier);
-      if (d.viewMode) { setViewMode(d.viewMode); } else if (d.sr) { autoViewMode(d.sr, d.acq || {}, Object.assign({}, KNOWN_STATS, cached || {})); } else { setViewMode(hasTrueBis ? "bis" : "mythic"); }
       setFilter(d.filter || "all");
-    } else { setAcq({}); setSr(null); setTargetTier("champion"); setSimcOpen(true); setViewMode(hasTrueBis ? "bis" : "mythic"); setFilter("all"); }
+    } else { setAcq({}); setSr(null); setTargetTier("champion"); setSimcOpen(true); setFilter("all"); }
   }, [STORAGE_KEY, STAT_CACHE_KEY]);
   var initialImportDone = useRef(false);
   useEffect(function() {
@@ -330,7 +351,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var doneCount = useMemo(function() { return activeItems.filter(function(b) { if (acq[b.id]) return true; return sr ? calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length; }, [acq, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
   var altCount = useMemo(function() { return sr ? activeItems.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS); return p.tier === 2; }).length : 0; }, [acq, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
   var displayBis = useMemo(function() { var items = filter === "all" ? activeItems : activeItems.filter(function(i) { return getSource(i) === filter; }); return sr ? sortByPriority(items, sr, targetInfo.max, allStats, WORST_STATS) : items; }, [filter, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
-  var displayAlts = useMemo(function() { return filter === "all" ? [] : ALTS.filter(function(a) { return getSource(a) === filter; }); }, [filter, ALTS]);
+  var displayAlts = useMemo(function() { return filter === "all" ? [] : mergedAlts.filter(function(a) { return getSource(a) === filter; }); }, [filter, mergedAlts]);
   var nonDungeonSources = useMemo(function() {
     var sources = {};
     activeItems.forEach(function(item) { var s = getSource(item); if (!DC[s]) sources[s] = (sources[s] || 0) + 1; });
@@ -344,7 +365,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   if (!loaded) return (<div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0a0a12", color: theme.accent }}><span style={{ fontFamily: "'Cinzel', serif", fontSize: 18 }}>{t("ui.loading")}</span></div>);
 
   return (
-    <div style={{ maxWidth: 960, margin: "0 auto", padding: "16px 24px 24px" }}>
+    <div style={{ paddingTop: 16, paddingBottom: 24 }}>
       <div style={{ marginBottom: 14 }}>
         <div style={{ display: "flex", gap: 8, alignItems: "stretch" }}>
         <div data-tutorial="simc-import" className="tog" onClick={function() { setSimcOpen(!simcOpen); }} style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", borderRadius: 8, background: sr ? "#0c0c16" : theme.accentBg, border: "1px solid " + (sr ? "#1e1e30" : theme.accentBorder) }}>
@@ -359,7 +380,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           <div style={{ marginTop: 8, padding: 16, background: "#0c0c16", border: "1px solid #1e1e30", borderRadius: 8, overflow: "hidden" }}>
             <textarea className="sta" value={simcText} onChange={function(e) { setSimcText(e.target.value); }} onPaste={handlePaste} placeholder={t("ui.simcPlaceholder")} />
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-              {feedback && <span style={{ fontSize: 12, fontWeight: 600, color: feedback.ok ? "#8dffaa" : "#ff8d8d" }}>{feedback.msg}</span>}
+              {feedback && <span style={{ fontSize: 12, fontWeight: 600, color: feedback.ok ? "#8dffaa" : "#ff8d8d", whiteSpace: "pre-line" }}>{feedback.msg}</span>}
               {sr && <button className="sb" onClick={clearSimc} style={{ marginLeft: "auto", padding: "3px 10px", background: "#1a1520", border: "1px solid #2a2030", color: "#886678", fontSize: 11 }}>{t("ui.reset")}</button>}
             </div>
           </div>
@@ -367,18 +388,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       </div>
       <div data-tutorial="tier-buttons" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
         {TIERS.map(function(ti) { var sel = targetTier === ti.key; return (<button key={ti.key} className="tier-btn" onClick={function() { changeTarget(ti.key); }} style={{ borderColor: sel ? ti.color : ti.color + "44", color: ti.color, opacity: sel ? 1 : 0.5, background: sel ? ti.color + "22" : "transparent" }}>{t("tiers." + ti.key) + " (" + ti.max + ")"}</button>); })}
-        <span style={{ marginLeft: "auto", fontSize: 12, color: "#556666" }}>
-          {sr && sr.ci && sr.ci.avgIlvl ? (t("ui.avg") + " " + sr.ci.avgIlvl + " · ") : ""}
-          {"BiS " + (sr ? Object.keys(sr.matched || {}).length : 0)}
-          {sr && Object.keys(sr.altItems || {}).length > 0 ? " · Alt " + Object.keys(sr.altItems).length : ""}
-        </span>
       </div>
-      {hasTrueBis && (
-        <div style={{ display: "flex", gap: 4, marginTop: 8 }}>
-          <button className={"fbtn" + (viewMode === "bis" ? " active" : "")} onClick={function() { changeView("bis"); }} style={{ padding: "4px 14px", borderRadius: 6, background: viewMode === "bis" ? theme.accentBg : "#0f0f18", border: "1px solid " + (viewMode === "bis" ? theme.accentBorder : "#1e1e30"), color: viewMode === "bis" ? theme.accent : "#556666", fontSize: 12, fontWeight: 700 }}>{t("ui.viewBis")}</button>
-          <button className={"fbtn" + (viewMode === "mythic" ? " active" : "")} onClick={function() { changeView("mythic"); }} style={{ padding: "4px 14px", borderRadius: 6, background: viewMode === "mythic" ? theme.accentBg : "#0f0f18", border: "1px solid " + (viewMode === "mythic" ? theme.accentBorder : "#1e1e30"), color: viewMode === "mythic" ? theme.accent : "#556666", fontSize: 12, fontWeight: 700 }}>{t("ui.viewMythic")}</button>
-        </div>
-      )}
       <div data-tutorial="progress-bar" style={{ marginTop: 8, position: "relative" }}>
         <div style={{ height: 20, background: "#1a1a28", borderRadius: 6, overflow: "hidden", position: "relative" }}>
           <div style={{ position: "absolute", height: "100%", width: ((doneCount + altCount) / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: theme.accent, opacity: 0.15 }} />
@@ -387,6 +397,9 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             <span style={{ fontSize: 11, fontWeight: 700, color: doneCount === activeItems.length ? "#8dffaa" : theme.accent, letterSpacing: 1, textShadow: "0 1px 3px #0008" }}>{doneCount + " / " + activeItems.length}</span>
           </div>
         </div>
+        {sr && sr.ci && sr.ci.avgIlvl > 0 && <span style={{ position: "absolute", right: 6, top: 0, height: "100%", display: "inline-flex", alignItems: "center", fontSize: 10, color: "#556666", pointerEvents: "none", textShadow: "0 1px 3px #000" }}>
+          {"ilvl " + sr.ci.avgIlvl}
+        </span>}
       </div>
       <div data-tutorial="dungeon-filters" style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
         <button className={"fbtn" + (filter === "all" ? " active" : "")} onClick={function() { changeFilter("all"); }} style={{ padding: "4px 12px", borderRadius: 6, background: filter === "all" ? theme.accentBg : "#0f0f18", color: filter === "all" ? theme.accent : "#556666", fontSize: 12, fontWeight: 600 }}>{t("ui.all")}</button>
@@ -403,9 +416,9 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         {(nonDungeonSources.prep.length > 0) && <span style={{ width: 1, height: 20, background: "#2a2a3a", alignSelf: "center" }} />}
         {DUNGEONS.map(function(d) {
           var cnt = dungeonCounts[d]; if (!cnt || (cnt.bis === 0 && cnt.alt === 0)) return null;
-          return { dungeon: d, score: sr ? calcDungeonScore(d, activeItems, ALTS, sr, targetInfo.max, allStats, WORST_STATS, acq) : 0 };
+          return { source: d, score: sr ? calcDungeonScore(d, activeItems, mergedAlts, sr, targetInfo.max, allStats, WORST_STATS, acq) : 0 };
         }).filter(Boolean).sort(function(a, b) { return b.score - a.score; }).map(function(item) {
-          var d = item.dungeon, c2 = DC[d], cnt = dungeonCounts[d], act = filter === d;
+          var d = item.source, c2 = DC[d], cnt = dungeonCounts[d], act = filter === d;
           var bisItems = activeItems.filter(function(i) { return getSource(i) === d; });
           var rem = bisItems.length - bisItems.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
           return (
@@ -453,11 +466,11 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       )}
       <div style={{ marginTop: 12 }}>
         {filter !== "all" && displayBis.length > 0 && <div style={{ fontSize: 11, fontWeight: 700, color: theme.accent, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>{t("ui.bisItems")}</div>}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
           {displayBis.map(function(item, idx) {
             var p = sr ? calcPriority(item, sr, targetInfo.max, allStats, WORST_STATS) : null;
             if (acq[item.id] && p && p.tier !== 4) p = { tier: 4, deficit: 0, ilvl: p.ilvl, labelKey: "done", color: "#4dca6b", worst: false };
-            return <ItemCard key={item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} worstStats={WORST_STATS} targetBonus={targetInfo.bonus} />;
+            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} worstStats={WORST_STATS} targetBonus={targetInfo.bonus} />;
           })}
         </div>
         {displayAlts.length > 0 && (
@@ -465,9 +478,9 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             <div style={{ fontSize: 11, fontWeight: 700, color: "#e8a84c", marginTop: 20, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 8 }}>
               <span>{t("ui.altSameStats")}</span><span style={{ height: 1, flex: 1, background: "#3a3020" }} />
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
               {displayAlts.map(function(item, idx) {
-                return <ItemCard key={item.id} item={item} isAlt={true} priority={null} sr={null} onToggle={function() {}} idx={idx} theme={theme} allStats={allStats} worstStats={WORST_STATS} targetBonus={targetInfo.bonus} />;
+                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={null} sr={null} onToggle={function() {}} idx={idx} theme={theme} allStats={allStats} worstStats={WORST_STATS} targetBonus={targetInfo.bonus} />;
               })}
             </div>
           </div>

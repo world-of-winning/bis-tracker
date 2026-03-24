@@ -135,6 +135,7 @@
     "noClassSpec": "직업/특성 정보를 찾을 수 없습니다.",
     "unsupportedSpec": "{cls} {spec} 은(는) 아직 지원되지 않는 전문화입니다.",
     "gearUpdated": "장비 데이터가 갱신되었습니다.",
+    "emptySlots": "⚠ 비어있는 슬롯: {slots}",
     "fetchingStats": "{count}개 아이템 스탯 조회 중...",
     "reset": "초기화",
     "loading": "불러오는 중...",
@@ -154,7 +155,8 @@
     "tierAltEquipped": "Alt 장착",
     "tierBisUpgrade": "BiS 등급↑",
     "tierDone": "완료",
-    "tierUpgradeNeeded": "등급↑ 필요",
+    "tierUpgradeNeeded": "강화 필요",
+    "tierReacquireNeeded": "등급↑ 필요",
     "deficitInfo": "（−N） = 목표 {max} 대비 갭",
     "supportedSpecs": "지원 전문화",
     "changelog": "변경 기록",
@@ -170,7 +172,11 @@
     "feedbackAndInquiry": "피드백 & 문의",
     "trySample": "체험하기",
     "orTrySample": "또는 샘플로 먼저 체험해보세요",
-    "exitSample": "체험 종료"
+    "exitSample": "체험 종료",
+    "terms": "이용약관",
+    "privacy": "개인정보처리방침",
+    "resetAll": "모든 데이터 삭제",
+    "resetAllConfirm": "모든 캐릭터 데이터와 설정이 삭제됩니다. 계속하시겠습니까?"
   },
   "tutorial": {
     "skip": "건너뛰기",
