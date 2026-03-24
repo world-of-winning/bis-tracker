@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.2.5
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.3...v1.2.5)
+
+### 🩹 Fixes
+
+- Equipped tooltip, auto WORST_STATS, data normalization ([bce0cce](https://github.com/world-of-winning/bis-tracker/commit/bce0cce))
+- Add explicit text color to locale toggle buttons ([096e01c](https://github.com/world-of-winning/bis-tracker/commit/096e01c))
+
+### 💅 Refactors
+
+- Security hardening and code deduplication ([75290f8](https://github.com/world-of-winning/bis-tracker/commit/75290f8))
+
+### 🏡 Chore
+
+- **release:** V1.2.4 ([3d425da](https://github.com/world-of-winning/bis-tracker/commit/3d425da))
+
+### ❤️ Contributors
+
+- World Of Winning
+
 ## v1.2.3
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.2...v1.2.3)
