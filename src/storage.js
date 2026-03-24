@@ -16,3 +16,11 @@ export function save(key, data) {
     // quota exceeded or private browsing — fail silently
   }
 }
+
+export function remove(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch (e) {
+    // fail silently
+  }
+}

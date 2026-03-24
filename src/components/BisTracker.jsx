@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { load, save as persist } from '../storage.js';
-import { DUNGEON_COLORS as DC, TIERS, GEAR_SLOTS, fetchItemStats } from '../data/shared.js';
+import { DUNGEON_COLORS as DC, TIERS, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC } from '../data/shared.js';
+import { sanitizeHTML } from '../sanitize.js';
 import { findSpecBySimC } from '../data/specs.js';
 import { useLocale } from '../i18n/index.jsx';
 
@@ -17,36 +18,6 @@ function getDungeonCounts(BIS, ALTS, dungeons) {
   BIS.forEach(function(b) { var s = getSource(b); if (c[s]) c[s].bis++; });
   ALTS.forEach(function(a) { var s = getSource(a); if (c[s]) c[s].alt++; });
   return c;
-}
-function parseSimC(text) {
-  var lines = text.split("\n"), gear = {}, bag = [], ci = {}, pend = null, sp = GEAR_SLOTS.join("|");
-  for (var i = 0; i < lines.length; i++) {
-    var t = lines[i].trim();
-    var cm0 = t.match(/^(paladin|warrior|mage|priest|shaman|druid|hunter|warlock|rogue|monk|deathknight|demonhunter|evoker)="(.+)"$/);
-    if (cm0) { ci.className = cm0[1]; ci.name = cm0[2]; continue; }
-    if (t.indexOf("level=") === 0) { ci.level = t.split("=")[1]; continue; }
-    if (t.indexOf("spec=") === 0) { ci.spec = t.split("=")[1]; continue; }
-    var cm = t.match(/^#\s+(.+?)\s*\((\d+)\)\s*$/);
-    if (cm) { pend = { name: cm[1], ilvl: parseInt(cm[2], 10) }; continue; }
-    var gm = t.match(new RegExp("^(" + sp + ")=([^,]*),id=(\\d+)"));
-    if (gm) {
-      var rn = gm[2], fb = rn ? rn.replace(/_/g, " ").replace(/\b\w/g, function(c) { return c.toUpperCase(); }) : null;
-      var bMatch = t.match(/bonus_id=([0-9/]+)/);
-      gear[gm[1]] = { id: parseInt(gm[3], 10), name: pend ? pend.name : (fb || "Item #" + gm[3]), ilvl: pend ? pend.ilvl : null, bonus: bMatch ? bMatch[1].replace(/\//g, ":") : null };
-      pend = null; continue;
-    }
-    var bm = t.match(new RegExp("^#\\s*(" + sp + ")=([^,]*),id=(\\d+)"));
-    if (bm) {
-      var brn = bm[2], bfb = brn ? brn.replace(/_/g, " ").replace(/\b\w/g, function(c) { return c.toUpperCase(); }) : null;
-      var bMatch2 = t.match(/bonus_id=([0-9/]+)/);
-      bag.push({ slot: bm[1], id: parseInt(bm[3], 10), name: pend ? pend.name : (bfb || "Item #" + bm[3]), ilvl: pend ? pend.ilvl : null, bonus: bMatch2 ? bMatch2[1].replace(/\//g, ":") : null });
-      pend = null; continue;
-    }
-    if (t.charAt(0) !== "#") pend = null;
-  }
-  var ilvls = Object.values(gear).map(function(g) { return g.ilvl || 0; }).filter(function(v) { return v > 0; });
-  ci.avgIlvl = ilvls.length > 0 ? Math.round(ilvls.reduce(function(a, b) { return a + b; }, 0) / ilvls.length) : 0;
-  return { ci: ci, gear: gear, bag: bag, cnt: Object.keys(gear).length };
 }
 function matchBiS(BIS, gear, bag, stats, knownBisIds) {
   var BIS_IDS = new Set(BIS.map(function(i) { return i.id; }));
@@ -212,13 +183,18 @@ function EqTooltipObserver({ locale }) {
       if (eqKey !== lastEqKey) {
         lastEqKey = eqKey;
         var td = el.querySelector(".eq-td");
-        if (eqTooltipCache[eqKey]) { td.innerHTML = eqTooltipCache[eqKey]; }
+        if (eqTooltipCache[eqKey]) { td.innerHTML = sanitizeHTML(eqTooltipCache[eqKey]); }
         else {
           td.innerHTML = '<span style="color:#556666;padding:12px">Loading...</span>';
-          fetch("https://nether.wowhead.com/tooltip/item/" + eqId + "?dataEnv=1&locale=" + loc + (eqBonus ? "&bonus=" + eqBonus : "") + (eqIlvl ? "&ilvl=" + eqIlvl : "")).then(function(res) { return res.json(); }).then(function(data) {
-            eqTooltipCache[eqKey] = data.tooltip;
-            if (lastEqKey === eqKey) td.innerHTML = data.tooltip;
-          });
+          fetch("https://nether.wowhead.com/tooltip/item/" + eqId + "?dataEnv=1&locale=" + loc + (eqBonus ? "&bonus=" + eqBonus : "") + (eqIlvl ? "&ilvl=" + eqIlvl : ""))
+            .then(function(res) { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+            .then(function(data) {
+              eqTooltipCache[eqKey] = sanitizeHTML(data.tooltip);
+              if (lastEqKey === eqKey) td.innerHTML = eqTooltipCache[eqKey];
+            })
+            .catch(function() {
+              if (lastEqKey === eqKey) td.innerHTML = '<span style="color:#aa5555;padding:12px">Failed to load</span>';
+            });
         }
       }
       if (!rafId) rafId = requestAnimationFrame(trackPosition);
@@ -255,8 +231,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
   var eq = !isAlt && sr && sr.eqSlot ? sr.eqSlot[item.id] : null;
   // For ALT cards, look up what's equipped in the alt's target slot
   var altEq = isAlt && sr && sr.gear ? (function() {
-    var fs = item.forSlot;
-    var slots = fs === "ring" ? ["finger1","finger2"] : fs === "trinket" ? ["trinket1","trinket2"] : fs === "weapon" ? ["main_hand","off_hand"] : fs === "off_hand" ? ["off_hand"] : [fs];
+    var slots = resolveSlots(item.forSlot);
     // Check if this exact alt item is equipped in any matching slot
     for (var i = 0; i < slots.length; i++) { if (sr.gear[slots[i]] && sr.gear[slots[i]].id === item.id) return sr.gear[slots[i]]; }
     // For dual slots, skip items that are already BiS/MYTHIC and pick the replaceable one
@@ -552,7 +527,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           var nsBis = activeItems.filter(function(i) { return getSource(i) === ns.source; });
           var nsBisRem = nsBis.length - nsBis.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
           var nsAltItems = mergedAlts.filter(function(a) { return getSource(a) === ns.source; });
-          var nsAltDone = sr && sr.gear ? nsAltItems.filter(function(a) { var fs = a.forSlot; var slots = fs === "ring" ? ["finger1","finger2"] : fs === "trinket" ? ["trinket1","trinket2"] : fs === "weapon" ? ["main_hand","off_hand"] : fs === "off_hand" ? ["off_hand"] : [fs]; return slots.some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; }); }).length : 0;
+          var nsAltDone = sr && sr.gear ? nsAltItems.filter(function(a) { return resolveSlots(a.forSlot).some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; }); }).length : 0;
           var nsAltRem = nsAltItems.length - nsAltDone;
           var nsRem = nsBisRem + nsAltRem;
           return (
@@ -573,9 +548,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           var bisRem = bisItems.length - bisItems.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
           var altItems = mergedAlts.filter(function(a) { return getSource(a) === d; });
           var altDone = sr && sr.gear ? altItems.filter(function(a) {
-            var fs = a.forSlot;
-            var slots = fs === "ring" ? ["finger1","finger2"] : fs === "trinket" ? ["trinket1","trinket2"] : fs === "weapon" ? ["main_hand","off_hand"] : fs === "off_hand" ? ["off_hand"] : [fs];
-            return slots.some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; });
+            return resolveSlots(a.forSlot).some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; });
           }).length : 0;
           var altRem = altItems.length - altDone;
           var rem = bisRem + altRem;
@@ -591,7 +564,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           var nsBis = activeItems.filter(function(i) { return getSource(i) === ns.source; });
           var nsBisRem = nsBis.length - nsBis.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
           var nsAltItems = mergedAlts.filter(function(a) { return getSource(a) === ns.source; });
-          var nsAltDone = sr && sr.gear ? nsAltItems.filter(function(a) { var fs = a.forSlot; var slots = fs === "ring" ? ["finger1","finger2"] : fs === "trinket" ? ["trinket1","trinket2"] : fs === "weapon" ? ["main_hand","off_hand"] : fs === "off_hand" ? ["off_hand"] : [fs]; return slots.some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; }); }).length : 0;
+          var nsAltDone = sr && sr.gear ? nsAltItems.filter(function(a) { return resolveSlots(a.forSlot).some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; }); }).length : 0;
           var nsAltRem = nsAltItems.length - nsAltDone;
           var nsRem = nsBisRem + nsAltRem;
           return (

@@ -2,8 +2,8 @@ import { useState, useCallback } from 'react';
 import { SPECS, getSpec, findSpecBySimC } from './data/specs.js';
 import { CHANGELOG } from './data/changelog.js';
 import { getSampleChars, SAMPLE_CHARS } from './data/sample.js';
-import { load, save as persist } from './storage.js';
-import { GEAR_SLOTS, TIERS } from './data/shared.js';
+import { load, save as persist, remove } from './storage.js';
+import { TIERS, parseSimC } from './data/shared.js';
 import { useLocale } from './i18n/index.jsx';
 import BisTracker from './components/BisTracker.jsx';
 import TutorialOverlay from './components/TutorialOverlay.jsx';
@@ -36,19 +36,6 @@ var SPEC_GROUPS = (function() {
   return groups;
 })();
 
-function detectSimC(text) {
-  var lines = text.split("\n"), ci = {}, cnt = 0;
-  var sp = GEAR_SLOTS.join("|");
-  for (var i = 0; i < lines.length; i++) {
-    var t = lines[i].trim();
-    var cm0 = t.match(/^(paladin|warrior|mage|priest|shaman|druid|hunter|warlock|rogue|monk|deathknight|demonhunter|evoker)="(.+)"$/);
-    if (cm0) { ci.className = cm0[1]; ci.name = cm0[2]; continue; }
-    if (t.indexOf("spec=") === 0) { ci.spec = t.split("=")[1]; continue; }
-    var gm = t.match(new RegExp("^(" + sp + ")="));
-    if (gm) cnt++;
-  }
-  return { ci: ci, cnt: cnt };
-}
 
 function loadCharsIndex() {
   return load(CHARS_KEY) || {};
@@ -87,7 +74,7 @@ function migrateOldData() {
         migrated = true;
       }
       persist(s.STORAGE_KEY, null);
-      try { localStorage.removeItem(s.STORAGE_KEY); } catch(e) {}
+      remove(s.STORAGE_KEY);
     }
   });
   return migrated;
@@ -250,7 +237,7 @@ export default function App() {
     if (!text || !text.trim()) return;
     e.preventDefault();
     setLandingText(text);
-    var result = detectSimC(text);
+    var result = parseSimC(text);
     if (result.cnt === 0) {
       setLandingFeedback({ ok: false, msg: t("ui.noGearData") });
       return;
@@ -297,24 +284,8 @@ export default function App() {
       var key = s.spec.STORAGE_KEY + ":" + s.name;
       if (!load(key)) {
         // Parse and store directly
-        var lines = s.simcText.split("\n"), gear = {}, ci = {}, pend = null;
-        var sp = "head|neck|shoulder|back|chest|wrist|hands|waist|legs|feet|finger1|finger2|trinket1|trinket2|main_hand|off_hand";
-        for (var i = 0; i < lines.length; i++) {
-          var t = lines[i].trim();
-          var cm0 = t.match(/^(paladin|warrior|mage|priest|shaman|druid|hunter|warlock|rogue|monk|deathknight|demonhunter|evoker)="(.+)"$/);
-          if (cm0) { ci.className = cm0[1]; ci.name = cm0[2]; continue; }
-          if (t.indexOf("spec=") === 0) { ci.spec = t.split("=")[1]; continue; }
-          var cm = t.match(/^#\s+(.+?)\s*\((\d+)\)\s*$/);
-          if (cm) { pend = { name: cm[1], ilvl: parseInt(cm[2], 10) }; continue; }
-          var gm = t.match(new RegExp("^(" + sp + ")=([^,]*),id=(\\d+)"));
-          if (gm) {
-            var bMatch = t.match(/bonus_id=([0-9/]+)/);
-            gear[gm[1]] = { id: parseInt(gm[3], 10), name: pend ? pend.name : "Item", ilvl: pend ? pend.ilvl : null, bonus: bMatch ? bMatch[1].replace(/\//g, ":") : null };
-            pend = null; continue;
-          }
-        }
-        var ilvls = Object.values(gear).map(function(g) { return g.ilvl || 0; }).filter(function(v) { return v > 0; });
-        ci.avgIlvl = ilvls.length > 0 ? Math.round(ilvls.reduce(function(a, b) { return a + b; }, 0) / ilvls.length) : 0;
+        var parsed = parseSimC(s.simcText);
+        var gear = parsed.gear, ci = parsed.ci;
         // Match BIS
         var BIS_IDS = new Set(s.spec.BIS.map(function(b) { return b.id; }));
         var matched = {}, eqSlot = {};
@@ -350,7 +321,7 @@ export default function App() {
       var s = SPECS.find(function(sp) { return sp.SPEC_KEY === c.specKey; });
       if (s) {
         removeCharFromIndex(c.specKey, c.name);
-        try { localStorage.removeItem(s.STORAGE_KEY + ":" + c.name); } catch(e) {}
+        remove(s.STORAGE_KEY + ":" + c.name);
       }
     });
     setSampleMode(false);
@@ -378,7 +349,7 @@ export default function App() {
   }, []);
 
   var handleSpecSwitch = useCallback(function(newSpecKey, simcText) {
-    var result = detectSimC(simcText);
+    var result = parseSimC(simcText);
     var name = (result.ci && result.ci.name) || "Unknown";
     setSpecKey(newSpecKey);
     setCharName(name);
@@ -404,16 +375,16 @@ export default function App() {
       var s = SPECS.find(function(sp) { return sp.SPEC_KEY === sk; });
       if (!s) return;
       (index[sk] || []).forEach(function(name) {
-        try { localStorage.removeItem(s.STORAGE_KEY + ":" + name); } catch(e) {}
+        remove(s.STORAGE_KEY + ":" + name);
       });
     });
     // Remove stat caches
     SPECS.forEach(function(s) {
-      try { localStorage.removeItem(s.STAT_CACHE_KEY); } catch(e) {}
+      remove(s.STAT_CACHE_KEY);
     });
     // Remove index and last char
-    try { localStorage.removeItem(CHARS_KEY); } catch(e) {}
-    try { localStorage.removeItem(LAST_CHAR_KEY); } catch(e) {}
+    remove(CHARS_KEY);
+    remove(LAST_CHAR_KEY);
     // Reset state
     setSpecKey(null);
     setCharName(null);
@@ -428,7 +399,7 @@ export default function App() {
     if (specKey && charName) {
       removeCharFromIndex(specKey, charName);
       var s = getSpec(specKey);
-      try { localStorage.removeItem(s.STORAGE_KEY + ":" + charName); } catch(e) {}
+      remove(s.STORAGE_KEY + ":" + charName);
     }
     // Find next available character
     var index = loadCharsIndex();
