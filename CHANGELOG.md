@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.2.8
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.7...v1.2.8)
+
+### 🩹 Fixes
+
+- Correct priority colors and sorting for upgrade-needed items ([e70731f](https://github.com/world-of-winning/bis-tracker/commit/e70731f))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.2.7
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.6...v1.2.7)
