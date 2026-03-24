@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.2.3
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.2...v1.2.3)
+
+### 🩹 Fixes
+
+- Raid alt tracking, dungeon filter accuracy, tutorial update ([32ea962](https://github.com/world-of-winning/bis-tracker/commit/32ea962))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.2.2
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.1...v1.2.2)
