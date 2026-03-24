@@ -29,7 +29,7 @@ export var BIS = [
   { slot: "finger1", en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", id: 251513, source: "Crafted", stats: ["crit","mastery"] },
   { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Weight of Command", ko: "지휘의 무게", id: 249293, source: "Imperator Averzian", stats: ["crit","vers"] },
   { slot: "off_hand", en: "Aln'hara Lantern", ko: "알른하라의 등불", id: 245769, source: "Crafted", stats: [] },
 ];
@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "feet", en: "Eclipse Espadrilles", ko: "일월식 발목화", id: 251210, source: "Nexus-Point Xenas", stats: ["haste","vers"] },
   { slot: "finger1", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "finger2", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "trinket2", en: "Emerald Coach's Whistle", ko: "에메랄드 감독의 호루라기", id: 193718, source: "Algeth'ar Academy", stats: [] },
   { slot: "main_hand", en: "Berserker's Hexclaws", ko: "광전사의 사술발톱", id: 251163, source: "Maisara Caverns", stats: ["crit","vers"] },
   { slot: "off_hand", en: "Rukhran's Solar Reliquary", ko: "루크란의 태양 성물함", id: 258472, source: "Skyreach", stats: ["haste","mastery"] },
@@ -86,7 +86,7 @@ export var STAT_CACHE_KEY = "mw-monk-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49806:["crit","haste"],49807:["crit","haste"],49817:["haste","mastery"],49823:["crit","vers"],
-  50227:["crit","vers"],50228:["crit","haste"],50264:["crit","haste"],51802:["crit","haste"],
+  50227:["crit","vers"],50228:["crit","haste"],50264:["crit","haste"],250256:[],
   151309:["haste","vers"],151315:["crit","haste"],151316:["haste","vers"],151318:["crit","haste"],
   151336:["crit","haste"],178819:["haste","mastery"],193708:["crit","mastery"],193710:["haste","mastery"],
   193712:["haste","vers"],193714:["haste","mastery"],193717:["crit","vers"],193718:[],

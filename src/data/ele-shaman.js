@@ -48,7 +48,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Emberwing Feather", ko: "잿불날개 깃털", id: 250144, source: "Windrunner Spire", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", id: 251111, source: "Magisters' Terrace", stats: ["crit","haste"] },
   { slot: "off_hand", en: "Ward of the Spellbreaker", ko: "주문파괴자의 수호물", id: 251105, source: "Magisters' Terrace", stats: ["crit","mastery"] },
 ];
@@ -80,7 +80,7 @@ export var STAT_CACHE_KEY = "ele-shaman-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49802:["crit","haste"],49807:["crit","haste"],49810:["crit","haste"],49824:["crit","haste"],
-  50233:["crit","haste"],51802:["crit","haste"],151309:["haste","vers"],151320:["haste","mastery"],
+  50233:["crit","haste"],250256:[],151309:["haste","vers"],151320:["haste","mastery"],
   151323:["haste","mastery"],237844:[],244584:[],244611:["haste","mastery"],
   249277:["crit","mastery"],249284:["crit","mastery"],249288:["crit","haste"],249295:["crit","haste"],
   249324:["haste","mastery"],249325:["crit","mastery"],249343:["mastery"],249346:[],

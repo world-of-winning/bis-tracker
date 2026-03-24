@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "finger2", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", id: 251168, source: "Maisara Caverns", stats: ["crit","mastery"] },
   { slot: "off_hand", en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", id: 251168, source: "Maisara Caverns", stats: ["crit","mastery"] },
 ];
@@ -73,7 +73,7 @@ export var STAT_CACHE_KEY = "frost-dk-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49808:["crit","haste"],50228:["crit","haste"],50234:["crit","mastery"],50272:["crit","haste"],
-  51802:["crit","haste"],151328:["crit","haste"],151329:["haste","mastery"],151333:["crit","mastery"],
+  250256:[],151328:["crit","haste"],151329:["haste","mastery"],151333:["crit","mastery"],
   193708:["crit","mastery"],237828:[],239656:[],249277:["crit","mastery"],
   249284:["crit","mastery"],249309:["crit","haste"],249332:["haste","mastery"],249337:["crit","haste"],
   249343:["mastery"],249344:[],249368:["haste","mastery"],249369:["haste","mastery"],

@@ -45,10 +45,9 @@ export var MYTHIC = [
   { slot: "waist", en: "Cord of Unraveling Reality", ko: "무너지는 현실의 장식끈", id: 151302, source: "Seat of the Triumvirate", stats: ["mastery","vers"] },
   { slot: "legs", en: "Leyline Leggings", ko: "지맥 다리보호구", id: 251205, source: "Nexus-Point Xenas", stats: ["crit","vers"] },
   { slot: "feet", en: "Nightprey Stalkers", ko: "밤사냥감 추적자", id: 251167, source: "Maisara Caverns", stats: ["crit","vers"] },
-  { slot: "finger1", en: "Leyline Leggings", ko: "지맥 다리보호구", id: 251205, source: "Nexus-Point Xenas", stats: ["crit","vers"] },
   { slot: "finger2", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Emerald Coach's Whistle", ko: "에메랄드 감독의 호루라기", id: 193718, source: "Algeth'ar Academy", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Wand of Saprish's Gaze", ko: "사프리쉬의 시선 마법봉", id: 258516, source: "Seat of the Triumvirate", stats: ["crit","vers"] },
   { slot: "off_hand", en: "Sigil of the Restless Heart", ko: "잠 못 드는 심장의 인장", id: 251094, source: "Windrunner Spire", stats: ["crit","vers"] },
 ];
@@ -70,7 +69,7 @@ export var WORST_STATS = ["vers"];
 export var STAT_CACHE_KEY = "holy-priest-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49823:["crit","vers"],50227:["crit","vers"],50228:["crit","haste"],51802:["crit","haste"],
+  49823:["crit","vers"],50227:["crit","vers"],50228:["crit","haste"],250256:[],
   151302:["mastery","vers"],151305:["haste","mastery"],151308:["crit","vers"],193703:["crit","haste"],
   193708:["crit","mastery"],193717:["crit","vers"],193718:[],193723:["crit","vers"],
   239664:["crit","haste"],245769:[],249275:["crit","vers"],249293:["crit","vers"],

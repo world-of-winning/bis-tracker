@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, source: "Algeth'ar Academy", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, source: "Windrunner Spire", stats: ["crit","mastery"] },
 ];
 
@@ -71,7 +71,7 @@ export var WORST_STATS = ["vers"];
 export var STAT_CACHE_KEY = "surv-hunter-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49810:["crit","haste"],49824:["crit","haste"],50228:["crit","haste"],51802:["crit","haste"],
+  49810:["crit","haste"],49824:["crit","haste"],50228:["crit","haste"],250256:[],
   151321:["crit","mastery"],151323:["haste","mastery"],193701:[],244610:["crit","vers"],
   244611:["haste","mastery"],249277:["crit","mastery"],249284:["crit","mastery"],249304:["crit","mastery"],
   249320:["crit","vers"],249325:["crit","mastery"],249337:["crit","haste"],249343:["mastery"],

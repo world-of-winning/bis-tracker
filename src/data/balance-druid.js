@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "feet", en: "Domanaar's Dire Treads", ko: "도마나르의 광포한 발보호대", id: 251121, source: "Magisters' Terrace", stats: ["mastery","vers"] },
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "trinket2", en: "Vessel of Tortured Souls", ko: "괴로워하는 영혼의 그릇", id: 250258, source: "Maisara Caverns", stats: ["mastery"] },
   { slot: "main_hand", en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", id: 251201, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
 ];
@@ -82,7 +82,7 @@ export var WORST_STATS = ["vers"];
 export var STAT_CACHE_KEY = "balance-druid-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49812:["crit","haste"],49817:["haste","mastery"],50264:["crit","haste"],51802:["crit","haste"],
+  49812:["crit","haste"],49817:["haste","mastery"],50264:["crit","haste"],250256:[],
   151315:["crit","haste"],151317:["mastery","vers"],151319:["crit","mastery"],178819:["haste","mastery"],
   193707:["haste","mastery"],193710:["haste","mastery"],244573:[],244576:[],
   249283:["haste","mastery"],249287:["haste","mastery"],249294:["haste","mastery"],249312:["haste","mastery"],

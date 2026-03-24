@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Algeth'ar Academy", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, source: "Algeth'ar Academy", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, source: "Windrunner Spire", stats: ["crit","mastery"] },
 ];
 
@@ -80,7 +80,7 @@ export var STAT_CACHE_KEY = "feral-druid-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49806:["crit","haste"],49807:["crit","haste"],49812:["crit","haste"],49817:["haste","mastery"],
-  50228:["crit","haste"],50264:["crit","haste"],51802:["crit","haste"],151315:["crit","haste"],
+  50228:["crit","haste"],50264:["crit","haste"],250256:[],151315:["crit","haste"],
   151319:["crit","mastery"],151336:["crit","haste"],178819:["haste","mastery"],193701:[],
   240949:[],244576:[],249277:["crit","mastery"],249284:["crit","mastery"],
   249312:["haste","mastery"],249321:["crit","mastery"],249327:["crit","haste"],249337:["crit","haste"],

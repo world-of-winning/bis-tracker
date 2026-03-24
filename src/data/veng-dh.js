@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "feet", en: "Eclipse Espadrilles", ko: "일월식 발목화", id: 251210, source: "Nexus-Point Xenas", stats: ["haste","vers"] },
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "finger2", en: "Band of the Triumvirate", ko: "삼두정의 고리", id: 151311, source: "Seat of the Triumvirate", stats: ["haste","vers"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "trinket2", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
   { slot: "main_hand", en: "Shadowslash Slicer", ko: "어둠칼날 절단기", id: 251122, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "off_hand", en: "Shadowslash Slicer", ko: "어둠칼날 절단기", id: 251122, source: "Magisters' Terrace", stats: ["haste","mastery"] },
@@ -81,7 +81,7 @@ export var WORST_STATS = [];
 export var STAT_CACHE_KEY = "veng-dh-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49806:["crit","haste"],49807:["crit","haste"],49812:["crit","haste"],51802:["crit","haste"],
+  49806:["crit","haste"],49807:["crit","haste"],49812:["crit","haste"],250256:[],
   151309:["haste","vers"],151311:["haste","vers"],151316:["haste","vers"],151318:["crit","haste"],
   151319:["crit","mastery"],151336:["crit","haste"],193707:["haste","mastery"],193708:["crit","mastery"],
   193709:["crit","haste"],193710:["haste","mastery"],193712:["haste","vers"],244576:[],

@@ -48,7 +48,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "finger2", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Emerald Coach's Whistle", ko: "에메랄드 감독의 호루라기", id: 193718, source: "Algeth'ar Academy", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Final Grade", ko: "최종 학점", id: 193707, source: "Algeth'ar Academy", stats: ["haste","mastery"] },
 ];
 
@@ -83,7 +83,7 @@ export var WORST_STATS = ["vers"];
 export var STAT_CACHE_KEY = "pres-evoker-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49810:["crit","haste"],50228:["crit","haste"],51802:["crit","haste"],151321:["crit","mastery"],
+  49810:["crit","haste"],50228:["crit","haste"],250256:[],151321:["crit","mastery"],
   193704:["crit","mastery"],193707:["haste","mastery"],193708:["crit","mastery"],193710:["haste","mastery"],
   193718:[],221200:["mastery","vers"],241140:["mastery","vers"],245769:[],
   249277:["crit","mastery"],249283:["haste","mastery"],249284:["crit","mastery"],249287:["haste","mastery"],

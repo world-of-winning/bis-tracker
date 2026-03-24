@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "feet", en: "Footwraps of Ill-Fate", ko: "불길한 운명의 발등싸개", id: 251169, source: "Maisara Caverns", stats: ["haste","mastery"] },
   { slot: "finger1", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "finger2", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "trinket2", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
   { slot: "main_hand", en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", id: 251168, source: "Maisara Caverns", stats: ["crit","mastery"] },
   { slot: "off_hand", en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", id: 251168, source: "Maisara Caverns", stats: ["crit","mastery"] },
@@ -78,7 +78,7 @@ export var STAT_CACHE_KEY = "fury-warrior-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49808:["crit","haste"],49812:["crit","haste"],49819:["crit","haste"],50228:["crit","haste"],
-  50272:["crit","haste"],51802:["crit","haste"],151328:["crit","haste"],151332:["haste","vers"],
+  50272:["crit","haste"],250256:[],151328:["crit","haste"],151332:["haste","vers"],
   237834:[],237848:[],249277:["crit","mastery"],249284:["crit","mastery"],
   249309:["crit","haste"],249332:["haste","mastery"],249337:["crit","haste"],249342:[],
   249343:["mastery"],249368:["haste","mastery"],249369:["haste","mastery"],249920:["haste"],

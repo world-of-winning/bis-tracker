@@ -29,7 +29,7 @@ export var BIS = [
   { slot: "finger1", en: "Signet of the Starved Beast", ko: "굶주린 야수의 인장", id: 249336, source: "Vorasius", stats: ["crit","vers"] },
   { slot: "finger2", en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", id: 249919, source: "Belo'ren", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Skyreach", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Skyreach", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Magister's Ritual Knife", ko: "마법학자의 의식용 손칼", id: 237838, source: "Crafted", stats: [] },
   { slot: "off_hand", en: "Bulwark of Noble Resolve", ko: "귀족의 결의 보루 방패", id: 249275, source: "Imperator Averzian", stats: ["crit","vers"] },
 ];
@@ -48,7 +48,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Eredath Seal of Nobility", ko: "에레다스 귀족의 인장", id: 151308, source: "Seat of the Triumvirate", stats: ["crit","vers"] },
   { slot: "finger2", en: "Band of the Triumvirate", ko: "삼두정의 고리", id: 151311, source: "Seat of the Triumvirate", stats: ["haste","vers"] },
   { slot: "trinket1", en: "Emerald Coach's Whistle", ko: "에메랄드 감독의 호루라기", id: 193718, source: "Algeth'ar Academy", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Skyreach", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Skyreach", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Surgeon's Needle", ko: "외과의사의 바늘", id: 50227, source: "Skyreach", stats: ["crit","vers"] },
   { slot: "off_hand", en: "Reflux Reflector", ko: "역류 굴절 장치", id: 251202, source: "Nexus-Point Xenas", stats: ["crit","vers"] },
 ];
@@ -77,7 +77,7 @@ export var STAT_CACHE_KEY = "resto-shaman-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49810:["crit","haste"],49811:["crit","vers"],49823:["crit","vers"],49824:["crit","haste"],
-  50227:["crit","vers"],50228:["crit","haste"],50233:["crit","haste"],51802:["crit","haste"],
+  50227:["crit","vers"],50228:["crit","haste"],50233:["crit","haste"],250256:[],
   151308:["crit","vers"],151311:["haste","vers"],151321:["crit","mastery"],151322:["mastery","vers"],
   193704:["crit","mastery"],193708:["crit","mastery"],193715:["crit","haste"],193717:["crit","vers"],
   193718:[],193723:["crit","vers"],237838:[],240950:[],

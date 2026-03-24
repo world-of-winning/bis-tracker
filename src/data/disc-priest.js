@@ -48,7 +48,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "finger2", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Emerald Coach's Whistle", ko: "에메랄드 감독의 호루라기", id: 193718, source: "Algeth'ar Academy", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Ceremonial Hexblade", ko: "의식용 사술칼날", id: 251178, source: "Maisara Caverns", stats: ["crit","haste"] },
   { slot: "off_hand", en: "Rukhran's Solar Reliquary", ko: "루크란의 태양 성물함", id: 258472, source: "Skyreach", stats: ["haste","mastery"] },
 ];
@@ -82,7 +82,7 @@ export var STAT_CACHE_KEY = "disc-priest-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49802:["crit","haste"],49807:["crit","haste"],49825:["crit","haste"],50228:["crit","haste"],
-  50263:["haste","vers"],51802:["crit","haste"],151303:["crit","haste"],151305:["haste","mastery"],
+  50263:["haste","vers"],250256:[],151303:["crit","haste"],151305:["haste","mastery"],
   193703:["crit","haste"],193707:["haste","mastery"],193710:["haste","mastery"],193718:[],
   239664:["crit","haste"],245769:[],249283:["haste","mastery"],249287:["haste","mastery"],
   249288:["crit","haste"],249294:["haste","mastery"],249295:["crit","haste"],249315:["haste","mastery"],

@@ -16,6 +16,7 @@ import { load } from 'cheerio';
 import { writeFileSync, readFileSync, existsSync, readdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { fetchTooltip, saveCache } from './wowhead-cache.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname, '../src/data');
@@ -486,13 +487,11 @@ async function searchItemId(name) {
 
 async function fetchItemTooltip(id) {
   // Korean name
-  const koData = await fetchWithRetry(`https://nether.wowhead.com/tooltip/item/${id}?dataEnv=1&locale=1`);
+  const koData = await fetchTooltip(id, 1);
   const ko = koData.name || '';
 
-  await delay(150);
-
   // Stats
-  const enData = await fetchWithRetry(`https://nether.wowhead.com/tooltip/item/${id}?dataEnv=1&locale=0`);
+  const enData = await fetchTooltip(id, 0);
   const tooltip = enData.tooltip || '';
   const stats = [];
   if (tooltip.includes('<!--rtg32-->')) stats.push('crit');
@@ -1040,3 +1039,5 @@ if (rebuild && success > 0) {
     console.error('find-alts failed:', err.message);
   }
 }
+
+saveCache();

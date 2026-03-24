@@ -11,6 +11,7 @@
 import { readFileSync, writeFileSync, readdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { fetchTooltip, saveCache } from './wowhead-cache.mjs';
 
 // ─── Wowhead class restriction check ────────────────────────
 const CLASS_NAME_MAP = {
@@ -19,8 +20,6 @@ const CLASS_NAME_MAP = {
   druid: 'Druid', rogue: 'Rogue', monk: 'Monk', demonhunter: 'Demon Hunter',
   mage: 'Mage', warlock: 'Warlock', priest: 'Priest',
 };
-
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ─── Allowed weapon types per class ──────────────────────────
 const CLASS_WEAPONS = {
@@ -39,26 +38,14 @@ const CLASS_WEAPONS = {
   evoker:      new Set(['dagger','1h_fist','1h_sword','1h_axe','1h_mace','staff','offhand']),
 };
 
-// Cache: itemId → { classRestriction, weaponType }
-const tooltipCache = new Map();
-
 async function fetchTooltipInfo(itemId) {
-  if (tooltipCache.has(itemId)) return tooltipCache.get(itemId);
-
-  await delay(150);
   try {
-    const res = await fetch(`https://nether.wowhead.com/tooltip/item/${itemId}?dataEnv=1&locale=0`);
-    const data = await res.json();
+    const data = await fetchTooltip(itemId, 0);
     const tooltip = data.tooltip || '';
 
-    // Class restriction
     const classMatch = tooltip.match(/Classes:\s*<a[^>]*>([^<]+)<\/a>/);
     const classRestriction = classMatch ? classMatch[1] : null;
 
-    // Weapon subtype from tooltip HTML structure:
-    // <td>Two-Hand</td><th><!--scstart..--><span class="q1">Mace</span><!--scend--></th>
-    // or: <td>Main Hand</td><th>...Sword...</th>
-    // Off-hands: "Held In Off-hand" appears as sole td without subtype
     let weaponType = null;
     const weapMatch = tooltip.match(/<td>(One-Hand|Two-Hand|Main Hand|Off Hand|Ranged|Held In Off-hand)<\/td>(?:<th><!--[^>]*--><span[^>]*>([^<]+)<\/span>)?/i);
     if (weapMatch) {
@@ -66,18 +53,13 @@ async function fetchTooltipInfo(itemId) {
       const subName = (weapMatch[2] || '').toLowerCase();
       weaponType = normalizeWeaponType(invType, subName);
     }
-    // Shield: appears as <th><span>Shield</span> without the usual invType td
     if (!weaponType && tooltip.includes('>Shield<')) {
       weaponType = 'shield';
     }
 
-    const result = { classRestriction, weaponType };
-    tooltipCache.set(itemId, result);
-    return result;
+    return { classRestriction, weaponType };
   } catch {
-    const result = { classRestriction: null, weaponType: null };
-    tooltipCache.set(itemId, result);
-    return result;
+    return { classRestriction: null, weaponType: null };
   }
 }
 
@@ -354,6 +336,7 @@ async function main() {
     }
   }
   console.log(`\nDone: ${total} total alts across ${targets.length} specs`);
+  saveCache();
 }
 
 main();

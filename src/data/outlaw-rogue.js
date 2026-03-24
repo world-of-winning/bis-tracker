@@ -35,7 +35,6 @@ export var BIS = [
 ];
 
 export var MYTHIC = [
-  { slot: "head", en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", id: 49807, source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { slot: "neck", en: "Barbed Ymirheim Choker", ko: "뾰족한 이미르하임 목장식", id: 50228, source: "Pit of Saron", stats: ["crit","haste"] },
   { slot: "shoulder", en: "Enthralled Bonespines", ko: "마법에 걸린 해골가시", id: 251171, source: "Maisara Caverns", stats: ["haste","mastery"] },
   { slot: "back", en: "Defiant Defender's Drape", ko: "저항하는 수호자의 외투", id: 260312, source: "Magisters' Terrace", stats: ["crit","haste"] },
@@ -48,7 +47,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Algeth'ar Academy", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Shadowslash Slicer", ko: "어둠칼날 절단기", id: 251122, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "off_hand", en: "Shadowslash Slicer", ko: "어둠칼날 절단기", id: 251122, source: "Magisters' Terrace", stats: ["haste","mastery"] },
 ];
@@ -86,7 +85,7 @@ export var STAT_CACHE_KEY = "outlaw-rogue-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49802:["crit","haste"],49806:["crit","haste"],49807:["crit","haste"],49812:["crit","haste"],
-  49823:["crit","vers"],50228:["crit","haste"],50264:["crit","haste"],51802:["crit","haste"],
+  49823:["crit","vers"],50228:["crit","haste"],50264:["crit","haste"],250256:[],
   151313:["crit","vers"],151315:["crit","haste"],151316:["haste","vers"],151318:["crit","haste"],
   151336:["crit","haste"],193707:["haste","mastery"],193709:["crit","haste"],193710:["haste","mastery"],
   240949:[],244576:[],249276:["crit","haste"],249283:["haste","mastery"],

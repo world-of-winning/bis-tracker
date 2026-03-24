@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "feet", en: "Sabatons of Furious Revenge", ko: "격노한 복수의 발덮개", id: 251091, source: "Windrunner Spire", stats: ["crit","vers"] },
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "finger2", en: "Purloined Wedding Ring", ko: "훔친 결혼반지", id: 49812, source: "Pit of Saron", stats: ["crit","haste"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "trinket2", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
   { slot: "main_hand", en: "Scepter of the Endless Night", ko: "끝없는 밤의 홀", id: 258525, source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { slot: "off_hand", en: "Viryx's Indomitable Bulwark", ko: "비릭스의 불굴의 보루 방패", id: 258049, source: "Skyreach", stats: ["crit","mastery"] },
@@ -75,7 +75,7 @@ export var STAT_CACHE_KEY = "prot-paladin-stat-cache-v1";
 export var KNOWN_STATS = {
   49802:["crit","haste"],49807:["crit","haste"],49808:["crit","haste"],49812:["crit","haste"],
   49819:["crit","haste"],50228:["crit","haste"],50234:["crit","mastery"],50272:["crit","haste"],
-  51802:["crit","haste"],151328:["crit","haste"],151332:["haste","vers"],221200:["mastery","vers"],
+  250256:[],151328:["crit","haste"],151332:["haste","vers"],221200:["mastery","vers"],
   240950:[],241140:["mastery","vers"],249275:["crit","vers"],249277:["crit","mastery"],
   249284:["crit","mastery"],249288:["crit","haste"],249295:["crit","haste"],249309:["crit","haste"],
   249337:["crit","haste"],249343:["mastery"],249920:["haste"],249949:["crit","haste"],

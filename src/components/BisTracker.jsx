@@ -60,13 +60,25 @@ function matchBiS(BIS, gear, bag, stats, knownBisIds) {
     }
     if (d) eqSlot[bi.id] = d;
   });
+  // Fix ring/trinket eqSlot: if pointing to a matched BiS item, use the other slot
+  BIS.forEach(function(bi) {
+    if (matched[bi.id]) return;
+    var s = bi.slot;
+    if (s.indexOf("finger") !== 0 && s.indexOf("trinket") !== 0) return;
+    var eq = eqSlot[bi.id];
+    if (!eq || !BIS_IDS.has(eq.id)) return;
+    var alt = s.endsWith("1") ? s.replace("1", "2") : s.replace("2", "1");
+    if (gear[alt]) eqSlot[bi.id] = gear[alt];
+  });
   bag.forEach(function(b) { if (BIS_IDS.has(b.id) && !matched[b.id]) bisInBag[b.id] = b; });
   BIS.forEach(function(bi) {
-    if (matched[bi.id] || !bi.stats.length) return;
+    if (matched[bi.id]) return;
     var eq = eqSlot[bi.id]; if (!eq || eq.id === bi.id) return;
+    // M+ BiS check (works even for stat-less items like trinkets)
+    if (knownBisIds && knownBisIds.has(eq.id)) { altItems[bi.id] = "mythic"; return; }
+    if (!bi.stats.length) return;
     var es = stats[eq.id];
-    // Alt if same stats, OR if equipped item is BiS from the other view (raid/mythic)
-    if ((es && sameStats(bi.stats, es)) || (knownBisIds && knownBisIds.has(eq.id))) altItems[bi.id] = true;
+    if (es && sameStats(bi.stats, es)) altItems[bi.id] = "stats";
   });
   return { matched: matched, eqSlot: eqSlot, bisInBag: bisInBag, altItems: altItems };
 }
@@ -88,6 +100,11 @@ function calcPriority(bisItem, sr, targetIlvl, stats, worstStats) {
   if (inBag) { var bI = inBag.ilvl || 0, bD = Math.max(0, targetIlvl - bI); if (bD <= 0) return { tier: 4, deficit: 0, ilvl: bI, labelKey: "bagDone", color: "#4dca6b", worst: false }; return { tier: 3, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#caca3d", worst: false }; }
   if (isBis) { if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", worst: false }; var capped = TIERS.some(function(ti) { return ti.max === eqIlvl && ti.max < targetIlvl; }); return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#6dca8b", worst: false, capped: capped }; }
   if (isAlt) {
+    // M+ BiS equipped → always tier 2 (raid BiS is different, never truly "done")
+    if (isAlt === "mythic") {
+      if (deficit <= 0) return { tier: 2, deficit: 0, ilvl: eqIlvl, labelKey: "mythicBisDone", color: "#6dca8b", worst: false };
+      return { tier: 2, deficit: deficit, ilvl: eqIlvl, labelKey: "mythicBis", color: "#6dca8b", worst: false };
+    }
     if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", worst: false };
     // Alt too far below target (more than one tier gap) → treat as wrong item
     var prevTier = TIERS.filter(function(t) { return t.max < targetIlvl; });
@@ -142,26 +159,44 @@ function StatPills({ stats: itemStats }) {
   return (<span style={{ display: "inline-flex", gap: 2 }}>{itemStats.map(function(s) { var c = colors[s]; return (<span key={s} style={{ display: "inline-flex", padding: "1px 5px", borderRadius: 3, fontSize: 9, fontWeight: 700, background: c.bg, color: c.fg, border: "1px solid " + c.bd }}>{t("stats." + s)}</span>); })}</span>);
 }
 
-function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, worstStats, targetBonus }) {
+function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, worstStats, targetBonus, knownBisIds }) {
   var { t, itemName, locale } = useLocale();
   var itemSource = getSource(item);
   var isDungeon = !!DC[itemSource];
   var c = DC[itemSource] || { b: "#8866aa", t: "#c4aadd", g: "#1a1028" };
   var eq = !isAlt && sr && sr.eqSlot ? sr.eqSlot[item.id] : null;
+  // For ALT cards, look up what's equipped in the alt's target slot
+  var altEq = isAlt && sr && sr.gear ? (function() {
+    var fs = item.forSlot;
+    var slots = fs === "ring" ? ["finger1","finger2"] : fs === "trinket" ? ["trinket1","trinket2"] : fs === "weapon" ? ["main_hand","off_hand"] : fs === "off_hand" ? ["off_hand"] : [fs];
+    // Check if this exact alt item is equipped in any matching slot
+    for (var i = 0; i < slots.length; i++) { if (sr.gear[slots[i]] && sr.gear[slots[i]].id === item.id) return sr.gear[slots[i]]; }
+    // For dual slots, skip items that are already BiS/MYTHIC and pick the replaceable one
+    if (slots.length > 1 && knownBisIds) {
+      var candidates = slots.map(function(s) { return sr.gear[s]; }).filter(Boolean);
+      var replaceable = candidates.filter(function(g) { return !knownBisIds.has(g.id); });
+      if (replaceable.length > 0) return replaceable.sort(function(a, b) { return (a.ilvl || 0) - (b.ilvl || 0); })[0];
+    }
+    return sr.gear[slots[0]] || sr.gear[slots[1]];
+  })() : null;
+  var altEquipped = isAlt && altEq && altEq.id === item.id;
   var hasDiff = eq && eq.id !== item.id;
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
   var tier = (p && p.tier) ? p.tier : 0;
+  var isMythicBis = p && p.labelKey === "mythicBis";
+  var visualTier = isMythicBis ? 3 : tier;
   var cardClass = "ic card-enter";
-  if (tier === 1) cardClass += " t1"; else if (tier === 2) cardClass += " t2"; else if (tier === 3) cardClass += " t3"; else if (tier === 4) cardClass += " t4";
-  if (isAlt) cardClass += " altc";
+  if (visualTier === 1) cardClass += " t1"; else if (visualTier === 2) cardClass += " t2"; else if (visualTier === 3) cardClass += " t3"; else if (visualTier === 4) cardClass += " t4";
+  if (isAlt && !altEquipped) cardClass += " altc";
+  if (altEquipped) cardClass += " t4";
   var bgs = { 0: "linear-gradient(135deg, #101018, " + c.g + "88)", 1: "linear-gradient(135deg, #140e0e, #1a0f0f)", 2: "linear-gradient(135deg, #14120a, #1a150d)", 3: "linear-gradient(135deg, #0e140e, #0f1a0f)", 4: "linear-gradient(135deg, #0d120d, #0a100a)" };
   var acs = { 0: c.b, 1: "#ff6b6b", 2: "#c9a227", 3: "#4dca6b", 4: "#1a3a1a" };
   var icons = { 1: "\u25B2", 2: "\u25C6", 3: "\u2191", 4: "\u2713" };
   var pLabel = p ? (p.labelKey ? t("ui." + p.labelKey) : p.label) : "";
   var whLocale = locale === "ko" ? "/ko" : "";
   return (
-    <div className={cardClass} style={{ animationDelay: (idx * .04) + "s", background: isAlt ? bgs[2] : (bgs[tier] || bgs[0]), borderRadius: 10, padding: "14px 16px", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: (tier >= 1 && tier <= 2) ? 3 : 2, background: isAlt ? "#c9a227" : (acs[tier] || c.b), opacity: tier <= 2 ? .9 : (tier === 4 ? .3 : .6) }} />
+    <div className={cardClass} style={{ animationDelay: (idx * .04) + "s", background: altEquipped ? bgs[4] : isAlt ? bgs[2] : (bgs[visualTier] || bgs[0]), borderRadius: 10, padding: "14px 16px", position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: altEquipped ? 2 : (visualTier >= 1 && visualTier <= 2) ? 3 : 2, background: altEquipped ? "#1a3a1a" : isAlt ? "#c9a227" : (acs[visualTier] || c.b), opacity: altEquipped ? .3 : visualTier <= 2 ? .9 : (visualTier === 4 ? .3 : .6) }} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6, flexWrap: "wrap" }}>
@@ -169,11 +204,11 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: c.g, color: c.t, border: "1px solid " + c.b + "44" }}>{isDungeon ? t("dungeons." + itemSource) : (t("sources." + itemSource) || itemSource)}</span>
             <StatPills stats={item.stats} />
           </div>
-          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + (tier === 3 && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: tier === 4 ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: tier === 4 ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
+          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + (tier === 3 && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: (tier === 4 || altEquipped) ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: (tier === 4 || altEquipped) ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
           <div style={{ fontSize: 11.5, color: tier === 4 ? "#445533" : "#776655", marginBottom: 6 }}>{locale === "ko" ? item.en : item.ko}</div>
           {!isAlt && p && tier > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: tier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : tier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : tier === 3 ? "linear-gradient(135deg,#102a15,#0f1a0f)" : "#0d1a0d", border: "1px solid " + (tier === 1 ? "#6a2020" : tier === 2 ? "#6a5020" : tier === 3 ? "#206a30" : "#1a3a1a"), color: p.color }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: visualTier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : visualTier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : visualTier === 3 ? "linear-gradient(135deg,#102a15,#0f1a0f)" : "#0d1a0d", border: "1px solid " + (visualTier === 1 ? "#6a2020" : visualTier === 2 ? "#6a5020" : visualTier === 3 ? "#206a30" : "#1a3a1a"), color: p.color }}>
                 <span style={{ fontSize: 10 }}>{icons[tier]}</span><span>{pLabel}</span>
                 {p.deficit > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + p.deficit + "\uFF09"}</span>}
               </div>
@@ -189,6 +224,24 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
               )}
             </div>
           )}
+          {isAlt && altEquipped && altEq && (
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: "#0d1a0d", border: "1px solid #1a3a1a", color: "#4dca6b" }}>
+              <span>{"\u2713"}</span><span>{t("ui.done")}{altEq.ilvl ? " (" + altEq.ilvl + ")" : ""}</span>
+            </div>
+          )}
+          {isAlt && !altEquipped && altEq && (function() {
+            var eqHasWorst = worstStats && allStats[altEq.id] && worstStats.some(function(ws) { return allStats[altEq.id].indexOf(ws) >= 0; });
+            return (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center", marginTop: 4 }}>
+              <a href={"https://www.wowhead.com" + whLocale + "/item=" + altEq.id + (altEq.bonus ? "&bonus=" + altEq.bonus : "") + (altEq.ilvl ? "&ilvl=" + altEq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: eqHasWorst ? "#1a1015" : "#1a1508", border: "1px solid " + (eqHasWorst ? "#3a2030" : "#3a2a10"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: eqHasWorst ? "#aa7799" : "#c9a040", whiteSpace: "nowrap" }}>
+                <span>{altEq.name}{altEq.ilvl ? " (" + altEq.ilvl + ")" : ""}</span>
+                {allStats[altEq.id] && allStats[altEq.id].length > 0 && allStats[altEq.id].map(function(s) {
+                  var isW = worstStats && worstStats.indexOf(s) >= 0;
+                  return (<span key={s} style={{ fontSize: 9, color: isW ? "#ff4444" : "#776655" }}>{isW ? "\u26A0" : "\u00B7"}{t("stats." + s)}</span>);
+                })}
+              </a>
+            </div>);
+          })()}
         </div>
         {!isAlt && (
           <div className="ck" onClick={function() { onToggle(item.id); }} style={{ width: 36, height: 36, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: tier === 4 ? "#1a3a1a" : "#1a1a28", border: "2px solid " + (tier === 4 ? "#4dca6b" : "#2a2a3a"), flexShrink: 0, marginTop: 2 }}>
@@ -212,7 +265,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       var forSlot = m.slot;
       if (forSlot.indexOf("finger") === 0) forSlot = "ring";
       else if (forSlot.indexOf("trinket") === 0) forSlot = "trinket";
-      else if (forSlot === "main_hand" || forSlot === "off_hand") forSlot = "weapon";
+      else if (forSlot === "main_hand") forSlot = "weapon";
       return { forSlot: forSlot, id: m.id, en: m.en, ko: m.ko, source: m.source, stats: m.stats, farmable: true };
     });
     return farmableAlts.concat(ALTS);
@@ -275,7 +328,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     var unknownIds = allIds.filter(function(id, i) { return allIds.indexOf(id) === i && currentStats[id] === undefined; });
     function finishImport(mergedStats) {
       var result = matchBiS(BIS, parsed.gear, parsed.bag, mergedStats, knownBisIds);
-      var newSr = { ci: parsed.ci, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched };
+      var newSr = { ci: parsed.ci, gear: parsed.gear, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched };
       var importName = parsed.ci.name || charName;
       var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
       if (importName === charName) setSr(newSr);
@@ -349,7 +402,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     }
   }, [initialSimcText, doImport]);
   var doneCount = useMemo(function() { return activeItems.filter(function(b) { if (acq[b.id]) return true; return sr ? calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length; }, [acq, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
-  var altCount = useMemo(function() { return sr ? activeItems.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS); return p.tier === 2; }).length : 0; }, [acq, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
+  var mythicBisCount = useMemo(function() { return sr ? activeItems.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS); return p.tier === 2 && p.labelKey === "mythicBis"; }).length : 0; }, [acq, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
+  var altCount = useMemo(function() { return sr ? activeItems.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS); return p.tier === 2 && p.labelKey !== "mythicBis"; }).length : 0; }, [acq, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
   var displayBis = useMemo(function() { var items = filter === "all" ? activeItems : activeItems.filter(function(i) { return getSource(i) === filter; }); return sr ? sortByPriority(items, sr, targetInfo.max, allStats, WORST_STATS) : items; }, [filter, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
   var displayAlts = useMemo(function() { return filter === "all" ? [] : mergedAlts.filter(function(a) { return getSource(a) === filter; }); }, [filter, mergedAlts]);
   var nonDungeonSources = useMemo(function() {
@@ -391,7 +445,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       </div>
       <div data-tutorial="progress-bar" style={{ marginTop: 8, position: "relative" }}>
         <div style={{ height: 20, background: "#1a1a28", borderRadius: 6, overflow: "hidden", position: "relative" }}>
-          <div style={{ position: "absolute", height: "100%", width: ((doneCount + altCount) / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: theme.accent, opacity: 0.15 }} />
+          <div style={{ position: "absolute", height: "100%", width: ((doneCount + mythicBisCount + altCount) / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: theme.accent, opacity: 0.1 }} />
+          <div style={{ position: "absolute", height: "100%", width: ((doneCount + mythicBisCount) / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: "#4dca6b", opacity: 0.2 }} />
           <div className="pfill" style={{ position: "absolute", height: "100%", width: (doneCount / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: theme.shimmer, backgroundSize: "200% 100%", opacity: 0.35 }} />
           <div style={{ position: "relative", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: doneCount === activeItems.length ? "#8dffaa" : theme.accent, letterSpacing: 1, textShadow: "0 1px 3px #0008" }}>{doneCount + " / " + activeItems.length}</span>
@@ -405,11 +460,17 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         <button className={"fbtn" + (filter === "all" ? " active" : "")} onClick={function() { changeFilter("all"); }} style={{ padding: "4px 12px", borderRadius: 6, background: filter === "all" ? theme.accentBg : "#0f0f18", color: filter === "all" ? theme.accent : "#556666", fontSize: 12, fontWeight: 600 }}>{t("ui.all")}</button>
         {nonDungeonSources.prep.map(function(ns) {
           var act = filter === ns.source;
+          var nsBis = activeItems.filter(function(i) { return getSource(i) === ns.source; });
+          var nsBisRem = nsBis.length - nsBis.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
+          var nsAltItems = mergedAlts.filter(function(a) { return getSource(a) === ns.source; });
+          var nsAltDone = sr && sr.gear ? nsAltItems.filter(function(a) { var fs = a.forSlot; var slots = fs === "ring" ? ["finger1","finger2"] : fs === "trinket" ? ["trinket1","trinket2"] : fs === "weapon" ? ["main_hand","off_hand"] : fs === "off_hand" ? ["off_hand"] : [fs]; return slots.some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; }); }).length : 0;
+          var nsAltRem = nsAltItems.length - nsAltDone;
+          var nsRem = nsBisRem + nsAltRem;
           return (
-            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : "#1a102844", border: "1px solid " + (act ? "#8866aa" : "#8866aa33"), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : "#8866aa" }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#aa88cc", display: "inline-block" }} />
+            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : (nsRem === 0 ? "#0d1a0d" : "#1a102844"), border: "1px solid " + (act ? "#8866aa" : (nsRem === 0 ? "#1a3a1a" : "#8866aa33")), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : (nsRem === 0 ? "#4dca6b" : "#8866aa") }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: nsRem === 0 ? "#4dca6b" : "#aa88cc", display: "inline-block" }} />
               <span>{t("sources." + ns.source) || ns.source}</span>
-              <span style={{ color: "#776655", fontSize: 11 }}>{ns.count}</span>
+              {nsRem === 0 ? <span style={{ color: "#2a5a2a", fontSize: 11 }}>{"\u2713"}</span> : <span style={{ fontSize: 11 }}><span style={{ color: nsBisRem > 0 ? "#c4aadd" : "#8866aa44", fontWeight: 700 }}>{nsBisRem}</span>{nsAltRem > 0 && <span style={{ color: "#3a3a3a" }}>{" + "}</span>}{nsAltRem > 0 && <span style={{ color: "#776655", fontWeight: 400 }}>{nsAltRem}</span>}</span>}
             </button>
           );
         })}
@@ -418,24 +479,34 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           var cnt = dungeonCounts[d]; if (!cnt || (cnt.bis === 0 && cnt.alt === 0)) return null;
           return { source: d, score: sr ? calcDungeonScore(d, activeItems, mergedAlts, sr, targetInfo.max, allStats, WORST_STATS, acq) : 0 };
         }).filter(Boolean).sort(function(a, b) { return b.score - a.score; }).map(function(item) {
-          var d = item.source, c2 = DC[d], cnt = dungeonCounts[d], act = filter === d;
+          var d = item.source, c2 = DC[d], act = filter === d;
           var bisItems = activeItems.filter(function(i) { return getSource(i) === d; });
-          var rem = bisItems.length - bisItems.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
+          var bisRem = bisItems.length - bisItems.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
+          var altItems = mergedAlts.filter(function(a) { return getSource(a) === d; });
+          var altDone = sr && sr.gear ? altItems.filter(function(a) {
+            var fs = a.forSlot;
+            var slots = fs === "ring" ? ["finger1","finger2"] : fs === "trinket" ? ["trinket1","trinket2"] : fs === "weapon" ? ["main_hand","off_hand"] : fs === "off_hand" ? ["off_hand"] : [fs];
+            return slots.some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; });
+          }).length : 0;
+          var altRem = altItems.length - altDone;
+          var rem = bisRem + altRem;
           return (
           <button key={d} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : d); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? c2.g : (rem === 0 ? "#0d1a0d" : c2.g + "44"), border: "1px solid " + (act ? c2.b : (rem === 0 ? "#1a3a1a" : c2.b) + "33"), fontSize: 12, fontWeight: 600, color: act ? c2.t : (rem === 0 ? "#4dca6b" : c2.t) }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: rem === 0 ? "#4dca6b" : c2.b, display: "inline-block", animation: rem === 0 ? "none" : "pulse 2s infinite" }} />
             <span>{t("dungeons." + d)}</span>
-            <span style={{ color: rem === 0 ? "#2a5a2a" : "#776655", fontSize: 11 }}>{rem === 0 ? "\u2713" : rem}</span>
-            {cnt.alt > 0 && <span style={{ color: "#e8a84c", fontSize: 10 }}>{"+" + cnt.alt}</span>}
+            {rem === 0 ? <span style={{ color: "#2a5a2a", fontSize: 11 }}>{"\u2713"}</span> : <span style={{ fontSize: 11 }}><span style={{ color: bisRem > 0 ? c2.t : c2.b + "88", fontWeight: 700 }}>{bisRem}</span>{altRem > 0 && <span style={{ color: "#3a3a3a" }}>{" + "}</span>}{altRem > 0 && <span style={{ color: "#776655", fontWeight: 400 }}>{altRem}</span>}</span>}
           </button>); })}
         {nonDungeonSources.raid.length > 0 && <span style={{ width: 1, height: 20, background: "#2a2a3a", alignSelf: "center" }} />}
         {nonDungeonSources.raid.map(function(ns) {
           var act = filter === ns.source;
+          var nsBis = activeItems.filter(function(i) { return getSource(i) === ns.source; });
+          var nsBisRem = nsBis.length - nsBis.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
+          var nsRem = nsBisRem;
           return (
-            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : "#1a102844", border: "1px solid " + (act ? "#8866aa" : "#8866aa33"), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : "#8866aa" }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#8866aa", display: "inline-block" }} />
+            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : (nsRem === 0 ? "#0d1a0d" : "#1a102844"), border: "1px solid " + (act ? "#8866aa" : (nsRem === 0 ? "#1a3a1a" : "#8866aa33")), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : (nsRem === 0 ? "#4dca6b" : "#8866aa") }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: nsRem === 0 ? "#4dca6b" : "#8866aa", display: "inline-block" }} />
               <span>{t("sources." + ns.source) || ns.source}</span>
-              <span style={{ color: "#776655", fontSize: 11 }}>{ns.count}</span>
+              {nsRem === 0 ? <span style={{ color: "#2a5a2a", fontSize: 11 }}>{"\u2713"}</span> : <span style={{ color: "#c4aadd", fontSize: 11, fontWeight: 700 }}>{nsRem}</span>}
             </button>
           );
         })}
@@ -480,7 +551,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
               {displayAlts.map(function(item, idx) {
-                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={null} sr={null} onToggle={function() {}} idx={idx} theme={theme} allStats={allStats} worstStats={WORST_STATS} targetBonus={targetInfo.bonus} />;
+                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={null} sr={sr} onToggle={function() {}} idx={idx} theme={theme} allStats={allStats} worstStats={WORST_STATS} targetBonus={targetInfo.bonus} knownBisIds={knownBisIds} />;
               })}
             </div>
           </div>

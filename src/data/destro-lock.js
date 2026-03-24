@@ -48,7 +48,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Nevermelting Ice Crystal", ko: "영구결빙 수정", id: 50259, source: "Pit of Saron", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Surgeon's Needle", ko: "외과의사의 바늘", id: 50227, source: "Pit of Saron", stats: ["crit","vers"] },
   { slot: "off_hand", en: "Vexamus' Expulsion Rod", ko: "벡사무스의 배출 마법봉", id: 193709, source: "Algeth'ar Academy", stats: ["crit","haste"] },
 ];
@@ -80,7 +80,7 @@ export var STAT_CACHE_KEY = "destro-lock-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49807:["crit","haste"],49812:["crit","haste"],49825:["crit","haste"],50227:["crit","vers"],
-  50228:["crit","haste"],50259:[],51802:["crit","haste"],151300:["crit","mastery"],
+  50228:["crit","haste"],50259:[],250256:[],151300:["crit","mastery"],
   151302:["mastery","vers"],151303:["crit","haste"],151305:["haste","mastery"],151337:["crit","mastery"],
   193708:["crit","mastery"],193709:["crit","haste"],193717:["crit","vers"],193723:["crit","vers"],
   239648:[],245769:[],249276:["crit","haste"],249293:["crit","vers"],

@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "feet", en: "Boots of Burning Focus", ko: "타오르는 집중의 장화", id: 258577, source: "Skyreach", stats: ["crit","mastery"] },
   { slot: "finger1", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "finger2", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "trinket2", en: "Emberwing Feather", ko: "잿불날개 깃털", id: 250144, source: "Windrunner Spire", stats: [] },
   { slot: "main_hand", en: "Spellboon Saber", ko: "주문은총 사브르", id: 193710, source: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { slot: "off_hand", en: "Spellboon Saber", ko: "주문은총 사브르", id: 193710, source: "Algeth'ar Academy", stats: ["haste","mastery"] },
@@ -79,7 +79,7 @@ export var STAT_CACHE_KEY = "devourer-dh-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49806:["crit","haste"],49807:["crit","haste"],49817:["haste","mastery"],50228:["crit","haste"],
-  51802:["crit","haste"],151318:["crit","haste"],151319:["crit","mastery"],151336:["crit","haste"],
+  250256:[],151318:["crit","haste"],151319:["crit","mastery"],151336:["crit","haste"],
   178819:["haste","mastery"],193707:["haste","mastery"],193708:["crit","mastery"],193710:["haste","mastery"],
   193714:["haste","mastery"],244748:[],249283:["haste","mastery"],249287:["haste","mastery"],
   249294:["haste","mastery"],249312:["haste","mastery"],249337:["crit","haste"],249343:["mastery"],

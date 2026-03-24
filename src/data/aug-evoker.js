@@ -29,7 +29,7 @@ export var BIS = [
   { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "finger2", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", id: 249294, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { slot: "off_hand", en: "Grimoire of the Eternal Light", ko: "영원한 빛의 고서", id: 249276, source: "Vorasius", stats: ["crit","haste"] },
 ];
@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "feet", en: "Boots of Explosive Growth", ko: "폭발적인 성장의 장화", id: 193715, source: "Algeth'ar Academy", stats: ["crit","haste"] },
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "trinket2", en: "Emberwing Feather", ko: "잿불날개 깃털", id: 250144, source: "Windrunner Spire", stats: [] },
   { slot: "main_hand", en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", id: 251111, source: "Magisters' Terrace", stats: ["crit","haste"] },
   { slot: "off_hand", en: "Vexamus' Expulsion Rod", ko: "벡사무스의 배출 마법봉", id: 193709, source: "Algeth'ar Academy", stats: ["crit","haste"] },
@@ -88,7 +88,7 @@ export var STAT_CACHE_KEY = "aug-evoker-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49802:["crit","haste"],49807:["crit","haste"],49810:["crit","haste"],49812:["crit","haste"],
-  49824:["crit","haste"],50228:["crit","haste"],50233:["crit","haste"],51802:["crit","haste"],
+  49824:["crit","haste"],50228:["crit","haste"],50233:["crit","haste"],250256:[],
   151321:["crit","mastery"],193704:["crit","mastery"],193707:["haste","mastery"],193709:["crit","haste"],
   193710:["haste","mastery"],193715:["crit","haste"],244583:[],244584:[],
   249276:["crit","haste"],249283:["haste","mastery"],249287:["haste","mastery"],249288:["crit","haste"],

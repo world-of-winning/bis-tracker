@@ -48,7 +48,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Algeth'ar Academy", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, source: "Algeth'ar Academy", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "윈드러너의 심장추적자", id: 51802, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "main_hand", en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", id: 49807, source: "Pit of Saron", stats: ["crit","haste"] },
   { slot: "off_hand", en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", id: 49807, source: "Pit of Saron", stats: ["crit","haste"] },
 ];
@@ -84,7 +84,7 @@ export var STAT_CACHE_KEY = "sub-rogue-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49802:["crit","haste"],49807:["crit","haste"],49812:["crit","haste"],49817:["haste","mastery"],
-  50228:["crit","haste"],51802:["crit","haste"],151314:["mastery","vers"],151318:["crit","haste"],
+  50228:["crit","haste"],250256:[],151314:["mastery","vers"],151318:["crit","haste"],
   178819:["haste","mastery"],193701:[],193709:["crit","haste"],193714:["haste","mastery"],
   221200:["mastery","vers"],237837:[],240949:[],241140:["mastery","vers"],
   244576:[],249276:["crit","haste"],249277:["crit","mastery"],249284:["crit","mastery"],
