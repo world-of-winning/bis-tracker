@@ -29,7 +29,7 @@ var SPEC_LABEL_MAP = {
   "조화 드루이드": "Balance Druid",
   "야성 드루이드": "Feral Druid",
   "수호 드루이드": "Guardian Druid",
-  "복원 드루이드": "Restoration Druid",
+  "회복 드루이드": "Restoration Druid",
   "황폐 기원사": "Devastation Evoker",
   "보존 기원사": "Preservation Evoker",
   "증강 기원사": "Augmentation Evoker",

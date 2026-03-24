@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Brewmaster Monk";
 export var SPEC_KEY = "brew-monk";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/brewmaster-monk-raid-guide";
 export var SIMC_CLASS = "monk";
 export var SIMC_SPEC = "brewmaster";
 export var SPEC_ICON = "spell_monk_brewmaster_spec";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/brewmaster-monk-raid-guide";
 export var STORAGE_KEY = "bis-brew-monk-v1";
 
 export var THEME = {
@@ -64,29 +64,25 @@ export var ALTS = [
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", source: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 251171, en: "Enthralled Bonespines", ko: "마법에 걸린 해골가시", source: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249293, en: "Weight of Command", ko: "지휘의 무게", source: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 251163, en: "Berserker's Hexclaws", ko: "광전사의 사술발톱", source: "Maisara Caverns", stats: ["crit","vers"] },
 ];
 
-export var WORST_STATS = [];
+export var WORST_STATS = ["haste"];
 
 export var STAT_CACHE_KEY = "brew-monk-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49807:["crit","haste"],49823:["crit","vers"],50227:["crit","vers"],151308:["crit","vers"],
-  151309:["haste","vers"],151313:["crit","vers"],151314:["mastery","vers"],151317:["mastery","vers"],
-  151319:["crit","mastery"],151336:["crit","haste"],193708:["crit","mastery"],193717:["crit","vers"],
-  193721:["mastery","vers"],193723:["crit","vers"],221200:["mastery","vers"],240950:[],
-  241140:["mastery","vers"],249293:["crit","vers"],249314:["mastery","vers"],249335:["crit","vers"],
-  249336:["crit","vers"],249343:["mastery"],249919:["crit","mastery"],250004:["haste","mastery"],
+  49807:["crit","haste"],49823:["crit","vers"],151308:["crit","vers"],151309:["haste","vers"],
+  151313:["crit","vers"],151314:["mastery","vers"],151317:["mastery","vers"],151319:["crit","mastery"],
+  151336:["crit","haste"],193708:["crit","mastery"],193721:["mastery","vers"],193723:["crit","vers"],
+  221200:["mastery","vers"],240950:[],241140:["mastery","vers"],249314:["mastery","vers"],
+  249335:["crit","vers"],249336:["crit","vers"],249343:["mastery"],249919:["crit","mastery"],
   250013:["haste","mastery"],250015:["crit","haste"],250016:["crit","vers"],250018:["crit","haste"],
-  250022:["crit","mastery"],250031:["crit","mastery"],250046:["crit","vers"],251082:["crit","mastery"],
-  251092:["haste","mastery"],251096:["haste","vers"],251103:["haste","vers"],251121:["mastery","vers"],
-  251161:["crit","vers"],251163:["crit","vers"],251171:["haste","mastery"],251177:["crit","vers"],
+  251082:["crit","mastery"],251092:["haste","mastery"],251096:["haste","vers"],251103:["haste","vers"],
+  251121:["mastery","vers"],251161:["crit","vers"],251171:["haste","mastery"],251177:["crit","vers"],
   251205:["crit","vers"],251513:["crit","mastery"],252418:[],252420:[],
-  258516:["crit","vers"],260235:[],
+  260235:[],
 };
 
 export var DUNGEONS = [
-  "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
+  "Maisara Caverns", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Seat of the Triumvirate", "Skyreach",
 ];

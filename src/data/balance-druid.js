@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Balance Druid";
 export var SPEC_KEY = "balance-druid";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/balance-druid-raid-guide";
 export var SIMC_CLASS = "druid";
 export var SIMC_SPEC = "balance";
 export var SPEC_ICON = "spell_nature_starfall";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/balance-druid-raid-guide";
 export var STORAGE_KEY = "bis-balance-druid-v1";
 
 export var THEME = {
@@ -16,20 +16,20 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", en: "Branches of the Luminous Bloom", ko: "영롱한 꽃의 나뭇가지", id: 250024, source: "Catalyst", stats: ["haste","mastery"] },
+  { slot: "head", en: "Branches of the Luminous Bloom", ko: "영롱한 꽃의 나뭇가지", id: 250024, source: "Catalyst / Raid", stats: ["haste","mastery"] },
   { slot: "neck", en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", id: 250247, source: "Seat of the Triumvirate", stats: ["haste","mastery"] },
-  { slot: "shoulder", en: "Seedpods of the Luminous Bloom", ko: "영롱한 꽃의 씨앗 깍지", id: 250022, source: "Catalyst", stats: ["crit","mastery"] },
-  { slot: "back", en: "Draconic Nullcape", ko: "용족 무위단망토", id: 249370, source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
-  { slot: "chest", en: "Trunk of the Luminous Bloom", ko: "영롱한 꽃의 밑동", id: 250027, source: "Catalyst", stats: ["crit","mastery"] },
+  { slot: "shoulder", en: "Seedpods of the Luminous Bloom", ko: "영롱한 꽃의 씨앗 깍지", id: 250022, source: "Catalyst / Raid", stats: ["crit","mastery"] },
+  { slot: "back", en: "Draconic Nullcape", ko: "용족 무위단망토", id: 249370, source: "Vaelgor", stats: ["haste","mastery"] },
+  { slot: "chest", en: "Trunk of the Luminous Bloom", ko: "영롱한 꽃의 밑동", id: 250027, source: "Catalyst / Raid", stats: ["crit","mastery"] },
   { slot: "wrist", en: "Silvermoon Agent's Deflectors", ko: "실버문 요원의 굴절보호대", id: 244576, source: "Crafted", stats: [] },
-  { slot: "hands", en: "Arbortenders of the Luminous Bloom", ko: "영롱한 꽃의 나무지기", id: 250025, source: "Catalyst", stats: ["haste","vers"] },
+  { slot: "hands", en: "Arbortenders of the Luminous Bloom", ko: "영롱한 꽃의 나무지기", id: 250025, source: "Catalyst / Raid", stats: ["haste","vers"] },
   { slot: "waist", en: "Silvermoon Agent's Utility Belt", ko: "실버문 요원의 연장허리띠", id: 244573, source: "Crafted", stats: [] },
-  { slot: "legs", en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", id: 250023, source: "Catalyst", stats: ["haste","mastery"] },
+  { slot: "legs", en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", id: 250023, source: "Catalyst / Raid", stats: ["haste","mastery"] },
   { slot: "feet", en: "Canopy Walker's Footwraps", ko: "나무 지붕 방랑자의 발등싸개", id: 249382, source: "Windrunner Spire", stats: ["crit","mastery"] },
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "trinket2", en: "Vaelgor's Final Stare", ko: "바엘고어의 마지막 시선", id: 249346, source: "Vaelgor & Ezzorak", stats: [] },
+  { slot: "trinket2", en: "Vaelgor's Final Stare", ko: "바엘고어의 마지막 시선", id: 249346, source: "Vaelgor", stats: [] },
   { slot: "main_hand", en: "Belo'melorn, the Shattered Talon", ko: "벨로멜로른 - 으스러진 갈퀴발톱", id: 249283, source: "Belo'ren", stats: ["haste","mastery"] },
   { slot: "off_hand", en: "Tome of Alnscorned Regret", ko: "알른멸시 회한의 고서", id: 249922, source: "Chimaerus", stats: ["haste","mastery"] },
 ];
@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "feet", en: "Domanaar's Dire Treads", ko: "도마나르의 광포한 발보호대", id: 251121, source: "Magisters' Terrace", stats: ["mastery","vers"] },
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "trinket2", en: "Vessel of Tortured Souls", ko: "괴로워하는 영혼의 그릇", id: 250258, source: "Maisara Caverns", stats: ["mastery"] },
   { slot: "main_hand", en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", id: 251201, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
 ];
@@ -68,7 +68,6 @@ export var ALTS = [
   { forSlot: "ring", id: 251115, en: "Bifurcation Band", ko: "분기점의 고리", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 151319, en: "Twilight's Edge Spaulders", ko: "황혼의 서슬 어깨덮개", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", source: "Windrunner Spire", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 193707, en: "Final Grade", ko: "최종 학점", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", source: "Skyreach", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 258472, en: "Rukhran's Solar Reliquary", ko: "루크란의 태양 성물함", source: "Skyreach", stats: ["haste","mastery"] },
@@ -82,24 +81,21 @@ export var WORST_STATS = ["vers"];
 export var STAT_CACHE_KEY = "balance-druid-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49812:["crit","haste"],49817:["haste","mastery"],50264:["crit","haste"],250256:[],
-  151315:["crit","haste"],151317:["mastery","vers"],151319:["crit","mastery"],178819:["haste","mastery"],
-  193707:["haste","mastery"],193710:["haste","mastery"],244573:[],244576:[],
-  249283:["haste","mastery"],249287:["haste","mastery"],249294:["haste","mastery"],249312:["haste","mastery"],
+  49812:["crit","haste"],49817:["haste","mastery"],50264:["crit","haste"],151315:["crit","haste"],
+  151317:["mastery","vers"],151319:["crit","mastery"],178819:["haste","mastery"],244573:[],
+  244576:[],249283:["haste","mastery"],249287:["haste","mastery"],249312:["haste","mastery"],
   249321:["crit","mastery"],249327:["crit","haste"],249343:["mastery"],249346:[],
   249368:["haste","mastery"],249369:["haste","mastery"],249370:["haste","mastery"],249382:["crit","mastery"],
-  249922:["haste","mastery"],250004:["haste","mastery"],250009:["crit","mastery"],250013:["haste","mastery"],
-  250014:["haste","mastery"],250022:["crit","mastery"],250023:["haste","mastery"],250024:["haste","mastery"],
-  250025:["haste","vers"],250027:["crit","mastery"],250031:["crit","mastery"],250033:["haste","mastery"],
-  250036:["crit","mastery"],250055:["haste","mastery"],250247:["haste","mastery"],250258:["mastery"],
-  251082:["crit","mastery"],251092:["haste","mastery"],251093:["haste","mastery"],251099:["crit","mastery"],
-  251113:["crit","mastery"],251115:["haste","mastery"],251121:["mastery","vers"],251122:["haste","mastery"],
+  249922:["haste","mastery"],250022:["crit","mastery"],250023:["haste","mastery"],250024:["haste","mastery"],
+  250025:["haste","vers"],250027:["crit","mastery"],250247:["haste","mastery"],250256:[],
+  250258:["mastery"],251082:["crit","mastery"],251092:["haste","mastery"],251093:["haste","mastery"],
+  251099:["crit","mastery"],251113:["crit","mastery"],251115:["haste","mastery"],251121:["mastery","vers"],
   251130:["crit","mastery"],251135:["crit","haste"],251140:["haste","mastery"],251142:["haste","mastery"],
-  251159:["haste","mastery"],251171:["haste","mastery"],251174:["haste","mastery"],251190:["haste","mastery"],
-  251201:["haste","mastery"],251204:["haste","vers"],251216:["haste","mastery"],251217:["crit","haste"],
-  258438:["haste","mastery"],258472:["haste","mastery"],258577:["crit","mastery"],
+  251159:["haste","mastery"],251171:["haste","mastery"],251190:["haste","mastery"],251201:["haste","mastery"],
+  251204:["haste","vers"],251216:["haste","mastery"],251217:["crit","haste"],258438:["haste","mastery"],
+  258472:["haste","mastery"],258577:["crit","mastery"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
+  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Seat of the Triumvirate", "Skyreach",
 ];

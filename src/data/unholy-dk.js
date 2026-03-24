@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Unholy Death Knight";
 export var SPEC_KEY = "unholy-dk";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/unholy-death-knight-raid-guide";
 export var SIMC_CLASS = "deathknight";
 export var SIMC_SPEC = "unholy";
 export var SPEC_ICON = "spell_deathknight_unholypresence";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/unholy-death-knight-raid-guide";
 export var STORAGE_KEY = "bis-unholy-dk-v1";
 
 export var THEME = {
@@ -46,7 +46,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "finger2", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "main_hand", en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", id: 251168, source: "Maisara Caverns", stats: ["crit","mastery"] },
 ];
 
@@ -60,7 +60,6 @@ export var ALTS = [
   { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 251093, en: "Omission of Light", ko: "소외된 빛", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -69,19 +68,16 @@ export var STAT_CACHE_KEY = "unholy-dk-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49808:["crit","haste"],50228:["crit","haste"],50234:["crit","mastery"],50272:["crit","haste"],
-  250256:[],151328:["crit","haste"],151333:["crit","mastery"],193708:["crit","mastery"],
-  237834:[],239656:[],249277:["crit","mastery"],249284:["crit","mastery"],
-  249309:["crit","haste"],249332:["haste","mastery"],249337:["crit","haste"],249343:["mastery"],
-  249344:[],249368:["haste","mastery"],249369:["haste","mastery"],249380:["crit","mastery"],
-  249381:["crit","mastery"],249919:["crit","mastery"],249949:["crit","haste"],249952:["haste","mastery"],
-  249955:["crit","haste"],249959:["crit","mastery"],249961:["haste","mastery"],249963:["haste","mastery"],
+  151328:["crit","haste"],151333:["crit","mastery"],193708:["crit","mastery"],237834:[],
+  239656:[],249277:["crit","mastery"],249309:["crit","haste"],249332:["haste","mastery"],
+  249337:["crit","haste"],249343:["mastery"],249344:[],249368:["haste","mastery"],
+  249369:["haste","mastery"],249380:["crit","mastery"],249381:["crit","mastery"],249919:["crit","mastery"],
   249969:["crit","mastery"],249970:["haste","mastery"],249971:["haste","mastery"],249973:["crit","haste"],
-  250247:["haste","mastery"],251077:["crit","mastery"],251093:["haste","mastery"],251107:["haste","mastery"],
+  250247:["haste","mastery"],250256:[],251093:["haste","mastery"],251107:["haste","mastery"],
   251115:["haste","mastery"],251118:["crit","mastery"],251142:["haste","mastery"],251168:["crit","mastery"],
-  251169:["haste","mastery"],251513:["crit","mastery"],252420:[],258218:["crit","mastery"],
-  258514:["crit","mastery"],258583:["crit","mastery"],
+  251169:["haste","mastery"],251513:["crit","mastery"],252420:[],258583:["crit","mastery"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
+  "Maisara Caverns", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
 ];

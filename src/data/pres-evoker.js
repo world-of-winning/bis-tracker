@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Preservation Evoker";
 export var SPEC_KEY = "pres-evoker";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/preservation-evoker-raid-guide";
 export var SIMC_CLASS = "evoker";
 export var SIMC_SPEC = "preservation";
 export var SPEC_ICON = "classicon_evoker_preservation";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/preservation-evoker-raid-guide";
 export var STORAGE_KEY = "bis-pres-evoker-v1";
 
 export var THEME = {
@@ -48,7 +48,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "finger2", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Emerald Coach's Whistle", ko: "에메랄드 감독의 호루라기", id: 193718, source: "Algeth'ar Academy", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "main_hand", en: "Final Grade", ko: "최종 학점", id: 193707, source: "Algeth'ar Academy", stats: ["haste","mastery"] },
 ];
 
@@ -70,11 +70,8 @@ export var ALTS = [
   { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251201, en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", source: "Skyreach", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "wrist", id: 151321, en: "Darkfang Scale Wristguards", ko: "검은송곳니 비늘 손목보호구", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
 ];
 
@@ -83,23 +80,20 @@ export var WORST_STATS = ["vers"];
 export var STAT_CACHE_KEY = "pres-evoker-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49810:["crit","haste"],50228:["crit","haste"],250256:[],151321:["crit","mastery"],
-  193704:["crit","mastery"],193707:["haste","mastery"],193708:["crit","mastery"],193710:["haste","mastery"],
-  193718:[],221200:["mastery","vers"],241140:["mastery","vers"],245769:[],
-  249277:["crit","mastery"],249283:["haste","mastery"],249284:["crit","mastery"],249287:["haste","mastery"],
-  249294:["haste","mastery"],249304:["crit","mastery"],249318:["crit","mastery"],249324:["haste","mastery"],
-  249325:["crit","mastery"],249337:["crit","haste"],249343:["mastery"],249368:["haste","mastery"],
-  249369:["haste","mastery"],249809:["mastery"],249919:["crit","mastery"],249980:["crit","mastery"],
-  249987:["crit","mastery"],249989:["crit","mastery"],249990:["crit","mastery"],249991:["crit","haste"],
-  249995:["crit","mastery"],249996:["haste","mastery"],249997:["crit","mastery"],250000:["crit","haste"],
-  250031:["crit","mastery"],250247:["haste","mastery"],251077:["crit","mastery"],251079:["crit","mastery"],
+  49810:["crit","haste"],50228:["crit","haste"],151321:["crit","mastery"],193704:["crit","mastery"],
+  193707:["haste","mastery"],193708:["crit","mastery"],193710:["haste","mastery"],193718:[],
+  221200:["mastery","vers"],241140:["mastery","vers"],245769:[],249283:["haste","mastery"],
+  249284:["crit","mastery"],249287:["haste","mastery"],249294:["haste","mastery"],249304:["crit","mastery"],
+  249318:["crit","mastery"],249324:["haste","mastery"],249325:["crit","mastery"],249337:["crit","haste"],
+  249343:["mastery"],249368:["haste","mastery"],249369:["haste","mastery"],249809:["mastery"],
+  249919:["crit","mastery"],249995:["crit","mastery"],249996:["haste","mastery"],249997:["crit","mastery"],
+  250000:["crit","haste"],250247:["haste","mastery"],250256:[],251079:["crit","mastery"],
   251084:["crit","mastery"],251089:["haste","mastery"],251093:["haste","mastery"],251115:["haste","mastery"],
-  251119:["crit","mastery"],251122:["haste","mastery"],251142:["haste","mastery"],251168:["crit","mastery"],
-  251170:["crit","mastery"],251174:["haste","mastery"],251179:["crit","mastery"],251201:["haste","mastery"],
-  251215:["crit","mastery"],251513:["crit","mastery"],258218:["crit","mastery"],258438:["haste","mastery"],
-  258514:["crit","mastery"],258575:["crit","mastery"],258576:["crit","haste"],258585:["crit","mastery"],
+  251119:["crit","mastery"],251122:["haste","mastery"],251142:["haste","mastery"],251170:["crit","mastery"],
+  251179:["crit","mastery"],251215:["crit","mastery"],251513:["crit","mastery"],258218:["crit","mastery"],
+  258438:["haste","mastery"],258575:["crit","mastery"],258576:["crit","haste"],258585:["crit","mastery"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
+  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Skyreach",
 ];

@@ -21,6 +21,11 @@ const CLASS_NAME_MAP = {
   mage: 'Mage', warlock: 'Warlock', priest: 'Priest',
 };
 
+// Weapon types that are 2-handed
+const TWO_HAND_TYPES = new Set(['2h_sword', '2h_mace', '2h_axe', 'polearm', 'staff']);
+// Weapon types that are 1-handed (for dual wield / 1h+shield / 1h+oh)
+const ONE_HAND_TYPES = new Set(['1h_sword', '1h_mace', '1h_axe', '1h_fist', 'dagger', 'warglaive']);
+
 // ─── Allowed weapon types per class ──────────────────────────
 const CLASS_WEAPONS = {
   warrior:     new Set(['1h_sword','1h_mace','1h_axe','1h_fist','dagger','2h_sword','2h_mace','2h_axe','polearm','staff','shield']),
@@ -154,7 +159,11 @@ function parseSpecFile(filePath) {
     }
   }
 
-  return { simcClass, armorType: ARMOR_TYPE[simcClass], bisItems, content };
+  // Infer weapon style: dual (has off_hand) vs 2h (main_hand only)
+  const hasOffHand = bisItems.some(b => b.simcSlot === 'off_hand');
+  const isDual = hasOffHand;
+
+  return { simcClass, armorType: ARMOR_TYPE[simcClass], bisItems, isDual, content };
 }
 
 // ─── Build global item index ─────────────────────────────────
@@ -202,7 +211,7 @@ function buildItemIndex() {
 // ─── Find alts for a spec ────────────────────────────────────
 async function findAltsForSpec(specKey, index) {
   const filePath = resolve(DATA_DIR, `${specKey}.js`);
-  const { simcClass, armorType, bisItems } = parseSpecFile(filePath);
+  const { simcClass, armorType, bisItems, isDual } = parseSpecFile(filePath);
   const { slotItems, itemSlotArmor, itemClasses } = index;
   const className = CLASS_NAME_MAP[simcClass];
 
@@ -251,6 +260,15 @@ async function findAltsForSpec(specKey, index) {
             console.log(`  skip ${item.en} (${id}): weapon type ${info.weaponType} not usable by ${simcClass}`);
             continue;
           }
+          // Filter by weapon style: dual wield specs need 1h, 2h specs need 2h
+          if (isDual && TWO_HAND_TYPES.has(info.weaponType)) {
+            console.log(`  skip ${item.en} (${id}): 2h weapon not usable in dual wield build`);
+            continue;
+          }
+          if (!isDual && ONE_HAND_TYPES.has(info.weaponType)) {
+            console.log(`  skip ${item.en} (${id}): 1h weapon not usable in 2h build`);
+            continue;
+          }
         }
       }
 
@@ -274,6 +292,25 @@ async function findAltsForSpec(specKey, index) {
 function updateSpecFile(specKey, alts) {
   const filePath = resolve(DATA_DIR, `${specKey}.js`);
   let content = readFileSync(filePath, 'utf8');
+
+  // Preserve existing weapon alts added by generate-spec-data (skipped 2H/1H options)
+  const existingAltsMatch = content.match(/export var ALTS = \[([^]*?)\];/);
+  if (existingAltsMatch) {
+    const altIds = new Set(alts.map(a => a.id));
+    const existingRe = /\{\s*forSlot:\s*"([^"]+)",\s*id:\s*(\d+),\s*en:\s*"([^"]+)",\s*ko:\s*"([^"]+)",\s*source:\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])\s*\}/g;
+    let m;
+    while ((m = existingRe.exec(existingAltsMatch[1]))) {
+      const id = parseInt(m[2]);
+      if (!altIds.has(id)) {
+        alts.push({
+          forSlot: m[1], id, en: m[3], ko: m[4],
+          source: m[5], stats: JSON.parse(m[6]),
+        });
+        altIds.add(id);
+      }
+    }
+    alts.sort((a, b) => a.forSlot.localeCompare(b.forSlot) || a.id - b.id);
+  }
 
   let altsStr = 'export var ALTS = [\n';
   for (const alt of alts) {
@@ -339,4 +376,8 @@ async function main() {
   saveCache();
 }
 
-main();
+export { buildItemIndex, findAltsForSpec, updateSpecFile };
+
+// Run as CLI
+const isMain = process.argv[1] && resolve(process.argv[1]) === resolve(__dirname, 'find-alts.mjs');
+if (isMain) main();

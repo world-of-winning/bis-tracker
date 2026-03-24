@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Elemental Shaman";
 export var SPEC_KEY = "ele-shaman";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/elemental-shaman-raid-guide";
 export var SIMC_CLASS = "shaman";
 export var SIMC_SPEC = "elemental";
 export var SPEC_ICON = "spell_nature_lightning";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/elemental-shaman-raid-guide";
 export var STORAGE_KEY = "bis-ele-shaman-v1";
 
 export var THEME = {
@@ -48,7 +48,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Emberwing Feather", ko: "잿불날개 깃털", id: 250144, source: "Windrunner Spire", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "main_hand", en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", id: 251111, source: "Magisters' Terrace", stats: ["crit","haste"] },
   { slot: "off_hand", en: "Ward of the Spellbreaker", ko: "주문파괴자의 수호물", id: 251105, source: "Magisters' Terrace", stats: ["crit","mastery"] },
 ];
@@ -63,12 +63,10 @@ export var ALTS = [
   { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 50233, en: "Spurned Val'kyr Shoulderguards", ko: "쫓겨난 발키르의 어깨보호대", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "waist", id: 244611, en: "World Tender's Barkclasp", ko: "세계지기의 껍질죔쇠띠", source: "Crafted", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 49802, en: "Garfrost's Two-Ton Hammer", ko: "가프로스트의 2톤 망치", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", source: "Lightblinded Vanguard", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 249295, en: "Turalyon's False Echo", ko: "투랄리온의 마지막 메아리", source: "Windrunner Spire", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", source: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", source: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251178, en: "Ceremonial Hexblade", ko: "의식용 사술칼날", source: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 258049, en: "Viryx's Indomitable Bulwark", ko: "비릭스의 불굴의 보루 방패", source: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 258525, en: "Scepter of the Endless Night", ko: "끝없는 밤의 홀", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
@@ -79,23 +77,20 @@ export var WORST_STATS = ["vers"];
 export var STAT_CACHE_KEY = "ele-shaman-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49802:["crit","haste"],49807:["crit","haste"],49810:["crit","haste"],49824:["crit","haste"],
-  50233:["crit","haste"],250256:[],151309:["haste","vers"],151320:["haste","mastery"],
-  151323:["haste","mastery"],237844:[],244584:[],244611:["haste","mastery"],
-  249277:["crit","mastery"],249284:["crit","mastery"],249288:["crit","haste"],249295:["crit","haste"],
+  49807:["crit","haste"],49810:["crit","haste"],49824:["crit","haste"],50233:["crit","haste"],
+  151309:["haste","vers"],151320:["haste","mastery"],151323:["haste","mastery"],237844:[],
+  244584:[],244611:["haste","mastery"],249284:["crit","mastery"],249295:["crit","haste"],
   249324:["haste","mastery"],249325:["crit","mastery"],249343:["mastery"],249346:[],
   249368:["haste","mastery"],249369:["haste","mastery"],249370:["haste","mastery"],249371:["haste","mastery"],
   249920:["haste"],249977:["crit","haste"],249979:["haste","mastery"],249980:["crit","mastery"],
-  249982:["haste","mastery"],249987:["crit","mastery"],249988:["crit","haste"],249989:["crit","mastery"],
-  249991:["crit","haste"],249996:["haste","mastery"],250000:["crit","haste"],250010:["crit","haste"],
-  250055:["haste","mastery"],250144:[],250247:["haste","mastery"],251089:["haste","mastery"],
-  251093:["haste","mastery"],251095:["crit","haste"],251096:["haste","vers"],251105:["crit","mastery"],
-  251111:["crit","haste"],251115:["haste","mastery"],251142:["haste","mastery"],251162:["crit","haste"],
-  251168:["crit","mastery"],251170:["crit","mastery"],251175:["crit","mastery"],251178:["crit","haste"],
-  251190:["haste","mastery"],251209:["mastery","vers"],251215:["crit","mastery"],258049:["crit","mastery"],
-  258525:["crit","haste"],258576:["crit","haste"],260312:["crit","haste"],260423:["crit","haste"],
+  249982:["haste","mastery"],250144:[],250247:["haste","mastery"],250256:[],
+  251089:["haste","mastery"],251093:["haste","mastery"],251096:["haste","vers"],251105:["crit","mastery"],
+  251111:["crit","haste"],251115:["haste","mastery"],251142:["haste","mastery"],251170:["crit","mastery"],
+  251175:["crit","mastery"],251178:["crit","haste"],251190:["haste","mastery"],251209:["mastery","vers"],
+  251215:["crit","mastery"],258049:["crit","mastery"],258525:["crit","haste"],258576:["crit","haste"],
+  260312:["crit","haste"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Maisara Caverns",
+  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
 ];

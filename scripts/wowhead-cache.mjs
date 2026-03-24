@@ -73,6 +73,18 @@ export async function fetchTooltip(itemId, locale = 0, retries = 5) {
   }
 }
 
+/**
+ * Generic cache get/set for arbitrary keys (e.g. search results).
+ */
+export function cacheGet(key) {
+  return cache[key] ?? null;
+}
+
+export function cacheSet(key, value) {
+  cache[key] = value;
+  dirty = true;
+}
+
 /** Write cache to disk. Call once at the end of your script. */
 export function saveCache() {
   if (!dirty) return;

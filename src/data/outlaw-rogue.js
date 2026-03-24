@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Outlaw Rogue";
 export var SPEC_KEY = "outlaw-rogue";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/outlaw-rogue-raid-guide";
 export var SIMC_CLASS = "rogue";
 export var SIMC_SPEC = "outlaw";
 export var SPEC_ICON = "ability_rogue_waylay";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/outlaw-rogue-raid-guide";
 export var STORAGE_KEY = "bis-outlaw-rogue-v1";
 
 export var THEME = {
@@ -35,6 +35,7 @@ export var BIS = [
 ];
 
 export var MYTHIC = [
+  { slot: "head", en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", id: 49807, source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { slot: "neck", en: "Barbed Ymirheim Choker", ko: "뾰족한 이미르하임 목장식", id: 50228, source: "Pit of Saron", stats: ["crit","haste"] },
   { slot: "shoulder", en: "Enthralled Bonespines", ko: "마법에 걸린 해골가시", id: 251171, source: "Maisara Caverns", stats: ["haste","mastery"] },
   { slot: "back", en: "Defiant Defender's Drape", ko: "저항하는 수호자의 외투", id: 260312, source: "Magisters' Terrace", stats: ["crit","haste"] },
@@ -47,7 +48,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Algeth'ar Academy", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "main_hand", en: "Shadowslash Slicer", ko: "어둠칼날 절단기", id: 251122, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "off_hand", en: "Shadowslash Slicer", ko: "어둠칼날 절단기", id: 251122, source: "Magisters' Terrace", stats: ["haste","mastery"] },
 ];
@@ -79,32 +80,27 @@ export var ALTS = [
   { forSlot: "wrist", id: 251135, en: "Fury-fletched Armlets", ko: "지옥 새김 팔찌", source: "Magisters' Terrace", stats: ["crit","haste"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var WORST_STATS = ["mastery","vers"];
 
 export var STAT_CACHE_KEY = "outlaw-rogue-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49802:["crit","haste"],49806:["crit","haste"],49807:["crit","haste"],49812:["crit","haste"],
-  49823:["crit","vers"],50228:["crit","haste"],50264:["crit","haste"],250256:[],
-  151313:["crit","vers"],151315:["crit","haste"],151316:["haste","vers"],151318:["crit","haste"],
-  151336:["crit","haste"],193707:["haste","mastery"],193709:["crit","haste"],193710:["haste","mastery"],
-  240949:[],244576:[],249276:["crit","haste"],249283:["haste","mastery"],
-  249284:["crit","mastery"],249287:["haste","mastery"],249288:["crit","haste"],249294:["haste","mastery"],
-  249295:["crit","haste"],249327:["crit","haste"],249334:["haste","vers"],249335:["crit","vers"],
-  249337:["crit","haste"],249343:["mastery"],249369:["haste","mastery"],249374:["crit","haste"],
-  249382:["crit","mastery"],249913:["haste"],249920:["haste"],249922:["haste","mastery"],
-  250004:["haste","mastery"],250005:["haste","vers"],250007:["crit","haste"],250009:["crit","mastery"],
-  250010:["crit","haste"],250013:["haste","mastery"],250015:["crit","haste"],250027:["crit","mastery"],
-  250032:["haste","vers"],250034:["crit","haste"],250036:["crit","mastery"],250046:["crit","vers"],
-  251087:["crit","haste"],251092:["haste","mastery"],251093:["haste","mastery"],251095:["crit","haste"],
-  251099:["crit","mastery"],251111:["crit","haste"],251115:["haste","mastery"],251122:["haste","mastery"],
-  251135:["crit","haste"],251161:["crit","vers"],251162:["crit","haste"],251166:["haste","vers"],
-  251171:["haste","mastery"],251174:["haste","mastery"],251178:["crit","haste"],251201:["haste","mastery"],
-  251210:["haste","vers"],251217:["crit","haste"],252420:[],258438:["haste","mastery"],
-  258472:["haste","mastery"],258525:["crit","haste"],258577:["crit","mastery"],260312:["crit","haste"],
-  260423:["crit","haste"],
+  49806:["crit","haste"],49807:["crit","haste"],49812:["crit","haste"],49823:["crit","vers"],
+  50228:["crit","haste"],50264:["crit","haste"],151313:["crit","vers"],151315:["crit","haste"],
+  151316:["haste","vers"],151318:["crit","haste"],151336:["crit","haste"],193710:["haste","mastery"],
+  240949:[],244576:[],249283:["haste","mastery"],249284:["crit","mastery"],
+  249287:["haste","mastery"],249294:["haste","mastery"],249295:["crit","haste"],249327:["crit","haste"],
+  249334:["haste","vers"],249335:["crit","vers"],249337:["crit","haste"],249343:["mastery"],
+  249369:["haste","mastery"],249374:["crit","haste"],249382:["crit","mastery"],249913:["haste"],
+  249920:["haste"],250004:["haste","mastery"],250005:["haste","vers"],250007:["crit","haste"],
+  250009:["crit","mastery"],250256:[],251087:["crit","haste"],251092:["haste","mastery"],
+  251093:["haste","mastery"],251099:["crit","mastery"],251111:["crit","haste"],251115:["haste","mastery"],
+  251122:["haste","mastery"],251135:["crit","haste"],251161:["crit","vers"],251166:["haste","vers"],
+  251171:["haste","mastery"],251178:["crit","haste"],251210:["haste","vers"],251217:["crit","haste"],
+  252420:[],258438:["haste","mastery"],258525:["crit","haste"],258577:["crit","mastery"],
+  260312:["crit","haste"],260423:["crit","haste"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
+  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
 ];

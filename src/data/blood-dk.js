@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Blood Death Knight";
 export var SPEC_KEY = "blood-dk";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/blood-death-knight-raid-guide";
 export var SIMC_CLASS = "deathknight";
 export var SIMC_SPEC = "blood";
 export var SPEC_ICON = "spell_deathknight_bloodpresence";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/blood-death-knight-raid-guide";
 export var STORAGE_KEY = "bis-blood-dk-v1";
 
 export var THEME = {
@@ -62,10 +62,9 @@ export var ALTS = [
   { forSlot: "ring", id: 251205, en: "Leyline Leggings", ko: "지맥 다리보호구", source: "Nexus-Point Xenas", stats: ["crit","vers"] },
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
 ];
 
-export var WORST_STATS = [];
+export var WORST_STATS = ["haste"];
 
 export var STAT_CACHE_KEY = "blood-dk-stat-cache-v1";
 
@@ -73,16 +72,14 @@ export var KNOWN_STATS = {
   49823:["crit","vers"],50234:["crit","mastery"],151308:["crit","vers"],151309:["haste","vers"],
   151330:["mastery","vers"],151333:["crit","mastery"],193706:["crit","vers"],193708:["crit","mastery"],
   221200:["mastery","vers"],240950:[],241140:["mastery","vers"],249277:["crit","mastery"],
-  249284:["crit","mastery"],249335:["crit","vers"],249336:["crit","vers"],249343:["mastery"],
-  249380:["crit","mastery"],249806:[],249919:["crit","mastery"],249952:["haste","mastery"],
-  249959:["crit","mastery"],249961:["haste","mastery"],249968:["haste","vers"],249969:["crit","mastery"],
-  249970:["haste","mastery"],249971:["haste","mastery"],250046:["crit","vers"],251077:["crit","mastery"],
-  251078:["mastery","vers"],251096:["haste","vers"],251101:["crit","vers"],251112:["haste","vers"],
-  251118:["crit","mastery"],251161:["crit","vers"],251168:["crit","mastery"],251203:["crit","vers"],
-  251205:["crit","vers"],251513:["crit","mastery"],252418:[],252420:[],
-  258218:["crit","mastery"],258514:["crit","mastery"],258583:["crit","mastery"],
+  249335:["crit","vers"],249336:["crit","vers"],249343:["mastery"],249380:["crit","mastery"],
+  249806:[],249919:["crit","mastery"],249968:["haste","vers"],249969:["crit","mastery"],
+  249970:["haste","mastery"],249971:["haste","mastery"],251078:["mastery","vers"],251096:["haste","vers"],
+  251101:["crit","vers"],251112:["haste","vers"],251118:["crit","mastery"],251161:["crit","vers"],
+  251168:["crit","mastery"],251203:["crit","vers"],251205:["crit","vers"],251513:["crit","mastery"],
+  252418:[],252420:[],258583:["crit","mastery"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
+  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
 ];

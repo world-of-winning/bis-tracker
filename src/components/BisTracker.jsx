@@ -159,6 +159,94 @@ function StatPills({ stats: itemStats }) {
   return (<span style={{ display: "inline-flex", gap: 2 }}>{itemStats.map(function(s) { var c = colors[s]; return (<span key={s} style={{ display: "inline-flex", padding: "1px 5px", borderRadius: 3, fontSize: 9, fontWeight: 700, background: c.bg, color: c.fg, border: "1px solid " + c.bd }}>{t("stats." + s)}</span>); })}</span>);
 }
 
+var eqTooltipCache = {};
+function EqTooltipObserver({ locale }) {
+  var loc = locale === "ko" ? 1 : 0;
+  var elRef = useRef(null);
+  useEffect(function() {
+    var el = document.getElementById("eq-tooltip-singleton");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "eq-tooltip-singleton";
+      el.className = "eq-tooltip-wrap";
+      el.style.cssText = "position:fixed;z-index:99998;pointer-events:none;padding:20px 6px 6px;display:none;";
+      el.innerHTML = '<div class="eq-tooltip-label" style="position:absolute;top:3px;left:10px;font-size:10px;font-weight:700;color:#ffd100;letter-spacing:.5px;pointer-events:none;background:rgba(0,0,0,.7);padding:1px 6px;border-radius:3px;text-shadow:0 1px 2px rgba(0,0,0,.8)"></div><div class="wowhead-tooltip" data-eq-tooltip="true"><table><tbody><tr><td class="eq-td"></td><th style="background-position:right top"></th></tr><tr><th style="background-position:left bottom"></th><th style="background-position:right bottom"></th></tr></tbody></table></div>';
+      document.body.appendChild(el);
+    }
+    elRef.current = el;
+  }, []);
+  useEffect(function() {
+    var lastEqKey = null;
+    var rafId = null;
+    var activeLink = null;
+    var eqLabelText = loc === 1 ? "장착" : "Equipped";
+
+    function trackPosition() {
+      var el = elRef.current; if (!el || !activeLink) return;
+      var whTip = document.querySelector(".wowhead-tooltip:not([data-eq-tooltip])");
+      if (!whTip || whTip.getBoundingClientRect().width === 0) {
+        rafId = requestAnimationFrame(trackPosition);
+        return;
+      }
+      var r = whTip.getBoundingClientRect();
+      var left = r.right;
+      if (left + 340 > window.innerWidth) left = r.left - 340;
+      var top = Math.min(r.top, window.innerHeight - 400);
+      el.style.top = (Math.max(4, top) - 20) + "px";
+      el.style.left = (Math.max(4, left) - 6) + "px";
+      el.style.display = "block";
+      rafId = requestAnimationFrame(trackPosition);
+    }
+
+    function onOver(e) {
+      var link = e.target.closest("a[data-eq-id]");
+      if (!link || link === activeLink) return;
+      activeLink = link;
+      var el = elRef.current; if (!el) return;
+      var eqId = link.getAttribute("data-eq-id");
+      var eqBonus = link.getAttribute("data-eq-bonus");
+      var eqIlvl = link.getAttribute("data-eq-ilvl");
+      var eqKey = eqId + "-" + eqBonus + "-" + eqIlvl;
+      var lbl = el.querySelector(".eq-tooltip-label");
+      if (lbl) lbl.textContent = eqLabelText;
+      if (eqKey !== lastEqKey) {
+        lastEqKey = eqKey;
+        var td = el.querySelector(".eq-td");
+        if (eqTooltipCache[eqKey]) { td.innerHTML = eqTooltipCache[eqKey]; }
+        else {
+          td.innerHTML = '<span style="color:#556666;padding:12px">Loading...</span>';
+          fetch("https://nether.wowhead.com/tooltip/item/" + eqId + "?dataEnv=1&locale=" + loc + (eqBonus ? "&bonus=" + eqBonus : "") + (eqIlvl ? "&ilvl=" + eqIlvl : "")).then(function(res) { return res.json(); }).then(function(data) {
+            eqTooltipCache[eqKey] = data.tooltip;
+            if (lastEqKey === eqKey) td.innerHTML = data.tooltip;
+          });
+        }
+      }
+      if (!rafId) rafId = requestAnimationFrame(trackPosition);
+    }
+
+    function onOut(e) {
+      var link = e.target.closest("a[data-eq-id]");
+      if (!link && !e.target.closest(".eq-tooltip-wrap")) return;
+      // Check if we moved to another eq-link
+      var related = e.relatedTarget;
+      if (related && related.closest && related.closest("a[data-eq-id]")) return;
+      activeLink = null;
+      lastEqKey = null;
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      var el = elRef.current; if (el) el.style.display = "none";
+    }
+
+    document.addEventListener("mouseover", onOver, true);
+    document.addEventListener("mouseout", onOut, true);
+    return function() {
+      document.removeEventListener("mouseover", onOver, true);
+      document.removeEventListener("mouseout", onOut, true);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [loc]);
+  return null;
+}
+
 function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, worstStats, targetBonus, knownBisIds }) {
   var { t, itemName, locale } = useLocale();
   var itemSource = getSource(item);
@@ -204,7 +292,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: c.g, color: c.t, border: "1px solid " + c.b + "44" }}>{isDungeon ? t("dungeons." + itemSource) : (t("sources." + itemSource) || itemSource)}</span>
             <StatPills stats={item.stats} />
           </div>
-          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + (tier === 3 && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: (tier === 4 || altEquipped) ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: (tier === 4 || altEquipped) ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
+          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + (tier === 3 && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(hasDiff && eq ? {"data-eq-id": eq.id, "data-eq-bonus": eq.bonus || "", "data-eq-ilvl": eq.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: (tier === 4 || altEquipped) ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: (tier === 4 || altEquipped) ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
           <div style={{ fontSize: 11.5, color: tier === 4 ? "#445533" : "#776655", marginBottom: 6 }}>{locale === "ko" ? item.en : item.ko}</div>
           {!isAlt && p && tier > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
@@ -230,7 +318,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
             </div>
           )}
           {isAlt && !altEquipped && altEq && (function() {
-            var eqHasWorst = worstStats && allStats[altEq.id] && worstStats.some(function(ws) { return allStats[altEq.id].indexOf(ws) >= 0; });
+            var eqHasWorst = worstStats && worstStats.some(function(ws) { return allStats[altEq.id] && allStats[altEq.id].indexOf(ws) >= 0; });
             return (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center", marginTop: 4 }}>
               <a href={"https://www.wowhead.com" + whLocale + "/item=" + altEq.id + (altEq.bonus ? "&bonus=" + altEq.bonus : "") + (altEq.ilvl ? "&ilvl=" + altEq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: eqHasWorst ? "#1a1015" : "#1a1508", border: "1px solid " + (eqHasWorst ? "#3a2030" : "#3a2a10"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: eqHasWorst ? "#aa7799" : "#c9a040", whiteSpace: "nowrap" }}>
@@ -249,12 +337,13 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
           </div>
         )}
       </div>
+      <EqTooltipObserver locale={locale} />
     </div>
   );
 }
 
 export default function BisTracker({ spec, charName, initialSimcText, onSpecSwitch, onClear, onCharDetected }) {
-  var { t } = useLocale();
+  var { t, locale } = useLocale();
   var { BIS, MYTHIC, ALTS, KNOWN_STATS, DUNGEONS, STORAGE_KEY: BASE_STORAGE_KEY, THEME: theme, WORST_STATS, STAT_CACHE_KEY, GUIDE_URL } = spec;
   var STORAGE_KEY = charName ? BASE_STORAGE_KEY + ":" + charName : BASE_STORAGE_KEY;
   // Merge MYTHIC items into ALTS as farmable alternatives
@@ -479,7 +568,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           var cnt = dungeonCounts[d]; if (!cnt || (cnt.bis === 0 && cnt.alt === 0)) return null;
           return { source: d, score: sr ? calcDungeonScore(d, activeItems, mergedAlts, sr, targetInfo.max, allStats, WORST_STATS, acq) : 0 };
         }).filter(Boolean).sort(function(a, b) { return b.score - a.score; }).map(function(item) {
-          var d = item.source, c2 = DC[d], act = filter === d;
+          var d = item.source, c2 = DC[d] || { g: "#333", b: "#555", t: "#aaa" }, act = filter === d;
           var bisItems = activeItems.filter(function(i) { return getSource(i) === d; });
           var bisRem = bisItems.length - bisItems.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
           var altItems = mergedAlts.filter(function(a) { return getSource(a) === d; });

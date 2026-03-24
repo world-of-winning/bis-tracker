@@ -8,7 +8,7 @@
  *   node scripts/generate-spec-data.mjs --list         # list all spec keys
  *   node scripts/generate-spec-data.mjs --skip-done    # skip specs already in new BIS+MYTHIC format
  *   node scripts/generate-spec-data.mjs --missing      # only specs with missing/incomplete files
- *   node scripts/generate-spec-data.mjs --rebuild      # full rebuild: generate all + find-alts
+ *   node scripts/generate-spec-data.mjs --force        # force regenerate (ignore unchanged check)
  *   node scripts/generate-spec-data.mjs --fix          # normalize source/dungeon names (no network)
  */
 
@@ -16,7 +16,8 @@ import { load } from 'cheerio';
 import { writeFileSync, readFileSync, existsSync, readdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { fetchTooltip, saveCache } from './wowhead-cache.mjs';
+import { fetchTooltip, saveCache, cacheGet, cacheSet } from './wowhead-cache.mjs';
+import { buildItemIndex, findAltsForSpec, updateSpecFile } from './find-alts.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname, '../src/data');
@@ -126,14 +127,14 @@ const SPECS = [
   { key: 'frost-dk',      label: '냉기 죽음의 기사',   simcClass: 'deathknight', simcSpec: 'frost',        slug: 'frost-death-knight',        icon: 'spell_deathknight_frostpresence',      weaponType: 'dual', accent: '#4d9dca' },
   { key: 'unholy-dk',     label: '부정 죽음의 기사',   simcClass: 'deathknight', simcSpec: 'unholy',       slug: 'unholy-death-knight',       icon: 'spell_deathknight_unholypresence',     weaponType: '2h', accent: '#7a9b3a' },
   // Demon Hunter
-  { key: 'havoc-dh',      label: '파멸 악마사냥꾼',    simcClass: 'demonhunter', simcSpec: 'havoc',        slug: 'havoc-demon-hunter',        icon: 'ability_demonhunter_spectral_sight',   weaponType: 'dual', accent: '#A330C9' },
-  { key: 'devourer-dh',   label: '포식 악마사냥꾼',    simcClass: 'demonhunter', simcSpec: 'havoc',        slug: 'devourer-demon-hunter',     icon: 'ability_demonhunter_spectral_sight',   weaponType: 'dual', accent: '#ca30a3', urlSuffix: 'mythic-guide' },
-  { key: 'veng-dh',       label: '복수 악마사냥꾼',    simcClass: 'demonhunter', simcSpec: 'vengeance',    slug: 'vengeance-demon-hunter',    icon: 'ability_demonhunter_metamorphosis_tank', weaponType: 'dual', accent: '#4dca4d' },
+  { key: 'havoc-dh',      label: '파멸 악마사냥꾼',    simcClass: 'demonhunter', simcSpec: 'havoc',        slug: 'havoc-demon-hunter',        icon: 'ability_demonhunter_specdps',          weaponType: 'dual', accent: '#A330C9' },
+  { key: 'devourer-dh',   label: '포식 악마사냥꾼',    simcClass: 'demonhunter', simcSpec: 'devourer',        slug: 'devourer-demon-hunter',     icon: 'classicon_demonhunter_void',           weaponType: 'dual', accent: '#ca30a3', mythicSuffix: 'mythic-guide' },
+  { key: 'veng-dh',       label: '복수 악마사냥꾼',    simcClass: 'demonhunter', simcSpec: 'vengeance',    slug: 'vengeance-demon-hunter',    icon: 'ability_demonhunter_spectank',         weaponType: 'dual', accent: '#4dca4d' },
   // Druid
   { key: 'balance-druid', label: '조화 드루이드',      simcClass: 'druid',       simcSpec: 'balance',      slug: 'balance-druid',             icon: 'spell_nature_starfall',                weaponType: '1h+oh', accent: '#FF7C0A' },
   { key: 'feral-druid',   label: '야성 드루이드',      simcClass: 'druid',       simcSpec: 'feral',        slug: 'feral-druid',               icon: 'ability_druid_catform',                weaponType: '2h', accent: '#d4a017' },
   { key: 'guardian-druid', label: '수호 드루이드',     simcClass: 'druid',       simcSpec: 'guardian',     slug: 'guardian-druid',            icon: 'ability_racial_bearform',              weaponType: '2h', accent: '#ca7a3d' },
-  { key: 'resto-druid',   label: '복원 드루이드',      simcClass: 'druid',       simcSpec: 'restoration',  slug: 'restoration-druid',         icon: 'spell_nature_healingtouch',            weaponType: '1h+oh', accent: '#60d060' },
+  { key: 'resto-druid',   label: '회복 드루이드',      simcClass: 'druid',       simcSpec: 'restoration',  slug: 'restoration-druid',         icon: 'spell_nature_healingtouch',            weaponType: '1h+oh', accent: '#60d060' },
   // Evoker
   { key: 'dev-evoker',    label: '황폐 기원사',        simcClass: 'evoker',      simcSpec: 'devastation',  slug: 'devastation-evoker',        icon: 'classicon_evoker_devastation',         weaponType: '1h+oh', accent: '#29a8d4' },
   { key: 'pres-evoker',   label: '보존 기원사',        simcClass: 'evoker',      simcSpec: 'preservation', slug: 'preservation-evoker',       icon: 'classicon_evoker_preservation',        weaponType: '1h+oh', accent: '#60ca8b' },
@@ -471,9 +472,20 @@ async function fetchWithRetry(url, opts = {}, retries = 5) {
   }
 }
 
+// Track whether the last call made a network request
+let lastSearchWasNetwork = false;
+
 async function searchItemId(name) {
   // Apply name fixes
   const fixedName = ITEM_NAME_FIXES[name] || name;
+  const cacheKey = `search:${fixedName}`;
+  const cached = cacheGet(cacheKey);
+  if (cached !== null) {
+    lastSearchWasNetwork = false;
+    return cached;
+  }
+
+  lastSearchWasNetwork = true;
   const url = `https://www.wowhead.com/search/suggestions-template?id=items&q=${encodeURIComponent(fixedName)}`;
   const data = await fetchWithRetry(url);
   if (!data.results || data.results.length === 0) {
@@ -482,7 +494,9 @@ async function searchItemId(name) {
   }
   // Prefer quality 4 (Epic) items
   const epic = data.results.find(r => r.quality === 4);
-  return (epic || data.results[0]).id;
+  const id = (epic || data.results[0]).id;
+  cacheSet(cacheKey, id);
+  return id;
 }
 
 async function fetchItemTooltip(id) {
@@ -505,6 +519,7 @@ async function fetchItemTooltip(id) {
 // ─── Build gear array from parsed rows ──────────────────────
 async function buildGearData(gearRows, weaponType) {
   const items = [];
+  const skippedWeapons = []; // 2H/1H alternatives skipped due to weapon type mismatch
   const knownStats = {};
   resetSlotCounters();
 
@@ -512,7 +527,7 @@ async function buildGearData(gearRows, weaponType) {
   const slotNames = gearRows.map(r => r.slotEn);
   const has2H = slotNames.some(s => s === 'Two-Hand Weapon' || s === 'Two-Hand');
   const has1H = slotNames.some(s => s === 'One-Hand Weapon');
-  // Skip 2H if both options exist and spec is not 2H
+  // Skip 2H if both options exist and spec is not 2H (and vice versa)
   resolveSlot._skipTwoHand = has2H && has1H && weaponType !== '2h';
   resolveSlot._skipOneHand = has2H && has1H && weaponType === '2h';
 
@@ -528,15 +543,23 @@ async function buildGearData(gearRows, weaponType) {
       for (let wi = 0; wi < 2; wi++) {
         const name = itemNames[wi];
         const slot = weaponSlots[wi] || weaponSlots[0];
-        console.log(`    Looking up: ${name}...`);
         const id = await searchItemId(name);
+        if (lastSearchWasNetwork) console.log(`    Looking up: ${name}...`);
         if (!id) continue;
-        await delay(200);
+        if (lastSearchWasNetwork) await delay(200);
         const { ko, stats } = await fetchItemTooltip(id);
         items.push({ slot: slot.simcSlot, en: name, ko: ko || name, id, source: row.source, stats });
         knownStats[id] = stats;
-        await delay(200);
+        if (lastSearchWasNetwork) await delay(200);
       }
+      continue;
+    }
+
+    // Collect skipped weapon alternatives for ALTS
+    const isSkipped2H = (slotEn === 'Two-Hand Weapon' || slotEn === 'Two-Hand') && resolveSlot._skipTwoHand;
+    const isSkipped1H = slotEn === 'One-Hand Weapon' && resolveSlot._skipOneHand;
+    if (isSkipped2H || isSkipped1H) {
+      skippedWeapons.push(row);
       continue;
     }
 
@@ -547,11 +570,11 @@ async function buildGearData(gearRows, weaponType) {
     }
 
     const itemName = ITEM_NAME_FIXES[row.itemName] || row.itemName;
-    console.log(`    Looking up: ${itemName}...`);
     const id = await searchItemId(itemName);
+    if (lastSearchWasNetwork) console.log(`    Looking up: ${itemName}...`);
     if (!id) continue;
 
-    await delay(200);
+    if (lastSearchWasNetwork) await delay(200);
     const { ko, stats } = await fetchItemTooltip(id);
 
     items.push({
@@ -564,7 +587,7 @@ async function buildGearData(gearRows, weaponType) {
     });
     knownStats[id] = stats;
 
-    await delay(200);
+    if (lastSearchWasNetwork) await delay(200);
   }
 
   // Post-process: for dual wield specs, if only main_hand exists, duplicate as off_hand
@@ -583,7 +606,28 @@ async function buildGearData(gearRows, weaponType) {
     deduped.push(item);
   }
 
-  return { items: deduped, knownStats };
+  // Resolve skipped weapon alternatives (for ALTS)
+  const skippedItems = [];
+  for (const row of skippedWeapons) {
+    const itemName = ITEM_NAME_FIXES[row.itemName] || row.itemName;
+    const id = await searchItemId(itemName);
+    if (lastSearchWasNetwork) console.log(`    Looking up (alt weapon): ${itemName}...`);
+    if (!id) continue;
+    if (lastSearchWasNetwork) await delay(200);
+    const { ko, stats } = await fetchItemTooltip(id);
+    skippedItems.push({
+      forSlot: 'weapon',
+      id,
+      en: itemName,
+      ko: ko || itemName,
+      source: row.source,
+      stats,
+    });
+    knownStats[id] = stats;
+    if (lastSearchWasNetwork) await delay(200);
+  }
+
+  return { items: deduped, knownStats, skippedWeapons: skippedItems };
 }
 
 // Legacy wrapper
@@ -615,7 +659,7 @@ function sortDungeons(dungeons) {
   });
 }
 
-function generateFullJs(spec, bisItems, mythicItems, knownStats, worstStatsStr) {
+function generateFullJs(spec, bisItems, mythicItems, knownStats, worstStatsStr, altsStr) {
   const theme = makeTheme(spec.accent);
   // Collect all sources — dungeons are for DUNGEONS array, others for SOURCES
   const allItems = [...(bisItems || []), ...(mythicItems || [])];
@@ -635,6 +679,8 @@ function generateFullJs(spec, bisItems, mythicItems, knownStats, worstStatsStr) 
   let out = '';
   out += `export var SPEC_LABEL = ${JSON.stringify(specLabel)};\n`;
   out += `export var SPEC_KEY = ${JSON.stringify(spec.key)};\n`;
+  const guideUrl = `https://maxroll.gg/wow/class-guides/${spec.slug}-raid-guide`;
+  out += `export var GUIDE_URL = ${JSON.stringify(guideUrl)};\n`;
   out += `export var SIMC_CLASS = ${JSON.stringify(spec.simcClass)};\n`;
   out += `export var SIMC_SPEC = ${JSON.stringify(spec.simcSpec)};\n`;
   out += `export var SPEC_ICON = ${JSON.stringify(spec.icon)};\n`;
@@ -670,15 +716,30 @@ function generateFullJs(spec, bisItems, mythicItems, knownStats, worstStatsStr) 
   }
   out += '\n';
 
-  // ALTS (populated separately by find-alts.mjs or --rebuild)
-  out += `export var ALTS = [];\n`;
+  // ALTS (preserved from existing file, populated by find-alts)
+  if (altsStr) {
+    out += altsStr + '\n';
+  } else {
+    out += `export var ALTS = [];\n`;
+  }
   out += '\n';
 
-  // WORST_STATS (preserved from existing file, or empty — needs manual review)
-  if (worstStatsStr) {
+  // WORST_STATS — compute from BIS stat distribution if not preserved
+  if (worstStatsStr && !/WORST_STATS = \[\];/.test(worstStatsStr)) {
     out += worstStatsStr + '\n';
   } else {
-    out += `export var WORST_STATS = [];\n`;
+    const allBisItems = [...(bisItems || []), ...(mythicItems || [])];
+    const sc = { crit: 0, haste: 0, mastery: 0, vers: 0 };
+    for (const item of allBisItems) {
+      for (const s of (item.stats || [])) { if (s in sc) sc[s]++; }
+    }
+    const min = Math.min(...Object.values(sc));
+    const worst = Object.entries(sc).filter(([, c]) => c === min).map(([s]) => s);
+    if (worst.length >= 1 && worst.length < 4) {
+      out += `export var WORST_STATS = ${JSON.stringify(worst)};\n`;
+    } else {
+      out += `export var WORST_STATS = [];\n`;
+    }
   }
   out += '\n';
 
@@ -704,14 +765,21 @@ function generateFullJs(spec, bisItems, mythicItems, knownStats, worstStatsStr) 
   return out;
 }
 
-// ─── Preserve WORST_STATS from existing file ─────────────────
-function readPreservedWorstStats(specKey) {
+// ─── Preserve sections from existing file ─────────────────
+function readPreservedSection(specKey, varName) {
   const path = resolve(DATA_DIR, `${specKey}.js`);
   if (!existsSync(path)) return null;
   const content = readFileSync(path, 'utf8');
-  const worstMatch = content.match(/export var WORST_STATS = \[([^]*?)\];/);
-  if (worstMatch && worstMatch[1].trim().length > 0) {
-    return `export var WORST_STATS = [${worstMatch[1]}];`;
+  if (varName === 'WORST_STATS') {
+    const match = content.match(new RegExp(`export var ${varName} = \\[([^\\]]*)\\];`));
+    if (match && match[1].trim().length > 0) {
+      return `export var ${varName} = [${match[1]}];`;
+    }
+    return null;
+  }
+  const match = content.match(new RegExp(`export var ${varName} = \\[([^]*?)\\];`));
+  if (match && match[1].trim().length > 0) {
+    return `export var ${varName} = [${match[1]}];`;
   }
   return null;
 }
@@ -720,16 +788,16 @@ function readPreservedWorstStats(specKey) {
 function extractExistingNames(content, varName) {
   const m = content.match(new RegExp(`export var ${varName} = \\[([^]*?)\\];`));
   if (!m) return [];
-  const names = [];
+  const names = new Set();
   const re = /en:\s*"([^"]+)"/g;
   let match;
-  while ((match = re.exec(m[1]))) names.push(match[1]);
-  return names.sort();
+  while ((match = re.exec(m[1]))) names.add(match[1]);
+  return [...names].sort();
 }
 
 function rowNames(rows) {
   if (!rows) return [];
-  return rows.map(r => r.itemName).sort();
+  return [...new Set(rows.flatMap(r => splitDualWeaponName(r.itemName)))].sort();
 }
 
 function arraysEqual(a, b) {
@@ -739,13 +807,16 @@ function arraysEqual(a, b) {
 }
 
 // ─── Main ────────────────────────────────────────────────────
-async function processSpec(spec) {
+async function processSpec(spec, { force = false } = {}) {
   console.log(`\n=== Processing ${spec.key} (${spec.label}) ===`);
 
   try {
-    // Try mythic-plus-guide first (has both BiS + Farmable tables)
-    const suffix = spec.urlSuffix || 'mythic-plus-guide';
-    const { bis: bisRows, farmable: farmableRows } = await fetchMaxrollGearTables(spec.slug, suffix);
+    // Fetch BIS from raid-guide, MYTHIC from mythic-plus-guide (separate sources)
+    const bisSuffix = 'raid-guide';
+    const mythicSuffix = spec.mythicSuffix || 'mythic-plus-guide';
+
+    const { bis: bisRows } = await fetchMaxrollGearTables(spec.slug, bisSuffix);
+    const { farmable: farmableRows } = await fetchMaxrollGearTables(spec.slug, mythicSuffix);
 
     // Compare crawled data with existing file — skip Wowhead lookups if unchanged
     const existingPath = resolve(DATA_DIR, `${spec.key}.js`);
@@ -759,33 +830,35 @@ async function processSpec(spec) {
       const bisMatch = arraysEqual(existingBis, crawledBis);
       const mythicMatch = arraysEqual(existingMythic, crawledMythic);
 
-      if (bisMatch && mythicMatch && existingBis.length >= 14 && existingMythic.length >= 14) {
+      if (!force && bisMatch && mythicMatch && existingBis.length >= 14 && existingMythic.length >= 14) {
         console.log(`  No changes from maxroll — skipping Wowhead lookups`);
         return 'unchanged';
       }
-      if (!bisMatch) console.log(`  BIS changed: ${existingBis.length} → ${crawledBis.length} items`);
-      if (!mythicMatch) console.log(`  MYTHIC changed: ${existingMythic.length} → ${crawledMythic.length} items`);
+      if (!bisMatch) console.log(`  BIS changed (raid-guide): ${existingBis.length} → ${crawledBis.length} items`);
+      if (!mythicMatch) console.log(`  MYTHIC changed (mythic-plus-guide): ${existingMythic.length} → ${crawledMythic.length} items`);
     }
 
     const allKnownStats = {};
     let bisItems = null;
     let mythicItems = null;
 
-    // Build BiS data (true best in slot — raid/catalyst/crafting included)
+    // Build BiS data from raid-guide (true best in slot — raid/catalyst/crafting included)
+    const altWeapons = [];
     if (bisRows && bisRows.length >= 14) {
-      console.log(`  Found ${bisRows.length} BiS items`);
-      const { items, knownStats } = await buildGearData(bisRows, spec.weaponType);
+      console.log(`  Found ${bisRows.length} BiS items (raid-guide)`);
+      const { items, knownStats, skippedWeapons } = await buildGearData(bisRows, spec.weaponType);
       bisItems = items;
+      altWeapons.push(...skippedWeapons);
       Object.assign(allKnownStats, knownStats);
       console.log(`  Resolved ${items.length} BiS items with IDs and stats`);
     }
 
-    // Build Mythic data (farmable dungeon alternatives)
+    // Build Mythic data from mythic-plus-guide (farmable dungeon alternatives)
     if (farmableRows && farmableRows.length >= 14) {
-      console.log(`  Found ${farmableRows.length} farmable items`);
-      // Reset slot counters between builds
-      const { items, knownStats } = await buildGearData(farmableRows, spec.weaponType);
+      console.log(`  Found ${farmableRows.length} farmable items (mythic-plus-guide)`);
+      const { items, knownStats, skippedWeapons } = await buildGearData(farmableRows, spec.weaponType);
       mythicItems = items;
+      altWeapons.push(...skippedWeapons);
       Object.assign(allKnownStats, knownStats);
       console.log(`  Resolved ${items.length} mythic items with IDs and stats`);
     }
@@ -794,10 +867,37 @@ async function processSpec(spec) {
       throw new Error(`No gear tables found for ${spec.slug}`);
     }
 
-    const worstStatsStr = readPreservedWorstStats(spec.key);
-    const js = generateFullJs(spec, bisItems, mythicItems, allKnownStats, worstStatsStr);
+    // Merge skipped weapon alternatives into existing ALTS
+    const worstStatsStr = readPreservedSection(spec.key, 'WORST_STATS');
+    let altsStr = readPreservedSection(spec.key, 'ALTS');
+    if (altWeapons.length > 0) {
+      // Deduplicate by ID against existing ALTS
+      const existingIds = new Set();
+      if (altsStr) {
+        const idRe = /id:\s*(\d+)/g;
+        let m;
+        while ((m = idRe.exec(altsStr))) existingIds.add(parseInt(m[1]));
+      }
+      const newAlts = altWeapons.filter(a => !existingIds.has(a.id));
+      if (newAlts.length > 0) {
+        // Build ALTS string: existing + new weapon alts
+        let inner = '';
+        if (altsStr) {
+          const match = altsStr.match(/\[([^]*)\]/);
+          if (match) inner = match[1].trimEnd();
+        }
+        for (const alt of newAlts) {
+          inner += `\n  { forSlot: ${JSON.stringify(alt.forSlot)}, id: ${alt.id}, en: ${JSON.stringify(alt.en)}, ko: ${JSON.stringify(alt.ko)}, source: ${JSON.stringify(alt.source)}, stats: ${JSON.stringify(alt.stats)} },`;
+          allKnownStats[alt.id] = alt.stats;
+        }
+        altsStr = `export var ALTS = [${inner}\n];`;
+        console.log(`  Added ${newAlts.length} weapon alts from skipped slots`);
+      }
+    }
+    const js = generateFullJs(spec, bisItems, mythicItems, allKnownStats, worstStatsStr, altsStr);
     const outPath = resolve(DATA_DIR, `${spec.key}.js`);
     writeFileSync(outPath, js, 'utf8');
+    saveCache();
     console.log(`  Written: ${outPath}`);
 
     return true;
@@ -816,47 +916,76 @@ if (args.includes('--list')) {
   process.exit(0);
 }
 
-// --fix: normalize source/dungeon names locally (no network)
-if (args.includes('--fix')) {
+// ─── Fix WORST_STATS based on BIS stat distribution ──────────
+function fixWorstStats(targetKey) {
   const SKIP_FILES = new Set(['shared.js', 'specs.js', 'sample.js', 'tutorial.js', 'changelog.js']);
-  const fixTarget = args.find(a => !a.startsWith('--'));
   const files = readdirSync(DATA_DIR)
     .filter(f => f.endsWith('.js') && !SKIP_FILES.has(f))
-    .filter(f => !fixTarget || f === `${fixTarget}.js`);
-
-  // Korean SPEC_LABEL → English mapping
-  const LABEL_EN = {};
-  for (const s of SPECS) {
-    // Derive English label from slug: "blood-death-knight" → "Blood Death Knight"
-    LABEL_EN[s.key] = s.slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    .filter(f => !targetKey || f === `${targetKey}.js`);
+  let count = 0;
+  for (const file of files) {
+    const filePath = resolve(DATA_DIR, file);
+    const original = readFileSync(filePath, 'utf8');
+    const bisMatch = original.match(/export var BIS = \[([^]*?)\];/);
+    if (!bisMatch) continue;
+    const sc = { crit: 0, haste: 0, mastery: 0, vers: 0 };
+    const re = /stats:\s*\[([^\]]*)\]/g;
+    let m;
+    while ((m = re.exec(bisMatch[1])) !== null) {
+      const stats = m[1].replace(/"/g, '').split(',').map(s => s.trim()).filter(Boolean);
+      for (const s of stats) { if (s in sc) sc[s]++; }
+    }
+    const min = Math.min(...Object.values(sc));
+    const worst = Object.entries(sc).filter(([, c]) => c === min).map(([s]) => s);
+    if (worst.length === 0 || worst.length >= 4) continue;
+    const worstStr = JSON.stringify(worst);
+    const newVal = `export var WORST_STATS = ${worstStr};`;
+    const updated = original.replace(/export var WORST_STATS = \[[^\]]*\];/, (match) => {
+      if (match !== newVal) { count++; console.log(`  ${file}: WORST_STATS → ${worstStr}`); return newVal; }
+      return match;
+    });
+    if (updated !== original) writeFileSync(filePath, updated, 'utf8');
   }
-  // Manual overrides for non-obvious names
-  Object.assign(LABEL_EN, {
-    'bm-hunter': 'Beast Mastery Hunter',
-    'mm-hunter': 'Marksmanship Hunter',
-    'surv-hunter': 'Survival Hunter',
-    'brew-monk': 'Brewmaster Monk',
-    'ww-monk': 'Windwalker Monk',
-    'mw-monk': 'Mistweaver Monk',
-    'ele-shaman': 'Elemental Shaman',
-    'enh-shaman': 'Enhancement Shaman',
-    'resto-shaman': 'Restoration Shaman',
-    'resto-druid': 'Restoration Druid',
-    'dev-evoker': 'Devastation Evoker',
-    'pres-evoker': 'Preservation Evoker',
-    'aug-evoker': 'Augmentation Evoker',
-    'aff-lock': 'Affliction Warlock',
-    'demo-lock': 'Demonology Warlock',
-    'destro-lock': 'Destruction Warlock',
-    'assa-rogue': 'Assassination Rogue',
-    'sub-rogue': 'Subtlety Rogue',
-    'disc-priest': 'Discipline Priest',
-    'prot-paladin': 'Protection Paladin',
-    'ret-paladin': 'Retribution Paladin',
-    'prot-warrior': 'Protection Warrior',
-    'devourer-dh': 'Devourer Demon Hunter',
-    'veng-dh': 'Vengeance Demon Hunter',
-  });
+  if (count > 0) console.log(`Updated WORST_STATS in ${count} files.`);
+}
+
+// ─── Normalize data files (labels, sources, dungeons, worst stats) ───
+const LABEL_EN = {};
+for (const s of SPECS) {
+  LABEL_EN[s.key] = s.slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+Object.assign(LABEL_EN, {
+  'bm-hunter': 'Beast Mastery Hunter',
+  'mm-hunter': 'Marksmanship Hunter',
+  'surv-hunter': 'Survival Hunter',
+  'brew-monk': 'Brewmaster Monk',
+  'ww-monk': 'Windwalker Monk',
+  'mw-monk': 'Mistweaver Monk',
+  'ele-shaman': 'Elemental Shaman',
+  'enh-shaman': 'Enhancement Shaman',
+  'resto-shaman': 'Restoration Shaman',
+  'resto-druid': 'Restoration Druid',
+  'dev-evoker': 'Devastation Evoker',
+  'pres-evoker': 'Preservation Evoker',
+  'aug-evoker': 'Augmentation Evoker',
+  'aff-lock': 'Affliction Warlock',
+  'demo-lock': 'Demonology Warlock',
+  'destro-lock': 'Destruction Warlock',
+  'assa-rogue': 'Assassination Rogue',
+  'sub-rogue': 'Subtlety Rogue',
+  'disc-priest': 'Discipline Priest',
+  'prot-paladin': 'Protection Paladin',
+  'ret-paladin': 'Retribution Paladin',
+  'prot-warrior': 'Protection Warrior',
+  'devourer-dh': 'Devourer Demon Hunter',
+  'veng-dh': 'Vengeance Demon Hunter',
+});
+
+function normalizeDataFiles(targetKey) {
+  const SKIP_FILES = new Set(['shared.js', 'specs.js', 'sample.js', 'tutorial.js', 'changelog.js']);
+  const files = readdirSync(DATA_DIR)
+    .filter(f => f.endsWith('.js') && !SKIP_FILES.has(f))
+    .filter(f => !targetKey || f === `${targetKey}.js`);
 
   let totalChanges = 0;
   for (const file of files) {
@@ -888,17 +1017,6 @@ if (args.includes('--fix')) {
       return match;
     });
 
-    // Fill empty WORST_STATS with ["vers"] for non-tank specs
-    const TANK_SPECS = new Set(['blood', 'vengeance', 'guardian', 'brewmaster', 'protection']);
-    const specMatch = content.match(/SIMC_SPEC = "([^"]+)"/);
-    const simcSpec = specMatch ? specMatch[1] : '';
-    if (!TANK_SPECS.has(simcSpec)) {
-      content = content.replace(/export var WORST_STATS = \[\];/, (match) => {
-        changes.push(`WORST_STATS: [] → ["vers"]`);
-        return 'export var WORST_STATS = ["vers"];';
-      });
-    }
-
     // Normalize DUNGEONS array values
     content = content.replace(/(export var DUNGEONS = \[)([^]*?)(\];)/g, (match, start, body, end) => {
       const newBody = body.replace(/"([^"]+)"/g, (m, val) => {
@@ -920,14 +1038,21 @@ if (args.includes('--fix')) {
     }
   }
 
-  if (totalChanges === 0) console.log('All sources are already normalized.');
-  else console.log(`\nFixed ${totalChanges} source values across ${files.length} files.`);
+  if (totalChanges === 0) console.log('All data files are normalized.');
+  else console.log(`\nFixed ${totalChanges} values across ${files.length} files.`);
+  fixWorstStats(targetKey);
+}
+
+// --fix: just normalize and exit (no network)
+if (args.includes('--fix')) {
+  const fixTarget = args.find(a => !a.startsWith('--'));
+  normalizeDataFiles(fixTarget);
   process.exit(0);
 }
 
 const onlyMissing = args.includes('--missing');
 const skipDone = args.includes('--skip-done');
-const rebuild = args.includes('--rebuild');
+const forceRegen = args.includes('--force');
 const targetKey = args.find(a => !a.startsWith('--'));
 let targets = targetKey
   ? SPECS.filter(s => s.key === targetKey)
@@ -989,12 +1114,12 @@ let success = 0, fail = 0;
 const writtenKeys = [];
 const failed = [];
 for (const spec of targets) {
-  const result = await processSpec(spec);
+  const result = await processSpec(spec, { force: forceRegen });
   if (result === true) { success++; writtenKeys.push(spec.key); }
   else if (result === 'unchanged') { success++; }
   else { fail++; failed.push(spec); }
-  // Delay between specs to avoid rate limiting
-  if (targets.length > 1) await delay(3000);
+  // Delay between specs only when file was written (network calls were made)
+  if (result === true && targets.length > 1) await delay(1000);
 }
 
 // Retry failed specs once after a longer cooldown
@@ -1002,7 +1127,7 @@ if (failed.length > 0) {
   console.log(`\nRetrying ${failed.length} failed specs after 60s cooldown...`);
   await delay(60000);
   for (const spec of failed) {
-    const result = await processSpec(spec);
+    const result = await processSpec(spec, { force: forceRegen });
     if (result === true) { success++; fail--; writtenKeys.push(spec.key); }
     else if (result === 'unchanged') { success++; fail--; }
     if (failed.length > 1) await delay(5000);
@@ -1011,33 +1136,28 @@ if (failed.length > 0) {
 
 console.log(`\nDone: ${success} succeeded (${writtenKeys.length} written), ${fail} failed out of ${targets.length}`);
 
-// Run find-alts for specs that were actually written or need ALTS
-const allNeedAlts = [...new Set([...needsAlts, ...writtenKeys])];
+// Run find-alts for all processed specs + specs with empty ALTS
+const allNeedAlts = [...new Set([...targets.map(s => s.key), ...needsAlts])];
 
-// Run find-alts for specs needing ALTS (--skip-done or --rebuild)
 if (allNeedAlts.length > 0) {
   console.log(`\n=== Running find-alts for ${allNeedAlts.length} specs ===`);
-  const { execSync } = await import('child_process');
-  const findAltsScript = resolve(__dirname, 'find-alts.mjs');
+  console.log('Building global item index...');
+  const index = buildItemIndex();
+  let totalAlts = 0;
   for (const key of allNeedAlts) {
     try {
-      execSync(`node ${findAltsScript} ${key}`, { encoding: 'utf8', stdio: 'inherit' });
+      const alts = await findAltsForSpec(key, index);
+      if (alts.length > 0) {
+        updateSpecFile(key, alts);
+      }
+      console.log(`  ${key}: ${alts.length} alts`);
+      totalAlts += alts.length;
     } catch (err) {
-      console.error(`find-alts failed for ${key}:`, err.message);
+      console.error(`  ${key}: FAILED - ${err.message}`);
     }
   }
+  console.log(`\nDone: ${totalAlts} total alts across ${allNeedAlts.length} specs`);
 }
 
-// --rebuild: auto-run find-alts after generation (all specs)
-if (rebuild && success > 0) {
-  console.log('\n=== Running find-alts to populate ALTS data ===');
-  const { execSync } = await import('child_process');
-  const findAltsScript = resolve(__dirname, 'find-alts.mjs');
-  try {
-    const output = execSync(`node ${findAltsScript}`, { encoding: 'utf8', stdio: 'inherit' });
-  } catch (err) {
-    console.error('find-alts failed:', err.message);
-  }
-}
-
+normalizeDataFiles(targetKey);
 saveCache();

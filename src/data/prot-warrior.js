@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Protection Warrior";
 export var SPEC_KEY = "prot-warrior";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/protection-warrior-raid-guide";
 export var SIMC_CLASS = "warrior";
 export var SIMC_SPEC = "protection";
 export var SPEC_ICON = "ability_warrior_defensivestance";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/protection-warrior-raid-guide";
 export var STORAGE_KEY = "bis-prot-warrior-v1";
 
 export var THEME = {
@@ -28,7 +28,7 @@ export var BIS = [
   { slot: "feet", en: "Night Ender's Greatboots", ko: "밤의 종결자의 철갑장화", id: 249954, source: "Catalyst", stats: ["crit","haste"] },
   { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "finger2", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "main_hand", en: "Turalyon's False Echo", ko: "투랄리온의 마지막 메아리", id: 249295, source: "Crown of the Cosmos", stats: ["crit","haste"] },
   { slot: "off_hand", en: "Ward of the Spellbreaker", ko: "주문파괴자의 수호물", id: 251105, source: "Magisters' Terrace", stats: ["crit","mastery"] },
@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "feet", en: "Sabatons of Furious Revenge", ko: "격노한 복수의 발덮개", id: 251091, source: "Windrunner Spire", stats: ["crit","vers"] },
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "finger2", en: "Purloined Wedding Ring", ko: "훔친 결혼반지", id: 49812, source: "Pit of Saron", stats: ["crit","haste"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "trinket2", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
   { slot: "main_hand", en: "Scepter of the Endless Night", ko: "끝없는 밤의 홀", id: 258525, source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { slot: "off_hand", en: "Viryx's Indomitable Bulwark", ko: "비릭스의 불굴의 보루 방패", id: 258049, source: "Skyreach", stats: ["crit","mastery"] },
@@ -59,39 +59,32 @@ export var ALTS = [
   { forSlot: "neck", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", source: "Midnight Falls", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 251164, en: "Amalgamation's Harness", ko: "융합체의 멜빵", source: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 49802, en: "Garfrost's Two-Ton Hammer", ko: "가프로스트의 2톤 망치", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", source: "Lightblinded Vanguard", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251111, en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", source: "Magisters' Terrace", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 251162, en: "Traitor's Talon", ko: "배신자의 갈퀴발톱", source: "Maisara Caverns", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", source: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", source: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251178, en: "Ceremonial Hexblade", ko: "의식용 사술칼날", source: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 260423, en: "Arator's Swift Remembrance", ko: "아라토르의 신속한 기억", source: "Crown of the Cosmos", stats: ["crit","haste"] },
 ];
 
-export var WORST_STATS = ["mastery"];
+export var WORST_STATS = ["vers"];
 
 export var STAT_CACHE_KEY = "prot-warrior-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49802:["crit","haste"],49807:["crit","haste"],49808:["crit","haste"],49812:["crit","haste"],
-  49819:["crit","haste"],50228:["crit","haste"],50272:["crit","haste"],250256:[],
-  151332:["haste","vers"],237834:[],239656:[],249277:["crit","mastery"],
-  249284:["crit","mastery"],249288:["crit","haste"],249295:["crit","haste"],249309:["crit","haste"],
+  49807:["crit","haste"],49808:["crit","haste"],49812:["crit","haste"],49819:["crit","haste"],
+  50228:["crit","haste"],50272:["crit","haste"],151332:["haste","vers"],237834:[],
+  239656:[],249284:["crit","mastery"],249295:["crit","haste"],249309:["crit","haste"],
   249337:["crit","haste"],249343:["mastery"],249368:["haste","mastery"],249920:["haste"],
   249949:["crit","haste"],249950:["haste","mastery"],249951:["crit","haste"],249952:["haste","mastery"],
-  249954:["crit","haste"],249955:["crit","haste"],249960:["crit","haste"],249961:["haste","mastery"],
-  249962:["haste","vers"],249970:["haste","mastery"],249973:["crit","haste"],250010:["crit","haste"],
-  250247:["haste","mastery"],251081:["crit","haste"],251091:["crit","vers"],251095:["crit","haste"],
-  251105:["crit","mastery"],251111:["crit","haste"],251142:["haste","mastery"],251157:["crit","haste"],
-  251162:["crit","haste"],251164:["haste","mastery"],251168:["crit","mastery"],251175:["crit","mastery"],
+  249954:["crit","haste"],249955:["crit","haste"],250247:["haste","mastery"],250256:[],
+  251081:["crit","haste"],251091:["crit","vers"],251105:["crit","mastery"],251111:["crit","haste"],
+  251142:["haste","mastery"],251157:["crit","haste"],251164:["haste","mastery"],251175:["crit","mastery"],
   251178:["crit","haste"],251203:["crit","vers"],251208:["haste","vers"],251217:["crit","haste"],
   252420:[],258049:["crit","mastery"],258525:["crit","haste"],260312:["crit","haste"],
   260423:["crit","haste"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Maisara Caverns",
+  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
 ];

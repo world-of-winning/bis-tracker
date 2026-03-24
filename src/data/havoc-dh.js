@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Havoc Demon Hunter";
 export var SPEC_KEY = "havoc-dh";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/havoc-demon-hunter-raid-guide";
 export var SIMC_CLASS = "demonhunter";
 export var SIMC_SPEC = "havoc";
 export var SPEC_ICON = "ability_demonhunter_specdps";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/havoc-demon-hunter-raid-guide";
 export var STORAGE_KEY = "bis-havoc-dh-v1";
 
 export var THEME = {
@@ -30,8 +30,8 @@ export var BIS = [
   { slot: "finger2", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Umbral Plume", ko: "암영의 꽁지깃", id: 260235, source: "Belo'ren", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "main_hand", en: "Lightless Lament", ko: "빛을 잃은 탄식", id: 260408, source: "Midnight Falls", stats: ["crit"] },
-  { slot: "off_hand", en: "Spellbreaker's Warglaive", ko: "주문파괴자의 전투검", id: 237840, source: "Crafted", stats: [] },
+  { slot: "main_hand", en: "Lightless Lament", ko: "빛을 잃은 탄식", id: 260408, source: "Midnight Falls & Crafted", stats: ["crit"] },
+  { slot: "off_hand", en: "Spellbreaker's Warglaive", ko: "주문파괴자의 전투검", id: 237840, source: "Midnight Falls & Crafted", stats: [] },
 ];
 
 export var MYTHIC = [
@@ -49,8 +49,8 @@ export var MYTHIC = [
   { slot: "finger2", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, source: "Algeth'ar Academy", stats: [] },
   { slot: "trinket2", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
-  { slot: "main_hand", en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", id: 193717, source: "Algeth'ar Academy", stats: ["crit","vers"] },
-  { slot: "off_hand", en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", id: 251175, source: "Maisara Caverns", stats: ["crit","mastery"] },
+  { slot: "main_hand", en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", id: 193717, source: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","vers"] },
+  { slot: "off_hand", en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", id: 251175, source: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
 ];
 
 export var ALTS = [
@@ -82,20 +82,17 @@ export var KNOWN_STATS = {
   49812:["crit","haste"],49817:["haste","mastery"],50227:["crit","vers"],50228:["crit","haste"],
   50264:["crit","haste"],151315:["crit","haste"],151318:["crit","haste"],151319:["crit","mastery"],
   178819:["haste","mastery"],193701:[],193708:["crit","mastery"],193717:["crit","vers"],
-  193723:["crit","vers"],237840:[],244576:[],249277:["crit","mastery"],
-  249284:["crit","mastery"],249293:["crit","vers"],249312:["haste","mastery"],249321:["crit","mastery"],
-  249327:["crit","haste"],249337:["crit","haste"],249343:["mastery"],249368:["haste","mastery"],
-  249382:["crit","mastery"],249919:["crit","mastery"],250022:["crit","mastery"],250023:["haste","mastery"],
-  250024:["haste","mastery"],250027:["crit","mastery"],250031:["crit","mastery"],250033:["haste","mastery"],
-  250034:["crit","haste"],250036:["crit","mastery"],250247:["haste","mastery"],251082:["crit","mastery"],
-  251087:["crit","haste"],251092:["haste","mastery"],251099:["crit","mastery"],251105:["crit","mastery"],
+  237840:[],244576:[],249284:["crit","mastery"],249312:["haste","mastery"],
+  249321:["crit","mastery"],249327:["crit","haste"],249337:["crit","haste"],249343:["mastery"],
+  249368:["haste","mastery"],249382:["crit","mastery"],249919:["crit","mastery"],250031:["crit","mastery"],
+  250033:["haste","mastery"],250034:["crit","haste"],250036:["crit","mastery"],250247:["haste","mastery"],
+  251082:["crit","mastery"],251087:["crit","haste"],251092:["haste","mastery"],251099:["crit","mastery"],
   251109:["crit","mastery"],251113:["crit","mastery"],251135:["crit","haste"],251140:["haste","mastery"],
-  251142:["haste","mastery"],251163:["crit","vers"],251168:["crit","mastery"],251171:["haste","mastery"],
-  251175:["crit","mastery"],251217:["crit","haste"],251513:["crit","mastery"],252420:[],
-  258049:["crit","mastery"],258516:["crit","vers"],258575:["crit","mastery"],258577:["crit","mastery"],
-  260235:[],260408:["crit"],
+  251142:["haste","mastery"],251163:["crit","vers"],251171:["haste","mastery"],251175:["crit","mastery"],
+  251217:["crit","haste"],251513:["crit","mastery"],252420:[],258575:["crit","mastery"],
+  258577:["crit","mastery"],260235:[],260408:["crit"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
+  "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Algeth'ar Academy & Maisara Caverns", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
 ];

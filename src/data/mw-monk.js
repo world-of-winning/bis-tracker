@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Mistweaver Monk";
 export var SPEC_KEY = "mw-monk";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/mistweaver-monk-raid-guide";
 export var SIMC_CLASS = "monk";
 export var SIMC_SPEC = "mistweaver";
 export var SPEC_ICON = "spell_monk_mistweaver_spec";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/mistweaver-monk-raid-guide";
 export var STORAGE_KEY = "bis-mw-monk-v1";
 
 export var THEME = {
@@ -29,7 +29,7 @@ export var BIS = [
   { slot: "finger1", en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", id: 251513, source: "Crafted", stats: ["crit","mastery"] },
   { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "main_hand", en: "Weight of Command", ko: "지휘의 무게", id: 249293, source: "Imperator Averzian", stats: ["crit","vers"] },
   { slot: "off_hand", en: "Aln'hara Lantern", ko: "알른하라의 등불", id: 245769, source: "Crafted", stats: [] },
 ];
@@ -42,12 +42,12 @@ export var MYTHIC = [
   { slot: "chest", en: "Maledict Vest", ko: "악독한 조끼", id: 251216, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "wrist", en: "Frenzyroot Cuffs", ko: "광란뿌리 소매장식", id: 193714, source: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { slot: "hands", en: "Gloves of the Dark Shroud", ko: "암흑 구름의 장갑", id: 151318, source: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { slot: "legs", en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", id: 178819, source: "Halls of Atonement", stats: ["haste","mastery"] },
   { slot: "waist", en: "Falconer's Cinch", ko: "매사냥꾼의 허리끈", id: 251166, source: "Maisara Caverns", stats: ["haste","vers"] },
+  { slot: "legs", en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", id: 178819, source: "Halls of Atonement", stats: ["haste","mastery"] },
   { slot: "feet", en: "Eclipse Espadrilles", ko: "일월식 발목화", id: 251210, source: "Nexus-Point Xenas", stats: ["haste","vers"] },
   { slot: "finger1", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "finger2", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "trinket2", en: "Emerald Coach's Whistle", ko: "에메랄드 감독의 호루라기", id: 193718, source: "Algeth'ar Academy", stats: [] },
   { slot: "main_hand", en: "Berserker's Hexclaws", ko: "광전사의 사술발톱", id: 251163, source: "Maisara Caverns", stats: ["crit","vers"] },
   { slot: "off_hand", en: "Rukhran's Solar Reliquary", ko: "루크란의 태양 성물함", id: 258472, source: "Skyreach", stats: ["haste","mastery"] },
@@ -70,39 +70,37 @@ export var ALTS = [
   { forSlot: "waist", id: 49806, en: "Flayer's Black Belt", ko: "바위갈퀴의 검은띠", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "waist", id: 151316, en: "Cinch of the Umbral Lasher", ko: "암영 덩굴손의 허리끈", source: "Seat of the Triumvirate", stats: ["haste","vers"] },
   { forSlot: "weapon", id: 193710, en: "Spellboon Saber", ko: "주문은총 사브르", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 193723, en: "Obsidian Goaltending Spire", ko: "흑요석 골대지킴이 뾰족지팡이", source: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", source: "Midnight Falls & Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", source: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 258047, en: "Spire of the Furious Construct", ko: "격노한 피조물의 척추", source: "Skyreach", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", source: "Skyreach", stats: ["haste","mastery"] },
   { forSlot: "wrist", id: 50264, en: "Chewed Leather Wristguards", ko: "물어뜯긴 가죽 손목보호구", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "wrist", id: 151315, en: "Bracers of Dark Binding", ko: "암흑의 구속 팔보호구", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "wrist", id: 251135, en: "Fury-fletched Armlets", ko: "지옥 새김 팔찌", source: "Magisters' Terrace", stats: ["crit","haste"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var WORST_STATS = ["mastery"];
 
 export var STAT_CACHE_KEY = "mw-monk-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49806:["crit","haste"],49807:["crit","haste"],49817:["haste","mastery"],49823:["crit","vers"],
-  50227:["crit","vers"],50228:["crit","haste"],50264:["crit","haste"],250256:[],
-  151309:["haste","vers"],151315:["crit","haste"],151316:["haste","vers"],151318:["crit","haste"],
-  151336:["crit","haste"],178819:["haste","mastery"],193708:["crit","mastery"],193710:["haste","mastery"],
-  193712:["haste","vers"],193714:["haste","mastery"],193717:["crit","vers"],193718:[],
-  193723:["crit","vers"],245769:[],249287:["haste","mastery"],249293:["crit","vers"],
+  50228:["crit","haste"],50264:["crit","haste"],151309:["haste","vers"],151315:["crit","haste"],
+  151316:["haste","vers"],151318:["crit","haste"],151336:["crit","haste"],178819:["haste","mastery"],
+  193708:["crit","mastery"],193710:["haste","mastery"],193712:["haste","vers"],193714:["haste","mastery"],
+  193718:[],245769:[],249287:["haste","mastery"],249293:["crit","vers"],
   249294:["haste","mastery"],249312:["haste","mastery"],249327:["crit","haste"],249333:["crit","vers"],
   249334:["haste","vers"],249335:["crit","vers"],249337:["crit","haste"],249343:["mastery"],
   249369:["haste","mastery"],249374:["crit","haste"],249919:["crit","mastery"],249920:["haste"],
-  249922:["haste","mastery"],250004:["haste","mastery"],250007:["crit","haste"],250013:["haste","mastery"],
-  250014:["haste","mastery"],250015:["crit","haste"],250016:["crit","vers"],250018:["crit","haste"],
-  250023:["haste","mastery"],250034:["crit","haste"],250046:["crit","vers"],251092:["haste","mastery"],
-  251093:["haste","mastery"],251096:["haste","vers"],251115:["haste","mastery"],251122:["haste","mastery"],
-  251135:["crit","haste"],251159:["haste","mastery"],251161:["crit","vers"],251163:["crit","vers"],
-  251166:["haste","vers"],251171:["haste","mastery"],251210:["haste","vers"],251216:["haste","mastery"],
-  251513:["crit","mastery"],258438:["haste","mastery"],258472:["haste","mastery"],258516:["crit","vers"],
+  250013:["haste","mastery"],250014:["haste","mastery"],250015:["crit","haste"],250016:["crit","vers"],
+  250018:["crit","haste"],250256:[],251092:["haste","mastery"],251093:["haste","mastery"],
+  251096:["haste","vers"],251115:["haste","mastery"],251122:["haste","mastery"],251135:["crit","haste"],
+  251159:["haste","mastery"],251161:["crit","vers"],251163:["crit","vers"],251166:["haste","vers"],
+  251171:["haste","mastery"],251210:["haste","vers"],251216:["haste","mastery"],251513:["crit","mastery"],
+  258047:["haste","mastery"],258438:["haste","mastery"],258472:["haste","mastery"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
+  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Seat of the Triumvirate", "Skyreach",
 ];

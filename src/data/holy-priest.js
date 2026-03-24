@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Holy Priest";
 export var SPEC_KEY = "holy-priest";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/holy-priest-raid-guide";
 export var SIMC_CLASS = "priest";
 export var SIMC_SPEC = "holy";
 export var SPEC_ICON = "spell_holy_guardianspirit";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/holy-priest-raid-guide";
 export var STORAGE_KEY = "bis-holy-priest-v1";
 
 export var THEME = {
@@ -29,7 +29,7 @@ export var BIS = [
   { slot: "finger1", en: "Signet of the Starved Beast", ko: "굶주린 야수의 인장", id: 249336, source: "Vorasius", stats: ["crit","vers"] },
   { slot: "finger2", en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", id: 249919, source: "Belo'ren", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "trinket2", en: "Emerald Coach's Whistle", ko: "에메랄드 감독의 호루라기", id: 193718, source: "Algeth'ar Academy", stats: [] },
+  { slot: "trinket2", en: "Locus-Walker's Ribbon", ko: "공간 방랑자의 리본", id: 249809, source: "Crown of the Cosmos", stats: ["mastery"] },
   { slot: "main_hand", en: "Wand of Saprish's Gaze", ko: "사프리쉬의 시선 마법봉", id: 258516, source: "Seat of the Triumvirate", stats: ["crit","vers"] },
   { slot: "off_hand", en: "Aln'hara Lantern", ko: "알른하라의 등불", id: 245769, source: "Crafted", stats: [] },
 ];
@@ -45,9 +45,10 @@ export var MYTHIC = [
   { slot: "waist", en: "Cord of Unraveling Reality", ko: "무너지는 현실의 장식끈", id: 151302, source: "Seat of the Triumvirate", stats: ["mastery","vers"] },
   { slot: "legs", en: "Leyline Leggings", ko: "지맥 다리보호구", id: 251205, source: "Nexus-Point Xenas", stats: ["crit","vers"] },
   { slot: "feet", en: "Nightprey Stalkers", ko: "밤사냥감 추적자", id: 251167, source: "Maisara Caverns", stats: ["crit","vers"] },
+  { slot: "finger1", en: "Leyline Leggings", ko: "지맥 다리보호구", id: 251205, source: "Nexus-Point Xenas", stats: ["crit","vers"] },
   { slot: "finger2", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Emerald Coach's Whistle", ko: "에메랄드 감독의 호루라기", id: 193718, source: "Algeth'ar Academy", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "main_hand", en: "Wand of Saprish's Gaze", ko: "사프리쉬의 시선 마법봉", id: 258516, source: "Seat of the Triumvirate", stats: ["crit","vers"] },
   { slot: "off_hand", en: "Sigil of the Restless Heart", ko: "잠 못 드는 심장의 인장", id: 251094, source: "Windrunner Spire", stats: ["crit","vers"] },
 ];
@@ -59,29 +60,28 @@ export var ALTS = [
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "waist", id: 249319, en: "Endless March Waistwrap", ko: "끝없는 행진 허리싸개", source: "Imperator Averzian", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 50227, en: "Surgeon's Needle", ko: "외과의사의 바늘", source: "Pit of Saron", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 193723, en: "Obsidian Goaltending Spire", ko: "흑요석 골대지킴이 뾰족지팡이", source: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "weapon", id: 249293, en: "Weight of Command", ko: "지휘의 무게", source: "Imperator Averzian", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "wrist", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", source: "Vorasius", stats: ["haste","mastery"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var WORST_STATS = ["haste"];
 
 export var STAT_CACHE_KEY = "holy-priest-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49823:["crit","vers"],50227:["crit","vers"],50228:["crit","haste"],250256:[],
-  151302:["mastery","vers"],151305:["haste","mastery"],151308:["crit","vers"],193703:["crit","haste"],
-  193708:["crit","mastery"],193717:["crit","vers"],193718:[],193723:["crit","vers"],
-  239664:["crit","haste"],245769:[],249275:["crit","vers"],249293:["crit","vers"],
+  49823:["crit","vers"],50227:["crit","vers"],50228:["crit","haste"],151302:["mastery","vers"],
+  151305:["haste","mastery"],151308:["crit","vers"],193703:["crit","haste"],193708:["crit","mastery"],
+  193718:[],239664:["crit","haste"],245769:[],249293:["crit","vers"],
   249315:["haste","mastery"],249319:["crit","haste"],249323:["crit","vers"],249335:["crit","vers"],
-  249336:["crit","vers"],249337:["crit","haste"],249343:["mastery"],249919:["crit","mastery"],
-  250045:["haste","mastery"],250046:["crit","vers"],250047:["crit","mastery"],250049:["crit","mastery"],
-  250051:["crit","haste"],250052:["haste","vers"],250054:["haste","mastery"],250057:["crit","haste"],
+  249336:["crit","vers"],249337:["crit","haste"],249343:["mastery"],249809:["mastery"],
+  249919:["crit","mastery"],250046:["crit","vers"],250047:["crit","mastery"],250049:["crit","mastery"],
+  250051:["crit","haste"],250052:["haste","vers"],250054:["haste","mastery"],250256:[],
   251085:["crit","mastery"],251094:["crit","vers"],251120:["crit","vers"],251161:["crit","vers"],
-  251163:["crit","vers"],251167:["crit","vers"],251202:["crit","vers"],251205:["crit","vers"],
-  251211:["crit","vers"],251513:["crit","mastery"],258516:["crit","vers"],
+  251167:["crit","vers"],251205:["crit","vers"],251211:["crit","vers"],251513:["crit","mastery"],
+  258514:["crit","mastery"],258516:["crit","vers"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Algeth'ar Academy", "Maisara Caverns",
+  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate",
 ];

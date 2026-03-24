@@ -44,8 +44,9 @@ src/
 
 ### Per-Spec Data File Format
 ```js
-export var SPEC_LABEL = "Spec Korean Name";
+export var SPEC_LABEL = "Spec Name";
 export var SPEC_KEY = "url-safe-key";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/{spec}-raid-guide";
 export var STORAGE_KEY = "bis-{key}-v1";
 export var STAT_CACHE_KEY = "{key}-stat-cache-v1";
 export var THEME = { accent, accentLight, accentBg, accentBorder, shimmer, btnBg };

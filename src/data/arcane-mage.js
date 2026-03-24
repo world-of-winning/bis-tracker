@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Arcane Mage";
 export var SPEC_KEY = "arcane-mage";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/arcane-mage-raid-guide";
 export var SIMC_CLASS = "mage";
 export var SIMC_SPEC = "arcane";
 export var SPEC_ICON = "spell_holy_magicalsentry";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/arcane-mage-raid-guide";
 export var STORAGE_KEY = "bis-arcane-mage-v1";
 
 export var THEME = {
@@ -62,9 +62,7 @@ export var ALTS = [
   { forSlot: "ring", id: 251115, en: "Bifurcation Band", ko: "분기점의 고리", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 249328, en: "Echoing Void Mantle", ko: "메아리치는 공허 어깨덧옷", source: "Belo'ren", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 251213, en: "Nysarra's Mantle", ko: "니사라의 어깨덧옷", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunner Spire", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunners Spire", stats: ["crit","mastery"] },
   { forSlot: "wrist", id: 251108, en: "Wraps of Watchful Wrath", ko: "경계하는 진노의 싸개", source: "Magisters' Terrace", stats: ["mastery","vers"] },
 ];
 
@@ -75,18 +73,16 @@ export var STAT_CACHE_KEY = "arcane-mage-stat-cache-v1";
 export var KNOWN_STATS = {
   49812:["crit","haste"],49825:["crit","haste"],50228:["crit","haste"],50259:[],
   151300:["crit","mastery"],151302:["mastery","vers"],151303:["crit","haste"],151337:["crit","mastery"],
-  239648:[],240949:[],249277:["crit","mastery"],249284:["crit","mastery"],
-  249328:["haste","mastery"],249337:["crit","haste"],249343:["mastery"],249346:[],
-  249368:["haste","mastery"],249369:["haste","mastery"],249373:["crit","mastery"],249376:["haste","mastery"],
-  249920:["haste"],250031:["crit","mastery"],250042:["crit","mastery"],250058:["haste","vers"],
+  239648:[],240949:[],249328:["haste","mastery"],249337:["crit","haste"],
+  249343:["mastery"],249346:[],249368:["haste","mastery"],249369:["haste","mastery"],
+  249373:["crit","mastery"],249376:["haste","mastery"],249920:["haste"],250058:["haste","vers"],
   250060:["haste","mastery"],250061:["haste","mastery"],250062:["haste","mastery"],250063:["crit","haste"],
   250247:["haste","mastery"],250258:["mastery"],251077:["crit","mastery"],251090:["mastery","vers"],
   251093:["haste","mastery"],251108:["mastery","vers"],251115:["haste","mastery"],251142:["haste","mastery"],
-  251168:["crit","mastery"],251213:["haste","mastery"],251217:["crit","haste"],258218:["crit","mastery"],
-  258514:["crit","mastery"],258575:["crit","mastery"],258578:["haste","mastery"],258580:["mastery","vers"],
-  258584:["haste","mastery"],
+  251213:["haste","mastery"],251217:["crit","haste"],258514:["crit","mastery"],258575:["crit","mastery"],
+  258578:["haste","mastery"],258580:["mastery","vers"],258584:["haste","mastery"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Maisara Caverns",
+  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
 ];

@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Vengeance Demon Hunter";
 export var SPEC_KEY = "veng-dh";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/vengeance-demon-hunter-raid-guide";
 export var SIMC_CLASS = "demonhunter";
 export var SIMC_SPEC = "vengeance";
 export var SPEC_ICON = "ability_demonhunter_spectank";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/vengeance-demon-hunter-raid-guide";
 export var STORAGE_KEY = "bis-veng-dh-v1";
 
 export var THEME = {
@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "feet", en: "Eclipse Espadrilles", ko: "일월식 발목화", id: 251210, source: "Nexus-Point Xenas", stats: ["haste","vers"] },
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "finger2", en: "Band of the Triumvirate", ko: "삼두정의 고리", id: 151311, source: "Seat of the Triumvirate", stats: ["haste","vers"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "trinket2", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
   { slot: "main_hand", en: "Shadowslash Slicer", ko: "어둠칼날 절단기", id: 251122, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "off_hand", en: "Shadowslash Slicer", ko: "어둠칼날 절단기", id: 251122, source: "Magisters' Terrace", stats: ["haste","mastery"] },
@@ -76,29 +76,25 @@ export var ALTS = [
   { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", source: "Skyreach", stats: ["haste","mastery"] },
 ];
 
-export var WORST_STATS = [];
+export var WORST_STATS = ["vers"];
 
 export var STAT_CACHE_KEY = "veng-dh-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49806:["crit","haste"],49807:["crit","haste"],49812:["crit","haste"],250256:[],
-  151309:["haste","vers"],151311:["haste","vers"],151316:["haste","vers"],151318:["crit","haste"],
-  151319:["crit","mastery"],151336:["crit","haste"],193707:["haste","mastery"],193708:["crit","mastery"],
-  193709:["crit","haste"],193710:["haste","mastery"],193712:["haste","vers"],244576:[],
-  249276:["crit","haste"],249283:["haste","mastery"],249287:["haste","mastery"],249294:["haste","mastery"],
-  249334:["haste","vers"],249343:["mastery"],249368:["haste","mastery"],249374:["crit","haste"],
-  249919:["crit","mastery"],249920:["haste"],249922:["haste","mastery"],250004:["haste","mastery"],
-  250005:["haste","vers"],250007:["crit","haste"],250013:["haste","mastery"],250015:["crit","haste"],
-  250022:["crit","mastery"],250024:["haste","mastery"],250025:["haste","vers"],250031:["crit","mastery"],
-  250032:["haste","vers"],250033:["haste","mastery"],250034:["crit","haste"],250247:["haste","mastery"],
-  251087:["crit","haste"],251092:["haste","mastery"],251096:["haste","vers"],251103:["haste","vers"],
-  251122:["haste","mastery"],251140:["haste","mastery"],251142:["haste","mastery"],251159:["haste","mastery"],
-  251166:["haste","vers"],251171:["haste","mastery"],251174:["haste","mastery"],251201:["haste","mastery"],
-  251204:["haste","vers"],251210:["haste","vers"],251216:["haste","mastery"],251217:["crit","haste"],
-  251513:["crit","mastery"],252420:[],258438:["haste","mastery"],258472:["haste","mastery"],
+  49806:["crit","haste"],49807:["crit","haste"],49812:["crit","haste"],151309:["haste","vers"],
+  151311:["haste","vers"],151316:["haste","vers"],151318:["crit","haste"],151319:["crit","mastery"],
+  151336:["crit","haste"],193708:["crit","mastery"],193710:["haste","mastery"],193712:["haste","vers"],
+  244576:[],249283:["haste","mastery"],249294:["haste","mastery"],249334:["haste","vers"],
+  249343:["mastery"],249368:["haste","mastery"],249374:["crit","haste"],249919:["crit","mastery"],
+  249920:["haste"],250031:["crit","mastery"],250032:["haste","vers"],250033:["haste","mastery"],
+  250034:["crit","haste"],250247:["haste","mastery"],250256:[],251087:["crit","haste"],
+  251092:["haste","mastery"],251096:["haste","vers"],251103:["haste","vers"],251122:["haste","mastery"],
+  251140:["haste","mastery"],251142:["haste","mastery"],251159:["haste","mastery"],251166:["haste","vers"],
+  251171:["haste","mastery"],251204:["haste","vers"],251210:["haste","vers"],251216:["haste","mastery"],
+  251217:["crit","haste"],251513:["crit","mastery"],252420:[],258438:["haste","mastery"],
   258575:["crit","mastery"],260235:[],260408:["crit"],260423:["crit","haste"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
+  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Seat of the Triumvirate", "Skyreach",
 ];

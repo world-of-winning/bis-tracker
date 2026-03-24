@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Feral Druid";
 export var SPEC_KEY = "feral-druid";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/feral-druid-raid-guide";
 export var SIMC_CLASS = "druid";
 export var SIMC_SPEC = "feral";
 export var SPEC_ICON = "ability_druid_catform";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/feral-druid-raid-guide";
 export var STORAGE_KEY = "bis-feral-druid-v1";
 
 export var THEME = {
@@ -30,7 +30,7 @@ export var BIS = [
   { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, source: "Algeth'ar Academy", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, source: "Windrunner Spire", stats: ["crit","mastery"] },
+  { slot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, source: "Windrunners Spire", stats: ["crit","mastery"] },
 ];
 
 export var MYTHIC = [
@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Algeth'ar Academy", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, source: "Algeth'ar Academy", stats: [] },
-  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, source: "Windrunner Spire", stats: ["crit","mastery"] },
 ];
 
@@ -59,7 +59,7 @@ export var ALTS = [
   { forSlot: "head", id: 251140, en: "Vilefiend's Guise", ko: "썩은마귀의 복면", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", source: "Pit of Saron", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 178819, en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", source: "Halls of Atonement", stats: ["haste","mastery"] },
-  { forSlot: "legs", id: 250023, en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", source: "Catalyst", stats: ["haste","mastery"] },
+  { forSlot: "legs", id: 250023, en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", source: "Catalyst / Raid", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 251115, en: "Bifurcation Band", ko: "분기점의 고리", source: "Magisters' Terrace", stats: ["haste","mastery"] },
@@ -67,7 +67,6 @@ export var ALTS = [
   { forSlot: "shoulder", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", source: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "waist", id: 49806, en: "Flayer's Black Belt", ko: "바위갈퀴의 검은띠", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", source: "Lightblinded Vanguard", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "wrist", id: 151315, en: "Bracers of Dark Binding", ko: "암흑의 구속 팔보호구", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "wrist", id: 249327, en: "Void-Skinned Bracers", ko: "공허로 무두질한 팔보호구", source: "Vorasius", stats: ["crit","haste"] },
@@ -80,22 +79,19 @@ export var STAT_CACHE_KEY = "feral-druid-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49806:["crit","haste"],49807:["crit","haste"],49812:["crit","haste"],49817:["haste","mastery"],
-  50228:["crit","haste"],50264:["crit","haste"],250256:[],151315:["crit","haste"],
-  151319:["crit","mastery"],151336:["crit","haste"],178819:["haste","mastery"],193701:[],
-  240949:[],244576:[],249277:["crit","mastery"],249284:["crit","mastery"],
-  249312:["haste","mastery"],249321:["crit","mastery"],249327:["crit","haste"],249337:["crit","haste"],
-  249343:["mastery"],249369:["haste","mastery"],249370:["haste","mastery"],249374:["crit","haste"],
-  249382:["crit","mastery"],249920:["haste"],250004:["haste","mastery"],250009:["crit","mastery"],
-  250013:["haste","mastery"],250014:["haste","mastery"],250015:["crit","haste"],250022:["crit","mastery"],
-  250023:["haste","mastery"],250024:["haste","mastery"],250025:["haste","vers"],250027:["crit","mastery"],
-  250031:["crit","mastery"],250033:["haste","mastery"],250036:["crit","mastery"],250055:["haste","mastery"],
-  251077:["crit","mastery"],251082:["crit","mastery"],251087:["crit","haste"],251092:["haste","mastery"],
-  251093:["haste","mastery"],251099:["crit","mastery"],251113:["crit","mastery"],251115:["haste","mastery"],
-  251135:["crit","haste"],251140:["haste","mastery"],251168:["crit","mastery"],251171:["haste","mastery"],
-  251190:["haste","mastery"],251204:["haste","vers"],251217:["crit","haste"],258218:["crit","mastery"],
+  50228:["crit","haste"],50264:["crit","haste"],151315:["crit","haste"],151319:["crit","mastery"],
+  151336:["crit","haste"],178819:["haste","mastery"],193701:[],240949:[],
+  244576:[],249277:["crit","mastery"],249312:["haste","mastery"],249321:["crit","mastery"],
+  249327:["crit","haste"],249337:["crit","haste"],249343:["mastery"],249369:["haste","mastery"],
+  249370:["haste","mastery"],249374:["crit","haste"],249382:["crit","mastery"],249920:["haste"],
+  250022:["crit","mastery"],250023:["haste","mastery"],250024:["haste","mastery"],250025:["haste","vers"],
+  250027:["crit","mastery"],250256:[],251077:["crit","mastery"],251082:["crit","mastery"],
+  251087:["crit","haste"],251092:["haste","mastery"],251093:["haste","mastery"],251099:["crit","mastery"],
+  251113:["crit","mastery"],251115:["haste","mastery"],251135:["crit","haste"],251140:["haste","mastery"],
+  251171:["haste","mastery"],251190:["haste","mastery"],251204:["haste","vers"],251217:["crit","haste"],
   258514:["crit","mastery"],258575:["crit","mastery"],258577:["crit","mastery"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
+  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
 ];

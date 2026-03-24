@@ -1,9 +1,9 @@
 export var SPEC_LABEL = "Shadow Priest";
 export var SPEC_KEY = "shadow-priest";
+export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/shadow-priest-raid-guide";
 export var SIMC_CLASS = "priest";
 export var SIMC_SPEC = "shadow";
 export var SPEC_ICON = "spell_shadow_shadowwordpain";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/shadow-priest-raid-guide";
 export var STORAGE_KEY = "bis-shadow-priest-v1";
 
 export var THEME = {
@@ -47,7 +47,7 @@ export var MYTHIC = [
   { slot: "feet", en: "Lightbinder Treads", ko: "빛의 결속자 발보호대", id: 258584, source: "Skyreach", stats: ["haste","mastery"] },
   { slot: "finger1", en: "Bifurcation Band", ko: "분기점의 고리", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "trinket2", en: "Vessel of Tortured Souls", ko: "괴로워하는 영혼의 그릇", id: 250258, source: "Maisara Caverns", stats: ["mastery"] },
   { slot: "main_hand", en: "Ceremonial Hexblade", ko: "의식용 사술칼날", id: 251178, source: "Maisara Caverns", stats: ["crit","haste"] },
   { slot: "off_hand", en: "Rukhran's Solar Reliquary", ko: "루크란의 태양 성물함", id: 258472, source: "Skyreach", stats: ["haste","mastery"] },
@@ -67,12 +67,10 @@ export var ALTS = [
   { forSlot: "waist", id: 239664, en: "Arcanoweave Cord", ko: "비전매듭 장식끈", source: "Crafted", stats: ["crit","haste"] },
   { forSlot: "waist", id: 251102, en: "Clasp of Compliance", ko: "순응의 죔쇠띠", source: "Magisters' Terrace", stats: ["haste","vers"] },
   { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 193707, en: "Final Grade", ko: "최종 학점", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249295, en: "Turalyon's False Echo", ko: "투랄리온의 마지막 메아리", source: "Windrunner Spire", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 249922, en: "Tome of Alnscorned Regret", ko: "알른멸시 회한의 고서", source: "Chimaerus", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251111, en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", source: "Magisters' Terrace", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 251201, en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 258525, en: "Scepter of the Endless Night", ko: "끝없는 밤의 홀", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "wrist", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", source: "Vorasius", stats: ["haste","mastery"] },
 ];
@@ -82,25 +80,20 @@ export var WORST_STATS = ["vers"];
 export var STAT_CACHE_KEY = "shadow-priest-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49802:["crit","haste"],49807:["crit","haste"],49825:["crit","haste"],50228:["crit","haste"],
-  50263:["haste","vers"],250256:[],151303:["crit","haste"],151305:["haste","mastery"],
-  151337:["crit","mastery"],193703:["crit","haste"],193707:["haste","mastery"],193710:["haste","mastery"],
+  49807:["crit","haste"],49825:["crit","haste"],50228:["crit","haste"],50263:["haste","vers"],
+  151303:["crit","haste"],151305:["haste","mastery"],151337:["crit","mastery"],193703:["crit","haste"],
   239648:[],239664:["crit","haste"],245769:[],249283:["haste","mastery"],
-  249287:["haste","mastery"],249288:["crit","haste"],249294:["haste","mastery"],249295:["crit","haste"],
-  249315:["haste","mastery"],249319:["crit","haste"],249328:["haste","mastery"],249337:["crit","haste"],
-  249343:["mastery"],249346:[],249368:["haste","mastery"],249369:["haste","mastery"],
-  249370:["haste","mastery"],249920:["haste"],249922:["haste","mastery"],250010:["crit","haste"],
-  250042:["crit","mastery"],250043:["crit","haste"],250045:["haste","mastery"],250049:["crit","mastery"],
-  250050:["haste","mastery"],250051:["crit","haste"],250054:["haste","mastery"],250055:["haste","mastery"],
-  250057:["crit","haste"],250062:["haste","mastery"],250063:["crit","haste"],250247:["haste","mastery"],
-  250258:["mastery"],251085:["crit","mastery"],251093:["haste","mastery"],251095:["crit","haste"],
-  251102:["haste","vers"],251111:["crit","haste"],251115:["haste","mastery"],251122:["haste","mastery"],
-  251142:["haste","mastery"],251162:["crit","haste"],251172:["crit","haste"],251174:["haste","mastery"],
-  251178:["crit","haste"],251190:["haste","mastery"],251201:["haste","mastery"],251213:["haste","mastery"],
-  258438:["haste","mastery"],258472:["haste","mastery"],258525:["crit","haste"],258574:["haste","vers"],
-  258578:["haste","mastery"],258584:["haste","mastery"],260312:["crit","haste"],260423:["crit","haste"],
+  249287:["haste","mastery"],249295:["crit","haste"],249315:["haste","mastery"],249319:["crit","haste"],
+  249328:["haste","mastery"],249337:["crit","haste"],249343:["mastery"],249346:[],
+  249368:["haste","mastery"],249369:["haste","mastery"],249370:["haste","mastery"],249920:["haste"],
+  249922:["haste","mastery"],250049:["crit","mastery"],250050:["haste","mastery"],250051:["crit","haste"],
+  250054:["haste","mastery"],250247:["haste","mastery"],250256:[],250258:["mastery"],
+  251085:["crit","mastery"],251093:["haste","mastery"],251102:["haste","vers"],251111:["crit","haste"],
+  251115:["haste","mastery"],251142:["haste","mastery"],251172:["crit","haste"],251178:["crit","haste"],
+  251190:["haste","mastery"],251213:["haste","mastery"],258472:["haste","mastery"],258525:["crit","haste"],
+  258574:["haste","vers"],258578:["haste","mastery"],258584:["haste","mastery"],260312:["crit","haste"],
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach", "Algeth'ar Academy", "Maisara Caverns",
+  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
 ];
