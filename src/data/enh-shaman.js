@@ -64,14 +64,8 @@ export var ALTS = [
   { forSlot: "shoulder", id: 50233, en: "Spurned Val'kyr Shoulderguards", ko: "쫓겨난 발키르의 어깨보호대", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "waist", id: 244611, en: "World Tender's Barkclasp", ko: "세계지기의 껍질죔쇠띠", source: "Crafted", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 193707, en: "Final Grade", ko: "최종 학점", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 193710, en: "Spellboon Saber", ko: "주문은총 사브르", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249283, en: "Belo'melorn, the Shattered Talon", ko: "벨로멜로른 - 으스러진 갈퀴발톱", source: "Belo'ren", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249922, en: "Tome of Alnscorned Regret", ko: "알른멸시 회한의 고서", source: "Chimaerus", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251174, en: "Deceiver's Rotbow", ko: "기만자의 부식활", source: "Maisara Caverns", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251201, en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 258472, en: "Rukhran's Solar Reliquary", ko: "루크란의 태양 성물함", source: "Skyreach", stats: ["haste","mastery"] },
 ];
 
 export var WORST_STATS = ["vers"];

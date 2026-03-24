@@ -70,18 +70,10 @@ export var ALTS = [
   { forSlot: "waist", id: 49806, en: "Flayer's Black Belt", ko: "바위갈퀴의 검은띠", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "waist", id: 251166, en: "Falconer's Cinch", ko: "매사냥꾼의 허리끈", source: "Maisara Caverns", stats: ["haste","vers"] },
   { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 193707, en: "Final Grade", ko: "최종 학점", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 193709, en: "Vexamus' Expulsion Rod", ko: "벡사무스의 배출 마법봉", source: "Algeth'ar Academy", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 193710, en: "Spellboon Saber", ko: "주문은총 사브르", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249276, en: "Grimoire of the Eternal Light", ko: "영원한 빛의 고서", source: "Vorasius", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 249283, en: "Belo'melorn, the Shattered Talon", ko: "벨로멜로른 - 으스러진 갈퀴발톱", source: "Belo'ren", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249922, en: "Tome of Alnscorned Regret", ko: "알른멸시 회한의 고서", source: "Chimaerus", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251174, en: "Deceiver's Rotbow", ko: "기만자의 부식활", source: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251201, en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", source: "Skyreach", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 258472, en: "Rukhran's Solar Reliquary", ko: "루크란의 태양 성물함", source: "Skyreach", stats: ["haste","mastery"] },
 ];
 
 export var WORST_STATS = [];

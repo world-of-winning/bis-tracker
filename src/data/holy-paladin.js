@@ -61,14 +61,9 @@ export var ALTS = [
   { forSlot: "ring", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", source: "Midnight Falls", stats: ["mastery","vers"] },
   { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "waist", id: 249958, en: "Luminant Verdict's Undaunted Emblem", ko: "빛나는 선고의 의연한 문장", source: "Catalyst", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 193707, en: "Final Grade", ko: "최종 학점", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249283, en: "Belo'melorn, the Shattered Talon", ko: "벨로멜로른 - 으스러진 갈퀴발톱", source: "Belo'ren", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251174, en: "Deceiver's Rotbow", ko: "기만자의 부식활", source: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251201, en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", source: "Skyreach", stats: ["haste","mastery"] },
 ];
 
 export var WORST_STATS = ["crit"];

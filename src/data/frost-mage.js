@@ -63,10 +63,8 @@ export var ALTS = [
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "waist", id: 239664, en: "Arcanoweave Cord", ko: "비전매듭 장식끈", source: "Crafted", stats: ["crit","haste"] },
   { forSlot: "waist", id: 249319, en: "Endless March Waistwrap", ko: "끝없는 행진 허리싸개", source: "Imperator Averzian", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", source: "Lightblinded Vanguard", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunner Spire", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "wrist", id: 258580, en: "Bracers of Blazing Light", ko: "작열하는 빛의 팔보호구", source: "Skyreach", stats: ["mastery","vers"] },
 ];

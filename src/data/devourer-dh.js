@@ -68,15 +68,9 @@ export var ALTS = [
   { forSlot: "ring", id: 249919, en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", source: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 151319, en: "Twilight's Edge Spaulders", ko: "황혼의 서슬 어깨덮개", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", source: "Windrunner Spire", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 193707, en: "Final Grade", ko: "최종 학점", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249283, en: "Belo'melorn, the Shattered Talon", ko: "벨로멜로른 - 으스러진 갈퀴발톱", source: "Belo'ren", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249922, en: "Tome of Alnscorned Regret", ko: "알른멸시 회한의 고서", source: "Chimaerus", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251174, en: "Deceiver's Rotbow", ko: "기만자의 부식활", source: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251201, en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", source: "Skyreach", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 258472, en: "Rukhran's Solar Reliquary", ko: "루크란의 태양 성물함", source: "Skyreach", stats: ["haste","mastery"] },
 ];
 
 export var WORST_STATS = ["vers"];

@@ -22,26 +22,84 @@ const CLASS_NAME_MAP = {
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// Cache: itemId → null (no restriction) | string (restricted class name)
-const classRestrictionCache = new Map();
+// ─── Allowed weapon types per class ──────────────────────────
+const CLASS_WEAPONS = {
+  warrior:     new Set(['1h_sword','1h_mace','1h_axe','1h_fist','dagger','2h_sword','2h_mace','2h_axe','polearm','staff','shield']),
+  paladin:     new Set(['1h_sword','1h_mace','1h_axe','2h_sword','2h_mace','2h_axe','polearm','shield']),
+  deathknight: new Set(['1h_sword','1h_mace','1h_axe','2h_sword','2h_mace','2h_axe','polearm']),
+  hunter:      new Set(['bow','gun','crossbow','polearm','1h_sword','1h_axe','1h_fist','2h_sword','2h_axe']),
+  rogue:       new Set(['1h_sword','1h_axe','1h_mace','1h_fist','dagger']),
+  demonhunter: new Set(['warglaive','1h_sword','1h_axe','1h_fist','dagger']),
+  monk:        new Set(['1h_sword','1h_axe','1h_mace','1h_fist','staff','polearm']),
+  druid:       new Set(['1h_mace','2h_mace','dagger','1h_fist','staff','polearm','offhand']),
+  shaman:      new Set(['1h_axe','1h_mace','2h_axe','2h_mace','1h_fist','dagger','staff','shield']),
+  mage:        new Set(['1h_sword','dagger','staff','wand','offhand']),
+  warlock:     new Set(['1h_sword','dagger','staff','wand','offhand']),
+  priest:      new Set(['1h_mace','dagger','staff','wand','offhand']),
+  evoker:      new Set(['dagger','1h_fist','1h_sword','1h_axe','1h_mace','staff','offhand']),
+};
 
-async function fetchClassRestriction(itemId) {
-  if (classRestrictionCache.has(itemId)) return classRestrictionCache.get(itemId);
+// Cache: itemId → { classRestriction, weaponType }
+const tooltipCache = new Map();
+
+async function fetchTooltipInfo(itemId) {
+  if (tooltipCache.has(itemId)) return tooltipCache.get(itemId);
 
   await delay(150);
   try {
     const res = await fetch(`https://nether.wowhead.com/tooltip/item/${itemId}?dataEnv=1&locale=0`);
     const data = await res.json();
     const tooltip = data.tooltip || '';
-    // Class restriction appears as: Classes: <a href="/class=1/warrior" class="c1">Warrior</a>
-    const match = tooltip.match(/Classes:\s*<a[^>]*>([^<]+)<\/a>/);
-    const result = match ? match[1] : null;
-    classRestrictionCache.set(itemId, result);
+
+    // Class restriction
+    const classMatch = tooltip.match(/Classes:\s*<a[^>]*>([^<]+)<\/a>/);
+    const classRestriction = classMatch ? classMatch[1] : null;
+
+    // Weapon subtype from tooltip HTML structure:
+    // <td>Two-Hand</td><th><!--scstart..--><span class="q1">Mace</span><!--scend--></th>
+    // or: <td>Main Hand</td><th>...Sword...</th>
+    // Off-hands: "Held In Off-hand" appears as sole td without subtype
+    let weaponType = null;
+    const weapMatch = tooltip.match(/<td>(One-Hand|Two-Hand|Main Hand|Off Hand|Ranged|Held In Off-hand)<\/td>(?:<th><!--[^>]*--><span[^>]*>([^<]+)<\/span>)?/i);
+    if (weapMatch) {
+      const invType = weapMatch[1].toLowerCase();
+      const subName = (weapMatch[2] || '').toLowerCase();
+      weaponType = normalizeWeaponType(invType, subName);
+    }
+    // Shield: appears as <th><span>Shield</span> without the usual invType td
+    if (!weaponType && tooltip.includes('>Shield<')) {
+      weaponType = 'shield';
+    }
+
+    const result = { classRestriction, weaponType };
+    tooltipCache.set(itemId, result);
     return result;
   } catch {
-    classRestrictionCache.set(itemId, null);
-    return null;
+    const result = { classRestriction: null, weaponType: null };
+    tooltipCache.set(itemId, result);
+    return result;
   }
+}
+
+function normalizeWeaponType(invType, subName) {
+  // invType: "one-hand", "two-hand", "main hand", "off hand", "ranged", "held in off-hand"
+  // subName: "sword", "mace", "axe", "dagger", "fist weapon", "staff", "polearm", "bow", "gun", "crossbow", "wand", "shield", "warglaive"
+  if (subName.includes('shield')) return 'shield';
+  if (subName.includes('warglaive')) return 'warglaive';
+  if (subName.includes('bow')) return 'bow';
+  if (subName.includes('gun')) return 'gun';
+  if (subName.includes('crossbow')) return 'crossbow';
+  if (subName.includes('wand')) return 'wand';
+  if (subName.includes('staff')) return 'staff';
+  if (subName.includes('polearm')) return 'polearm';
+  if (subName.includes('dagger')) return 'dagger';
+  if (subName.includes('fist')) return invType.includes('two') ? '2h_fist' : '1h_fist';
+  if (invType.includes('held in off')) return 'offhand';
+  const is2h = invType.includes('two');
+  if (subName.includes('sword')) return is2h ? '2h_sword' : '1h_sword';
+  if (subName.includes('mace')) return is2h ? '2h_mace' : '1h_mace';
+  if (subName.includes('axe')) return is2h ? '2h_axe' : '1h_axe';
+  return null;
 }
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -195,17 +253,22 @@ async function findAltsForSpec(specKey, index) {
         const armorTypes = itemSlotArmor.get(armKey);
         if (!armorTypes || !armorTypes.has(armorType)) continue;
       }
-      // For weapons, allow any weapon used in main_hand/off_hand by any spec
-      // (weapon type compatibility is complex, accept all for now)
-
-      // Check class restriction: if item is only used by other classes,
-      // verify via Wowhead that it's not class-locked (e.g. tier sets)
+      // Check class restriction and weapon type via Wowhead tooltip
       const classes = itemClasses.get(id);
-      if (classes && !classes.has(simcClass)) {
-        const restriction = await fetchClassRestriction(id);
-        if (restriction && restriction !== className) {
-          console.log(`  skip ${item.en} (${id}): class-locked to ${restriction}`);
+      const needsCheck = (classes && !classes.has(simcClass)) || WEAPON_SLOTS.has(bis.simcSlot);
+
+      if (needsCheck) {
+        const info = await fetchTooltipInfo(id);
+        if (info.classRestriction && info.classRestriction !== className) {
+          console.log(`  skip ${item.en} (${id}): class-locked to ${info.classRestriction}`);
           continue;
+        }
+        if (WEAPON_SLOTS.has(bis.simcSlot) && info.weaponType) {
+          const allowed = CLASS_WEAPONS[simcClass];
+          if (allowed && !allowed.has(info.weaponType)) {
+            console.log(`  skip ${item.en} (${id}): weapon type ${info.weaponType} not usable by ${simcClass}`);
+            continue;
+          }
         }
       }
 

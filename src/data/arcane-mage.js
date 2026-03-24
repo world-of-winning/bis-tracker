@@ -62,10 +62,8 @@ export var ALTS = [
   { forSlot: "ring", id: 251115, en: "Bifurcation Band", ko: "분기점의 고리", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 249328, en: "Echoing Void Mantle", ko: "메아리치는 공허 어깨덧옷", source: "Belo'ren", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 251213, en: "Nysarra's Mantle", ko: "니사라의 어깨덧옷", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", source: "Lightblinded Vanguard", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunner Spire", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "wrist", id: 251108, en: "Wraps of Watchful Wrath", ko: "경계하는 진노의 싸개", source: "Magisters' Terrace", stats: ["mastery","vers"] },
 ];

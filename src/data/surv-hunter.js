@@ -60,11 +60,8 @@ export var ALTS = [
   { forSlot: "head", id: 258585, en: "Sharpeye Gleam", ko: "뾰족눈 광투구", source: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "legs", id: 251170, en: "Wickedweave Trousers", ko: "교활매듭 긴바지", source: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "waist", id: 249371, en: "Scornbane Waistguard", ko: "멸시파멸 허리보호대", source: "Chimaerus", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", source: "Lightblinded Vanguard", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "wrist", id: 249304, en: "Fallen King's Cuffs", ko: "몰락한 왕의 소매장식", source: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
   { forSlot: "wrist", id: 251079, en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", source: "Windrunner Spire", stats: ["crit","mastery"] },
 ];

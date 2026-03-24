@@ -61,11 +61,8 @@ export var ALTS = [
   { forSlot: "ring", id: 249919, en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", source: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "ring", id: 251205, en: "Leyline Leggings", ko: "지맥 다리보호구", source: "Nexus-Point Xenas", stats: ["crit","vers"] },
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
 ];
 
 export var WORST_STATS = [];

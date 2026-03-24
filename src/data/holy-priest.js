@@ -60,12 +60,8 @@ export var ALTS = [
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "waist", id: 249319, en: "Endless March Waistwrap", ko: "끝없는 행진 허리싸개", source: "Imperator Averzian", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 50227, en: "Surgeon's Needle", ko: "외과의사의 바늘", source: "Pit of Saron", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", source: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "weapon", id: 193723, en: "Obsidian Goaltending Spire", ko: "흑요석 골대지킴이 뾰족지팡이", source: "Algeth'ar Academy", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 249275, en: "Bulwark of Noble Resolve", ko: "귀족의 결의 보루 방패", source: "Imperator Averzian", stats: ["crit","vers"] },
   { forSlot: "weapon", id: 249293, en: "Weight of Command", ko: "지휘의 무게", source: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 251163, en: "Berserker's Hexclaws", ko: "광전사의 사술발톱", source: "Maisara Caverns", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 251202, en: "Reflux Reflector", ko: "역류 굴절 장치", source: "Nexus-Point Xenas", stats: ["crit","vers"] },
   { forSlot: "wrist", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", source: "Vorasius", stats: ["haste","mastery"] },
 ];
 

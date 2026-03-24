@@ -64,11 +64,8 @@ export var ALTS = [
   { forSlot: "waist", id: 50263, en: "Braid of Salt and Fire", ko: "빛과 소금 허리띠", source: "Pit of Saron", stats: ["haste","vers"] },
   { forSlot: "weapon", id: 193707, en: "Final Grade", ko: "최종 학점", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 193710, en: "Spellboon Saber", ko: "주문은총 사브르", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251174, en: "Deceiver's Rotbow", ko: "기만자의 부식활", source: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", source: "Skyreach", stats: ["haste","mastery"] },
 ];
 
 export var WORST_STATS = ["vers"];

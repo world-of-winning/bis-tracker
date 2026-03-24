@@ -63,13 +63,10 @@ export var ALTS = [
   { forSlot: "shoulder", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", source: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 49802, en: "Garfrost's Two-Ton Hammer", ko: "가프로스트의 2톤 망치", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 249288, en: "Ranger-Captain's Lethal Recurve", ko: "순찰대장의 치명적인 곡궁", source: "Crown of the Cosmos", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 249295, en: "Turalyon's False Echo", ko: "투랄리온의 마지막 메아리", source: "Windrunner Spire", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 251095, en: "Hurricane's Heart", ko: "태풍의 심장", source: "Windrunner Spire", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 251111, en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", source: "Magisters' Terrace", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 251178, en: "Ceremonial Hexblade", ko: "의식용 사술칼날", source: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 258525, en: "Scepter of the Endless Night", ko: "끝없는 밤의 홀", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 260423, en: "Arator's Swift Remembrance", ko: "아라토르의 신속한 기억", source: "Crown of the Cosmos", stats: ["crit","haste"] },
 ];
 
 export var WORST_STATS = [];

@@ -64,12 +64,9 @@ export var ALTS = [
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 193704, en: "Scaled Commencement Spaulders", ko: "비늘 학위 어깨덮개", source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 249977, en: "Tempests of the Primal Core", ko: "원시 핵의 돌개바람", source: "Tier", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", source: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "weapon", id: 193723, en: "Obsidian Goaltending Spire", ko: "흑요석 골대지킴이 뾰족지팡이", source: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "weapon", id: 249293, en: "Weight of Command", ko: "지휘의 무게", source: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 251094, en: "Sigil of the Restless Heart", ko: "잠 못 드는 심장의 인장", source: "Windrunner Spire", stats: ["crit","vers"] },
   { forSlot: "weapon", id: 251163, en: "Berserker's Hexclaws", ko: "광전사의 사술발톱", source: "Maisara Caverns", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 258516, en: "Wand of Saprish's Gaze", ko: "사프리쉬의 시선 마법봉", source: "Seat of the Triumvirate", stats: ["crit","vers"] },
   { forSlot: "wrist", id: 249304, en: "Fallen King's Cuffs", ko: "몰락한 왕의 소매장식", source: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
   { forSlot: "wrist", id: 251079, en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", source: "Windrunner Spire", stats: ["crit","mastery"] },
 ];

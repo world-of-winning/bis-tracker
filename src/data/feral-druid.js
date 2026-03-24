@@ -68,8 +68,6 @@ export var ALTS = [
   { forSlot: "waist", id: 49806, en: "Flayer's Black Belt", ko: "바위갈퀴의 검은띠", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", source: "Lightblinded Vanguard", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "wrist", id: 151315, en: "Bracers of Dark Binding", ko: "암흑의 구속 팔보호구", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "wrist", id: 249327, en: "Void-Skinned Bracers", ko: "공허로 무두질한 팔보호구", source: "Vorasius", stats: ["crit","haste"] },

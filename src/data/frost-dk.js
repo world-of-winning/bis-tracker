@@ -63,13 +63,8 @@ export var ALTS = [
   { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 251093, en: "Omission of Light", ko: "소외된 빛", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunner Spire", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251105, en: "Ward of the Spellbreaker", ko: "주문파괴자의 수호물", source: "Magisters' Terrace", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", source: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258049, en: "Viryx's Indomitable Bulwark", ko: "비릭스의 불굴의 보루 방패", source: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
 ];
 
 export var WORST_STATS = ["vers"];

@@ -64,11 +64,8 @@ export var ALTS = [
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", source: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 251171, en: "Enthralled Bonespines", ko: "마법에 걸린 해골가시", source: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 50227, en: "Surgeon's Needle", ko: "외과의사의 바늘", source: "Pit of Saron", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", source: "Algeth'ar Academy", stats: ["crit","vers"] },
   { forSlot: "weapon", id: 249293, en: "Weight of Command", ko: "지휘의 무게", source: "Imperator Averzian", stats: ["crit","vers"] },
   { forSlot: "weapon", id: 251163, en: "Berserker's Hexclaws", ko: "광전사의 사술발톱", source: "Maisara Caverns", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 258516, en: "Wand of Saprish's Gaze", ko: "사프리쉬의 시선 마법봉", source: "Seat of the Triumvirate", stats: ["crit","vers"] },
 ];
 
 export var WORST_STATS = [];
