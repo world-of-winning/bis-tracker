@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.2.6
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.5...v1.2.6)
+
+### 🩹 Fixes
+
+- Merge Catalyst source into Tier and fix Windrunner Spire typo ([a4101f3](https://github.com/world-of-winning/bis-tracker/commit/a4101f3))
+
+### ❤️ Contributors
+
+- World Of Winning
+
 ## v1.2.5
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.3...v1.2.5)
