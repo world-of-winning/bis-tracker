@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.2.7
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.6...v1.2.7)
+
+### 🩹 Fixes
+
+- Allow Wowhead CSS in Content-Security-Policy ([c46834d](https://github.com/world-of-winning/bis-tracker/commit/c46834d))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.2.6
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.5...v1.2.6)
