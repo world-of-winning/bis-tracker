@@ -1,5 +1,35 @@
 # Changelog
 
+## v1.2.1
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.1.1...v1.2.1)
+
+### 🚀 Enhancements
+
+- Widen layout to 4-column grid, unify container, and improve tier status labels ([7f7327e](https://github.com/world-of-winning/bis-tracker/commit/7f7327e))
+- Add class restriction check to find-alts script and expand sample demo data ([213b457](https://github.com/world-of-winning/bis-tracker/commit/213b457))
+
+### 🩹 Fixes
+
+- Use English keys for ALTS forSlot values ([0be8da2](https://github.com/world-of-winning/bis-tracker/commit/0be8da2))
+- Add weapon type filtering to find-alts script ([9eca3b6](https://github.com/world-of-winning/bis-tracker/commit/9eca3b6))
+
+### 💅 Refactors
+
+- Rename ALTS dungeon field to source, update alt items for all specs ([28dffde](https://github.com/world-of-winning/bis-tracker/commit/28dffde))
+
+### 📖 Documentation
+
+- Add changelog entry for v1.2.0 layout and tier-cap improvements ([d62117a](https://github.com/world-of-winning/bis-tracker/commit/d62117a))
+
+### 🏡 Chore
+
+- **release:** V1.2.0 ([f42793a](https://github.com/world-of-winning/bis-tracker/commit/f42793a))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.2.0
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.1.1...v1.2.0)
