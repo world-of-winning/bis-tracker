@@ -12,6 +12,38 @@ import { readFileSync, writeFileSync, readdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+// ─── Wowhead class restriction check ────────────────────────
+const CLASS_NAME_MAP = {
+  deathknight: 'Death Knight', warrior: 'Warrior', paladin: 'Paladin',
+  hunter: 'Hunter', shaman: 'Shaman', evoker: 'Evoker',
+  druid: 'Druid', rogue: 'Rogue', monk: 'Monk', demonhunter: 'Demon Hunter',
+  mage: 'Mage', warlock: 'Warlock', priest: 'Priest',
+};
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Cache: itemId → null (no restriction) | string (restricted class name)
+const classRestrictionCache = new Map();
+
+async function fetchClassRestriction(itemId) {
+  if (classRestrictionCache.has(itemId)) return classRestrictionCache.get(itemId);
+
+  await delay(150);
+  try {
+    const res = await fetch(`https://nether.wowhead.com/tooltip/item/${itemId}?dataEnv=1&locale=0`);
+    const data = await res.json();
+    const tooltip = data.tooltip || '';
+    // Class restriction appears as: Classes: <a href="/class=1/warrior" class="c1">Warrior</a>
+    const match = tooltip.match(/Classes:\s*<a[^>]*>([^<]+)<\/a>/);
+    const result = match ? match[1] : null;
+    classRestrictionCache.set(itemId, result);
+    return result;
+  } catch {
+    classRestrictionCache.set(itemId, null);
+    return null;
+  }
+}
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname, '../src/data');
 
@@ -32,12 +64,9 @@ const WEAPON_SLOTS = new Set(['main_hand', 'off_hand']);
 // Slot groups for forSlot naming
 function getForSlot(simcSlot) {
   const map = {
-    head: '머리', neck: '목', shoulder: '어깨', back: '망토',
-    chest: '가슴', wrist: '손목', hands: '장갑', waist: '허리',
-    legs: '다리', feet: '발',
-    finger1: '반지', finger2: '반지',
-    trinket1: '장신구', trinket2: '장신구',
-    main_hand: '무기', off_hand: '무기',
+    finger1: 'ring', finger2: 'ring',
+    trinket1: 'trinket', trinket2: 'trinket',
+    main_hand: 'weapon', off_hand: 'weapon',
   };
   return map[simcSlot] || simcSlot;
 }
@@ -67,7 +96,7 @@ function parseSpecFile(filePath) {
     while ((m = re.exec(bisMatch[1]))) {
       bisItems.push({
         slot: m[1], simcSlot: m[2] || m[1], en: m[3], ko: m[4],
-        id: parseInt(m[5]), dungeon: m[6], stats: JSON.parse(m[7]),
+        id: parseInt(m[5]), source: m[6], stats: JSON.parse(m[7]),
       });
     }
   }
@@ -80,7 +109,7 @@ function parseSpecFile(filePath) {
     while ((m = re.exec(mythicMatch[1]))) {
       bisItems.push({
         slot: m[1], simcSlot: m[1], en: m[2], ko: m[3],
-        id: parseInt(m[4]), dungeon: m[5], stats: JSON.parse(m[6]),
+        id: parseInt(m[4]), source: m[5], stats: JSON.parse(m[6]),
       });
     }
   }
@@ -99,6 +128,8 @@ function buildItemIndex() {
   const slotItems = new Map();
   // Track which armor types use each item in each slot
   const itemSlotArmor = new Map(); // `${id}-${normalizedSlot}` → Set<armorType>
+  // Track which classes use each item
+  const itemClasses = new Map(); // itemId → Set<simcClass>
 
   for (const file of files) {
     const { simcClass, armorType, bisItems } = parseSpecFile(resolve(DATA_DIR, file));
@@ -112,24 +143,28 @@ function buildItemIndex() {
       if (!slotMap.has(item.id)) {
         slotMap.set(item.id, {
           id: item.id, en: item.en, ko: item.ko,
-          dungeon: item.dungeon, stats: item.stats,
+          source: item.source, stats: item.stats,
         });
       }
 
       const key = `${item.id}-${normSlot}`;
       if (!itemSlotArmor.has(key)) itemSlotArmor.set(key, new Set());
       itemSlotArmor.get(key).add(armorType);
+
+      if (!itemClasses.has(item.id)) itemClasses.set(item.id, new Set());
+      itemClasses.get(item.id).add(simcClass);
     }
   }
 
-  return { slotItems, itemSlotArmor };
+  return { slotItems, itemSlotArmor, itemClasses };
 }
 
 // ─── Find alts for a spec ────────────────────────────────────
-function findAltsForSpec(specKey, index) {
+async function findAltsForSpec(specKey, index) {
   const filePath = resolve(DATA_DIR, `${specKey}.js`);
   const { simcClass, armorType, bisItems } = parseSpecFile(filePath);
-  const { slotItems, itemSlotArmor } = index;
+  const { slotItems, itemSlotArmor, itemClasses } = index;
+  const className = CLASS_NAME_MAP[simcClass];
 
   const bisIds = new Set(bisItems.map(b => b.id));
   const alts = [];
@@ -163,13 +198,24 @@ function findAltsForSpec(specKey, index) {
       // For weapons, allow any weapon used in main_hand/off_hand by any spec
       // (weapon type compatibility is complex, accept all for now)
 
+      // Check class restriction: if item is only used by other classes,
+      // verify via Wowhead that it's not class-locked (e.g. tier sets)
+      const classes = itemClasses.get(id);
+      if (classes && !classes.has(simcClass)) {
+        const restriction = await fetchClassRestriction(id);
+        if (restriction && restriction !== className) {
+          console.log(`  skip ${item.en} (${id}): class-locked to ${restriction}`);
+          continue;
+        }
+      }
+
       addedKeys.add(altKey);
       alts.push({
         forSlot,
         id: item.id,
         en: item.en,
         ko: item.ko,
-        dungeon: item.dungeon,
+        source: item.source,
         stats: item.stats,
       });
     }
@@ -186,7 +232,7 @@ function updateSpecFile(specKey, alts) {
 
   let altsStr = 'export var ALTS = [\n';
   for (const alt of alts) {
-    altsStr += `  { forSlot: ${JSON.stringify(alt.forSlot)}, id: ${alt.id}, en: ${JSON.stringify(alt.en)}, ko: ${JSON.stringify(alt.ko)}, dungeon: ${JSON.stringify(alt.dungeon)}, stats: ${JSON.stringify(alt.stats)} },\n`;
+    altsStr += `  { forSlot: ${JSON.stringify(alt.forSlot)}, id: ${alt.id}, en: ${JSON.stringify(alt.en)}, ko: ${JSON.stringify(alt.ko)}, source: ${JSON.stringify(alt.source)}, stats: ${JSON.stringify(alt.stats)} },\n`;
   }
   altsStr += '];';
 
@@ -219,28 +265,32 @@ function updateSpecFile(specKey, alts) {
 }
 
 // ─── Main ────────────────────────────────────────────────────
-const args = process.argv.slice(2);
-const targetKey = args[0];
+async function main() {
+  const args = process.argv.slice(2);
+  const targetKey = args[0];
 
-console.log('Building global item index...');
-const index = buildItemIndex();
+  console.log('Building global item index...');
+  const index = buildItemIndex();
 
-const SKIP_FILES_MAIN = new Set(['shared.js', 'specs.js', 'sample.js', 'tutorial.js', 'changelog.js']);
-const specFiles = readdirSync(DATA_DIR)
-  .filter(f => f.endsWith('.js') && !SKIP_FILES_MAIN.has(f))
-  .map(f => f.replace('.js', ''));
+  const SKIP_FILES_MAIN = new Set(['shared.js', 'specs.js', 'sample.js', 'tutorial.js', 'changelog.js']);
+  const specFiles = readdirSync(DATA_DIR)
+    .filter(f => f.endsWith('.js') && !SKIP_FILES_MAIN.has(f))
+    .map(f => f.replace('.js', ''));
 
-const targets = targetKey ? [targetKey] : specFiles;
-let total = 0;
+  const targets = targetKey ? [targetKey] : specFiles;
+  let total = 0;
 
-for (const specKey of targets) {
-  const alts = findAltsForSpec(specKey, index);
-  if (alts.length > 0) {
-    updateSpecFile(specKey, alts);
-    console.log(`${specKey}: ${alts.length} alts`);
-    total += alts.length;
-  } else {
-    console.log(`${specKey}: 0 alts`);
+  for (const specKey of targets) {
+    const alts = await findAltsForSpec(specKey, index);
+    if (alts.length > 0) {
+      updateSpecFile(specKey, alts);
+      console.log(`${specKey}: ${alts.length} alts`);
+      total += alts.length;
+    } else {
+      console.log(`${specKey}: 0 alts`);
+    }
   }
+  console.log(`\nDone: ${total} total alts across ${targets.length} specs`);
 }
-console.log(`\nDone: ${total} total alts across ${targets.length} specs`);
+
+main();
