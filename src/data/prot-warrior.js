@@ -54,23 +54,23 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "chest", id: 249309, en: "Sunbound Breastplate", ko: "태양결속 가슴보호갑", dungeon: "Windrunner Spire", stats: ["crit","haste"] },
-  { forSlot: "head", id: 249970, en: "Relentless Rider's Crown", ko: "가혹한 기수의 왕관", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
-  { forSlot: "neck", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", dungeon: "Midnight Falls", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 49802, en: "Garfrost's Two-Ton Hammer", ko: "가프로스트의 2톤 망치", dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", dungeon: "Lightblinded Vanguard", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", dungeon: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 249288, en: "Ranger-Captain's Lethal Recurve", ko: "순찰대장의 치명적인 곡궁", dungeon: "Crown of the Cosmos", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 251095, en: "Hurricane's Heart", ko: "태풍의 심장", dungeon: "Windrunner Spire", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 251111, en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", dungeon: "Magisters' Terrace", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 251162, en: "Traitor's Talon", ko: "배신자의 갈퀴발톱", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251178, en: "Ceremonial Hexblade", ko: "의식용 사술칼날", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 260423, en: "Arator's Swift Remembrance", ko: "아라토르의 신속한 기억", dungeon: "Crown of the Cosmos", stats: ["crit","haste"] },
-  { forSlot: "shoulder", id: 251164, en: "Amalgamation's Harness", ko: "융합체의 멜빵", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
+  { forSlot: "chest", id: 249309, en: "Sunbound Breastplate", ko: "태양결속 가슴보호갑", source: "Windrunner Spire", stats: ["crit","haste"] },
+  { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
+  { forSlot: "neck", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", source: "Midnight Falls", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "shoulder", id: 251164, en: "Amalgamation's Harness", ko: "융합체의 멜빵", source: "Maisara Caverns", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 49802, en: "Garfrost's Two-Ton Hammer", ko: "가프로스트의 2톤 망치", source: "Pit of Saron", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Pit of Saron", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", source: "Lightblinded Vanguard", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 249288, en: "Ranger-Captain's Lethal Recurve", ko: "순찰대장의 치명적인 곡궁", source: "Crown of the Cosmos", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 251095, en: "Hurricane's Heart", ko: "태풍의 심장", source: "Windrunner Spire", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 251111, en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", source: "Magisters' Terrace", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 251162, en: "Traitor's Talon", ko: "배신자의 갈퀴발톱", source: "Maisara Caverns", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", source: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251178, en: "Ceremonial Hexblade", ko: "의식용 사술칼날", source: "Maisara Caverns", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 260423, en: "Arator's Swift Remembrance", ko: "아라토르의 신속한 기억", source: "Crown of the Cosmos", stats: ["crit","haste"] },
 ];
 
 export var WORST_STATS = ["mastery"];
@@ -87,10 +87,11 @@ export var KNOWN_STATS = {
   249954:["crit","haste"],249955:["crit","haste"],249960:["crit","haste"],249961:["haste","mastery"],
   249962:["haste","vers"],249970:["haste","mastery"],249973:["crit","haste"],250010:["crit","haste"],
   250247:["haste","mastery"],251081:["crit","haste"],251091:["crit","vers"],251095:["crit","haste"],
-  251105:["crit","mastery"],251111:["crit","haste"],251157:["crit","haste"],251162:["crit","haste"],
-  251164:["haste","mastery"],251168:["crit","mastery"],251175:["crit","mastery"],251178:["crit","haste"],
-  251203:["crit","vers"],251208:["haste","vers"],251217:["crit","haste"],252420:[],
-  258049:["crit","mastery"],258525:["crit","haste"],260312:["crit","haste"],260423:["crit","haste"],
+  251105:["crit","mastery"],251111:["crit","haste"],251142:["haste","mastery"],251157:["crit","haste"],
+  251162:["crit","haste"],251164:["haste","mastery"],251168:["crit","mastery"],251175:["crit","mastery"],
+  251178:["crit","haste"],251203:["crit","vers"],251208:["haste","vers"],251217:["crit","haste"],
+  252420:[],258049:["crit","mastery"],258525:["crit","haste"],260312:["crit","haste"],
+  260423:["crit","haste"],
 };
 
 export var DUNGEONS = [

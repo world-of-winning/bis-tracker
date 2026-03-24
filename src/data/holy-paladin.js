@@ -53,22 +53,22 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "legs", id: 249951, en: "Night Ender's Chausses", ko: "밤의 종결자의 정강이싸개", dungeon: "Vaelgor & Ezzorak", stats: ["crit","haste"] },
-  { forSlot: "head", id: 249952, en: "Night Ender's Tusks", ko: "밤의 종결자의 엄니", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "head", id: 249970, en: "Relentless Rider's Crown", ko: "가혹한 기수의 왕관", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
-  { forSlot: "neck", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", dungeon: "Windrunner Spire", stats: ["haste","vers"] },
-  { forSlot: "weapon", id: 193707, en: "Final Grade", ko: "최종 학점", dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249283, en: "Belo'melorn, the Shattered Talon", ko: "벨로멜로른 - 으스러진 갈퀴발톱", dungeon: "Belo'ren", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", dungeon: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251174, en: "Deceiver's Rotbow", ko: "기만자의 부식활", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251201, en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { forSlot: "ring", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", dungeon: "Midnight Falls", stats: ["mastery","vers"] },
-  { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "feet", id: 251169, en: "Footwraps of Ill-Fate", ko: "불길한 운명의 발등싸개", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "shoulder", id: 249950, en: "Night Ender's Pauldrons", ko: "밤의 종결자의 견갑", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
+  { forSlot: "feet", id: 249963, en: "Luminant Verdict's Sabatons", ko: "빛나는 선고의 발덮개", source: "Catalyst", stats: ["haste","mastery"] },
+  { forSlot: "feet", id: 251169, en: "Footwraps of Ill-Fate", ko: "불길한 운명의 발등싸개", source: "Maisara Caverns", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", source: "Windrunner Spire", stats: ["haste","vers"] },
+  { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", source: "Midnight Falls", stats: ["mastery","vers"] },
+  { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { forSlot: "waist", id: 249958, en: "Luminant Verdict's Undaunted Emblem", ko: "빛나는 선고의 의연한 문장", source: "Catalyst", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 193707, en: "Final Grade", ko: "최종 학점", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 249283, en: "Belo'melorn, the Shattered Talon", ko: "벨로멜로른 - 으스러진 갈퀴발톱", source: "Belo'ren", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", source: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 251174, en: "Deceiver's Rotbow", ko: "기만자의 부식활", source: "Maisara Caverns", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 251201, en: "Corespark Multitool", ko: "핵심불꽃 다용도 도구", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", source: "Skyreach", stats: ["haste","mastery"] },
 ];
 
 export var WORST_STATS = ["crit"];
@@ -84,9 +84,10 @@ export var KNOWN_STATS = {
   249951:["crit","haste"],249952:["haste","mastery"],249958:["haste","mastery"],249960:["crit","haste"],
   249961:["haste","mastery"],249962:["haste","vers"],249963:["haste","mastery"],249964:["haste","mastery"],
   249970:["haste","mastery"],250247:["haste","mastery"],251093:["haste","mastery"],251096:["haste","vers"],
-  251107:["haste","mastery"],251115:["haste","mastery"],251122:["haste","mastery"],251164:["haste","mastery"],
-  251169:["haste","mastery"],251174:["haste","mastery"],251201:["haste","mastery"],251206:["mastery","vers"],
-  251208:["haste","vers"],258531:["mastery","vers"],258579:["mastery","vers"],263193:["haste","mastery"],
+  251107:["haste","mastery"],251115:["haste","mastery"],251122:["haste","mastery"],251142:["haste","mastery"],
+  251164:["haste","mastery"],251169:["haste","mastery"],251174:["haste","mastery"],251201:["haste","mastery"],
+  251206:["mastery","vers"],251208:["haste","vers"],258438:["haste","mastery"],258531:["mastery","vers"],
+  258579:["mastery","vers"],263193:["haste","mastery"],
 };
 
 export var DUNGEONS = [

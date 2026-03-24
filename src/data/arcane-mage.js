@@ -52,20 +52,22 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "chest", id: 151303, en: "Voidbender Robe", ko: "공허술사 로브", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
-  { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", dungeon: "Lightblinded Vanguard", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", dungeon: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", dungeon: "Skyreach", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "ring", id: 251115, en: "Bifurcation Band", ko: "분기점의 고리", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "wrist", id: 251108, en: "Wraps of Watchful Wrath", ko: "경계하는 진노의 싸개", dungeon: "Magisters' Terrace", stats: ["mastery","vers"] },
-  { forSlot: "shoulder", id: 249328, en: "Echoing Void Mantle", ko: "메아리치는 공허 어깨덧옷", dungeon: "Belo'ren", stats: ["haste","mastery"] },
-  { forSlot: "shoulder", id: 251213, en: "Nysarra's Mantle", ko: "니사라의 어깨덧옷", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
+  { forSlot: "chest", id: 151303, en: "Voidbender Robe", ko: "공허술사 로브", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { forSlot: "feet", id: 250062, en: "Voidbreaker's Treads", ko: "공허파괴자의 발보호대", source: "Catalyst", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
+  { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", source: "Pit of Saron", stats: ["crit","haste"] },
+  { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 251115, en: "Bifurcation Band", ko: "분기점의 고리", source: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "shoulder", id: 249328, en: "Echoing Void Mantle", ko: "메아리치는 공허 어깨덧옷", source: "Belo'ren", stats: ["haste","mastery"] },
+  { forSlot: "shoulder", id: 251213, en: "Nysarra's Mantle", ko: "니사라의 어깨덧옷", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", source: "Lightblinded Vanguard", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunner Spire", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
+  { forSlot: "wrist", id: 251108, en: "Wraps of Watchful Wrath", ko: "경계하는 진노의 싸개", source: "Magisters' Terrace", stats: ["mastery","vers"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -81,9 +83,10 @@ export var KNOWN_STATS = {
   249920:["haste"],250031:["crit","mastery"],250042:["crit","mastery"],250058:["haste","vers"],
   250060:["haste","mastery"],250061:["haste","mastery"],250062:["haste","mastery"],250063:["crit","haste"],
   250247:["haste","mastery"],250258:["mastery"],251077:["crit","mastery"],251090:["mastery","vers"],
-  251093:["haste","mastery"],251108:["mastery","vers"],251115:["haste","mastery"],251168:["crit","mastery"],
-  251213:["haste","mastery"],251217:["crit","haste"],258218:["crit","mastery"],258514:["crit","mastery"],
-  258575:["crit","mastery"],258578:["haste","mastery"],258580:["mastery","vers"],258584:["haste","mastery"],
+  251093:["haste","mastery"],251108:["mastery","vers"],251115:["haste","mastery"],251142:["haste","mastery"],
+  251168:["crit","mastery"],251213:["haste","mastery"],251217:["crit","haste"],258218:["crit","mastery"],
+  258514:["crit","mastery"],258575:["crit","mastery"],258578:["haste","mastery"],258580:["mastery","vers"],
+  258584:["haste","mastery"],
 };
 
 export var DUNGEONS = [

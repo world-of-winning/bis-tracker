@@ -53,24 +53,26 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "head", id: 151337, en: "Shadow-Weaver's Crown", ko: "흑마술사의 관", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
-  { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
-  { forSlot: "neck", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", dungeon: "Midnight Falls", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 193707, en: "Final Grade", ko: "최종 학점", dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 193710, en: "Spellboon Saber", ko: "주문은총 사브르", dungeon: "Algeth'ar Academy", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249283, en: "Belo'melorn, the Shattered Talon", ko: "벨로멜로른 - 으스러진 갈퀴발톱", dungeon: "Belo'ren", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", dungeon: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249922, en: "Tome of Alnscorned Regret", ko: "알른멸시 회한의 고서", dungeon: "Chimaerus", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", dungeon: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251174, en: "Deceiver's Rotbow", ko: "기만자의 부식활", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
-  { forSlot: "ring", id: 193708, en: "Platinum Star Band", ko: "백금 별의 고리", dungeon: "Algeth'ar Academy", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "wrist", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", dungeon: "Vorasius", stats: ["haste","mastery"] },
-  { forSlot: "shoulder", id: 249328, en: "Echoing Void Mantle", ko: "메아리치는 공허 어깨덧옷", dungeon: "Belo'ren", stats: ["haste","mastery"] },
-  { forSlot: "shoulder", id: 251213, en: "Nysarra's Mantle", ko: "니사라의 어깨덧옷", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { forSlot: "hands", id: 251172, en: "Vilehex Bonds", ko: "부정사술 결속대", dungeon: "Maisara Caverns", stats: ["crit","haste"] },
-  { forSlot: "waist", id: 50263, en: "Braid of Salt and Fire", ko: "빛과 소금 허리띠", dungeon: "Pit of Saron", stats: ["haste","vers"] },
+  { forSlot: "hands", id: 251172, en: "Vilehex Bonds", ko: "부정사술 결속대", source: "Maisara Caverns", stats: ["crit","haste"] },
+  { forSlot: "head", id: 151337, en: "Shadow-Weaver's Crown", ko: "흑마술사의 관", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
+  { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
+  { forSlot: "neck", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", source: "Midnight Falls", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 193708, en: "Platinum Star Band", ko: "백금 별의 고리", source: "Algeth'ar Academy", stats: ["crit","mastery"] },
+  { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
+  { forSlot: "shoulder", id: 249328, en: "Echoing Void Mantle", ko: "메아리치는 공허 어깨덧옷", source: "Belo'ren", stats: ["haste","mastery"] },
+  { forSlot: "shoulder", id: 251213, en: "Nysarra's Mantle", ko: "니사라의 어깨덧옷", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
+  { forSlot: "waist", id: 50263, en: "Braid of Salt and Fire", ko: "빛과 소금 허리띠", source: "Pit of Saron", stats: ["haste","vers"] },
+  { forSlot: "weapon", id: 193707, en: "Final Grade", ko: "최종 학점", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 193710, en: "Spellboon Saber", ko: "주문은총 사브르", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 249283, en: "Belo'melorn, the Shattered Talon", ko: "벨로멜로른 - 으스러진 갈퀴발톱", source: "Belo'ren", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 249287, en: "Clutchmates' Caress", ko: "혈족의 애정", source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 249922, en: "Tome of Alnscorned Regret", ko: "알른멸시 회한의 고서", source: "Chimaerus", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", source: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 251174, en: "Deceiver's Rotbow", ko: "기만자의 부식활", source: "Maisara Caverns", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", source: "Skyreach", stats: ["haste","mastery"] },
+  { forSlot: "wrist", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", source: "Vorasius", stats: ["haste","mastery"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -89,9 +91,9 @@ export var KNOWN_STATS = {
   250045:["haste","mastery"],250049:["crit","mastery"],250051:["crit","haste"],250054:["haste","mastery"],
   250059:["crit","haste"],250144:[],250223:[],250247:["haste","mastery"],
   251085:["crit","mastery"],251093:["haste","mastery"],251102:["haste","vers"],251115:["haste","mastery"],
-  251122:["haste","mastery"],251172:["crit","haste"],251174:["haste","mastery"],251201:["haste","mastery"],
-  251213:["haste","mastery"],251513:["crit","mastery"],258472:["haste","mastery"],258574:["haste","vers"],
-  258575:["crit","mastery"],258578:["haste","mastery"],
+  251122:["haste","mastery"],251142:["haste","mastery"],251172:["crit","haste"],251174:["haste","mastery"],
+  251201:["haste","mastery"],251213:["haste","mastery"],251513:["crit","mastery"],258438:["haste","mastery"],
+  258472:["haste","mastery"],258574:["haste","vers"],258575:["crit","mastery"],258578:["haste","mastery"],
 };
 
 export var DUNGEONS = [

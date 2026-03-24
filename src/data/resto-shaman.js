@@ -54,23 +54,24 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "chest", id: 249991, en: "Primal Sentry's Scaleplate", ko: "원시 파수꾼의 비늘판금", dungeon: "Chimaerus", stats: ["crit","haste"] },
-  { forSlot: "back", id: 251161, en: "Soulhunter's Mask", ko: "영혼사냥꾼의 가면", dungeon: "Maisara Caverns", stats: ["crit","vers"] },
-  { forSlot: "head", id: 249988, en: "Primal Sentry's Maw", ko: "원시 파수꾼의 아귀", dungeon: "Lightblinded Vanguard", stats: ["crit","haste"] },
-  { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 193723, en: "Obsidian Goaltending Spire", ko: "흑요석 골대지킴이 뾰족지팡이", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 249293, en: "Weight of Command", ko: "지휘의 무게", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 258516, en: "Wand of Saprish's Gaze", ko: "사프리쉬의 시선 마법봉", dungeon: "Seat of the Triumvirate", stats: ["crit","vers"] },
-  { forSlot: "ring", id: 193708, en: "Platinum Star Band", ko: "백금 별의 고리", dungeon: "Algeth'ar Academy", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "feet", id: 244610, en: "World Tender's Rootslippers", ko: "세계지기의 뿌리끌신", dungeon: "Crafted", stats: ["crit","vers"] },
-  { forSlot: "feet", id: 249377, en: "Darkstrider Treads", ko: "어둠걸이의 발보호대", dungeon: "Belo'ren", stats: ["crit","haste"] },
-  { forSlot: "wrist", id: 249304, en: "Fallen King's Cuffs", ko: "몰락한 왕의 소매장식", dungeon: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
-  { forSlot: "wrist", id: 251079, en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
-  { forSlot: "shoulder", id: 193704, en: "Scaled Commencement Spaulders", ko: "비늘 학위 어깨덮개", dungeon: "Algeth'ar Academy", stats: ["crit","mastery"] },
-  { forSlot: "hands", id: 249325, en: "Untethered Berserker's Grips", ko: "풀어헤쳐진 광전사의 손장갑", dungeon: "Crown of the Cosmos", stats: ["crit","mastery"] },
-  { forSlot: "hands", id: 249989, en: "Primal Sentry's Talonguards", ko: "원시 파수꾼의 갈퀴보호대", dungeon: "Vorasius", stats: ["crit","mastery"] },
+  { forSlot: "back", id: 251161, en: "Soulhunter's Mask", ko: "영혼사냥꾼의 가면", source: "Maisara Caverns", stats: ["crit","vers"] },
+  { forSlot: "feet", id: 244610, en: "World Tender's Rootslippers", ko: "세계지기의 뿌리끌신", source: "Crafted", stats: ["crit","vers"] },
+  { forSlot: "feet", id: 249377, en: "Darkstrider Treads", ko: "어둠걸이의 발보호대", source: "Belo'ren", stats: ["crit","haste"] },
+  { forSlot: "hands", id: 249325, en: "Untethered Berserker's Grips", ko: "풀어헤쳐진 광전사의 손장갑", source: "Crown of the Cosmos", stats: ["crit","mastery"] },
+  { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
+  { forSlot: "ring", id: 193708, en: "Platinum Star Band", ko: "백금 별의 고리", source: "Algeth'ar Academy", stats: ["crit","mastery"] },
+  { forSlot: "ring", id: 251205, en: "Leyline Leggings", ko: "지맥 다리보호구", source: "Nexus-Point Xenas", stats: ["crit","vers"] },
+  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
+  { forSlot: "shoulder", id: 193704, en: "Scaled Commencement Spaulders", ko: "비늘 학위 어깨덮개", source: "Algeth'ar Academy", stats: ["crit","mastery"] },
+  { forSlot: "shoulder", id: 249977, en: "Tempests of the Primal Core", ko: "원시 핵의 돌개바람", source: "Tier", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", source: "Algeth'ar Academy", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 193723, en: "Obsidian Goaltending Spire", ko: "흑요석 골대지킴이 뾰족지팡이", source: "Algeth'ar Academy", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 249293, en: "Weight of Command", ko: "지휘의 무게", source: "Imperator Averzian", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 251094, en: "Sigil of the Restless Heart", ko: "잠 못 드는 심장의 인장", source: "Windrunner Spire", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 251163, en: "Berserker's Hexclaws", ko: "광전사의 사술발톱", source: "Maisara Caverns", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 258516, en: "Wand of Saprish's Gaze", ko: "사프리쉬의 시선 마법봉", source: "Seat of the Triumvirate", stats: ["crit","vers"] },
+  { forSlot: "wrist", id: 249304, en: "Fallen King's Cuffs", ko: "몰락한 왕의 소매장식", source: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
+  { forSlot: "wrist", id: 251079, en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", source: "Windrunner Spire", stats: ["crit","mastery"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -89,8 +90,9 @@ export var KNOWN_STATS = {
   249377:["crit","haste"],249919:["crit","mastery"],249975:["crit","vers"],249977:["crit","haste"],
   249978:["crit","vers"],249979:["haste","mastery"],249980:["crit","mastery"],249982:["haste","mastery"],
   249988:["crit","haste"],249989:["crit","mastery"],249991:["crit","haste"],249995:["crit","mastery"],
-  250000:["crit","haste"],250046:["crit","vers"],251079:["crit","mastery"],251161:["crit","vers"],
-  251202:["crit","vers"],251513:["crit","mastery"],258516:["crit","vers"],258576:["crit","haste"],
+  250000:["crit","haste"],250046:["crit","vers"],251079:["crit","mastery"],251094:["crit","vers"],
+  251161:["crit","vers"],251163:["crit","vers"],251202:["crit","vers"],251205:["crit","vers"],
+  251513:["crit","mastery"],258516:["crit","vers"],258576:["crit","haste"],
 };
 
 export var DUNGEONS = [

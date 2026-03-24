@@ -52,21 +52,23 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "back", id: 49823, en: "Cloak of the Fallen Cardinal", ko: "쓰러진 추기경의 망토", dungeon: "Pit of Saron", stats: ["crit","vers"] },
-  { forSlot: "back", id: 249335, en: "Imperator's Banner", ko: "전제군주의 깃발", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "head", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "head", id: 151336, en: "Voidlashed Hood", ko: "공허에 스친 두건", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "neck", id: 151309, en: "Necklace of the Twisting Void", ko: "뒤틀리는 공허의 목걸이", dungeon: "Seat of the Triumvirate", stats: ["haste","vers"] },
-  { forSlot: "weapon", id: 50227, en: "Surgeon's Needle", ko: "외과의사의 바늘", dungeon: "Pit of Saron", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 249293, en: "Weight of Command", ko: "지휘의 무게", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 258516, en: "Wand of Saprish's Gaze", ko: "사프리쉬의 시선 마법봉", dungeon: "Seat of the Triumvirate", stats: ["crit","vers"] },
-  { forSlot: "ring", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", dungeon: "Midnight Falls", stats: ["mastery","vers"] },
-  { forSlot: "ring", id: 249919, en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", dungeon: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "shoulder", id: 250004, en: "Venom Casks of the Grim Jest", ko: "암담한 재담의 맹독 보관통", dungeon: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
-  { forSlot: "shoulder", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", dungeon: "Windrunner Spire", stats: ["haste","mastery"] },
-  { forSlot: "shoulder", id: 251171, en: "Enthralled Bonespines", ko: "마법에 걸린 해골가시", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
+  { forSlot: "back", id: 49823, en: "Cloak of the Fallen Cardinal", ko: "쓰러진 추기경의 망토", source: "Pit of Saron", stats: ["crit","vers"] },
+  { forSlot: "back", id: 249335, en: "Imperator's Banner", ko: "전제군주의 깃발", source: "Imperator Averzian", stats: ["crit","vers"] },
+  { forSlot: "feet", id: 251121, en: "Domanaar's Dire Treads", ko: "도마나르의 광포한 발보호대", source: "Magisters' Terrace", stats: ["mastery","vers"] },
+  { forSlot: "head", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { forSlot: "head", id: 151336, en: "Voidlashed Hood", ko: "공허에 스친 두건", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { forSlot: "neck", id: 151309, en: "Necklace of the Twisting Void", ko: "뒤틀리는 공허의 목걸이", source: "Seat of the Triumvirate", stats: ["haste","vers"] },
+  { forSlot: "ring", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", source: "Midnight Falls", stats: ["mastery","vers"] },
+  { forSlot: "ring", id: 249919, en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", source: "Belo'ren", stats: ["crit","mastery"] },
+  { forSlot: "ring", id: 251205, en: "Leyline Leggings", ko: "지맥 다리보호구", source: "Nexus-Point Xenas", stats: ["crit","vers"] },
+  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
+  { forSlot: "shoulder", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", source: "Windrunner Spire", stats: ["haste","mastery"] },
+  { forSlot: "shoulder", id: 251171, en: "Enthralled Bonespines", ko: "마법에 걸린 해골가시", source: "Maisara Caverns", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 50227, en: "Surgeon's Needle", ko: "외과의사의 바늘", source: "Pit of Saron", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", source: "Algeth'ar Academy", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 249293, en: "Weight of Command", ko: "지휘의 무게", source: "Imperator Averzian", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 251163, en: "Berserker's Hexclaws", ko: "광전사의 사술발톱", source: "Maisara Caverns", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 258516, en: "Wand of Saprish's Gaze", ko: "사프리쉬의 시선 마법봉", source: "Seat of the Triumvirate", stats: ["crit","vers"] },
 ];
 
 export var WORST_STATS = [];
@@ -82,9 +84,10 @@ export var KNOWN_STATS = {
   249336:["crit","vers"],249343:["mastery"],249919:["crit","mastery"],250004:["haste","mastery"],
   250013:["haste","mastery"],250015:["crit","haste"],250016:["crit","vers"],250018:["crit","haste"],
   250022:["crit","mastery"],250031:["crit","mastery"],250046:["crit","vers"],251082:["crit","mastery"],
-  251092:["haste","mastery"],251096:["haste","vers"],251103:["haste","vers"],251161:["crit","vers"],
-  251171:["haste","mastery"],251177:["crit","vers"],251513:["crit","mastery"],252418:[],
-  252420:[],258516:["crit","vers"],260235:[],
+  251092:["haste","mastery"],251096:["haste","vers"],251103:["haste","vers"],251121:["mastery","vers"],
+  251161:["crit","vers"],251163:["crit","vers"],251171:["haste","mastery"],251177:["crit","vers"],
+  251205:["crit","vers"],251513:["crit","mastery"],252418:[],252420:[],
+  258516:["crit","vers"],260235:[],
 };
 
 export var DUNGEONS = [

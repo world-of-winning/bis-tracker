@@ -53,23 +53,23 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "chest", id: 249309, en: "Sunbound Breastplate", ko: "태양결속 가슴보호갑", dungeon: "Windrunner Spire", stats: ["crit","haste"] },
-  { forSlot: "chest", id: 249955, en: "Night Ender's Breastplate", ko: "밤의 종결자의 가슴보호갑", dungeon: "Chimaerus", stats: ["crit","haste"] },
-  { forSlot: "head", id: 249952, en: "Night Ender's Tusks", ko: "밤의 종결자의 엄니", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
-  { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", dungeon: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251105, en: "Ward of the Spellbreaker", ko: "주문파괴자의 수호물", dungeon: "Magisters' Terrace", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258049, en: "Viryx's Indomitable Bulwark", ko: "비릭스의 불굴의 보루 방패", dungeon: "Skyreach", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", dungeon: "Skyreach", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "ring", id: 251093, en: "Omission of Light", ko: "소외된 빛", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "feet", id: 249332, en: "Parasite Stompers", ko: "기생 디딤장화", dungeon: "Vorasius", stats: ["haste","mastery"] },
-  { forSlot: "feet", id: 251169, en: "Footwraps of Ill-Fate", ko: "불길한 운명의 발등싸개", dungeon: "Maisara Caverns", stats: ["haste","mastery"] },
+  { forSlot: "chest", id: 249309, en: "Sunbound Breastplate", ko: "태양결속 가슴보호갑", source: "Windrunner Spire", stats: ["crit","haste"] },
+  { forSlot: "chest", id: 249973, en: "Relentless Rider's Cuirass", ko: "가혹한 기수의 흉갑", source: "Tier", stats: ["crit","haste"] },
+  { forSlot: "feet", id: 249332, en: "Parasite Stompers", ko: "기생 디딤장화", source: "Vorasius", stats: ["haste","mastery"] },
+  { forSlot: "feet", id: 251169, en: "Footwraps of Ill-Fate", ko: "불길한 운명의 발등싸개", source: "Maisara Caverns", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
+  { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 251093, en: "Omission of Light", ko: "소외된 빛", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunner Spire", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251105, en: "Ward of the Spellbreaker", ko: "주문파괴자의 수호물", source: "Magisters' Terrace", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", source: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 258049, en: "Viryx's Indomitable Bulwark", ko: "비릭스의 불굴의 보루 방패", source: "Skyreach", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -87,9 +87,9 @@ export var KNOWN_STATS = {
   249964:["haste","mastery"],249968:["haste","vers"],249969:["crit","mastery"],249970:["haste","mastery"],
   249971:["haste","mastery"],249973:["crit","haste"],250247:["haste","mastery"],251077:["crit","mastery"],
   251093:["haste","mastery"],251105:["crit","mastery"],251107:["haste","mastery"],251115:["haste","mastery"],
-  251118:["crit","mastery"],251168:["crit","mastery"],251169:["haste","mastery"],251175:["crit","mastery"],
-  251513:["crit","mastery"],252420:[],258049:["crit","mastery"],258218:["crit","mastery"],
-  258514:["crit","mastery"],258583:["crit","mastery"],263193:["haste","mastery"],
+  251118:["crit","mastery"],251142:["haste","mastery"],251168:["crit","mastery"],251169:["haste","mastery"],
+  251175:["crit","mastery"],251513:["crit","mastery"],252420:[],258049:["crit","mastery"],
+  258218:["crit","mastery"],258514:["crit","mastery"],258583:["crit","mastery"],263193:["haste","mastery"],
 };
 
 export var DUNGEONS = [

@@ -52,20 +52,21 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "chest", id: 258576, en: "Sharpeye Chestguard", ko: "뾰족눈 가슴보호대", dungeon: "Skyreach", stats: ["crit","haste"] },
-  { forSlot: "legs", id: 251170, en: "Wickedweave Trousers", ko: "교활매듭 긴바지", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "head", id: 49824, en: "Horns of the Spurned Val'kyr", ko: "쫓겨난 발키르의 뿔", dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "head", id: 258585, en: "Sharpeye Gleam", ko: "뾰족눈 광투구", dungeon: "Skyreach", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", dungeon: "Lightblinded Vanguard", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", dungeon: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", dungeon: "Skyreach", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
-  { forSlot: "feet", id: 249320, en: "Sabatons of Obscurement", ko: "암연의 발덮개", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "wrist", id: 249304, en: "Fallen King's Cuffs", ko: "몰락한 왕의 소매장식", dungeon: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
-  { forSlot: "wrist", id: 251079, en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
-  { forSlot: "hands", id: 249325, en: "Untethered Berserker's Grips", ko: "풀어헤쳐진 광전사의 손장갑", dungeon: "Crown of the Cosmos", stats: ["crit","mastery"] },
-  { forSlot: "waist", id: 249371, en: "Scornbane Waistguard", ko: "멸시파멸 허리보호대", dungeon: "Chimaerus", stats: ["haste","mastery"] },
+  { forSlot: "chest", id: 258576, en: "Sharpeye Chestguard", ko: "뾰족눈 가슴보호대", source: "Skyreach", stats: ["crit","haste"] },
+  { forSlot: "feet", id: 249320, en: "Sabatons of Obscurement", ko: "암연의 발덮개", source: "Imperator Averzian", stats: ["crit","vers"] },
+  { forSlot: "feet", id: 249990, en: "Primal Sentry's Swiftsteps", ko: "원시 파수꾼의 날쌘 발걸음", source: "Catalyst", stats: ["crit","mastery"] },
+  { forSlot: "hands", id: 249325, en: "Untethered Berserker's Grips", ko: "풀어헤쳐진 광전사의 손장갑", source: "Crown of the Cosmos", stats: ["crit","mastery"] },
+  { forSlot: "head", id: 49824, en: "Horns of the Spurned Val'kyr", ko: "쫓겨난 발키르의 뿔", source: "Pit of Saron", stats: ["crit","haste"] },
+  { forSlot: "head", id: 258585, en: "Sharpeye Gleam", ko: "뾰족눈 광투구", source: "Skyreach", stats: ["crit","mastery"] },
+  { forSlot: "legs", id: 251170, en: "Wickedweave Trousers", ko: "교활매듭 긴바지", source: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "waist", id: 249371, en: "Scornbane Waistguard", ko: "멸시파멸 허리보호대", source: "Chimaerus", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", source: "Lightblinded Vanguard", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
+  { forSlot: "wrist", id: 249304, en: "Fallen King's Cuffs", ko: "몰락한 왕의 소매장식", source: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
+  { forSlot: "wrist", id: 251079, en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", source: "Windrunner Spire", stats: ["crit","mastery"] },
 ];
 
 export var WORST_STATS = ["vers"];

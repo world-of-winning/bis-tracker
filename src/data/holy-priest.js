@@ -54,19 +54,19 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "back", id: 249335, en: "Imperator's Banner", ko: "전제군주의 깃발", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "back", id: 251161, en: "Soulhunter's Mask", ko: "영혼사냥꾼의 가면", dungeon: "Maisara Caverns", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 50227, en: "Surgeon's Needle", ko: "외과의사의 바늘", dungeon: "Pit of Saron", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 193723, en: "Obsidian Goaltending Spire", ko: "흑요석 골대지킴이 뾰족지팡이", dungeon: "Algeth'ar Academy", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 249275, en: "Bulwark of Noble Resolve", ko: "귀족의 결의 보루 방패", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 249293, en: "Weight of Command", ko: "지휘의 무게", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 251163, en: "Berserker's Hexclaws", ko: "광전사의 사술발톱", dungeon: "Maisara Caverns", stats: ["crit","vers"] },
-  { forSlot: "weapon", id: 251202, en: "Reflux Reflector", ko: "역류 굴절 장치", dungeon: "Nexus-Point Xenas", stats: ["crit","vers"] },
-  { forSlot: "ring", id: 151308, en: "Eredath Seal of Nobility", ko: "에레다스 귀족의 인장", dungeon: "Seat of the Triumvirate", stats: ["crit","vers"] },
-  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "wrist", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", dungeon: "Vorasius", stats: ["haste","mastery"] },
-  { forSlot: "waist", id: 249319, en: "Endless March Waistwrap", ko: "끝없는 행진 허리싸개", dungeon: "Imperator Averzian", stats: ["crit","haste"] },
+  { forSlot: "back", id: 249335, en: "Imperator's Banner", ko: "전제군주의 깃발", source: "Imperator Averzian", stats: ["crit","vers"] },
+  { forSlot: "back", id: 251161, en: "Soulhunter's Mask", ko: "영혼사냥꾼의 가면", source: "Maisara Caverns", stats: ["crit","vers"] },
+  { forSlot: "ring", id: 151308, en: "Eredath Seal of Nobility", ko: "에레다스 귀족의 인장", source: "Seat of the Triumvirate", stats: ["crit","vers"] },
+  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
+  { forSlot: "waist", id: 249319, en: "Endless March Waistwrap", ko: "끝없는 행진 허리싸개", source: "Imperator Averzian", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 50227, en: "Surgeon's Needle", ko: "외과의사의 바늘", source: "Pit of Saron", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 193717, en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", source: "Algeth'ar Academy", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 193723, en: "Obsidian Goaltending Spire", ko: "흑요석 골대지킴이 뾰족지팡이", source: "Algeth'ar Academy", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 249275, en: "Bulwark of Noble Resolve", ko: "귀족의 결의 보루 방패", source: "Imperator Averzian", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 249293, en: "Weight of Command", ko: "지휘의 무게", source: "Imperator Averzian", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 251163, en: "Berserker's Hexclaws", ko: "광전사의 사술발톱", source: "Maisara Caverns", stats: ["crit","vers"] },
+  { forSlot: "weapon", id: 251202, en: "Reflux Reflector", ko: "역류 굴절 장치", source: "Nexus-Point Xenas", stats: ["crit","vers"] },
+  { forSlot: "wrist", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", source: "Vorasius", stats: ["haste","mastery"] },
 ];
 
 export var WORST_STATS = ["vers"];

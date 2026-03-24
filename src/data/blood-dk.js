@@ -52,20 +52,20 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "legs", id: 251118, en: "Legplates of Lingering Dusk", ko: "잔존하는 암흑의 다리갑옷", dungeon: "Magisters' Terrace", stats: ["crit","mastery"] },
-  { forSlot: "back", id: 49823, en: "Cloak of the Fallen Cardinal", ko: "쓰러진 추기경의 망토", dungeon: "Pit of Saron", stats: ["crit","vers"] },
-  { forSlot: "back", id: 249335, en: "Imperator's Banner", ko: "전제군주의 깃발", dungeon: "Imperator Averzian", stats: ["crit","vers"] },
-  { forSlot: "head", id: 249952, en: "Night Ender's Tusks", ko: "밤의 종결자의 엄니", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "neck", id: 151309, en: "Necklace of the Twisting Void", ko: "뒤틀리는 공허의 목걸이", dungeon: "Seat of the Triumvirate", stats: ["haste","vers"] },
-  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", dungeon: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", dungeon: "Skyreach", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", dungeon: "Seat of the Triumvirate", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", dungeon: "Midnight Falls", stats: ["mastery","vers"] },
-  { forSlot: "ring", id: 249336, en: "Signet of the Starved Beast", ko: "굶주린 야수의 인장", dungeon: "Vorasius", stats: ["crit","vers"] },
-  { forSlot: "ring", id: 249919, en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", dungeon: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
+  { forSlot: "back", id: 49823, en: "Cloak of the Fallen Cardinal", ko: "쓰러진 추기경의 망토", source: "Pit of Saron", stats: ["crit","vers"] },
+  { forSlot: "back", id: 249335, en: "Imperator's Banner", ko: "전제군주의 깃발", source: "Imperator Averzian", stats: ["crit","vers"] },
+  { forSlot: "legs", id: 251118, en: "Legplates of Lingering Dusk", ko: "잔존하는 암흑의 다리갑옷", source: "Magisters' Terrace", stats: ["crit","mastery"] },
+  { forSlot: "neck", id: 151309, en: "Necklace of the Twisting Void", ko: "뒤틀리는 공허의 목걸이", source: "Seat of the Triumvirate", stats: ["haste","vers"] },
+  { forSlot: "ring", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", source: "Midnight Falls", stats: ["mastery","vers"] },
+  { forSlot: "ring", id: 249336, en: "Signet of the Starved Beast", ko: "굶주린 야수의 인장", source: "Vorasius", stats: ["crit","vers"] },
+  { forSlot: "ring", id: 249919, en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", source: "Belo'ren", stats: ["crit","mastery"] },
+  { forSlot: "ring", id: 251205, en: "Leyline Leggings", ko: "지맥 다리보호구", source: "Nexus-Point Xenas", stats: ["crit","vers"] },
+  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunner Spire", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 258514, en: "Umbral Spire of Zuraal", ko: "주라알의 암영 뾰족지팡이", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
 ];
 
 export var WORST_STATS = [];
@@ -82,8 +82,8 @@ export var KNOWN_STATS = {
   249970:["haste","mastery"],249971:["haste","mastery"],250046:["crit","vers"],251077:["crit","mastery"],
   251078:["mastery","vers"],251096:["haste","vers"],251101:["crit","vers"],251112:["haste","vers"],
   251118:["crit","mastery"],251161:["crit","vers"],251168:["crit","mastery"],251203:["crit","vers"],
-  251513:["crit","mastery"],252418:[],252420:[],258218:["crit","mastery"],
-  258514:["crit","mastery"],258583:["crit","mastery"],
+  251205:["crit","vers"],251513:["crit","mastery"],252418:[],252420:[],
+  258218:["crit","mastery"],258514:["crit","mastery"],258583:["crit","mastery"],
 };
 
 export var DUNGEONS = [

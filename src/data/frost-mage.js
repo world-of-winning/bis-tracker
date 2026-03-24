@@ -52,21 +52,23 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "chest", id: 49825, en: "Palebone Robes", ko: "창백한 뼈 로브", dungeon: "Pit of Saron", stats: ["crit","haste"] },
-  { forSlot: "chest", id: 151303, en: "Voidbender Robe", ko: "공허술사 로브", dungeon: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", dungeon: "Fallen-King Salhadaar", stats: ["crit","haste"] },
-  { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", dungeon: "Crown of the Cosmos", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", dungeon: "Lightblinded Vanguard", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", dungeon: "Belo'ren", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", dungeon: "Windrunner Spire", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", dungeon: "Maisara Caverns", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", dungeon: "Skyreach", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", dungeon: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { forSlot: "ring", id: 251093, en: "Omission of Light", ko: "소외된 빛", dungeon: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", dungeon: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "wrist", id: 258580, en: "Bracers of Blazing Light", ko: "작열하는 빛의 팔보호구", dungeon: "Skyreach", stats: ["mastery","vers"] },
-  { forSlot: "waist", id: 239664, en: "Arcanoweave Cord", ko: "비전매듭 장식끈", dungeon: "Crafted", stats: ["crit","haste"] },
-  { forSlot: "waist", id: 249319, en: "Endless March Waistwrap", ko: "끝없는 행진 허리싸개", dungeon: "Imperator Averzian", stats: ["crit","haste"] },
+  { forSlot: "chest", id: 49825, en: "Palebone Robes", ko: "창백한 뼈 로브", source: "Pit of Saron", stats: ["crit","haste"] },
+  { forSlot: "chest", id: 151303, en: "Voidbender Robe", ko: "공허술사 로브", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { forSlot: "feet", id: 250062, en: "Voidbreaker's Treads", ko: "공허파괴자의 발보호대", source: "Catalyst", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
+  { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 251093, en: "Omission of Light", ko: "소외된 빛", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
+  { forSlot: "waist", id: 239664, en: "Arcanoweave Cord", ko: "비전매듭 장식끈", source: "Crafted", stats: ["crit","haste"] },
+  { forSlot: "waist", id: 249319, en: "Endless March Waistwrap", ko: "끝없는 행진 허리싸개", source: "Imperator Averzian", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 249277, en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", source: "Lightblinded Vanguard", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 249284, en: "Belo'ren's Swift Talon", ko: "벨로렌의 날렵한 갈퀴발톱", source: "Belo'ren", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunner Spire", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
+  { forSlot: "wrist", id: 258580, en: "Bracers of Blazing Light", ko: "작열하는 빛의 팔보호구", source: "Skyreach", stats: ["mastery","vers"] },
 ];
 
 export var WORST_STATS = ["vers"];
@@ -83,9 +85,9 @@ export var KNOWN_STATS = {
   250057:["crit","haste"],250059:["crit","haste"],250060:["haste","mastery"],250061:["haste","mastery"],
   250062:["haste","mastery"],250063:["crit","haste"],250144:[],250247:["haste","mastery"],
   250258:["mastery"],251077:["crit","mastery"],251085:["crit","mastery"],251093:["haste","mastery"],
-  251108:["mastery","vers"],251115:["haste","mastery"],251168:["crit","mastery"],251513:["crit","mastery"],
-  258218:["crit","mastery"],258514:["crit","mastery"],258574:["haste","vers"],258575:["crit","mastery"],
-  258580:["mastery","vers"],258584:["haste","mastery"],
+  251108:["mastery","vers"],251115:["haste","mastery"],251142:["haste","mastery"],251168:["crit","mastery"],
+  251513:["crit","mastery"],258218:["crit","mastery"],258514:["crit","mastery"],258574:["haste","vers"],
+  258575:["crit","mastery"],258580:["mastery","vers"],258584:["haste","mastery"],
 };
 
 export var DUNGEONS = [
