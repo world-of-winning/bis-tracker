@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.2.0
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.1.1...v1.2.0)
+
+### 🚀 Enhancements
+
+- Widen layout to 4-column grid, unify container, and improve tier status labels ([7f7327e](https://github.com/world-of-winning/bis-tracker/commit/7f7327e))
+
+### 🩹 Fixes
+
+- Use English keys for ALTS forSlot values ([0be8da2](https://github.com/world-of-winning/bis-tracker/commit/0be8da2))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.1.0
 
 ### 🚀 Features
