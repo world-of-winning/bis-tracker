@@ -133,6 +133,49 @@ function StatPills({ stats: itemStats }) {
   return (<span style={{ display: "inline-flex", gap: 2 }}>{itemStats.map(function(s) { var c = colors[s]; return (<span key={s} style={{ display: "inline-flex", padding: "1px 5px", borderRadius: 3, fontSize: 9, fontWeight: 700, background: c.bg, color: c.fg, border: "1px solid " + c.bd }}>{t("stats." + s)}</span>); })}</span>);
 }
 
+var DIFF_ORDER = ["amr", "stat3", "stat4", "stat5", "stat71", "stat72", "stat73", "stat74", "stat7", "rtg32", "rtg36", "rtg49", "rtg40", "rtg24", "rtg25", "rtg62"];
+var DIFF_LABELS = {
+  0: { amr: "Armor", stat3: "Agility", stat4: "Strength", stat5: "Intellect", stat71: "Agility/Strength/Intellect", stat72: "Agility/Strength", stat73: "Agility/Intellect", stat74: "Strength/Intellect", stat7: "Stamina", rtg32: "Critical Strike", rtg36: "Haste", rtg49: "Mastery", rtg40: "Versatility", rtg24: "Random Stat 1", rtg25: "Random Stat 2", rtg62: "Leech" },
+  1: { amr: "방어도", stat3: "민첩성", stat4: "힘", stat5: "지능", stat71: "민첩/힘/지능", stat72: "민첩/힘", stat73: "민첩/지능", stat74: "힘/지능", stat7: "체력", rtg32: "치명타", rtg36: "가속", rtg49: "특화", rtg40: "유연성", rtg24: "무작위 능력치 1", rtg25: "무작위 능력치 2", rtg62: "생기흡수" }
+};
+function parseTooltipStats(html) {
+  var stats = {};
+  var re = /<!--(amr|stat\d+|rtg\d+)-->[^\d<]*?(\d[\d,]*)/g;
+  var m;
+  while ((m = re.exec(html)) !== null) {
+    stats[m[1]] = (stats[m[1]] || 0) + parseInt(m[2].replace(/,/g, ""), 10);
+  }
+  return stats;
+}
+function computeStatDiff(newStats, oldStats) {
+  var allKeys = {};
+  Object.keys(newStats).forEach(function(k) { allKeys[k] = true; });
+  Object.keys(oldStats).forEach(function(k) { allKeys[k] = true; });
+  var diff = [];
+  DIFF_ORDER.forEach(function(k) {
+    if (!allKeys[k]) return;
+    delete allKeys[k];
+    var d = (newStats[k] || 0) - (oldStats[k] || 0);
+    if (d !== 0) diff.push({ key: k, val: d });
+  });
+  Object.keys(allKeys).forEach(function(k) {
+    var d = (newStats[k] || 0) - (oldStats[k] || 0);
+    if (d !== 0) diff.push({ key: k, val: d });
+  });
+  return diff;
+}
+function renderDiffHTML(diff, loc) {
+  var labels = DIFF_LABELS[loc];
+  var header = loc === 1 ? "아이템 교체 시 나타나는 변화:" : "Stat changes if equipped:";
+  var lines = ['<br><span style="border-top:1px solid #333;display:block;padding-top:6px;margin-top:2px;color:#ffd100;font-size:11px">' + header + '</span>'];
+  diff.forEach(function(d) {
+    var color = d.val > 0 ? "#0f0" : "#f44";
+    var sign = d.val > 0 ? "+" : "";
+    lines.push('<span style="display:block;color:' + color + ';font-size:12px">' + sign + d.val + ' ' + (labels[d.key] || d.key) + '</span>');
+  });
+  return lines.join("");
+}
+
 var eqTooltipCache = {};
 function EqTooltipObserver({ locale }) {
   var loc = locale === "ko" ? 1 : 0;
@@ -153,6 +196,8 @@ function EqTooltipObserver({ locale }) {
     var lastEqKey = null;
     var rafId = null;
     var activeLink = null;
+    var diffComputed = false;
+    var hoverTime = 0;
     var eqLabelText = loc === 1 ? "장착" : "Equipped";
 
     function trackPosition() {
@@ -169,6 +214,28 @@ function EqTooltipObserver({ locale }) {
       el.style.top = (Math.max(4, top) - 20) + "px";
       el.style.left = (Math.max(4, left) - 6) + "px";
       el.style.display = "block";
+      if (!diffComputed && Date.now() - hoverTime > 300) {
+        var eqHtml = eqTooltipCache[lastEqKey];
+        if (eqHtml) {
+          var bisHtml = whTip.innerHTML;
+          var bisStats = parseTooltipStats(bisHtml);
+          if (Object.keys(bisStats).length > 0) {
+            diffComputed = true;
+            var td = el.querySelector(".eq-td");
+            if (td) {
+              var diffDiv = td.querySelector(".eq-stat-diff");
+              if (!diffDiv) {
+                diffDiv = document.createElement("div");
+                diffDiv.className = "eq-stat-diff";
+                td.appendChild(diffDiv);
+              }
+              var eqStats = parseTooltipStats(eqHtml);
+              var diff = computeStatDiff(bisStats, eqStats);
+              diffDiv.innerHTML = diff.length > 0 ? renderDiffHTML(diff, loc) : "";
+            }
+          }
+        }
+      }
       rafId = requestAnimationFrame(trackPosition);
     }
 
@@ -176,6 +243,8 @@ function EqTooltipObserver({ locale }) {
       var link = e.target.closest("a[data-eq-id]");
       if (!link || link === activeLink) return;
       activeLink = link;
+      diffComputed = false;
+      hoverTime = Date.now();
       var el = elRef.current; if (!el) return;
       var eqId = link.getAttribute("data-eq-id");
       var eqBonus = link.getAttribute("data-eq-bonus");
@@ -247,6 +316,8 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
   })() : null;
   var altEquipped = isAlt && altEq && altEq.id === item.id;
   var hasDiff = eq && eq.id !== item.id;
+  var altHasDiff = isAlt && altEq && !altEquipped;
+  var eqForTooltip = hasDiff ? eq : (altHasDiff ? altEq : null);
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
   var tier = (p && p.tier) ? p.tier : 0;
   var isMythicBisDone = p && p.labelKey === "mythicBisDone";
@@ -270,7 +341,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: c.g, color: c.t, border: "1px solid " + c.b + "44" }}>{isDungeon ? t("dungeons." + itemSource) : (t("sources." + itemSource) || itemSource)}</span>
             <StatPills stats={item.stats} />
           </div>
-          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + (tier === 3 && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(hasDiff && eq ? {"data-eq-id": eq.id, "data-eq-bonus": eq.bonus || "", "data-eq-ilvl": eq.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: (tier === 4 || altEquipped) ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: (tier === 4 || altEquipped) ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
+          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + (tier === 3 && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(eqForTooltip ? {"data-eq-id": eqForTooltip.id, "data-eq-bonus": eqForTooltip.bonus || "", "data-eq-ilvl": eqForTooltip.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: (tier === 4 || altEquipped) ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: (tier === 4 || altEquipped) ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
           <div style={{ fontSize: 11.5, color: tier === 4 ? "#445533" : "#776655", marginBottom: 6 }}>{locale === "ko" ? item.en : item.ko}</div>
           {!isAlt && p && tier > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
