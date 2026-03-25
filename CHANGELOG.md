@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.3.0
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.8...v1.3.0)
+
+### 🚀 Enhancements
+
+- Add stat diff comparison on equipped item tooltip ([7d26737](https://github.com/world-of-winning/bis-tracker/commit/7d26737))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.2.8
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.7...v1.2.8)
