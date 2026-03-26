@@ -65,7 +65,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 251162, en: "Traitor's Talon", ko: "배신자의 갈퀴발톱", source: "Maisara Caverns", stats: ["crit","haste"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["mastery","crit","haste","vers"];
 
 export var STAT_CACHE_KEY = "ret-paladin-stat-cache-v1";
 

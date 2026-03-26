@@ -75,7 +75,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 151321, en: "Darkfang Scale Wristguards", ko: "검은송곳니 비늘 손목보호구", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["mastery","crit","haste","vers"];
 
 export var STAT_CACHE_KEY = "pres-evoker-stat-cache-v1";
 

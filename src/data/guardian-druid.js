@@ -64,7 +64,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 49802, en: "Garfrost's Two-Ton Hammer", ko: "가프로스트의 2톤 망치", source: "Pit of Saron", stats: ["crit","haste"] },
 ];
 
-export var WORST_STATS = ["crit"];
+export var PRIORITY_STATS = ["haste","vers","crit","mastery"];
 
 export var STAT_CACHE_KEY = "guardian-druid-stat-cache-v1";
 

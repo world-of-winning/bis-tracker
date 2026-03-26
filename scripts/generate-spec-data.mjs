@@ -10,6 +10,7 @@
  *   node scripts/generate-spec-data.mjs --missing      # only specs with missing/incomplete files
  *   node scripts/generate-spec-data.mjs --force        # force regenerate (ignore unchanged check)
  *   node scripts/generate-spec-data.mjs --fix          # normalize source/dungeon names (no network)
+ *   node scripts/generate-spec-data.mjs --rebuild      # rebuild from cache only (no network)
  */
 
 import { load } from 'cheerio';
@@ -18,6 +19,27 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { fetchTooltip, saveCache, cacheGet, cacheSet } from './wowhead-cache.mjs';
 import { buildItemIndex, findAltsForSpec, updateSpecFile } from './find-alts.mjs';
+
+// ─── Priority stats cache (Maxroll stat priority, separate from Wowhead cache) ─
+const PRIORITY_CACHE_FILE = resolve(dirname(fileURLToPath(import.meta.url)), 'priority-stats.json');
+let _priorityCache = null;
+function loadPriorityCache() {
+  if (_priorityCache) return _priorityCache;
+  try {
+    _priorityCache = JSON.parse(readFileSync(PRIORITY_CACHE_FILE, 'utf8'));
+  } catch { _priorityCache = {}; }
+  return _priorityCache;
+}
+function savePriorityCache() {
+  writeFileSync(PRIORITY_CACHE_FILE, JSON.stringify(_priorityCache, null, 2) + '\n', 'utf8');
+}
+function getPriority(specKey) {
+  return loadPriorityCache()[specKey] || null;
+}
+function setPriority(specKey, priority) {
+  loadPriorityCache()[specKey] = priority;
+  savePriorityCache();
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname, '../src/data');
@@ -215,6 +237,23 @@ function statCacheKey(key) {
 }
 
 // ─── Maxroll.gg scraper ──────────────────────────────────────
+// mxt-stat-{id} class → stat key (WoW rating IDs)
+var MXT_STAT_MAP = { 32: 'crit', 36: 'haste', 49: 'mastery', 40: 'vers' };
+function parseStatPriority(html) {
+  const $ = load(html);
+  const embed = $('.mxt-StatPriorityEmbed');
+  if (!embed.length) return null;
+  const priority = [];
+  embed.find('[class*="mxt-stat-"]').each((_, el) => {
+    const cls = $(el).attr('class') || '';
+    const m = cls.match(/mxt-stat-(\d+)/);
+    if (!m) return;
+    const key = MXT_STAT_MAP[parseInt(m[1])];
+    if (key && !priority.includes(key)) priority.push(key);
+  });
+  return priority.length === 4 ? priority : null;
+}
+
 function parseGearTables(html) {
   const $ = load(html);
   const gearTables = [];
@@ -393,6 +432,7 @@ async function fetchMaxrollGearTables(slug, urlSuffix = 'mythic-plus-guide') {
   return {
     bis: bisTable ? toGearRows(bisTable) : null,
     farmable: farmableTable ? toGearRows(farmableTable) : null,
+    statPriority: parseStatPriority(html),
   };
 }
 
@@ -662,7 +702,7 @@ function sortDungeons(dungeons) {
   });
 }
 
-function generateFullJs(spec, bisItems, mythicItems, knownStats, worstStatsStr, altsStr) {
+function generateFullJs(spec, bisItems, mythicItems, knownStats, altsStr, priorityStatsOverride) {
   const theme = makeTheme(spec.accent);
   // Collect all sources — dungeons are for DUNGEONS array, others for SOURCES
   const allItems = [...(bisItems || []), ...(mythicItems || [])];
@@ -727,23 +767,8 @@ function generateFullJs(spec, bisItems, mythicItems, knownStats, worstStatsStr, 
   }
   out += '\n';
 
-  // WORST_STATS — compute from BIS stat distribution if not preserved
-  if (worstStatsStr && !/WORST_STATS = \[\];/.test(worstStatsStr)) {
-    out += worstStatsStr + '\n';
-  } else {
-    const allBisItems = [...(bisItems || []), ...(mythicItems || [])];
-    const sc = { crit: 0, haste: 0, mastery: 0, vers: 0 };
-    for (const item of allBisItems) {
-      for (const s of (item.stats || [])) { if (s in sc) sc[s]++; }
-    }
-    const min = Math.min(...Object.values(sc));
-    const worst = Object.entries(sc).filter(([, c]) => c === min).map(([s]) => s);
-    if (worst.length >= 1 && worst.length < 4) {
-      out += `export var WORST_STATS = ${JSON.stringify(worst)};\n`;
-    } else {
-      out += `export var WORST_STATS = [];\n`;
-    }
-  }
+  // PRIORITY_STATS — from Maxroll guide; preserved if widget not found; [] if unknown
+  out += `export var PRIORITY_STATS = ${priorityStatsOverride && priorityStatsOverride.length ? JSON.stringify(priorityStatsOverride) : '[]'};\n`;
   out += '\n';
 
   out += `export var STAT_CACHE_KEY = ${JSON.stringify(statCacheKey(spec.key))};\n`;
@@ -773,7 +798,7 @@ function readPreservedSection(specKey, varName) {
   const path = resolve(DATA_DIR, `${specKey}.js`);
   if (!existsSync(path)) return null;
   const content = readFileSync(path, 'utf8');
-  if (varName === 'WORST_STATS') {
+  if (varName === 'PRIORITY_STATS') {
     const match = content.match(new RegExp(`export var ${varName} = \\[([^\\]]*)\\];`));
     if (match && match[1].trim().length > 0) {
       return `export var ${varName} = [${match[1]}];`;
@@ -818,7 +843,7 @@ async function processSpec(spec, { force = false } = {}) {
     const bisSuffix = 'raid-guide';
     const mythicSuffix = spec.mythicSuffix || 'mythic-plus-guide';
 
-    const { bis: bisRows } = await fetchMaxrollGearTables(spec.slug, bisSuffix);
+    const { bis: bisRows, statPriority: fetchedPriority } = await fetchMaxrollGearTables(spec.slug, bisSuffix);
     const { farmable: farmableRows } = await fetchMaxrollGearTables(spec.slug, mythicSuffix);
 
     // Compare crawled data with existing file — skip Wowhead lookups if unchanged
@@ -871,7 +896,6 @@ async function processSpec(spec, { force = false } = {}) {
     }
 
     // Merge skipped weapon alternatives into existing ALTS
-    const worstStatsStr = readPreservedSection(spec.key, 'WORST_STATS');
     let altsStr = readPreservedSection(spec.key, 'ALTS');
     if (altWeapons.length > 0) {
       // Deduplicate by ID against existing ALTS
@@ -897,7 +921,20 @@ async function processSpec(spec, { force = false } = {}) {
         console.log(`  Added ${newAlts.length} weapon alts from skipped slots`);
       }
     }
-    const js = generateFullJs(spec, bisItems, mythicItems, allKnownStats, worstStatsStr, altsStr);
+    // Use Maxroll-fetched stat priority; cache it when found; fall back to priority-stats.json
+    let priorityOverride = fetchedPriority;
+    if (priorityOverride) {
+      setPriority(spec.key, priorityOverride);
+      console.log(`  PRIORITY_STATS: ${JSON.stringify(priorityOverride)} (cached)`);
+    } else {
+      priorityOverride = getPriority(spec.key);
+      if (priorityOverride) {
+        console.log(`  PRIORITY_STATS: ${JSON.stringify(priorityOverride)} (from cache)`);
+      } else {
+        console.log(`  PRIORITY_STATS: not found in cache, using []`);
+      }
+    }
+    const js = generateFullJs(spec, bisItems, mythicItems, allKnownStats, altsStr, priorityOverride);
     const outPath = resolve(DATA_DIR, `${spec.key}.js`);
     writeFileSync(outPath, js, 'utf8');
     saveCache();
@@ -910,6 +947,92 @@ async function processSpec(spec, { force = false } = {}) {
   }
 }
 
+// ─── Parse item objects from existing spec file content ─────
+function parseItemsFromContent(content, varName) {
+  const m = content.match(new RegExp(`export var ${varName} = \\[([^]*?)\\];`));
+  if (!m || !m[1].trim()) return [];
+  const items = [];
+  const re = /\{[^}]+\}/g;
+  let match;
+  while ((match = re.exec(m[1]))) {
+    const s = match[0];
+    const slotM = s.match(/slot:\s*"([^"]+)"/);
+    const enM = s.match(/en:\s*"([^"]+)"/);
+    const koM = s.match(/ko:\s*"([^"]+)"/);
+    const idM = s.match(/id:\s*(\d+)/);
+    const sourceM = s.match(/source:\s*"([^"]+)"/);
+    const statsM = s.match(/stats:\s*(\[[^\]]*\])/);
+    const item = {};
+    if (slotM) item.slot = slotM[1];
+    if (enM) item.en = enM[1];
+    if (koM) item.ko = koM[1];
+    if (idM) item.id = parseInt(idM[1]);
+    if (sourceM) item.source = sourceM[1];
+    item.stats = statsM ? JSON.parse(statsM[1]) : [];
+    if (item.id) items.push(item);
+  }
+  return items;
+}
+
+// ─── Rebuild spec from cache only (no network) ───────────────
+async function rebuildSpec(spec) {
+  console.log(`\n=== Rebuilding ${spec.key} (cache only) ===`);
+  const specPath = resolve(DATA_DIR, `${spec.key}.js`);
+  if (!existsSync(specPath)) {
+    console.log(`  No existing file — skipping`);
+    return false;
+  }
+
+  const content = readFileSync(specPath, 'utf8');
+  const bisItems = parseItemsFromContent(content, 'BIS');
+  const mythicItems = parseItemsFromContent(content, 'MYTHIC');
+  const altsStr = readPreservedSection(spec.key, 'ALTS');
+
+  // Collect all item IDs (BIS + MYTHIC + ALTS)
+  const altIds = [];
+  if (altsStr) {
+    const re = /id:\s*(\d+)/g;
+    let m;
+    while ((m = re.exec(altsStr))) altIds.push(parseInt(m[1]));
+  }
+  const allIds = new Set([...bisItems.map(i => i.id), ...mythicItems.map(i => i.id), ...altIds]);
+
+  // Rebuild KNOWN_STATS from Wowhead cache
+  const knownStats = {};
+  let missing = 0;
+  for (const id of allIds) {
+    const cached = cacheGet(`${id}-0`);
+    if (cached) {
+      const tooltip = cached.tooltip || '';
+      const stats = [];
+      if (tooltip.includes('<!--rtg32-->')) stats.push('crit');
+      if (tooltip.includes('<!--rtg36-->')) stats.push('haste');
+      if (tooltip.includes('<!--rtg49-->')) stats.push('mastery');
+      if (tooltip.includes('<!--rtg40-->')) stats.push('vers');
+      knownStats[id] = stats;
+    } else {
+      // Not in cache — use existing stats from file
+      const existing = [...bisItems, ...mythicItems].find(i => i.id === id);
+      knownStats[id] = existing ? (existing.stats || []) : [];
+      missing++;
+    }
+  }
+  if (missing > 0) console.log(`  ${missing} items not in Wowhead cache, using existing stats`);
+
+  // PRIORITY_STATS from priority-stats.json
+  const priorityStats = getPriority(spec.key) || null;
+  if (priorityStats) {
+    console.log(`  PRIORITY_STATS: ${JSON.stringify(priorityStats)}`);
+  } else {
+    console.log(`  PRIORITY_STATS: not in cache, using []`);
+  }
+
+  const js = generateFullJs(spec, bisItems, mythicItems, knownStats, altsStr, priorityStats);
+  writeFileSync(specPath, js, 'utf8');
+  console.log(`  Written: ${specPath}`);
+  return true;
+}
+
 // Entry point
 const args = process.argv.slice(2);
 
@@ -919,37 +1042,18 @@ if (args.includes('--list')) {
   process.exit(0);
 }
 
-// ─── Fix WORST_STATS based on BIS stat distribution ──────────
-function fixWorstStats(targetKey) {
+// ─── Validate PRIORITY_STATS (warn if empty) ──────────
+function fixPriorityStats(targetKey) {
   const SKIP_FILES = new Set(['shared.js', 'specs.js', 'sample.js', 'tutorial.js', 'changelog.js']);
   const files = readdirSync(DATA_DIR)
     .filter(f => f.endsWith('.js') && !SKIP_FILES.has(f))
     .filter(f => !targetKey || f === `${targetKey}.js`);
-  let count = 0;
+  const empty = [];
   for (const file of files) {
-    const filePath = resolve(DATA_DIR, file);
-    const original = readFileSync(filePath, 'utf8');
-    const bisMatch = original.match(/export var BIS = \[([^]*?)\];/);
-    if (!bisMatch) continue;
-    const sc = { crit: 0, haste: 0, mastery: 0, vers: 0 };
-    const re = /stats:\s*\[([^\]]*)\]/g;
-    let m;
-    while ((m = re.exec(bisMatch[1])) !== null) {
-      const stats = m[1].replace(/"/g, '').split(',').map(s => s.trim()).filter(Boolean);
-      for (const s of stats) { if (s in sc) sc[s]++; }
-    }
-    const min = Math.min(...Object.values(sc));
-    const worst = Object.entries(sc).filter(([, c]) => c === min).map(([s]) => s);
-    if (worst.length === 0 || worst.length >= 4) continue;
-    const worstStr = JSON.stringify(worst);
-    const newVal = `export var WORST_STATS = ${worstStr};`;
-    const updated = original.replace(/export var WORST_STATS = \[[^\]]*\];/, (match) => {
-      if (match !== newVal) { count++; console.log(`  ${file}: WORST_STATS → ${worstStr}`); return newVal; }
-      return match;
-    });
-    if (updated !== original) writeFileSync(filePath, updated, 'utf8');
+    const content = readFileSync(resolve(DATA_DIR, file), 'utf8');
+    if (/export var PRIORITY_STATS = \[\];/.test(content)) empty.push(file);
   }
-  if (count > 0) console.log(`Updated WORST_STATS in ${count} files.`);
+  if (empty.length > 0) console.log(`  Warning: PRIORITY_STATS = [] in: ${empty.join(', ')}`);
 }
 
 // ─── Normalize data files (labels, sources, dungeons, worst stats) ───
@@ -1043,13 +1147,34 @@ function normalizeDataFiles(targetKey) {
 
   if (totalChanges === 0) console.log('All data files are normalized.');
   else console.log(`\nFixed ${totalChanges} values across ${files.length} files.`);
-  fixWorstStats(targetKey);
+  fixPriorityStats(targetKey);
 }
 
 // --fix: just normalize and exit (no network)
 if (args.includes('--fix')) {
   const fixTarget = args.find(a => !a.startsWith('--'));
   normalizeDataFiles(fixTarget);
+  process.exit(0);
+}
+
+// --rebuild: rebuild from cache only (no network)
+if (args.includes('--rebuild')) {
+  const rebuildTarget = args.find(a => !a.startsWith('--'));
+  const rebuildTargets = rebuildTarget
+    ? SPECS.filter(s => s.key === rebuildTarget)
+    : SPECS;
+  if (rebuildTargets.length === 0) {
+    console.error(`Unknown spec key: ${rebuildTarget}`);
+    process.exit(1);
+  }
+  let ok = 0, fail = 0;
+  for (const spec of rebuildTargets) {
+    const result = await rebuildSpec(spec);
+    if (result) ok++; else fail++;
+  }
+  console.log(`\nDone: ${ok} rebuilt, ${fail} failed`);
+  const rebuildKey = rebuildTarget || null;
+  normalizeDataFiles(rebuildKey);
   process.exit(0);
 }
 

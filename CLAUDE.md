@@ -30,7 +30,7 @@ src/
 ## Architecture
 
 ### Data Flow
-1. Spec data (BIS, ALTS, KNOWN_STATS, WORST_STATS) → passed as props to BisTracker
+1. Spec data (BIS, ALTS, KNOWN_STATS, PRIORITY_STATS) → passed as props to BisTracker
 2. SimC text parsing → extract equipped/bag item IDs
 3. IDs not in KNOWN_STATS → dynamic lookup via `fetchItemStats()` (Wowhead API)
 4. `allStats = KNOWN_STATS + runtimeStats` merge → priority/Alt/worst stat evaluation
@@ -50,7 +50,7 @@ export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/{spec}-raid-guide";
 export var STORAGE_KEY = "bis-{key}-v1";
 export var STAT_CACHE_KEY = "{key}-stat-cache-v1";
 export var THEME = { accent, accentLight, accentBg, accentBorder, shimmer, btnBg };
-export var WORST_STATS = ["vers"];  // empty array to disable
+export var PRIORITY_STATS = ["crit","haste"];  // priority secondary stats; non-priority stats are flagged as bad
 export var KNOWN_STATS = { itemId: ["crit","haste"], ... };  // BiS+Alt only
 export var BIS = [ { slot, simcSlot, en, ko, id, dungeon, stats }, ... ];
 export var ALTS = [ { forSlot, id, en, ko, dungeon, stats }, ... ];

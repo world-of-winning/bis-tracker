@@ -64,7 +64,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 251168, en: "Liferipper's Cutlass", ko: "생명 약탈자의 커틀라스", source: "Maisara Caverns", stats: ["crit","mastery"] },
 ];
 
-export var WORST_STATS = ["haste"];
+export var PRIORITY_STATS = ["vers","crit","mastery","haste"];
 
 export var STAT_CACHE_KEY = "blood-dk-stat-cache-v1";
 

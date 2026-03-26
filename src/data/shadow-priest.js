@@ -75,7 +75,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", source: "Vorasius", stats: ["haste","mastery"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
 
 export var STAT_CACHE_KEY = "shadow-priest-stat-cache-v1";
 

@@ -79,7 +79,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 258525, en: "Scepter of the Endless Night", ko: "끝없는 밤의 홀", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
 ];
 
-export var WORST_STATS = ["crit"];
+export var PRIORITY_STATS = ["haste","mastery","vers","crit"];
 
 export var STAT_CACHE_KEY = "resto-druid-stat-cache-v1";
 

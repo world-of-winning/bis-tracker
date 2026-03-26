@@ -69,7 +69,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 251079, en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", source: "Windrunner Spire", stats: ["crit","mastery"] },
 ];
 
-export var WORST_STATS = ["haste"];
+export var PRIORITY_STATS = ["crit","vers","mastery","haste"];
 
 export var STAT_CACHE_KEY = "resto-shaman-stat-cache-v1";
 

@@ -76,7 +76,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 249327, en: "Void-Skinned Bracers", ko: "공허로 무두질한 팔보호구", source: "Vorasius", stats: ["crit","haste"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
 
 export var STAT_CACHE_KEY = "balance-druid-stat-cache-v1";
 

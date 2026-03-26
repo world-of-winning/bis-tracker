@@ -5,6 +5,23 @@ import { sanitizeHTML } from '../sanitize.js';
 import { findSpecBySimC } from '../data/specs.js';
 import { useLocale } from '../i18n/index.jsx';
 
+// WoW spec IDs for Wowhead tooltip spec-specific rendering (e.g. "Strength or Intellect")
+var WH_SPEC_IDS = {
+  "blood-dk": 250, "frost-dk": 251, "unholy-dk": 252,
+  "havoc-dh": 577, "devourer-dh": 577, "veng-dh": 581,
+  "balance-druid": 102, "feral-druid": 103, "guardian-druid": 104, "resto-druid": 105,
+  "dev-evoker": 1467, "pres-evoker": 1468, "aug-evoker": 1473,
+  "bm-hunter": 253, "mm-hunter": 254, "surv-hunter": 255,
+  "arcane-mage": 62, "fire-mage": 63, "frost-mage": 64,
+  "brew-monk": 268, "ww-monk": 269, "mw-monk": 270,
+  "holy-paladin": 65, "prot-paladin": 66, "ret-paladin": 70,
+  "disc-priest": 256, "holy-priest": 257, "shadow-priest": 258,
+  "assa-rogue": 259, "outlaw-rogue": 260, "sub-rogue": 261,
+  "ele-shaman": 262, "enh-shaman": 263, "resto-shaman": 264,
+  "aff-lock": 265, "demo-lock": 266, "destro-lock": 267,
+  "arms-warrior": 71, "fury-warrior": 72, "prot-warrior": 73,
+};
+
 function sameStats(a, b) {
   if (!a || !b || !a.length || !b.length) return false;
   if (a.length !== b.length) return false;
@@ -19,7 +36,7 @@ function getDungeonCounts(BIS, ALTS, dungeons) {
   ALTS.forEach(function(a) { var s = getSource(a); if (c[s]) c[s].alt++; });
   return c;
 }
-function matchBiS(BIS, gear, bag, stats, knownBisIds) {
+function matchBiS(BIS, gear, bag, stats, knownBisIds, priorityStats) {
   var BIS_IDS = new Set(BIS.map(function(i) { return i.id; }));
   var matched = {}, eqSlot = {}, bisInBag = {}, altItems = {};
   BIS.forEach(function(bi) {
@@ -42,48 +59,100 @@ function matchBiS(BIS, gear, bag, stats, knownBisIds) {
     if (gear[alt]) eqSlot[bi.id] = gear[alt];
   });
   bag.forEach(function(b) { if (BIS_IDS.has(b.id) && !matched[b.id]) bisInBag[b.id] = b; });
+  // Top 2 priority stats set for priority-match detection
+  var top2 = (priorityStats && priorityStats.length >= 2) ? priorityStats.slice(0, 2) : null;
   BIS.forEach(function(bi) {
     if (matched[bi.id]) return;
     var eq = eqSlot[bi.id]; if (!eq || eq.id === bi.id) return;
-    // M+ BiS check (works even for stat-less items like trinkets)
-    if (knownBisIds && knownBisIds.has(eq.id)) { altItems[bi.id] = "mythic"; return; }
-    if (!bi.stats.length) return;
+    // stat-less items (trinkets etc): knownBisIds만 비교, stats 체크 불가
+    if (!bi.stats.length) {
+      if (knownBisIds && knownBisIds.has(eq.id)) altItems[bi.id] = "mythic";
+      return;
+    }
     var es = stats[eq.id];
-    if (es && sameStats(bi.stats, es)) altItems[bi.id] = "stats";
+    if (es && sameStats(bi.stats, es)) { altItems[bi.id] = "stats"; return; }
+    // Priority match: equipped item has exactly top 2 priority stats
+    if (top2 && es && es.length) {
+      if (top2.every(function(s) { return es.indexOf(s) >= 0; }) && es.filter(function(s) { return top2.indexOf(s) >= 0; }).length === es.length) {
+        altItems[bi.id] = "stats"; return;
+      }
+    }
+    // fallback: M+ BiS (stats 불일치인 경우만)
+    if (knownBisIds && knownBisIds.has(eq.id)) altItems[bi.id] = "mythic";
   });
   return { matched: matched, eqSlot: eqSlot, bisInBag: bisInBag, altItems: altItems };
 }
-function hasWorstStat(eqId, stats, worstStats) {
-  if (!worstStats || !worstStats.length) return false;
-  var es = stats[eqId];
-  if (!es || !es.length) return false;
-  return worstStats.some(function(ws) { return es.indexOf(ws) >= 0; });
+function calcAltPriority(alt, sr, allStats, priorityStats, targetIlvl, acq) {
+  if (acq && acq[alt.id]) return { tier: 4, deficit: 0, ilvl: 0, labelKey: "done", color: "#4dca6b" };
+  if (!sr || !sr.gear) return { tier: 1, deficit: targetIlvl || 0, ilvl: 0, label: "\u2014", color: "#ff6b6b" };
+  var top2 = (priorityStats && priorityStats.length >= 2) ? priorityStats.slice(0, 2) : null;
+  var slots = resolveSlots(alt.forSlot);
+  var bestEq = null, bestIlvl = -1;
+  slots.forEach(function(slot) {
+    var g = sr.gear[slot]; if (!g) return;
+    var ilvl = g.ilvl || 0;
+    // BiS item in this slot covers the alt requirement unconditionally
+    if (sr.matched && sr.matched[g.id]) {
+      if (ilvl > bestIlvl) { bestIlvl = ilvl; bestEq = g; }
+      return;
+    }
+    var es = allStats[g.id];
+    var statsMatch = alt.stats && alt.stats.length && es && es.length && (
+      sameStats(alt.stats, es) ||
+      (top2 && top2.every(function(s) { return es.indexOf(s) >= 0; }) && es.filter(function(s) { return top2.indexOf(s) >= 0; }).length === es.length)
+    );
+    if (!statsMatch) return;
+    if (ilvl > bestIlvl) { bestIlvl = ilvl; bestEq = g; }
+  });
+  if (!bestEq) return { tier: 1, deficit: targetIlvl || 0, ilvl: 0, label: "\u2014", color: "#ff6b6b" };
+  var eqIlvl = bestEq.ilvl || 0;
+  var deficit = Math.max(0, targetIlvl - eqIlvl);
+  if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b" };
+  var lowerTier = false; for (var k = 0; k < TIERS.length; k++) { if (eqIlvl <= TIERS[k].max) { lowerTier = TIERS[k].max < targetIlvl; break; } }
+  if (!lowerTier) return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", bisUpgradeable: true };
+  var prevTier = TIERS.filter(function(t) { return t.max < targetIlvl; });
+  var prevMax = prevTier.length > 0 ? prevTier[prevTier.length - 1].max : 0;
+  if (eqIlvl < prevMax) return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#ff6b6b" };
+  return { tier: 2, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c" };
 }
-function calcPriority(bisItem, sr, targetIlvl, stats, worstStats) {
-  if (!sr) return { tier: 0, deficit: 0, ilvl: 0, label: "\u2014", color: "#665544", worst: false };
+// priorityStats = ordered list from best to worst (e.g. ["crit","haste","mastery","vers"])
+// statScore: higher = better stats. Sort tiebreaker: lower score = worse stats = more urgent
+function statScore(eqId, stats, priorityStats) {
+  if (!priorityStats || !priorityStats.length) return 0;
+  var es = stats[eqId];
+  if (!es || !es.length) return 0;
+  var n = priorityStats.length;
+  var score = 0;
+  es.forEach(function(s) { var idx = priorityStats.indexOf(s); if (idx >= 0) score += (n - idx); });
+  return score;
+}
+function calcPriority(bisItem, sr, targetIlvl, stats, priorityStats) {
+  if (!sr) return { tier: 0, deficit: 0, ilvl: 0, label: "\u2014", color: "#665544", score: 0 };
   var eq = sr.eqSlot ? sr.eqSlot[bisItem.id] : null;
   var isBis = sr.matched ? sr.matched[bisItem.id] : false;
   var isAlt = sr.altItems ? sr.altItems[bisItem.id] : false;
   var inBag = sr.bisInBag ? sr.bisInBag[bisItem.id] : null;
   var eqIlvl = (eq && eq.ilvl) ? eq.ilvl : 0;
   var deficit = Math.max(0, targetIlvl - eqIlvl);
-  var worst = eq ? hasWorstStat(eq.id, stats, worstStats) : false;
-  if (inBag) { var bI = inBag.ilvl || 0, bD = Math.max(0, targetIlvl - bI); if (bD <= 0) return { tier: 4, deficit: 0, ilvl: bI, labelKey: "bagDone", color: "#4dca6b", worst: false }; return { tier: 3, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#caca3d", worst: false }; }
-  if (isBis) { if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", worst: false }; var lowerTier = false; for (var k = 0; k < TIERS.length; k++) { if (eqIlvl <= TIERS[k].max) { lowerTier = TIERS[k].max < targetIlvl; break; } } return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", worst: false, lowerTier: lowerTier }; }
+  var score = eq ? statScore(eq.id, stats, priorityStats) : 0;
+  if (inBag) { var bI = inBag.ilvl || 0, bD = Math.max(0, targetIlvl - bI); if (bD <= 0) return { tier: 4, deficit: 0, ilvl: bI, labelKey: "bagDone", color: "#4dca6b", score: 0 }; return { tier: 3, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#caca3d", score: 0 }; }
+  if (isBis) { if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", score: 0 }; return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", score: 0, bisUpgradeable: true }; }
   if (isAlt) {
     // M+ BiS equipped → tier 2 (raid BiS is different, never truly "done")
     if (isAlt === "mythic") {
-      if (deficit <= 0) return { tier: 2, deficit: 0, ilvl: eqIlvl, labelKey: "mythicBisDone", color: "#4dca6b", worst: false };
-      return { tier: 2, deficit: deficit, ilvl: eqIlvl, labelKey: "mythicBis", color: "#e8a84c", worst: false };
+      if (deficit <= 0) return { tier: 2, deficit: 0, ilvl: eqIlvl, labelKey: "mythicBisDone", color: "#4dca6b", score: 0 };
+      return { tier: 2, deficit: deficit, ilvl: eqIlvl, labelKey: "mythicBis", color: "#e8a84c", score: score };
     }
-    if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", worst: false };
+    if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", score: 0 };
+    var lowerTierAlt = false; for (var k = 0; k < TIERS.length; k++) { if (eqIlvl <= TIERS[k].max) { lowerTierAlt = TIERS[k].max < targetIlvl; break; } }
+    if (!lowerTierAlt) return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", score: score, bisUpgradeable: true };
     // Alt too far below target (more than one tier gap) → treat as wrong item
     var prevTier = TIERS.filter(function(t) { return t.max < targetIlvl; });
     var prevMax = prevTier.length > 0 ? prevTier[prevTier.length - 1].max : 0;
-    if (eqIlvl < prevMax) return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: worst ? "#ff4444" : "#ff6b6b", worst: worst };
-    return { tier: 2, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", worst: worst };
+    if (eqIlvl < prevMax) return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#ff6b6b", score: score };
+    return { tier: 2, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", score: score };
   }
-  return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl > 0 ? eqIlvl + "" : "\u2014", color: worst ? "#ff4444" : "#ff6b6b", worst: worst };
+  return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl > 0 ? eqIlvl + "" : "\u2014", color: "#ff6b6b", score: score };
 }
 // Pick the next target tier based on average equipped ilvl.
 // If avgIlvl is within reach of a tier (within half the gap to next),
@@ -96,34 +165,42 @@ function autoSelectTier(avgIlvl) {
   return TIERS[TIERS.length - 1].key;
 }
 function sortKey(p) { if (p.labelKey === "mythicBisDone") return 3.5; if (p.lowerTier) return 2; return p.tier; }
-function sortByPriority(items, sr, t, stats, worstStats) {
+function sortByPriority(items, sr, t, stats, priorityStats) {
   return items.slice().sort(function(a, b) {
-    var pa = calcPriority(a, sr, t, stats, worstStats), pb = calcPriority(b, sr, t, stats, worstStats);
+    var pa = calcPriority(a, sr, t, stats, priorityStats), pb = calcPriority(b, sr, t, stats, priorityStats);
     var sa = sortKey(pa), sb = sortKey(pb);
     if (sa !== sb) return sa - sb;
     if (pa.lowerTier !== pb.lowerTier) return pa.lowerTier ? -1 : 1;
-    if (pa.worst !== pb.worst) return pa.worst ? -1 : 1;
-    return pb.deficit - pa.deficit;
+    if (pb.deficit !== pa.deficit) return pb.deficit - pa.deficit;
+    return pa.score - pb.score;
   });
 }
 
-function calcDungeonScore(dungeon, BIS, ALTS, sr, targetIlvl, stats, worstStats, acq) {
+function calcDungeonScore(dungeon, BIS, ALTS, sr, targetIlvl, stats, priorityStats, acq) {
   if (!sr) return 0;
-  var score = 0;
+  var bisRem = 0, altRem = 0, priorityScore = 0;
   BIS.forEach(function(bi) {
     if (getSource(bi) !== dungeon) return;
-    var p = calcPriority(bi, sr, targetIlvl, stats, worstStats);
+    var p = calcPriority(bi, sr, targetIlvl, stats, priorityStats);
     if (acq[bi.id] && p.tier !== 4) p = { tier: 4 };
     if (p.tier === 4) return;
-    // tier 1 (능력치 불일치) = 40 + deficit, tier 2 (alt 장착) = 20 + deficit, tier 3 (등급↑) = 5 + deficit
-    var base = p.tier === 1 ? 40 : p.tier === 2 ? 20 : 5;
-    score += base + (p.deficit || 0) + (p.worst ? 10 : 0);
+    bisRem++;
+    var sk = sortKey(p);
+    priorityScore += Math.round((4 - sk) * 10) + (p.deficit || 0);
   });
   ALTS.forEach(function(a) {
     if (getSource(a) !== dungeon) return;
-    score += 2;
+    if (acq[a.id]) return;
+    var slots = resolveSlots(a.forSlot);
+    var done = slots.some(function(s) {
+      var g = sr.gear && sr.gear[s];
+      return g && g.id === a.id && (!g.ilvl || !targetIlvl || g.ilvl >= targetIlvl);
+    });
+    if (done) return;
+    altRem++;
   });
-  return score;
+  // 1순위: 미완료 BiS 개수, 2순위: 미완료 Alt 개수, 3순위: 우선순위 점수
+  return bisRem * 10000 + altRem * 100 + priorityScore;
 }
 
 function StatPills({ stats: itemStats }) {
@@ -177,7 +254,7 @@ function renderDiffHTML(diff, loc) {
 }
 
 var eqTooltipCache = {};
-function EqTooltipObserver({ locale }) {
+function EqTooltipObserver({ locale, whSpecId }) {
   var loc = locale === "ko" ? 1 : 0;
   var elRef = useRef(null);
   useEffect(function() {
@@ -193,6 +270,8 @@ function EqTooltipObserver({ locale }) {
     elRef.current = el;
   }, []);
   useEffect(function() {
+    // Clear cached tooltips when spec changes (primary stats differ by spec)
+    for (var k in eqTooltipCache) delete eqTooltipCache[k];
     var lastEqKey = null;
     var rafId = null;
     var activeLink = null;
@@ -258,7 +337,7 @@ function EqTooltipObserver({ locale }) {
         if (eqTooltipCache[eqKey]) { td.innerHTML = sanitizeHTML(eqTooltipCache[eqKey]); }
         else {
           td.innerHTML = '<span style="color:#556666;padding:12px">Loading...</span>';
-          fetch("https://nether.wowhead.com/tooltip/item/" + eqId + "?dataEnv=1&locale=" + loc + (eqBonus ? "&bonus=" + eqBonus : "") + (eqIlvl ? "&ilvl=" + eqIlvl : ""))
+          fetch("https://nether.wowhead.com/tooltip/item/" + eqId + "?dataEnv=1&locale=" + loc + (whSpecId ? "&spec=" + whSpecId : "") + (eqBonus ? "&bonus=" + eqBonus : "") + (eqIlvl ? "&ilvl=" + eqIlvl : ""))
             .then(function(res) { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
             .then(function(data) {
               eqTooltipCache[eqKey] = sanitizeHTML(data.tooltip);
@@ -291,22 +370,19 @@ function EqTooltipObserver({ locale }) {
       document.removeEventListener("mouseout", onOut, true);
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [loc]);
+  }, [loc, whSpecId]);
   return null;
 }
 
-function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, worstStats, targetBonus, knownBisIds }) {
+function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, knownBisIds, whSpecId }) {
   var { t, itemName, locale } = useLocale();
   var itemSource = getSource(item);
   var isDungeon = !!DC[itemSource];
   var c = DC[itemSource] || { b: "#8866aa", t: "#c4aadd", g: "#1a1028" };
   var eq = !isAlt && sr && sr.eqSlot ? sr.eqSlot[item.id] : null;
-  // For ALT cards, look up what's equipped in the alt's target slot
   var altEq = isAlt && sr && sr.gear ? (function() {
     var slots = resolveSlots(item.forSlot);
-    // Check if this exact alt item is equipped in any matching slot
     for (var i = 0; i < slots.length; i++) { if (sr.gear[slots[i]] && sr.gear[slots[i]].id === item.id) return sr.gear[slots[i]]; }
-    // For dual slots, skip items that are already BiS/MYTHIC and pick the replaceable one
     if (slots.length > 1 && knownBisIds) {
       var candidates = slots.map(function(s) { return sr.gear[s]; }).filter(Boolean);
       var replaceable = candidates.filter(function(g) { return !knownBisIds.has(g.id); });
@@ -314,26 +390,27 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
     }
     return sr.gear[slots[0]] || sr.gear[slots[1]];
   })() : null;
-  var altEquipped = isAlt && altEq && altEq.id === item.id;
   var hasDiff = eq && eq.id !== item.id;
-  var altHasDiff = isAlt && altEq && !altEquipped;
+  var altHasDiff = isAlt && altEq;
   var eqForTooltip = hasDiff ? eq : (altHasDiff ? altEq : null);
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
   var tier = (p && p.tier) ? p.tier : 0;
+  var isDoneState = tier === 4;
+  var canToggle = isDoneState || !(p && p.deficit > 0);
   var isMythicBisDone = p && p.labelKey === "mythicBisDone";
-  var visualTier = isMythicBisDone ? 4 : tier;
+  var visualTier = (isMythicBisDone || (p && p.bisUpgradeable)) ? 4 : tier;
   var cardClass = "ic card-enter";
   if (visualTier === 1) cardClass += " t1"; else if (visualTier === 2) cardClass += " t2"; else if (visualTier === 3) cardClass += " t3"; else if (visualTier === 4) cardClass += " t4";
-  if (isAlt && !altEquipped) cardClass += " altc";
-  if (altEquipped) cardClass += " t4";
+  if (isAlt && !isDoneState) cardClass += " altc";
   var bgs = { 0: "linear-gradient(135deg, #101018, " + c.g + "88)", 1: "linear-gradient(135deg, #140e0e, #1a0f0f)", 2: "linear-gradient(135deg, #14120a, #1a150d)", 3: "linear-gradient(135deg, #14120a, #1a150d)", 4: "linear-gradient(135deg, #0d120d, #0a100a)" };
   var acs = { 0: c.b, 1: "#ff6b6b", 2: "#c9a227", 3: "#c9a227", 4: "#1a3a1a" };
   var icons = { 1: "\u25B2", 2: "\u25C6", 3: "\u2191", 4: "\u2713" };
   var pLabel = p ? (p.labelKey ? t("ui." + p.labelKey) : p.label) : "";
   var whLocale = locale === "ko" ? "/ko" : "";
+  var whSpec = whSpecId ? "&spec=" + whSpecId : "";
   return (
-    <div className={cardClass} style={{ animationDelay: (idx * .04) + "s", background: altEquipped ? bgs[4] : isAlt ? bgs[2] : (bgs[visualTier] || bgs[0]), borderRadius: 10, padding: "14px 16px", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: altEquipped ? 2 : (visualTier >= 1 && visualTier <= 2) ? 3 : 2, background: altEquipped ? "#1a3a1a" : isAlt ? "#c9a227" : (acs[visualTier] || c.b), opacity: altEquipped ? .3 : visualTier <= 2 ? .9 : (visualTier === 4 ? .3 : .6) }} />
+    <div className={cardClass} style={{ animationDelay: (idx * .04) + "s", background: bgs[visualTier] || bgs[0], borderRadius: 10, padding: "14px 16px", position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: (visualTier >= 1 && visualTier <= 2) ? 3 : 2, background: acs[visualTier] || c.b, opacity: visualTier <= 2 ? .9 : (visualTier === 4 ? .3 : .6) }} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6, flexWrap: "wrap" }}>
@@ -341,59 +418,49 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: c.g, color: c.t, border: "1px solid " + c.b + "44" }}>{isDungeon ? t("dungeons." + itemSource) : (t("sources." + itemSource) || itemSource)}</span>
             <StatPills stats={item.stats} />
           </div>
-          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + (tier === 3 && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(eqForTooltip ? {"data-eq-id": eqForTooltip.id, "data-eq-bonus": eqForTooltip.bonus || "", "data-eq-ilvl": eqForTooltip.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: (tier === 4 || altEquipped) ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: (tier === 4 || altEquipped) ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
-          <div style={{ fontSize: 11.5, color: tier === 4 ? "#445533" : "#776655", marginBottom: 6 }}>{locale === "ko" ? item.en : item.ko}</div>
-          {!isAlt && p && tier > 0 && (
+          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + whSpec + (tier === 3 && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(eqForTooltip ? {"data-eq-id": eqForTooltip.id, "data-eq-bonus": eqForTooltip.bonus || "", "data-eq-ilvl": eqForTooltip.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: isDoneState ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: isDoneState ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
+          <div style={{ fontSize: 11.5, color: isDoneState ? "#445533" : "#776655", marginBottom: 6 }}>{locale === "ko" ? item.en : item.ko}</div>
+          {p && tier > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: visualTier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : visualTier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : visualTier === 3 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : "#0d1a0d", border: "1px solid " + (visualTier === 1 ? "#6a2020" : visualTier === 2 ? "#6a5020" : visualTier === 3 ? "#6a5020" : "#1a3a1a"), color: p.color }}>
                 <span style={{ fontSize: 10 }}>{icons[tier]}</span><span>{pLabel}</span>
                 {p.deficit > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + p.deficit + "\uFF09"}</span>}
               </div>
-              {tier === 3 && p.labelKey !== "bag" && p.labelKey !== "bagDone" && <span style={{ fontSize: 9, color: p.lowerTier ? "#cc8844" : "#665544" }}>{t(p.lowerTier ? "ui.tierReacquireNeeded" : "ui.tierUpgradeNeeded")}</span>}
+              {tier === 3 && p.labelKey !== "bag" && p.labelKey !== "bagDone" && <span style={{ fontSize: 9, color: p.lowerTier ? "#cc8844" : (p.bisUpgradeable ? "#5a9a5a" : "#665544") }}>{t(p.lowerTier ? "ui.tierReacquireNeeded" : "ui.tierUpgradeNeeded")}</span>}
               {hasDiff && eq && (
-                <a href={"https://www.wowhead.com" + whLocale + "/item=" + eq.id + (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: isSimcAlt ? "#1a1508" : "#1a1520", border: "1px solid " + (isSimcAlt ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: isSimcAlt ? "#c9a040" : "#aa7799", whiteSpace: "nowrap" }}>
+                <a href={"https://www.wowhead.com" + whLocale + "/item=" + eq.id + whSpec + (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: isSimcAlt ? "#1a1508" : "#1a1520", border: "1px solid " + (isSimcAlt ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: isSimcAlt ? "#c9a040" : "#aa7799", whiteSpace: "nowrap" }}>
                   <span>{eq.name}</span>
                   {allStats[eq.id] && allStats[eq.id].length > 0 && allStats[eq.id].map(function(s) {
-                    var isW = worstStats && worstStats.indexOf(s) >= 0;
-                    return (<span key={s} style={{ fontSize: 9, color: isW ? "#ff4444" : "#776655" }}>{isW ? "\u26A0" : "\u00B7"}{t("stats." + s)}</span>);
+                    return (<span key={s} style={{ fontSize: 9, color: "#776655" }}>{"\u00B7"}{t("stats." + s)}</span>);
                   })}
                 </a>
               )}
             </div>
           )}
-          {isAlt && altEquipped && altEq && (
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: "#0d1a0d", border: "1px solid #1a3a1a", color: "#4dca6b" }}>
-              <span>{"\u2713"}</span><span>{t("ui.done")}{altEq.ilvl ? " (" + altEq.ilvl + ")" : ""}</span>
-            </div>
-          )}
-          {isAlt && !altEquipped && altEq && (function() {
-            var eqHasWorst = worstStats && worstStats.some(function(ws) { return allStats[altEq.id] && allStats[altEq.id].indexOf(ws) >= 0; });
-            return (
+          {isAlt && !isDoneState && altEq && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center", marginTop: 4 }}>
-              <a href={"https://www.wowhead.com" + whLocale + "/item=" + altEq.id + (altEq.bonus ? "&bonus=" + altEq.bonus : "") + (altEq.ilvl ? "&ilvl=" + altEq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: eqHasWorst ? "#1a1015" : "#1a1508", border: "1px solid " + (eqHasWorst ? "#3a2030" : "#3a2a10"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: eqHasWorst ? "#aa7799" : "#c9a040", whiteSpace: "nowrap" }}>
+              <a href={"https://www.wowhead.com" + whLocale + "/item=" + altEq.id + whSpec + (altEq.bonus ? "&bonus=" + altEq.bonus : "") + (altEq.ilvl ? "&ilvl=" + altEq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: "#1a1508", border: "1px solid #3a2a10", textDecoration: "none", fontSize: 10, fontWeight: 600, color: "#c9a040", whiteSpace: "nowrap" }}>
                 <span>{altEq.name}{altEq.ilvl ? " (" + altEq.ilvl + ")" : ""}</span>
                 {allStats[altEq.id] && allStats[altEq.id].length > 0 && allStats[altEq.id].map(function(s) {
-                  var isW = worstStats && worstStats.indexOf(s) >= 0;
-                  return (<span key={s} style={{ fontSize: 9, color: isW ? "#ff4444" : "#776655" }}>{isW ? "\u26A0" : "\u00B7"}{t("stats." + s)}</span>);
+                  return (<span key={s} style={{ fontSize: 9, color: "#776655" }}>{"\u00B7"}{t("stats." + s)}</span>);
                 })}
               </a>
-            </div>);
-          })()}
+            </div>
+          )}
         </div>
-        {!isAlt && (
-          <div className="ck" onClick={function() { onToggle(item.id); }} style={{ width: 36, height: 36, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: tier === 4 ? "#1a3a1a" : "#1a1a28", border: "2px solid " + (tier === 4 ? "#4dca6b" : "#2a2a3a"), flexShrink: 0, marginTop: 2 }}>
-            {tier === 4 ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4dca6b" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg> : <div style={{ width: 14, height: 14, borderRadius: 3, border: "2px solid #333344" }} />}
-          </div>
-        )}
+        <div className="ck" onClick={function() { if (canToggle) onToggle(item.id); }} style={{ width: 36, height: 36, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: isDoneState ? "#1a3a1a" : "#1a1a28", border: "2px solid " + (isDoneState ? "#4dca6b" : "#2a2a3a"), flexShrink: 0, marginTop: 2, cursor: canToggle ? "pointer" : "not-allowed", opacity: (!isDoneState && !canToggle) ? 0.35 : 1 }}>
+          {isDoneState ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4dca6b" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg> : <div style={{ width: 14, height: 14, borderRadius: 3, border: "2px solid #333344" }} />}
+        </div>
       </div>
-      <EqTooltipObserver locale={locale} />
+      <EqTooltipObserver locale={locale} whSpecId={whSpecId} />
     </div>
   );
 }
 
 export default function BisTracker({ spec, charName, initialSimcText, onSpecSwitch, onClear, onCharDetected }) {
   var { t, locale } = useLocale();
-  var { BIS, MYTHIC, ALTS, KNOWN_STATS, DUNGEONS, STORAGE_KEY: BASE_STORAGE_KEY, THEME: theme, WORST_STATS, STAT_CACHE_KEY, GUIDE_URL } = spec;
+  var { BIS, MYTHIC, ALTS, KNOWN_STATS, DUNGEONS, STORAGE_KEY: BASE_STORAGE_KEY, THEME: theme, PRIORITY_STATS, STAT_CACHE_KEY, GUIDE_URL, SPEC_KEY } = spec;
+  var whSpecId = WH_SPEC_IDS[SPEC_KEY];
   var STORAGE_KEY = charName ? BASE_STORAGE_KEY + ":" + charName : BASE_STORAGE_KEY;
   // Merge MYTHIC items into ALTS as farmable alternatives
   var mergedAlts = useMemo(function() {
@@ -465,7 +532,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     var currentStats = Object.assign({}, KNOWN_STATS, runtimeStats);
     var unknownIds = allIds.filter(function(id, i) { return allIds.indexOf(id) === i && currentStats[id] === undefined; });
     function finishImport(mergedStats) {
-      var result = matchBiS(BIS, parsed.gear, parsed.bag, mergedStats, knownBisIds);
+      var result = matchBiS(BIS, parsed.gear, parsed.bag, mergedStats, knownBisIds, PRIORITY_STATS);
       var newSr = { ci: parsed.ci, gear: parsed.gear, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched };
       var importName = parsed.ci.name || charName;
       var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
@@ -539,11 +606,21 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       doImport(initialSimcText);
     }
   }, [initialSimcText, doImport]);
-  var doneCount = useMemo(function() { return activeItems.filter(function(b) { if (acq[b.id]) return true; return sr ? calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length; }, [acq, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
-  var mythicBisCount = useMemo(function() { return sr ? activeItems.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS); return p.tier === 2 && p.labelKey === "mythicBis"; }).length : 0; }, [acq, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
-  var altCount = useMemo(function() { return sr ? activeItems.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, WORST_STATS); return p.tier === 2 && p.labelKey !== "mythicBis"; }).length : 0; }, [acq, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
-  var displayBis = useMemo(function() { var items = filter === "all" ? activeItems : activeItems.filter(function(i) { return getSource(i) === filter; }); return sr ? sortByPriority(items, sr, targetInfo.max, allStats, WORST_STATS) : items; }, [filter, sr, targetInfo.max, allStats, activeItems, WORST_STATS]);
-  var displayAlts = useMemo(function() { return filter === "all" ? [] : mergedAlts.filter(function(a) { return getSource(a) === filter; }); }, [filter, mergedAlts]);
+  var doneCount = useMemo(function() { return activeItems.filter(function(b) { if (acq[b.id]) return true; return sr ? calcPriority(b, sr, targetInfo.max, allStats, PRIORITY_STATS).tier === 4 : false; }).length; }, [acq, sr, targetInfo.max, allStats, activeItems, PRIORITY_STATS]);
+  var mythicBisCount = useMemo(function() { return sr ? activeItems.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, PRIORITY_STATS); return p.tier === 2 && p.labelKey === "mythicBis"; }).length : 0; }, [acq, sr, targetInfo.max, allStats, activeItems, PRIORITY_STATS]);
+  var altCount = useMemo(function() { return sr ? activeItems.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, PRIORITY_STATS); return p.tier === 2 && p.labelKey !== "mythicBis"; }).length : 0; }, [acq, sr, targetInfo.max, allStats, activeItems, PRIORITY_STATS]);
+  var displayBis = useMemo(function() { var items = filter === "all" ? activeItems : activeItems.filter(function(i) { return getSource(i) === filter; }); return sr ? sortByPriority(items, sr, targetInfo.max, allStats, PRIORITY_STATS) : items; }, [filter, sr, targetInfo.max, allStats, activeItems, PRIORITY_STATS]);
+  var displayAlts = useMemo(function() {
+    if (filter === "all") return [];
+    var items = mergedAlts.filter(function(a) { return getSource(a) === filter; });
+    if (!sr) return items;
+    return items.slice().sort(function(a, b) {
+      var pa = calcAltPriority(a, sr, allStats, PRIORITY_STATS, targetInfo.max, acq);
+      var pb = calcAltPriority(b, sr, allStats, PRIORITY_STATS, targetInfo.max, acq);
+      if (pa.tier !== pb.tier) return pa.tier - pb.tier;
+      return (pb.deficit || 0) - (pa.deficit || 0);
+    });
+  }, [filter, mergedAlts, sr, acq, allStats, PRIORITY_STATS, targetInfo.max]);
   var nonDungeonSources = useMemo(function() {
     var sources = {};
     activeItems.forEach(function(item) { var s = getSource(item); if (!DC[s]) sources[s] = (sources[s] || 0) + 1; });
@@ -599,7 +676,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         {nonDungeonSources.prep.map(function(ns) {
           var act = filter === ns.source;
           var nsBis = activeItems.filter(function(i) { return getSource(i) === ns.source; });
-          var nsBisRem = nsBis.length - nsBis.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
+          var nsBisRem = nsBis.length - nsBis.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, PRIORITY_STATS).tier === 4 : false; }).length;
           var nsAltItems = mergedAlts.filter(function(a) { return getSource(a) === ns.source; });
           var nsAltDone = sr && sr.gear ? nsAltItems.filter(function(a) { return resolveSlots(a.forSlot).some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; }); }).length : 0;
           var nsAltRem = nsAltItems.length - nsAltDone;
@@ -615,11 +692,11 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         {(nonDungeonSources.prep.length > 0) && <span style={{ width: 1, height: 20, background: "#2a2a3a", alignSelf: "center" }} />}
         {DUNGEONS.map(function(d) {
           var cnt = dungeonCounts[d]; if (!cnt || (cnt.bis === 0 && cnt.alt === 0)) return null;
-          return { source: d, score: sr ? calcDungeonScore(d, activeItems, mergedAlts, sr, targetInfo.max, allStats, WORST_STATS, acq) : 0 };
+          return { source: d, score: sr ? calcDungeonScore(d, activeItems, mergedAlts, sr, targetInfo.max, allStats, PRIORITY_STATS, acq) : 0 };
         }).filter(Boolean).sort(function(a, b) { return b.score - a.score; }).map(function(item) {
           var d = item.source, c2 = DC[d] || { g: "#333", b: "#555", t: "#aaa" }, act = filter === d;
           var bisItems = activeItems.filter(function(i) { return getSource(i) === d; });
-          var bisRem = bisItems.length - bisItems.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
+          var bisRem = bisItems.length - bisItems.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, PRIORITY_STATS).tier === 4 : false; }).length;
           var altItems = mergedAlts.filter(function(a) { return getSource(a) === d; });
           var altDone = sr && sr.gear ? altItems.filter(function(a) {
             return resolveSlots(a.forSlot).some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; });
@@ -636,7 +713,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         {nonDungeonSources.raid.map(function(ns) {
           var act = filter === ns.source;
           var nsBis = activeItems.filter(function(i) { return getSource(i) === ns.source; });
-          var nsBisRem = nsBis.length - nsBis.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, WORST_STATS).tier === 4 : false; }).length;
+          var nsBisRem = nsBis.length - nsBis.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, PRIORITY_STATS).tier === 4 : false; }).length;
           var nsAltItems = mergedAlts.filter(function(a) { return getSource(a) === ns.source; });
           var nsAltDone = sr && sr.gear ? nsAltItems.filter(function(a) { return resolveSlots(a.forSlot).some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; }); }).length : 0;
           var nsAltRem = nsAltItems.length - nsAltDone;
@@ -678,9 +755,9 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         {filter !== "all" && displayBis.length > 0 && <div style={{ fontSize: 11, fontWeight: 700, color: theme.accent, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>{t("ui.bisItems")}</div>}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
           {displayBis.map(function(item, idx) {
-            var p = sr ? calcPriority(item, sr, targetInfo.max, allStats, WORST_STATS) : null;
+            var p = sr ? calcPriority(item, sr, targetInfo.max, allStats, PRIORITY_STATS) : null;
             if (acq[item.id] && p && p.tier !== 4) p = { tier: 4, deficit: 0, ilvl: p.ilvl, labelKey: "done", color: "#4dca6b", worst: false };
-            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} worstStats={WORST_STATS} targetBonus={targetInfo.bonus} />;
+            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.bonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} />;
           })}
         </div>
         {displayAlts.length > 0 && (
@@ -690,7 +767,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
               {displayAlts.map(function(item, idx) {
-                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={null} sr={sr} onToggle={function() {}} idx={idx} theme={theme} allStats={allStats} worstStats={WORST_STATS} targetBonus={targetInfo.bonus} knownBisIds={knownBisIds} />;
+                var altP = sr ? calcAltPriority(item, sr, allStats, PRIORITY_STATS, targetInfo.max, acq) : null;
+                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.bonus} targetIlvl={targetInfo.max} knownBisIds={knownBisIds} whSpecId={whSpecId} />;
               })}
             </div>
           </div>

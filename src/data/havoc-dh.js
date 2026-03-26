@@ -74,7 +74,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 251135, en: "Fury-fletched Armlets", ko: "지옥 새김 팔찌", source: "Magisters' Terrace", stats: ["crit","haste"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["crit","mastery","haste","vers"];
 
 export var STAT_CACHE_KEY = "havoc-dh-stat-cache-v1";
 

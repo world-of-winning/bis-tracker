@@ -63,11 +63,11 @@ export var ALTS = [
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "waist", id: 239664, en: "Arcanoweave Cord", ko: "비전매듭 장식끈", source: "Crafted", stats: ["crit","haste"] },
   { forSlot: "waist", id: 249319, en: "Endless March Waistwrap", ko: "끝없는 행진 허리싸개", source: "Imperator Averzian", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunners Spire", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "wrist", id: 258580, en: "Bracers of Blazing Light", ko: "작열하는 빛의 팔보호구", source: "Skyreach", stats: ["mastery","vers"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["mastery","crit","haste","vers"];
 
 export var STAT_CACHE_KEY = "frost-mage-stat-cache-v1";
 

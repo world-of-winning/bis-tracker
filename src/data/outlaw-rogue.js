@@ -80,7 +80,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 251135, en: "Fury-fletched Armlets", ko: "지옥 새김 팔찌", source: "Magisters' Terrace", stats: ["crit","haste"] },
 ];
 
-export var WORST_STATS = ["mastery","vers"];
+export var PRIORITY_STATS = ["crit","haste","vers","mastery"];
 
 export var STAT_CACHE_KEY = "outlaw-rogue-stat-cache-v1";
 
@@ -88,17 +88,17 @@ export var KNOWN_STATS = {
   49806:["crit","haste"],49807:["crit","haste"],49812:["crit","haste"],49823:["crit","vers"],
   50228:["crit","haste"],50264:["crit","haste"],151313:["crit","vers"],151315:["crit","haste"],
   151316:["haste","vers"],151318:["crit","haste"],151336:["crit","haste"],193710:["haste","mastery"],
-  240949:[],244576:[],249283:["haste","mastery"],249284:["crit","mastery"],
-  249287:["haste","mastery"],249294:["haste","mastery"],249295:["crit","haste"],249327:["crit","haste"],
-  249334:["haste","vers"],249335:["crit","vers"],249337:["crit","haste"],249343:["mastery"],
-  249369:["haste","mastery"],249374:["crit","haste"],249382:["crit","mastery"],249913:["haste"],
-  249920:["haste"],250004:["haste","mastery"],250005:["haste","vers"],250007:["crit","haste"],
-  250009:["crit","mastery"],250256:[],251087:["crit","haste"],251092:["haste","mastery"],
-  251093:["haste","mastery"],251099:["crit","mastery"],251111:["crit","haste"],251115:["haste","mastery"],
-  251122:["haste","mastery"],251135:["crit","haste"],251161:["crit","vers"],251166:["haste","vers"],
-  251171:["haste","mastery"],251178:["crit","haste"],251210:["haste","vers"],251217:["crit","haste"],
-  252420:[],258438:["haste","mastery"],258525:["crit","haste"],258577:["crit","mastery"],
-  260312:["crit","haste"],260423:["crit","haste"],
+  240949:[],244576:[],249283:["haste","mastery"],249287:["haste","mastery"],
+  249294:["haste","mastery"],249295:["crit","haste"],249327:["crit","haste"],249334:["haste","vers"],
+  249335:["crit","vers"],249337:["crit","haste"],249343:["mastery"],249369:["haste","mastery"],
+  249374:["crit","haste"],249382:["crit","mastery"],249913:["haste"],249920:["haste"],
+  250004:["haste","mastery"],250005:["haste","vers"],250007:["crit","haste"],250009:["crit","mastery"],
+  250256:[],251087:["crit","haste"],251092:["haste","mastery"],251093:["haste","mastery"],
+  251099:["crit","mastery"],251111:["crit","haste"],251115:["haste","mastery"],251122:["haste","mastery"],
+  251135:["crit","haste"],251161:["crit","vers"],251166:["haste","vers"],251171:["haste","mastery"],
+  251178:["crit","haste"],251210:["haste","vers"],251217:["crit","haste"],252420:[],
+  258438:["haste","mastery"],258525:["crit","haste"],258577:["crit","mastery"],260312:["crit","haste"],
+  260423:["crit","haste"],
 };
 
 export var DUNGEONS = [

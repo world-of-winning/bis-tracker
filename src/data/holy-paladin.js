@@ -66,7 +66,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 251122, en: "Shadowslash Slicer", ko: "어둠칼날 절단기", source: "Magisters' Terrace", stats: ["haste","mastery"] },
 ];
 
-export var WORST_STATS = ["crit"];
+export var PRIORITY_STATS = ["mastery","haste","vers","crit"];
 
 export var STAT_CACHE_KEY = "holy-paladin-stat-cache-v1";
 

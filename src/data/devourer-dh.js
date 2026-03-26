@@ -73,7 +73,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", source: "Skyreach", stats: ["haste","mastery"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
 
 export var STAT_CACHE_KEY = "devourer-dh-stat-cache-v1";
 

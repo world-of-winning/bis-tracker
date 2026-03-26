@@ -80,7 +80,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 251079, en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", source: "Windrunner Spire", stats: ["crit","mastery"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["crit","haste","mastery","vers"];
 
 export var STAT_CACHE_KEY = "aug-evoker-stat-cache-v1";
 

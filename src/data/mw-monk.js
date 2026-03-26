@@ -80,7 +80,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 251135, en: "Fury-fletched Armlets", ko: "지옥 새김 팔찌", source: "Magisters' Terrace", stats: ["crit","haste"] },
 ];
 
-export var WORST_STATS = ["mastery"];
+export var PRIORITY_STATS = ["haste","crit","vers","mastery"];
 
 export var STAT_CACHE_KEY = "mw-monk-stat-cache-v1";
 

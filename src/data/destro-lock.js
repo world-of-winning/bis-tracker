@@ -73,7 +73,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 249315, en: "Voracious Wristwraps", ko: "게걸스러운 손목싸개", source: "Vorasius", stats: ["haste","mastery"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["crit","haste","mastery","vers"];
 
 export var STAT_CACHE_KEY = "destro-lock-stat-cache-v1";
 
@@ -87,9 +87,9 @@ export var KNOWN_STATS = {
   249919:["crit","mastery"],249920:["haste"],250040:["mastery","vers"],250041:["crit","haste"],
   250042:["crit","mastery"],250043:["crit","haste"],250247:["haste","mastery"],250256:[],
   251093:["haste","mastery"],251115:["haste","mastery"],251142:["haste","mastery"],251172:["crit","haste"],
-  251213:["haste","mastery"],251217:["crit","haste"],251513:["crit","mastery"],258047:["haste","mastery"],
-  258516:["crit","vers"],258574:["haste","vers"],258575:["crit","mastery"],258578:["haste","mastery"],
-  258584:["haste","mastery"],260423:["crit","haste"],
+  251213:["haste","mastery"],251217:["crit","haste"],251513:["crit","mastery"],258516:["crit","vers"],
+  258574:["haste","vers"],258575:["crit","mastery"],258578:["haste","mastery"],258584:["haste","mastery"],
+  260423:["crit","haste"],
 };
 
 export var DUNGEONS = [

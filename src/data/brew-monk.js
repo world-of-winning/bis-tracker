@@ -66,7 +66,7 @@ export var ALTS = [
   { forSlot: "shoulder", id: 251171, en: "Enthralled Bonespines", ko: "마법에 걸린 해골가시", source: "Maisara Caverns", stats: ["haste","mastery"] },
 ];
 
-export var WORST_STATS = ["haste"];
+export var PRIORITY_STATS = ["vers","crit","mastery","haste"];
 
 export var STAT_CACHE_KEY = "brew-monk-stat-cache-v1";
 

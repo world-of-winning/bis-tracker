@@ -62,7 +62,7 @@ export var ALTS = [
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["crit","mastery","haste","vers"];
 
 export var STAT_CACHE_KEY = "unholy-dk-stat-cache-v1";
 

@@ -68,7 +68,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 249304, en: "Fallen King's Cuffs", ko: "몰락한 왕의 소매장식", source: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
 
 export var STAT_CACHE_KEY = "bm-hunter-stat-cache-v1";
 

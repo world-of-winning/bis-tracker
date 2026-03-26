@@ -66,7 +66,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 249283, en: "Belo'melorn, the Shattered Talon", ko: "벨로멜로른 - 으스러진 갈퀴발톱", source: "Belo'ren", stats: ["haste","mastery"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["haste","mastery","crit","vers"];
 
 export var STAT_CACHE_KEY = "enh-shaman-stat-cache-v1";
 

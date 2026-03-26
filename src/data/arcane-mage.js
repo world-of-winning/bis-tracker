@@ -62,11 +62,11 @@ export var ALTS = [
   { forSlot: "ring", id: 251115, en: "Bifurcation Band", ko: "분기점의 고리", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 249328, en: "Echoing Void Mantle", ko: "메아리치는 공허 어깨덧옷", source: "Belo'ren", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 251213, en: "Nysarra's Mantle", ko: "니사라의 어깨덧옷", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
-  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunners Spire", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251077, en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", source: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "wrist", id: 251108, en: "Wraps of Watchful Wrath", ko: "경계하는 진노의 싸개", source: "Magisters' Terrace", stats: ["mastery","vers"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
 
 export var STAT_CACHE_KEY = "arcane-mage-stat-cache-v1";
 

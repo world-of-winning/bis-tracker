@@ -67,7 +67,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
 ];
 
-export var WORST_STATS = ["vers"];
+export var PRIORITY_STATS = ["crit","mastery","haste","vers"];
 
 export var STAT_CACHE_KEY = "frost-dk-stat-cache-v1";
 
