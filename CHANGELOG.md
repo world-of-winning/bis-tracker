@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.4.0
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.3.0...v1.4.0)
+
+### 🚀 Enhancements
+
+- Unify completion conditions and fix BiS/ALT priority logic ([1112958](https://github.com/world-of-winning/bis-tracker/commit/1112958))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.3.0
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.2.8...v1.3.0)
