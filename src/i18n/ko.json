@@ -37,14 +37,14 @@
   "dungeons": {
     "Pit of Saron": "사론",
     "Nexus-Point Xenas": "제나스",
-    "Windrunner Spire": "윈첨",
-    "Magisters' Terrace": "마정",
+    "Windrunner Spire": "첨탑",
+    "Magisters' Terrace": "정원",
     "Skyreach": "하늘탑",
     "Seat of the Triumvirate": "삼두정",
-    "Algeth'ar Academy": "알대",
+    "Algeth'ar Academy": "대학",
     "Maisara Caverns": "마이사라",
-    "Halls of Atonement": "속죄의 전당",
-    "Priory of the Sacred Flame": "신성한 불꽃의 수도원"
+    "Halls of Atonement": "속죄",
+    "Priory of the Sacred Flame": "수도원"
   },
   "sources": {
     "Tier": "티어",
