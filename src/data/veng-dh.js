@@ -19,7 +19,7 @@ export var BIS = [
   { slot: "head", en: "Devouring Reaver's Intake", ko: "포식의 파괴자 유입구", id: 250033, source: "Tier", stats: ["haste","mastery"] },
   { slot: "neck", en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", id: 249368, source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { slot: "shoulder", en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", id: 250031, source: "Tier", stats: ["crit","mastery"] },
-  { slot: "back", en: "Devouring Reaver's Exhaustplates", ko: "포식의 파괴자 배출장갑", id: 250031, source: "Tier", stats: ["crit","mastery"] },
+  { slot: "back", en: "Adherent's Silken Shroud", ko: "신봉자의 비단 수의", id: 239656, source: "Crafted", stats: ["crit","haste"] },
   { slot: "chest", en: "Maledict Vest", ko: "악독한 조끼", id: 251216, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "wrist", en: "Silvermoon Agent's Deflectors", ko: "실버문 요원의 굴절보호대", id: 244576, source: "Crafted", stats: [] },
   { slot: "hands", en: "Devouring Reaver's Essence Grips", ko: "포식의 파괴자 정수 손장갑", id: 250034, source: "Tier", stats: ["crit","haste"] },
@@ -55,6 +55,7 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "back", id: 258575, en: "Rigid Scale Greatcloak", ko: "강도 높은 미늘 큰망토", source: "Skyreach", stats: ["crit","mastery"] },
+  { forSlot: "back", id: 260312, en: "Defiant Defender's Drape", ko: "저항하는 수호자의 외투", source: "Magisters' Terrace", stats: ["crit","haste"] },
   { forSlot: "chest", id: 251159, en: "War Trial Vestments", ko: "전쟁의 시련 예복", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "hands", id: 151318, en: "Gloves of the Dark Shroud", ko: "암흑 구름의 장갑", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "head", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
@@ -92,7 +93,8 @@ export var KNOWN_STATS = {
   251140:["haste","mastery"],251142:["haste","mastery"],251159:["haste","mastery"],251166:["haste","vers"],
   251171:["haste","mastery"],251204:["haste","vers"],251210:["haste","vers"],251216:["haste","mastery"],
   251217:["crit","haste"],251513:["crit","mastery"],252420:[],258438:["haste","mastery"],
-  258575:["crit","mastery"],260235:[],260408:["crit"],260423:["crit","haste"],
+  258575:["crit","mastery"],260235:[],260312:["crit","haste"],260408:["crit"],
+  260423:["crit","haste"],
 };
 
 export var DUNGEONS = [

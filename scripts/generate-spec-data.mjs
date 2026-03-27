@@ -793,6 +793,41 @@ function generateFullJs(spec, bisItems, mythicItems, knownStats, altsStr, priori
   return out;
 }
 
+// ─── Resolve duplicate IDs using existing file data ─────────
+// When Maxroll has the same item ID in multiple slots (data error),
+// prefer the existing file's item for the duplicate slot.
+function resolveDuplicateIds(items, existingItems, label) {
+  const seenIds = new Map();
+  const dupSlots = new Set();
+  for (const item of items) {
+    if (seenIds.has(item.id)) {
+      const prev = seenIds.get(item.id);
+      const isWeaponPair = (prev.slot === 'main_hand' && item.slot === 'off_hand') ||
+                           (prev.slot === 'off_hand' && item.slot === 'main_hand');
+      if (!isWeaponPair) {
+        console.warn(`    ⚠ ${label} DUPLICATE ID ${item.id}: "${prev.en}" (${prev.slot}) and "${item.en}" (${item.slot})`);
+        dupSlots.add(item.slot);
+      }
+    } else {
+      seenIds.set(item.id, item);
+    }
+  }
+  if (dupSlots.size === 0) return items;
+
+  // Replace duplicate-slot items with existing file's version
+  const existingBySlot = new Map(existingItems.map(i => [i.slot, i]));
+  return items.map(item => {
+    if (!dupSlots.has(item.slot)) return item;
+    const existing = existingBySlot.get(item.slot);
+    if (existing && existing.id !== item.id) {
+      console.log(`    → Using existing ${item.slot}: "${existing.en}" (${existing.id}) instead of duplicate`);
+      return existing;
+    }
+    console.warn(`    → No existing override for ${item.slot}, keeping duplicate`);
+    return item;
+  });
+}
+
 // ─── Preserve sections from existing file ─────────────────
 function readPreservedSection(specKey, varName) {
   const path = resolve(DATA_DIR, `${specKey}.js`);
@@ -870,12 +905,16 @@ async function processSpec(spec, { force = false } = {}) {
     let bisItems = null;
     let mythicItems = null;
 
+    // Load existing items for duplicate-ID resolution
+    const existingBisItems = existsSync(existingPath) ? parseItemsFromContent(readFileSync(existingPath, 'utf8'), 'BIS') : [];
+    const existingMythicItems = existsSync(existingPath) ? parseItemsFromContent(readFileSync(existingPath, 'utf8'), 'MYTHIC') : [];
+
     // Build BiS data from raid-guide (true best in slot — raid/catalyst/crafting included)
     const altWeapons = [];
     if (bisRows && bisRows.length >= 14) {
       console.log(`  Found ${bisRows.length} BiS items (raid-guide)`);
       const { items, knownStats, skippedWeapons } = await buildGearData(bisRows, spec.weaponType);
-      bisItems = items;
+      bisItems = resolveDuplicateIds(items, existingBisItems, 'BIS');
       altWeapons.push(...skippedWeapons);
       Object.assign(allKnownStats, knownStats);
       console.log(`  Resolved ${items.length} BiS items with IDs and stats`);
@@ -885,7 +924,7 @@ async function processSpec(spec, { force = false } = {}) {
     if (farmableRows && farmableRows.length >= 14) {
       console.log(`  Found ${farmableRows.length} farmable items (mythic-plus-guide)`);
       const { items, knownStats, skippedWeapons } = await buildGearData(farmableRows, spec.weaponType);
-      mythicItems = items;
+      mythicItems = resolveDuplicateIds(items, existingMythicItems, 'MYTHIC');
       altWeapons.push(...skippedWeapons);
       Object.assign(allKnownStats, knownStats);
       console.log(`  Resolved ${items.length} mythic items with IDs and stats`);
