@@ -12,10 +12,10 @@ export var DUNGEON_COLORS = {
 };
 
 export var TIERS = [
-  { key: "veteran", max: 250, color: "#6daa6d", bonus: 12782 },
-  { key: "champion", max: 263, color: "#4d8ecf", bonus: 12790 },
-  { key: "hero", max: 276, color: "#9b4dca", bonus: 12798 },
-  { key: "myth", max: 289, color: "#ca7a3d", bonus: 12806 },
+  { key: "veteran", max: 250, color: "#6daa6d", bonusMin: 12776, bonusMax: 12783, tooltipBonus: 12782 },
+  { key: "champion", max: 263, color: "#4d8ecf", bonusMin: 12784, bonusMax: 12791, tooltipBonus: 12790 },
+  { key: "hero", max: 276, color: "#9b4dca", bonusMin: 12792, bonusMax: 12799, tooltipBonus: 12798 },
+  { key: "myth", max: 289, color: "#ca7a3d", bonusMin: 12800, bonusMax: 12807, tooltipBonus: 12806 },
 ];
 
 // Fetch stats from Wowhead tooltip API for unknown items

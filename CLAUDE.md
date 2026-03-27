@@ -42,6 +42,18 @@ src/
 - **tier 4 ✓:** Done
 - Within same tier: worst stat equipped → first, larger deficit → first
 
+### Item Grade System (TWW Season 2)
+Items have grade tiers with ilvl caps. Items can be upgraded within their grade but **cannot cross grade boundaries** — a Champion item maxed at 263 must be re-acquired at Hero grade to reach 276.
+
+| Grade | Key | Max ilvl | TIERS bonus |
+|---|---|---|---|
+| Veteran (노련가) | veteran | 250 | 12782 |
+| Champion (챔피언) | champion | 263 | 12790 |
+| Hero (영웅) | hero | 276 | 12798 |
+| Myth (신화) | myth | 289 | 12806 |
+
+Defined in `src/data/shared.js` as `TIERS[]`. The target grade filter determines `targetIlvl`. If an equipped/bag item's grade max < targetIlvl, it shows "재획득 필요" (re-acquire needed) because upgrading alone cannot reach the target.
+
 ### Per-Spec Data File Format
 ```js
 export var SPEC_LABEL = "Spec Name";

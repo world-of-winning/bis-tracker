@@ -108,12 +108,11 @@ function calcAltPriority(alt, sr, allStats, priorityStats, targetIlvl, acq) {
   var eqIlvl = bestEq.ilvl || 0;
   var deficit = Math.max(0, targetIlvl - eqIlvl);
   if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b" };
-  var lowerTier = false; for (var k = 0; k < TIERS.length; k++) { if (eqIlvl <= TIERS[k].max) { lowerTier = TIERS[k].max < targetIlvl; break; } }
-  if (!lowerTier) return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", bisUpgradeable: true };
-  var prevTier = TIERS.filter(function(t) { return t.max < targetIlvl; });
-  var prevMax = prevTier.length > 0 ? prevTier[prevTier.length - 1].max : 0;
-  if (eqIlvl < prevMax) return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#ff6b6b" };
-  return { tier: 2, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c" };
+  var targetTierIdx = -1; for (var k = 0; k < TIERS.length; k++) { if (targetIlvl <= TIERS[k].max) { targetTierIdx = k; break; } }
+  var eqTierIdx = itemTierIdx(bestEq.bonus, eqIlvl);
+  if (eqTierIdx >= targetTierIdx) return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", upgradeStatus: "enhance" };
+  if (eqTierIdx < targetTierIdx - 1) return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#ff6b6b" };
+  return { tier: 2, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", upgradeStatus: "tierUp" };
 }
 // priorityStats = ordered list from best to worst (e.g. ["crit","haste","mastery","vers"])
 // statScore: higher = better stats. Sort tiebreaker: lower score = worse stats = more urgent
@@ -126,6 +125,19 @@ function statScore(eqId, stats, priorityStats) {
   es.forEach(function(s) { var idx = priorityStats.indexOf(s); if (idx >= 0) score += (n - idx); });
   return score;
 }
+// Determine item grade tier index from bonus_id string, fallback to ilvl
+function itemTierIdx(bonus, ilvl) {
+  if (bonus) {
+    var parts = bonus.split(":");
+    for (var p = 0; p < parts.length; p++) {
+      var b = parseInt(parts[p], 10);
+      for (var i = 0; i < TIERS.length; i++) { if (b >= TIERS[i].bonusMin && b <= TIERS[i].bonusMax) return i; }
+    }
+  }
+  if (ilvl) { for (var i = 0; i < TIERS.length; i++) { if (ilvl <= TIERS[i].max) return i; } }
+  return -1;
+}
+// upgradeStatus: null (no label), "enhance" (강화 필요, same grade), "tierUp" (등급↑ 필요, lower grade)
 function calcPriority(bisItem, sr, targetIlvl, stats, priorityStats) {
   if (!sr) return { tier: 0, deficit: 0, ilvl: 0, label: "\u2014", color: "#665544", score: 0 };
   var eq = sr.eqSlot ? sr.eqSlot[bisItem.id] : null;
@@ -135,22 +147,29 @@ function calcPriority(bisItem, sr, targetIlvl, stats, priorityStats) {
   var eqIlvl = (eq && eq.ilvl) ? eq.ilvl : 0;
   var deficit = Math.max(0, targetIlvl - eqIlvl);
   var score = eq ? statScore(eq.id, stats, priorityStats) : 0;
-  if (inBag) { var bI = inBag.ilvl || 0, bD = Math.max(0, targetIlvl - bI); if (bD <= 0) return { tier: 4, deficit: 0, ilvl: bI, labelKey: "bagDone", color: "#4dca6b", score: 0 }; return { tier: 3, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#caca3d", score: 0 }; }
-  if (isBis) { if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", score: 0 }; return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", score: 0, bisUpgradeable: true }; }
+  var targetTierIdx = -1; for (var k = 0; k < TIERS.length; k++) { if (targetIlvl <= TIERS[k].max) { targetTierIdx = k; break; } }
+  var eqTierIdx = eq ? itemTierIdx(eq.bonus, eqIlvl) : -1;
+  if (isBis) {
+    if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", score: 0 };
+    if (eqTierIdx >= targetTierIdx) return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", score: 0, upgradeStatus: "enhance" };
+    if (eqTierIdx < targetTierIdx - 1) return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#ff6b6b", score: 0 };
+    return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", score: 0, upgradeStatus: "tierUp" };
+  }
   if (isAlt) {
-    // M+ BiS equipped → tier 2 (raid BiS is different, never truly "done")
     if (isAlt === "mythic") {
       if (deficit <= 0) return { tier: 2, deficit: 0, ilvl: eqIlvl, labelKey: "mythicBisDone", color: "#4dca6b", score: 0 };
       return { tier: 2, deficit: deficit, ilvl: eqIlvl, labelKey: "mythicBis", color: "#e8a84c", score: score };
     }
     if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", score: 0 };
-    var lowerTierAlt = false; for (var k = 0; k < TIERS.length; k++) { if (eqIlvl <= TIERS[k].max) { lowerTierAlt = TIERS[k].max < targetIlvl; break; } }
-    if (!lowerTierAlt) return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", score: score, bisUpgradeable: true };
-    // Alt too far below target (more than one tier gap) → treat as wrong item
-    var prevTier = TIERS.filter(function(t) { return t.max < targetIlvl; });
-    var prevMax = prevTier.length > 0 ? prevTier[prevTier.length - 1].max : 0;
-    if (eqIlvl < prevMax) return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#ff6b6b", score: score };
-    return { tier: 2, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", score: score };
+    if (eqTierIdx < targetTierIdx) return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", score: score, upgradeStatus: "tierUp" };
+    return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", score: score, upgradeStatus: "enhance" };
+  }
+  if (inBag) {
+    var bI = inBag.ilvl || 0, bD = Math.max(0, targetIlvl - bI);
+    if (bD <= 0) return { tier: 4, deficit: 0, ilvl: bI, labelKey: "bagDone", color: "#4dca6b", score: 0 };
+    var bagTierIdx = itemTierIdx(inBag.bonus, bI);
+    if (bagTierIdx < targetTierIdx) return { tier: 3, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#e8a84c", score: 0, upgradeStatus: "tierUp" };
+    return { tier: 3, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#caca3d", score: 0, upgradeStatus: "enhance" };
   }
   return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl > 0 ? eqIlvl + "" : "\u2014", color: "#ff6b6b", score: score };
 }
@@ -164,13 +183,13 @@ function autoSelectTier(avgIlvl) {
   }
   return TIERS[TIERS.length - 1].key;
 }
-function sortKey(p) { if (p.labelKey === "mythicBisDone") return 3.5; if (p.lowerTier) return 2; return p.tier; }
+function sortKey(p) { if (p.labelKey === "mythicBisDone") return 3.5; if (p.upgradeStatus === "tierUp") return 2; return p.tier; }
 function sortByPriority(items, sr, t, stats, priorityStats) {
   return items.slice().sort(function(a, b) {
     var pa = calcPriority(a, sr, t, stats, priorityStats), pb = calcPriority(b, sr, t, stats, priorityStats);
     var sa = sortKey(pa), sb = sortKey(pb);
     if (sa !== sb) return sa - sb;
-    if (pa.lowerTier !== pb.lowerTier) return pa.lowerTier ? -1 : 1;
+    if ((pa.upgradeStatus === "tierUp") !== (pb.upgradeStatus === "tierUp")) return pa.upgradeStatus === "tierUp" ? -1 : 1;
     if (pb.deficit !== pa.deficit) return pb.deficit - pa.deficit;
     return pa.score - pb.score;
   });
@@ -398,7 +417,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
   var isDoneState = tier === 4;
   var canToggle = isDoneState || !(p && p.deficit > 0);
   var isMythicBisDone = p && p.labelKey === "mythicBisDone";
-  var visualTier = (isMythicBisDone || (p && p.bisUpgradeable)) ? 4 : tier;
+  var visualTier = (isMythicBisDone || (p && p.upgradeStatus === "enhance")) ? 4 : (p && p.upgradeStatus === "tierUp") ? 2 : tier;
   var cardClass = "ic card-enter";
   if (visualTier === 1) cardClass += " t1"; else if (visualTier === 2) cardClass += " t2"; else if (visualTier === 3) cardClass += " t3"; else if (visualTier === 4) cardClass += " t4";
   if (isAlt && !isDoneState) cardClass += " altc";
@@ -418,7 +437,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: c.g, color: c.t, border: "1px solid " + c.b + "44" }}>{isDungeon ? t("dungeons." + itemSource) : (t("sources." + itemSource) || itemSource)}</span>
             <StatPills stats={item.stats} />
           </div>
-          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + whSpec + (tier === 3 && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(eqForTooltip ? {"data-eq-id": eqForTooltip.id, "data-eq-bonus": eqForTooltip.bonus || "", "data-eq-ilvl": eqForTooltip.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: isDoneState ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: isDoneState ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
+          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + whSpec + (!hasDiff && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(eqForTooltip ? {"data-eq-id": eqForTooltip.id, "data-eq-bonus": eqForTooltip.bonus || "", "data-eq-ilvl": eqForTooltip.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: isDoneState ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: isDoneState ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
           <div style={{ fontSize: 11.5, color: isDoneState ? "#445533" : "#776655", marginBottom: 6 }}>{locale === "ko" ? item.en : item.ko}</div>
           {p && tier > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
@@ -426,7 +445,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
                 <span style={{ fontSize: 10 }}>{icons[tier]}</span><span>{pLabel}</span>
                 {p.deficit > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + p.deficit + "\uFF09"}</span>}
               </div>
-              {tier === 3 && p.labelKey !== "bag" && p.labelKey !== "bagDone" && <span style={{ fontSize: 9, color: p.lowerTier ? "#cc8844" : (p.bisUpgradeable ? "#5a9a5a" : "#665544") }}>{t(p.lowerTier ? "ui.tierReacquireNeeded" : "ui.tierUpgradeNeeded")}</span>}
+              {p.upgradeStatus && <span style={{ fontSize: 9, color: p.upgradeStatus === "tierUp" ? "#cc8844" : "#5a9a5a" }}>{t(p.upgradeStatus === "tierUp" ? "ui.tierReacquireNeeded" : "ui.tierUpgradeNeeded")}</span>}
               {hasDiff && eq && (
                 <a href={"https://www.wowhead.com" + whLocale + "/item=" + eq.id + whSpec + (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: isSimcAlt ? "#1a1508" : "#1a1520", border: "1px solid " + (isSimcAlt ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: isSimcAlt ? "#c9a040" : "#aa7799", whiteSpace: "nowrap" }}>
                   <span>{eq.name}</span>
@@ -757,7 +776,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           {displayBis.map(function(item, idx) {
             var p = sr ? calcPriority(item, sr, targetInfo.max, allStats, PRIORITY_STATS) : null;
             if (acq[item.id] && p && p.tier !== 4) p = { tier: 4, deficit: 0, ilvl: p.ilvl, labelKey: "done", color: "#4dca6b", worst: false };
-            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.bonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} />;
+            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} />;
           })}
         </div>
         {displayAlts.length > 0 && (
@@ -768,7 +787,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
               {displayAlts.map(function(item, idx) {
                 var altP = sr ? calcAltPriority(item, sr, allStats, PRIORITY_STATS, targetInfo.max, acq) : null;
-                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.bonus} targetIlvl={targetInfo.max} knownBisIds={knownBisIds} whSpecId={whSpecId} />;
+                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} knownBisIds={knownBisIds} whSpecId={whSpecId} />;
               })}
             </div>
           </div>

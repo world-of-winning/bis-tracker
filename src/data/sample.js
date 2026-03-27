@@ -111,12 +111,12 @@ function generateSampleSimC(spec, charName, tierLevel) {
       itemId = b.id;
       itemName = b.ko || b.en;
       ilvl = doneTier.max;
-      tierBonus = doneTier.bonus;
+      tierBonus = doneTier.tooltipBonus;
     } else if (assign === "bis-upgrade") {
       itemId = b.id;
       itemName = b.ko || b.en;
       ilvl = upgradeTier.max;
-      tierBonus = upgradeTier.bonus;
+      tierBonus = upgradeTier.tooltipBonus;
     } else if (assign === "alt") {
       var alt = altBySlot[b.slot];
       // Skip if already used (unique-equip), fall back to BiS
@@ -128,7 +128,7 @@ function generateSampleSimC(spec, charName, tierLevel) {
         itemName = alt.ko || alt.en;
       }
       ilvl = upgradeTier.max;
-      tierBonus = upgradeTier.bonus;
+      tierBonus = upgradeTier.tooltipBonus;
     } else {
       // Pick a wrong item from the same slot's alt pool, skip already used
       var pool = wrongBySlot[b.slot];
@@ -151,7 +151,7 @@ function generateSampleSimC(spec, charName, tierLevel) {
         itemName = b.ko || b.en;
       }
       ilvl = upgradeTier.max;
-      tierBonus = upgradeTier.bonus;
+      tierBonus = upgradeTier.tooltipBonus;
     }
     usedIds.add(itemId);
 
