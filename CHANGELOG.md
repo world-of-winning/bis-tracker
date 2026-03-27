@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.4.1
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.4.0...v1.4.1)
+
+### 🩹 Fixes
+
+- Refactor item grade detection using bonus_id ranges and unified upgradeStatus ([0b2c357](https://github.com/world-of-winning/bis-tracker/commit/0b2c357))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.4.0
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.3.0...v1.4.0)
