@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.4.2
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.4.1...v1.4.2)
+
+### 🔥 Performance
+
+- Split vendor chunk to eliminate large bundle warning ([897d134](https://github.com/world-of-winning/bis-tracker/commit/897d134))
+
+### 🩹 Fixes
+
+- Shorten dungeon abbreviations in Korean locale ([0cb5ca7](https://github.com/world-of-winning/bis-tracker/commit/0cb5ca7))
+- Detect duplicate item IDs in generate-spec-data and preserve manual overrides ([866ee28](https://github.com/world-of-winning/bis-tracker/commit/866ee28))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.4.1
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.4.0...v1.4.1)
