@@ -29,12 +29,18 @@ function sameStats(a, b) {
   return x.every(function(v, i) { return v === y[i]; });
 }
 function getSource(item) { return item.source; }
-function getDungeonCounts(BIS, ALTS, dungeons) {
-  var c = {};
-  dungeons.forEach(function(d) { c[d] = { bis: 0, alt: 0 }; });
-  BIS.forEach(function(b) { var s = getSource(b); if (c[s]) c[s].bis++; });
-  ALTS.forEach(function(a) { var s = getSource(a); if (c[s]) c[s].alt++; });
-  return c;
+// Count items that need farming (tier 1 / red) per source, using the same logic as card display
+function calcSourceFarmCount(source, BIS, ALTS, sr, targetIlvl, stats, priorityStats, acq) {
+  var bisItems = BIS.filter(function(i) { return getSource(i) === source; });
+  var bisNeed = sr ? bisItems.filter(function(i) {
+    if (acq[i.id]) return false;
+    return calcPriority(i, sr, targetIlvl, stats, priorityStats).tier === 1;
+  }).length : bisItems.length;
+  var altItems = ALTS.filter(function(a) { return getSource(a) === source; });
+  var altNeed = sr ? altItems.filter(function(a) {
+    return calcAltPriority(a, sr, stats, priorityStats, targetIlvl, acq).tier === 1;
+  }).length : altItems.length;
+  return { bis: bisNeed, alt: altNeed };
 }
 function matchBiS(BIS, gear, bag, stats, knownBisIds, priorityStats) {
   var BIS_IDS = new Set(BIS.map(function(i) { return i.id; }));
@@ -111,8 +117,7 @@ function calcAltPriority(alt, sr, allStats, priorityStats, targetIlvl, acq) {
   var targetTierIdx = -1; for (var k = 0; k < TIERS.length; k++) { if (targetIlvl <= TIERS[k].max) { targetTierIdx = k; break; } }
   var eqTierIdx = itemTierIdx(bestEq.bonus, eqIlvl);
   if (eqTierIdx >= targetTierIdx) return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", upgradeStatus: "enhance" };
-  if (eqTierIdx < targetTierIdx - 1) return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#ff6b6b" };
-  return { tier: 2, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", upgradeStatus: "tierUp" };
+  return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#ff6b6b", upgradeStatus: "tierUp" };
 }
 // priorityStats = ordered list from best to worst (e.g. ["crit","haste","mastery","vers"])
 // statScore: higher = better stats. Sort tiebreaker: lower score = worse stats = more urgent
@@ -152,25 +157,26 @@ function calcPriority(bisItem, sr, targetIlvl, stats, priorityStats) {
   if (isBis) {
     if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", score: 0 };
     if (eqTierIdx >= targetTierIdx) return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", score: 0, upgradeStatus: "enhance" };
-    if (eqTierIdx < targetTierIdx - 1) return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#ff6b6b", score: 0 };
-    return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", score: 0, upgradeStatus: "tierUp" };
+    return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#ff6b6b", score: 0, upgradeStatus: "tierUp" };
   }
   if (isAlt) {
     if (isAlt === "mythic") {
       if (deficit <= 0) return { tier: 2, deficit: 0, ilvl: eqIlvl, labelKey: "mythicBisDone", color: "#4dca6b", score: 0 };
+      if (eqTierIdx < targetTierIdx) return { tier: 1, deficit: deficit, ilvl: eqIlvl, labelKey: "mythicBis", color: "#ff6b6b", score: score, upgradeStatus: "tierUp" };
       return { tier: 2, deficit: deficit, ilvl: eqIlvl, labelKey: "mythicBis", color: "#e8a84c", score: score };
     }
     if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", score: 0 };
-    if (eqTierIdx < targetTierIdx) return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#e8a84c", score: score, upgradeStatus: "tierUp" };
+    if (eqTierIdx < targetTierIdx) return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#ff6b6b", score: score, upgradeStatus: "tierUp" };
     return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", score: score, upgradeStatus: "enhance" };
   }
   if (inBag) {
     var bI = inBag.ilvl || 0, bD = Math.max(0, targetIlvl - bI);
     if (bD <= 0) return { tier: 4, deficit: 0, ilvl: bI, labelKey: "bagDone", color: "#4dca6b", score: 0 };
     var bagTierIdx = itemTierIdx(inBag.bonus, bI);
-    if (bagTierIdx < targetTierIdx) return { tier: 3, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#e8a84c", score: 0, upgradeStatus: "tierUp" };
+    if (bagTierIdx < targetTierIdx) return { tier: 1, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#ff6b6b", score: 0, upgradeStatus: "tierUp" };
     return { tier: 3, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#caca3d", score: 0, upgradeStatus: "enhance" };
   }
+  if (deficit <= 0 && eqIlvl > 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", score: 0 };
   return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl > 0 ? eqIlvl + "" : "\u2014", color: "#ff6b6b", score: score };
 }
 // Pick the next target tier based on average equipped ilvl.
@@ -183,7 +189,7 @@ function autoSelectTier(avgIlvl) {
   }
   return TIERS[TIERS.length - 1].key;
 }
-function sortKey(p) { if (p.labelKey === "mythicBisDone") return 3.5; if (p.upgradeStatus === "tierUp") return 2; return p.tier; }
+function sortKey(p) { if (p.labelKey === "mythicBisDone") return 3.5; return p.tier; }
 function sortByPriority(items, sr, t, stats, priorityStats) {
   return items.slice().sort(function(a, b) {
     var pa = calcPriority(a, sr, t, stats, priorityStats), pb = calcPriority(b, sr, t, stats, priorityStats);
@@ -195,31 +201,18 @@ function sortByPriority(items, sr, t, stats, priorityStats) {
   });
 }
 
-function calcDungeonScore(dungeon, BIS, ALTS, sr, targetIlvl, stats, priorityStats, acq) {
-  if (!sr) return 0;
-  var bisRem = 0, altRem = 0, priorityScore = 0;
+function calcDungeonScore(dungeon, fc, BIS, sr, targetIlvl, stats, priorityStats, acq) {
+  if (!sr || !fc) return 0;
+  var priorityScore = 0;
   BIS.forEach(function(bi) {
     if (getSource(bi) !== dungeon) return;
     var p = calcPriority(bi, sr, targetIlvl, stats, priorityStats);
     if (acq[bi.id] && p.tier !== 4) p = { tier: 4 };
     if (p.tier === 4) return;
-    bisRem++;
-    var sk = sortKey(p);
-    priorityScore += Math.round((4 - sk) * 10) + (p.deficit || 0);
+    priorityScore += Math.round((4 - p.tier) * 10) + (p.deficit || 0);
   });
-  ALTS.forEach(function(a) {
-    if (getSource(a) !== dungeon) return;
-    if (acq[a.id]) return;
-    var slots = resolveSlots(a.forSlot);
-    var done = slots.some(function(s) {
-      var g = sr.gear && sr.gear[s];
-      return g && g.id === a.id && (!g.ilvl || !targetIlvl || g.ilvl >= targetIlvl);
-    });
-    if (done) return;
-    altRem++;
-  });
-  // 1순위: 미완료 BiS 개수, 2순위: 미완료 Alt 개수, 3순위: 우선순위 점수
-  return bisRem * 10000 + altRem * 100 + priorityScore;
+  // 1순위: 파밍 필요 BiS 개수, 2순위: 파밍 필요 Alt 개수, 3순위: 우선순위 점수
+  return fc.bis * 10000 + fc.alt * 100 + priorityScore;
 }
 
 function StatPills({ stats: itemStats }) {
@@ -501,7 +494,6 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     return ids;
   }, [BIS, MYTHIC]);
   var activeItems = BIS;
-  var dungeonCounts = useMemo(function() { return getDungeonCounts(activeItems, mergedAlts, DUNGEONS); }, [activeItems, mergedAlts, DUNGEONS]);
   var [acq, setAcq] = useState({});
   var [filter, setFilter] = useState("all");
   var [simcOpen, setSimcOpen] = useState(false);
@@ -514,6 +506,16 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var [importing, setImporting] = useState(false);
   var targetInfo = TIERS.find(function(t) { return t.key === targetTier; }) || TIERS[1];
   var allStats = useMemo(function() { return Object.assign({}, KNOWN_STATS, runtimeStats); }, [KNOWN_STATS, runtimeStats]);
+  var farmCounts = useMemo(function() {
+    var c = {};
+    var seen = {};
+    activeItems.forEach(function(i) { seen[getSource(i)] = true; });
+    mergedAlts.forEach(function(a) { seen[getSource(a)] = true; });
+    Object.keys(seen).forEach(function(s) {
+      c[s] = calcSourceFarmCount(s, activeItems, mergedAlts, sr, targetInfo.max, allStats, PRIORITY_STATS, acq);
+    });
+    return c;
+  }, [activeItems, mergedAlts, sr, targetInfo.max, allStats, PRIORITY_STATS, acq]);
 
   useEffect(function() {
     var d = load(STORAGE_KEY);
@@ -625,9 +627,18 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       doImport(initialSimcText);
     }
   }, [initialSimcText, doImport]);
-  var doneCount = useMemo(function() { return activeItems.filter(function(b) { if (acq[b.id]) return true; return sr ? calcPriority(b, sr, targetInfo.max, allStats, PRIORITY_STATS).tier === 4 : false; }).length; }, [acq, sr, targetInfo.max, allStats, activeItems, PRIORITY_STATS]);
-  var mythicBisCount = useMemo(function() { return sr ? activeItems.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, PRIORITY_STATS); return p.tier === 2 && p.labelKey === "mythicBis"; }).length : 0; }, [acq, sr, targetInfo.max, allStats, activeItems, PRIORITY_STATS]);
-  var altCount = useMemo(function() { return sr ? activeItems.filter(function(b) { if (acq[b.id]) return false; var p = calcPriority(b, sr, targetInfo.max, allStats, PRIORITY_STATS); return p.tier === 2 && p.labelKey !== "mythicBis"; }).length : 0; }, [acq, sr, targetInfo.max, allStats, activeItems, PRIORITY_STATS]);
+  var progressCounts = useMemo(function() {
+    var done = 0, green = 0;
+    activeItems.forEach(function(b) {
+      if (acq[b.id]) { done++; green++; return; }
+      if (!sr) return;
+      var p = calcPriority(b, sr, targetInfo.max, allStats, PRIORITY_STATS);
+      if (p.tier === 4) done++;
+      if (p.color === "#4dca6b") green++;
+    });
+    return { done: done, green: green };
+  }, [acq, sr, targetInfo.max, allStats, activeItems, PRIORITY_STATS]);
+  var doneCount = progressCounts.done, greenCount = progressCounts.green;
   var displayBis = useMemo(function() { var items = filter === "all" ? activeItems : activeItems.filter(function(i) { return getSource(i) === filter; }); return sr ? sortByPriority(items, sr, targetInfo.max, allStats, PRIORITY_STATS) : items; }, [filter, sr, targetInfo.max, allStats, activeItems, PRIORITY_STATS]);
   var displayAlts = useMemo(function() {
     if (filter === "all") return [];
@@ -679,8 +690,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       </div>
       <div data-tutorial="progress-bar" style={{ marginTop: 8, position: "relative" }}>
         <div style={{ height: 20, background: "#1a1a28", borderRadius: 6, overflow: "hidden", position: "relative" }}>
-          <div style={{ position: "absolute", height: "100%", width: ((doneCount + mythicBisCount + altCount) / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: theme.accent, opacity: 0.1 }} />
-          <div style={{ position: "absolute", height: "100%", width: ((doneCount + mythicBisCount) / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: "#4dca6b", opacity: 0.2 }} />
+          <div style={{ position: "absolute", height: "100%", width: (greenCount / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: "#4dca6b", opacity: 0.15 }} />
           <div className="pfill" style={{ position: "absolute", height: "100%", width: (doneCount / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: theme.shimmer, backgroundSize: "200% 100%", opacity: 0.35 }} />
           <div style={{ position: "relative", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: doneCount === activeItems.length ? "#8dffaa" : theme.accent, letterSpacing: 1, textShadow: "0 1px 3px #0008" }}>{doneCount + " / " + activeItems.length}</span>
@@ -694,12 +704,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         <button className={"fbtn" + (filter === "all" ? " active" : "")} onClick={function() { changeFilter("all"); }} style={{ padding: "4px 12px", borderRadius: 6, background: filter === "all" ? theme.accentBg : "#0f0f18", color: filter === "all" ? theme.accent : "#556666", fontSize: 12, fontWeight: 600 }}>{t("ui.all")}</button>
         {nonDungeonSources.prep.map(function(ns) {
           var act = filter === ns.source;
-          var nsBis = activeItems.filter(function(i) { return getSource(i) === ns.source; });
-          var nsBisRem = nsBis.length - nsBis.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, PRIORITY_STATS).tier === 4 : false; }).length;
-          var nsAltItems = mergedAlts.filter(function(a) { return getSource(a) === ns.source; });
-          var nsAltDone = sr && sr.gear ? nsAltItems.filter(function(a) { return resolveSlots(a.forSlot).some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; }); }).length : 0;
-          var nsAltRem = nsAltItems.length - nsAltDone;
-          var nsRem = nsBisRem + nsAltRem;
+          var fc = farmCounts[ns.source] || { bis: 0, alt: 0 };
+          var nsBisRem = fc.bis, nsAltRem = fc.alt, nsRem = nsBisRem + nsAltRem;
           return (
             <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : (nsRem === 0 ? "#0d1a0d" : "#1a102844"), border: "1px solid " + (act ? "#8866aa" : (nsRem === 0 ? "#1a3a1a" : "#8866aa33")), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : (nsRem === 0 ? "#4dca6b" : "#8866aa") }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: nsRem === 0 ? "#4dca6b" : "#aa88cc", display: "inline-block" }} />
@@ -710,17 +716,12 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         })}
         {(nonDungeonSources.prep.length > 0) && <span style={{ width: 1, height: 20, background: "#2a2a3a", alignSelf: "center" }} />}
         {DUNGEONS.map(function(d) {
-          var cnt = dungeonCounts[d]; if (!cnt || (cnt.bis === 0 && cnt.alt === 0)) return null;
-          return { source: d, score: sr ? calcDungeonScore(d, activeItems, mergedAlts, sr, targetInfo.max, allStats, PRIORITY_STATS, acq) : 0 };
+          if (!farmCounts[d]) return null;
+          return { source: d, score: sr ? calcDungeonScore(d, farmCounts[d], activeItems, sr, targetInfo.max, allStats, PRIORITY_STATS, acq) : 0 };
         }).filter(Boolean).sort(function(a, b) { return b.score - a.score; }).map(function(item) {
           var d = item.source, c2 = DC[d] || { g: "#333", b: "#555", t: "#aaa" }, act = filter === d;
-          var bisItems = activeItems.filter(function(i) { return getSource(i) === d; });
-          var bisRem = bisItems.length - bisItems.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, PRIORITY_STATS).tier === 4 : false; }).length;
-          var altItems = mergedAlts.filter(function(a) { return getSource(a) === d; });
-          var altDone = sr && sr.gear ? altItems.filter(function(a) {
-            return resolveSlots(a.forSlot).some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; });
-          }).length : 0;
-          var altRem = altItems.length - altDone;
+          var fc = farmCounts[d] || { bis: 0, alt: 0 };
+          var bisRem = fc.bis, altRem = fc.alt;
           var rem = bisRem + altRem;
           return (
           <button key={d} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : d); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? c2.g : (rem === 0 ? "#0d1a0d" : c2.g + "44"), border: "1px solid " + (act ? c2.b : (rem === 0 ? "#1a3a1a" : c2.b) + "33"), fontSize: 12, fontWeight: 600, color: act ? c2.t : (rem === 0 ? "#4dca6b" : c2.t) }}>
@@ -731,12 +732,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         {nonDungeonSources.raid.length > 0 && <span style={{ width: 1, height: 20, background: "#2a2a3a", alignSelf: "center" }} />}
         {nonDungeonSources.raid.map(function(ns) {
           var act = filter === ns.source;
-          var nsBis = activeItems.filter(function(i) { return getSource(i) === ns.source; });
-          var nsBisRem = nsBis.length - nsBis.filter(function(i) { if (acq[i.id]) return true; return sr ? calcPriority(i, sr, targetInfo.max, allStats, PRIORITY_STATS).tier === 4 : false; }).length;
-          var nsAltItems = mergedAlts.filter(function(a) { return getSource(a) === ns.source; });
-          var nsAltDone = sr && sr.gear ? nsAltItems.filter(function(a) { return resolveSlots(a.forSlot).some(function(s) { return sr.gear[s] && sr.gear[s].id === a.id; }); }).length : 0;
-          var nsAltRem = nsAltItems.length - nsAltDone;
-          var nsRem = nsBisRem + nsAltRem;
+          var fc = farmCounts[ns.source] || { bis: 0, alt: 0 };
+          var nsBisRem = fc.bis, nsAltRem = fc.alt, nsRem = nsBisRem + nsAltRem;
           return (
             <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : (nsRem === 0 ? "#0d1a0d" : "#1a102844"), border: "1px solid " + (act ? "#8866aa" : (nsRem === 0 ? "#1a3a1a" : "#8866aa33")), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : (nsRem === 0 ? "#4dca6b" : "#8866aa") }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: nsRem === 0 ? "#4dca6b" : "#8866aa", display: "inline-block" }} />
