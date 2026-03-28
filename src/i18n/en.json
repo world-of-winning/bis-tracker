@@ -28,6 +28,12 @@
     "mastery": "Mastery",
     "vers": "Vers"
   },
+  "armorTypes": {
+    "Plate": "Plate",
+    "Mail": "Mail",
+    "Leather": "Leather",
+    "Cloth": "Cloth"
+  },
   "tiers": {
     "veteran": "Veteran",
     "champion": "Champion",
@@ -162,6 +168,7 @@
     "tierDone": "Done",
     "tierUpgradeNeeded": "Enhance needed",
     "tierReacquireNeeded": "Next tier needed",
+    "wrongArmorType": "Wearing {actual} gear!",
     "deficitInfo": "(−N) = Gap from target {max}",
     "supportedSpecs": "Supported Specializations",
     "changelog": "Changelog",

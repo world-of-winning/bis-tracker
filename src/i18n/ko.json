@@ -28,6 +28,12 @@
     "mastery": "특화",
     "vers": "유연성"
   },
+  "armorTypes": {
+    "Plate": "판금",
+    "Mail": "사슬",
+    "Leather": "가죽",
+    "Cloth": "천"
+  },
   "tiers": {
     "veteran": "노련가",
     "champion": "챔피언",
@@ -162,6 +168,7 @@
     "tierDone": "완료",
     "tierUpgradeNeeded": "강화 필요",
     "tierReacquireNeeded": "등급↑ 필요",
+    "wrongArmorType": "{actual} 장비 착용 중!",
     "deficitInfo": "（−N） = 목표 {max} 대비 갭",
     "supportedSpecs": "지원 전문화",
     "changelog": "변경 기록",

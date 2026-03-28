@@ -18,24 +18,39 @@ export var TIERS = [
   { key: "myth", max: 289, color: "#ca7a3d", bonusMin: 12800, bonusMax: 12807, tooltipBonus: 12806 },
 ];
 
+// Class → expected armor type mapping
+export var CLASS_ARMOR = {
+  warrior: "Plate", paladin: "Plate", deathknight: "Plate",
+  hunter: "Mail", shaman: "Mail", evoker: "Mail",
+  rogue: "Leather", monk: "Leather", druid: "Leather", demonhunter: "Leather",
+  mage: "Cloth", warlock: "Cloth", priest: "Cloth",
+};
+
+// Slots that have an armor type (exclude accessories/weapons/back)
+export var ARMOR_SLOTS = new Set(["head", "shoulder", "chest", "wrist", "hands", "waist", "legs", "feet"]);
+
 // Fetch stats from Wowhead tooltip API for unknown items
 export function fetchItemStats(ids) {
-  var results = {};
+  var stats = {};
+  var armorTypes = {};
   var promises = ids.map(function(id) {
     return fetch("https://nether.wowhead.com/tooltip/item/" + id + "?dataEnv=1&locale=0")
       .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
       .then(function(data) {
         var html = data.tooltip || "";
-        var stats = [];
-        if (html.indexOf("<!--rtg32-->") >= 0) stats.push("crit");
-        if (html.indexOf("<!--rtg36-->") >= 0) stats.push("haste");
-        if (html.indexOf("<!--rtg49-->") >= 0) stats.push("mastery");
-        if (html.indexOf("<!--rtg40-->") >= 0) stats.push("vers");
-        results[id] = stats;
+        var s = [];
+        if (html.indexOf("<!--rtg32-->") >= 0) s.push("crit");
+        if (html.indexOf("<!--rtg36-->") >= 0) s.push("haste");
+        if (html.indexOf("<!--rtg49-->") >= 0) s.push("mastery");
+        if (html.indexOf("<!--rtg40-->") >= 0) s.push("vers");
+        stats[id] = s;
+        // Extract armor type from tooltip HTML (e.g. <span class="q1">Plate</span>)
+        var am = html.match(/<span class="q1">(Plate|Mail|Leather|Cloth)<\/span>/);
+        if (am) armorTypes[id] = am[1];
       })
-      .catch(function() { results[id] = null; });
+      .catch(function() { stats[id] = null; });
   });
-  return Promise.all(promises).then(function() { return results; });
+  return Promise.all(promises).then(function() { return { stats: stats, armorTypes: armorTypes }; });
 }
 
 export function resolveSlots(forSlot) {

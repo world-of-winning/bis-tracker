@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { load, save as persist } from '../storage.js';
-import { DUNGEON_COLORS as DC, TIERS, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC } from '../data/shared.js';
+import { DUNGEON_COLORS as DC, TIERS, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS } from '../data/shared.js';
 import { sanitizeHTML } from '../sanitize.js';
 import { findSpecBySimC } from '../data/specs.js';
 import { useLocale } from '../i18n/index.jsx';
@@ -386,7 +386,7 @@ function EqTooltipObserver({ locale, whSpecId }) {
   return null;
 }
 
-function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, knownBisIds, whSpecId }) {
+function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, knownBisIds, whSpecId, armorTypes, expectedArmor }) {
   var { t, itemName, locale } = useLocale();
   var itemSource = getSource(item);
   var isDungeon = !!DC[itemSource];
@@ -406,15 +406,24 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
   var altHasDiff = isAlt && altEq;
   var eqForTooltip = hasDiff ? eq : (altHasDiff ? altEq : null);
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
+  // Detect wrong armor type on the equipped item
+  var eqToCheck = eq || altEq;
+  var eqSlotName = isAlt ? item.forSlot : item.slot;
+  var wrongArmor = null;
+  if (expectedArmor && eqToCheck && armorTypes && ARMOR_SLOTS.has(eqSlotName)) {
+    var eqArmor = armorTypes[eqToCheck.id];
+    if (eqArmor && eqArmor !== expectedArmor) wrongArmor = eqArmor;
+  }
   var tier = (p && p.tier) ? p.tier : 0;
-  var isDoneState = tier === 4;
-  var canToggle = isDoneState || !(p && p.deficit > 0);
-  var isMythicBisDone = p && p.labelKey === "mythicBisDone";
-  var visualTier = (isMythicBisDone || (p && p.upgradeStatus === "enhance")) ? 4 : (p && p.upgradeStatus === "tierUp") ? 2 : tier;
+  var isDoneState = wrongArmor ? false : tier === 4;
+  var canToggle = wrongArmor ? false : (isDoneState || !(p && p.deficit > 0));
+  var isMythicBisDone = !wrongArmor && p && p.labelKey === "mythicBisDone";
+  var visualTier = wrongArmor ? 1 : (isMythicBisDone || (p && p.upgradeStatus === "enhance")) ? 4 : (p && p.upgradeStatus === "tierUp") ? 2 : tier;
   var cardClass = "ic card-enter";
-  if (visualTier === 1) cardClass += " t1"; else if (visualTier === 2) cardClass += " t2"; else if (visualTier === 3) cardClass += " t3"; else if (visualTier === 4) cardClass += " t4";
+  if (wrongArmor) cardClass += " t1 wrong-armor"; else if (visualTier === 1) cardClass += " t1"; else if (visualTier === 2) cardClass += " t2"; else if (visualTier === 3) cardClass += " t3"; else if (visualTier === 4) cardClass += " t4";
   if (isAlt && !isDoneState) cardClass += " altc";
   var bgs = { 0: "linear-gradient(135deg, #101018, " + c.g + "88)", 1: "linear-gradient(135deg, #140e0e, #1a0f0f)", 2: "linear-gradient(135deg, #14120a, #1a150d)", 3: "linear-gradient(135deg, #14120a, #1a150d)", 4: "linear-gradient(135deg, #0d120d, #0a100a)" };
+  if (wrongArmor) bgs[1] = "linear-gradient(135deg, #2a0505, #1a0808)";
   var acs = { 0: c.b, 1: "#ff6b6b", 2: "#c9a227", 3: "#c9a227", 4: "#1a3a1a" };
   var icons = { 1: "\u25B2", 2: "\u25C6", 3: "\u2191", 4: "\u2713" };
   var pLabel = p ? (p.labelKey ? t("ui." + p.labelKey) : p.label) : "";
@@ -422,7 +431,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
   var whSpec = whSpecId ? "&spec=" + whSpecId : "";
   return (
     <div className={cardClass} style={{ animationDelay: (idx * .04) + "s", background: bgs[visualTier] || bgs[0], borderRadius: 10, padding: "14px 16px", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: (visualTier >= 1 && visualTier <= 2) ? 3 : 2, background: acs[visualTier] || c.b, opacity: visualTier <= 2 ? .9 : (visualTier === 4 ? .3 : .6) }} />
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: wrongArmor ? 4 : (visualTier >= 1 && visualTier <= 2) ? 3 : 2, background: wrongArmor ? "#ff2020" : (acs[visualTier] || c.b), opacity: wrongArmor ? 1 : (visualTier <= 2 ? .9 : (visualTier === 4 ? .3 : .6)) }} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6, flexWrap: "wrap" }}>
@@ -432,6 +441,12 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
           </div>
           <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + whSpec + (!hasDiff && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(eqForTooltip ? {"data-eq-id": eqForTooltip.id, "data-eq-bonus": eqForTooltip.bonus || "", "data-eq-ilvl": eqForTooltip.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: isDoneState ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: isDoneState ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
           <div style={{ fontSize: 11.5, color: isDoneState ? "#445533" : "#776655", marginBottom: 6 }}>{locale === "ko" ? item.en : item.ko}</div>
+          {wrongArmor && (
+            <div className="wrong-armor-badge" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 5, fontSize: 12, fontWeight: 800, background: "linear-gradient(135deg,#3a0a0a,#2a0505)", border: "2px solid #ff2020", color: "#ff4444", marginBottom: 6, letterSpacing: .5 }}>
+              <span style={{ fontSize: 16 }}>{"\u26A0"}</span>
+              <span>{t("ui.wrongArmorType", { expected: t("armorTypes." + expectedArmor), actual: t("armorTypes." + wrongArmor) })}</span>
+            </div>
+          )}
           {p && tier > 0 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: visualTier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : visualTier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : visualTier === 3 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : "#0d1a0d", border: "1px solid " + (visualTier === 1 ? "#6a2020" : visualTier === 2 ? "#6a5020" : visualTier === 3 ? "#6a5020" : "#1a3a1a"), color: p.color }}>
@@ -503,8 +518,10 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var [targetTier, setTargetTier] = useState("champion");
   var [loaded, setLoaded] = useState(false);
   var [runtimeStats, setRuntimeStats] = useState({});
+  var [runtimeArmorTypes, setRuntimeArmorTypes] = useState({});
   var [importing, setImporting] = useState(false);
   var targetInfo = TIERS.find(function(t) { return t.key === targetTier; }) || TIERS[1];
+  var expectedArmor = sr && sr.ci && sr.ci.className ? CLASS_ARMOR[sr.ci.className] : null;
   var allStats = useMemo(function() { return Object.assign({}, KNOWN_STATS, runtimeStats); }, [KNOWN_STATS, runtimeStats]);
   var farmCounts = useMemo(function() {
     var c = {};
@@ -524,15 +541,44 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       if (d.sr) { setSr(d.sr); setSimcOpen(false); if (onCharDetected && d.sr.ci) onCharDetected(d.sr.ci.name); } else { setSimcOpen(true); }
       var cached = load(STAT_CACHE_KEY);
       if (cached) setRuntimeStats(cached);
+      var cachedAT = load(STAT_CACHE_KEY + "-armor");
+      if (cachedAT) setRuntimeArmorTypes(cachedAT);
       if (d.targetTier) setTargetTier(d.targetTier);
       if (d.filter) setFilter(d.filter);
     } else {
       setSimcOpen(true);
       var cached2 = load(STAT_CACHE_KEY);
       if (cached2) setRuntimeStats(cached2);
+      var cachedAT2 = load(STAT_CACHE_KEY + "-armor");
+      if (cachedAT2) setRuntimeArmorTypes(cachedAT2);
     }
     setLoaded(true);
   }, [STORAGE_KEY, STAT_CACHE_KEY]);
+  // Auto-fetch armor types for equipped armor-slot items missing from cache
+  useEffect(function() {
+    if (!sr || !sr.gear || !sr.ci) return;
+    var missing = [];
+    GEAR_SLOTS.forEach(function(s) {
+      if (!ARMOR_SLOTS.has(s)) return;
+      var g = sr.gear[s]; if (!g) return;
+      if (!runtimeArmorTypes[g.id]) missing.push(g.id);
+    });
+    // deduplicate
+    missing = missing.filter(function(id, i) { return missing.indexOf(id) === i; });
+    if (missing.length === 0) return;
+    fetchItemStats(missing).then(function(fetched) {
+      var newAT = Object.assign({}, runtimeArmorTypes, fetched.armorTypes);
+      setRuntimeArmorTypes(newAT);
+      persist(STAT_CACHE_KEY + "-armor", newAT);
+      // Also update stats if any were missing
+      var newRuntime = Object.assign({}, runtimeStats);
+      var changed = false;
+      Object.keys(fetched.stats).forEach(function(id) {
+        if (newRuntime[id] === undefined && fetched.stats[id] !== null) { newRuntime[id] = fetched.stats[id]; changed = true; }
+      });
+      if (changed) { setRuntimeStats(newRuntime); persist(STAT_CACHE_KEY, newRuntime); }
+    });
+  }, [sr, runtimeArmorTypes, STAT_CACHE_KEY]);
   useEffect(function() {
     var t = setTimeout(function() { if (window.$WowheadPower && window.$WowheadPower.refreshLinks) { try { window.$WowheadPower.refreshLinks(); } catch(e) {} } }, 500);
     return function() { clearTimeout(t); };
@@ -552,6 +598,10 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     parsed.bag.forEach(function(b) { allIds.push(b.id); });
     var currentStats = Object.assign({}, KNOWN_STATS, runtimeStats);
     var unknownIds = allIds.filter(function(id, i) { return allIds.indexOf(id) === i && currentStats[id] === undefined; });
+    // Also fetch armor type for equipped armor-slot items missing from cache
+    var armorSlotIds = GEAR_SLOTS.filter(function(s) { return ARMOR_SLOTS.has(s); }).map(function(s) { return parsed.gear[s]; }).filter(Boolean).map(function(g) { return g.id; });
+    var missingArmorIds = armorSlotIds.filter(function(id) { return !runtimeArmorTypes[id] && unknownIds.indexOf(id) < 0; });
+    if (missingArmorIds.length > 0) unknownIds = unknownIds.concat(missingArmorIds);
     function finishImport(mergedStats) {
       var result = matchBiS(BIS, parsed.gear, parsed.bag, mergedStats, knownBisIds, PRIORITY_STATS);
       var newSr = { ci: parsed.ci, gear: parsed.gear, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched };
@@ -575,9 +625,12 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       setFeedback({ ok: true, msg: t("ui.fetchingStats", { count: unknownIds.length }) });
       fetchItemStats(unknownIds).then(function(fetched) {
         var newRuntime = Object.assign({}, runtimeStats);
-        Object.keys(fetched).forEach(function(id) { newRuntime[id] = fetched[id] !== null ? fetched[id] : []; });
+        Object.keys(fetched.stats).forEach(function(id) { newRuntime[id] = fetched.stats[id] !== null ? fetched.stats[id] : []; });
         setRuntimeStats(newRuntime);
         persist(STAT_CACHE_KEY, newRuntime);
+        var newAT = Object.assign({}, runtimeArmorTypes, fetched.armorTypes);
+        setRuntimeArmorTypes(newAT);
+        persist(STAT_CACHE_KEY + "-armor", newAT);
         finishImport(Object.assign({}, KNOWN_STATS, newRuntime));
       });
     } else { finishImport(currentStats); }
@@ -614,6 +667,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     setSimcText(""); setFeedback(null); setImporting(false);
     var d = load(STORAGE_KEY);
     var cached = load(STAT_CACHE_KEY); setRuntimeStats(cached || {});
+    var cachedAT3 = load(STAT_CACHE_KEY + "-armor"); setRuntimeArmorTypes(cachedAT3 || {});
     if (d) {
       setAcq(d.acq || {}); setSr(d.sr || null); setSimcOpen(!d.sr);
       if (d.targetTier) setTargetTier(d.targetTier);
@@ -773,7 +827,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           {displayBis.map(function(item, idx) {
             var p = sr ? calcPriority(item, sr, targetInfo.max, allStats, PRIORITY_STATS) : null;
             if (acq[item.id] && p && p.tier !== 4) p = { tier: 4, deficit: 0, ilvl: p.ilvl, labelKey: "done", color: "#4dca6b", worst: false };
-            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} />;
+            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} />;
           })}
         </div>
         {displayAlts.length > 0 && (
@@ -784,7 +838,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
               {displayAlts.map(function(item, idx) {
                 var altP = sr ? calcAltPriority(item, sr, allStats, PRIORITY_STATS, targetInfo.max, acq) : null;
-                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} knownBisIds={knownBisIds} whSpecId={whSpecId} />;
+                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} knownBisIds={knownBisIds} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} />;
               })}
             </div>
           </div>
