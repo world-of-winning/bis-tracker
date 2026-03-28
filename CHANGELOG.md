@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.4.3
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.4.2...v1.4.3)
+
+### 🩹 Fixes
+
+- Unify farming count logic and make tierUp red across all item types ([c6aa059](https://github.com/world-of-winning/bis-tracker/commit/c6aa059))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.4.2
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.4.1...v1.4.2)
