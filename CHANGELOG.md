@@ -1,5 +1,25 @@
 # Changelog
 
+## v1.5.1
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.5.0...v1.5.1)
+
+### 🩹 Fixes
+
+- Filter non-spec primary stats from tooltip diff, fix Eye of Midnight source ([96683ca](https://github.com/world-of-winning/bis-tracker/commit/96683ca))
+
+### 💅 Refactors
+
+- Merge --rebuild into --fix, add --regenerate, prioritize manual stat data ([e09012d](https://github.com/world-of-winning/bis-tracker/commit/e09012d))
+
+### 📖 Documentation
+
+- Update changelog with v1.2.4~v1.5.0 highlights ([59861e2](https://github.com/world-of-winning/bis-tracker/commit/59861e2))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.4.3
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.4.2...v1.4.3)
