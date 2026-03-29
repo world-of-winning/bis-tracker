@@ -9,36 +9,36 @@
  *   node scripts/generate-spec-data.mjs --skip-done    # skip specs already in new BIS+MYTHIC format
  *   node scripts/generate-spec-data.mjs --missing      # only specs with missing/incomplete files
  *   node scripts/generate-spec-data.mjs --force        # force regenerate (ignore unchanged check)
- *   node scripts/generate-spec-data.mjs --fix          # normalize source/dungeon names (no network)
- *   node scripts/generate-spec-data.mjs --rebuild      # rebuild from cache only (no network)
+ *   node scripts/generate-spec-data.mjs --fix          # rebuild from cache + normalize (no network)
+ *   node scripts/generate-spec-data.mjs --regenerate   # purge cache & re-fetch everything from network
  */
 
 import { load } from 'cheerio';
 import { writeFileSync, readFileSync, existsSync, readdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { fetchTooltip, saveCache, cacheGet, cacheSet } from './wowhead-cache.mjs';
+import { fetchTooltip, saveCache, cacheGet, cacheSet, cacheDelete } from './wowhead-cache.mjs';
 import { buildItemIndex, findAltsForSpec, updateSpecFile } from './find-alts.mjs';
 
-// ─── Priority stats cache (Maxroll stat priority, separate from Wowhead cache) ─
-const PRIORITY_CACHE_FILE = resolve(dirname(fileURLToPath(import.meta.url)), 'priority-stats.json');
-let _priorityCache = null;
-function loadPriorityCache() {
-  if (_priorityCache) return _priorityCache;
+// ─── Priority stats (priority-stats.json: manual overrides + auto-fetched from Maxroll) ─
+const PRIORITY_STATS_FILE = resolve(dirname(fileURLToPath(import.meta.url)), 'priority-stats.json');
+let _priorityData = null;
+function loadPriorityData() {
+  if (_priorityData) return _priorityData;
   try {
-    _priorityCache = JSON.parse(readFileSync(PRIORITY_CACHE_FILE, 'utf8'));
-  } catch { _priorityCache = {}; }
-  return _priorityCache;
+    _priorityData = JSON.parse(readFileSync(PRIORITY_STATS_FILE, 'utf8'));
+  } catch { _priorityData = {}; }
+  return _priorityData;
 }
-function savePriorityCache() {
-  writeFileSync(PRIORITY_CACHE_FILE, JSON.stringify(_priorityCache, null, 2) + '\n', 'utf8');
+function savePriorityData() {
+  writeFileSync(PRIORITY_STATS_FILE, JSON.stringify(_priorityData, null, 2) + '\n', 'utf8');
 }
 function getPriority(specKey) {
-  return loadPriorityCache()[specKey] || null;
+  return loadPriorityData()[specKey] || null;
 }
 function setPriority(specKey, priority) {
-  loadPriorityCache()[specKey] = priority;
-  savePriorityCache();
+  loadPriorityData()[specKey] = priority;
+  savePriorityData();
 }
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -960,18 +960,16 @@ async function processSpec(spec, { force = false } = {}) {
         console.log(`  Added ${newAlts.length} weapon alts from skipped slots`);
       }
     }
-    // Use Maxroll-fetched stat priority; cache it when found; fall back to priority-stats.json
-    let priorityOverride = fetchedPriority;
+    // PRIORITY_STATS: manual (priority-stats.json) takes precedence over Maxroll
+    let priorityOverride = getPriority(spec.key);
     if (priorityOverride) {
+      console.log(`  PRIORITY_STATS: ${JSON.stringify(priorityOverride)} (manual)`);
+    } else if (fetchedPriority) {
+      priorityOverride = fetchedPriority;
       setPriority(spec.key, priorityOverride);
-      console.log(`  PRIORITY_STATS: ${JSON.stringify(priorityOverride)} (cached)`);
+      console.log(`  PRIORITY_STATS: ${JSON.stringify(priorityOverride)} (from Maxroll, saved)`);
     } else {
-      priorityOverride = getPriority(spec.key);
-      if (priorityOverride) {
-        console.log(`  PRIORITY_STATS: ${JSON.stringify(priorityOverride)} (from cache)`);
-      } else {
-        console.log(`  PRIORITY_STATS: not found in cache, using []`);
-      }
+      console.log(`  PRIORITY_STATS: not found, using []`);
     }
     const js = generateFullJs(spec, bisItems, mythicItems, allKnownStats, altsStr, priorityOverride);
     const outPath = resolve(DATA_DIR, `${spec.key}.js`);
@@ -1063,7 +1061,7 @@ async function rebuildSpec(spec) {
   if (priorityStats) {
     console.log(`  PRIORITY_STATS: ${JSON.stringify(priorityStats)}`);
   } else {
-    console.log(`  PRIORITY_STATS: not in cache, using []`);
+    console.log(`  PRIORITY_STATS: not in priority-stats.json, using []`);
   }
 
   const js = generateFullJs(spec, bisItems, mythicItems, knownStats, altsStr, priorityStats);
@@ -1189,31 +1187,88 @@ function normalizeDataFiles(targetKey) {
   fixPriorityStats(targetKey);
 }
 
-// --fix: just normalize and exit (no network)
+// --fix: rebuild from cache + normalize (no network)
 if (args.includes('--fix')) {
   const fixTarget = args.find(a => !a.startsWith('--'));
-  normalizeDataFiles(fixTarget);
+  const fixTargets = fixTarget
+    ? SPECS.filter(s => s.key === fixTarget)
+    : SPECS;
+  if (fixTarget && fixTargets.length === 0) {
+    console.error(`Unknown spec key: ${fixTarget}`);
+    process.exit(1);
+  }
+  let ok = 0, skip = 0;
+  for (const spec of fixTargets) {
+    const result = await rebuildSpec(spec);
+    if (result) ok++; else skip++;
+  }
+  if (ok > 0) console.log(`\nRebuilt ${ok} spec files from cache`);
+  if (skip > 0) console.log(`Skipped ${skip} (no existing file)`);
+  normalizeDataFiles(fixTarget || null);
   process.exit(0);
 }
 
-// --rebuild: rebuild from cache only (no network)
-if (args.includes('--rebuild')) {
-  const rebuildTarget = args.find(a => !a.startsWith('--'));
-  const rebuildTargets = rebuildTarget
-    ? SPECS.filter(s => s.key === rebuildTarget)
+// --regenerate: purge Wowhead cache for target spec(s) and re-fetch everything from network
+if (args.includes('--regenerate')) {
+  const regenTarget = args.find(a => !a.startsWith('--'));
+  const regenTargets = regenTarget
+    ? SPECS.filter(s => s.key === regenTarget)
     : SPECS;
-  if (rebuildTargets.length === 0) {
-    console.error(`Unknown spec key: ${rebuildTarget}`);
+  if (regenTargets.length === 0) {
+    console.error(`Unknown spec key: ${regenTarget}`);
     process.exit(1);
   }
-  let ok = 0, fail = 0;
-  for (const spec of rebuildTargets) {
-    const result = await rebuildSpec(spec);
-    if (result) ok++; else fail++;
+
+  // Purge Wowhead cache for target specs
+  for (const spec of regenTargets) {
+    const specPath = resolve(DATA_DIR, `${spec.key}.js`);
+    if (!existsSync(specPath)) continue;
+    const content = readFileSync(specPath, 'utf8');
+    const ids = new Set();
+    const re = /id:\s*(\d+)/g;
+    let m;
+    while ((m = re.exec(content))) ids.add(parseInt(m[1]));
+    let purged = 0;
+    for (const id of ids) {
+      for (const locale of [0, 1]) {
+        const key = `${id}-${locale}`;
+        if (cacheGet(key)) { cacheDelete(key); purged++; }
+      }
+    }
+    console.log(`Purged ${purged} Wowhead cache entries for ${spec.key} (${ids.size} items)`);
   }
-  console.log(`\nDone: ${ok} rebuilt, ${fail} failed`);
-  const rebuildKey = rebuildTarget || null;
-  normalizeDataFiles(rebuildKey);
+  saveCache();
+
+  // Re-generate from network with force
+  let success = 0, fail = 0;
+  const writtenKeys = [];
+  for (const spec of regenTargets) {
+    console.log(`\n=== Regenerating ${spec.key} (full network fetch) ===`);
+    const result = await processSpec(spec, { force: true });
+    if (result === true) { success++; writtenKeys.push(spec.key); }
+    else if (result === 'unchanged') { success++; }
+    else { fail++; }
+    if (regenTargets.length > 1) await delay(1000);
+  }
+  console.log(`\nDone: ${success} succeeded (${writtenKeys.length} written), ${fail} failed`);
+
+  // Run find-alts
+  if (writtenKeys.length > 0) {
+    console.log(`\n=== Running find-alts for ${writtenKeys.length} specs ===`);
+    const index = buildItemIndex();
+    for (const key of writtenKeys) {
+      try {
+        const alts = await findAltsForSpec(key, index);
+        if (alts.length > 0) updateSpecFile(key, alts);
+        console.log(`  ${key}: ${alts.length} alts`);
+      } catch (err) {
+        console.error(`  ${key}: FAILED - ${err.message}`);
+      }
+    }
+  }
+
+  normalizeDataFiles(regenTarget || null);
+  saveCache();
   process.exit(0);
 }
 

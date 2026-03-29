@@ -64,7 +64,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 260423, en: "Arator's Swift Remembrance", ko: "아라토르의 신속한 기억", source: "Crown of the Cosmos", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["haste","crit","vers","mastery"];
+export var PRIORITY_STATS = ["haste","crit","mastery","vers"];
 
 export var STAT_CACHE_KEY = "prot-paladin-stat-cache-v1";
 

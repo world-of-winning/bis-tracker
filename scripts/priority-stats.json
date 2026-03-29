@@ -22,7 +22,7 @@
   "ww-monk": ["haste","mastery","crit","vers"],
   "mw-monk": ["haste","crit","vers","mastery"],
   "holy-paladin": ["mastery","haste","vers","crit"],
-  "prot-paladin": ["haste","crit","vers","mastery"],
+  "prot-paladin": ["haste","crit","mastery","vers"],
   "ret-paladin": ["mastery","crit","haste","vers"],
   "disc-priest": ["haste","mastery","crit","vers"],
   "holy-priest": ["crit","vers","mastery","haste"],

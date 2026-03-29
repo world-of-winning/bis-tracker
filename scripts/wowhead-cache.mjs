@@ -85,6 +85,13 @@ export function cacheSet(key, value) {
   dirty = true;
 }
 
+export function cacheDelete(key) {
+  if (key in cache) {
+    delete cache[key];
+    dirty = true;
+  }
+}
+
 /** Write cache to disk. Call once at the end of your script. */
 export function saveCache() {
   if (!dirty) return;
