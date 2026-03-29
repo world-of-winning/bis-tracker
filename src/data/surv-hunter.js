@@ -27,7 +27,7 @@ export var BIS = [
   { slot: "legs", en: "Primal Sentry's Legguards", ko: "원시 파수꾼의 다리보호대", id: 249987, source: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
   { slot: "feet", en: "World Tender's Rootslippers", ko: "세계지기의 뿌리끌신", id: 244610, source: "Crafted", stats: ["crit","vers"] },
   { slot: "finger1", en: "Bond of Light", ko: "빛의 결속", id: 249369, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
-  { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, source: "Algeth'ar Academy", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "main_hand", en: "Roostwarden's Bough", ko: "뿌리감시관의 가지", id: 251077, source: "Windrunners Spire (Vault)", stats: ["crit","mastery"] },

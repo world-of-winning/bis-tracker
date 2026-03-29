@@ -236,7 +236,20 @@ function parseTooltipStats(html) {
   }
   return stats;
 }
-function computeStatDiff(newStats, oldStats) {
+// whSpecId → primary stat key (stat3=agi, stat4=str, stat5=int)
+var SPEC_PRIMARY = (function() {
+  var m = {};
+  // Strength: DK, Paladin Prot/Ret, Warrior
+  [250,251,252, 66,70, 71,72,73].forEach(function(id) { m[id] = "stat4"; });
+  // Agility: DH, Druid Feral/Guardian, Hunter, Monk Brew/WW, Rogue, Shaman Enh
+  [577,581, 103,104, 253,254,255, 268,269, 259,260,261, 263].forEach(function(id) { m[id] = "stat3"; });
+  // Intellect: Druid Balance/Resto, Evoker, Mage, Monk MW, Paladin Holy, Priest, Shaman Ele/Resto, Warlock
+  [102,105, 1467,1468,1473, 62,63,64, 270, 65, 256,257,258, 262,264, 265,266,267].forEach(function(id) { m[id] = "stat5"; });
+  return m;
+})();
+var PRIMARY_KEYS = { stat3: 1, stat4: 1, stat5: 1 };
+function computeStatDiff(newStats, oldStats, whSpecId) {
+  var myPrimary = SPEC_PRIMARY[whSpecId];
   var allKeys = {};
   Object.keys(newStats).forEach(function(k) { allKeys[k] = true; });
   Object.keys(oldStats).forEach(function(k) { allKeys[k] = true; });
@@ -244,10 +257,12 @@ function computeStatDiff(newStats, oldStats) {
   DIFF_ORDER.forEach(function(k) {
     if (!allKeys[k]) return;
     delete allKeys[k];
+    if (myPrimary && PRIMARY_KEYS[k] && k !== myPrimary) return;
     var d = (newStats[k] || 0) - (oldStats[k] || 0);
     if (d !== 0) diff.push({ key: k, val: d });
   });
   Object.keys(allKeys).forEach(function(k) {
+    if (myPrimary && PRIMARY_KEYS[k] && k !== myPrimary) return;
     var d = (newStats[k] || 0) - (oldStats[k] || 0);
     if (d !== 0) diff.push({ key: k, val: d });
   });
@@ -276,7 +291,7 @@ function EqTooltipObserver({ locale, whSpecId }) {
       el.id = "eq-tooltip-singleton";
       el.className = "eq-tooltip-wrap";
       el.style.cssText = "position:fixed;z-index:99998;pointer-events:none;padding:20px 6px 6px;display:none;";
-      el.innerHTML = '<div class="eq-tooltip-label" style="position:absolute;top:3px;left:10px;font-size:10px;font-weight:700;color:#ffd100;letter-spacing:.5px;pointer-events:none;background:rgba(0,0,0,.7);padding:1px 6px;border-radius:3px;text-shadow:0 1px 2px rgba(0,0,0,.8)"></div><div class="wowhead-tooltip" data-eq-tooltip="true"><table><tbody><tr><td class="eq-td"></td><th style="background-position:right top"></th></tr><tr><th style="background-position:left bottom"></th><th style="background-position:right bottom"></th></tr></tbody></table></div>';
+      el.innerHTML = '<div class="eq-tooltip-label" style="position:absolute;top:3px;left:10px;font-size:10px;font-weight:700;color:#ffd100;letter-spacing:.5px;pointer-events:none;background:#1a1a2e;padding:2px 8px;border-radius:3px;border:1px solid #ffd10066;text-shadow:0 1px 2px rgba(0,0,0,.8)"></div><div class="wowhead-tooltip" data-eq-tooltip="true"><table><tbody><tr><td class="eq-td"></td><th style="background-position:right top"></th></tr><tr><th style="background-position:left bottom"></th><th style="background-position:right bottom"></th></tr></tbody></table></div>';
       document.body.appendChild(el);
     }
     elRef.current = el;
@@ -321,7 +336,7 @@ function EqTooltipObserver({ locale, whSpecId }) {
                 td.appendChild(diffDiv);
               }
               var eqStats = parseTooltipStats(eqHtml);
-              var diff = computeStatDiff(bisStats, eqStats);
+              var diff = computeStatDiff(bisStats, eqStats, whSpecId);
               diffDiv.innerHTML = diff.length > 0 ? renderDiffHTML(diff, loc) : "";
             }
           }

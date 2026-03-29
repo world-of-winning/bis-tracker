@@ -27,7 +27,7 @@ export var BIS = [
   { slot: "legs", en: "Abyssal Immolator's Pillars", ko: "불태우는 심연의 기둥", id: 250041, source: "Tier", stats: ["crit","haste"] },
   { slot: "feet", en: "Slippers of the Midnight Flame", ko: "한밤 화염의 끌신", id: 249305, source: "Vaelgor & Ezzorak", stats: ["crit","haste"] },
   { slot: "finger1", en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", id: 249919, source: "Belo'ren", stats: ["crit","mastery"] },
-  { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "trinket1", en: "Locus-Walker's Ribbon", ko: "공간 방랑자의 리본", id: 249809, source: "Crown of the Cosmos", stats: ["mastery"] },
   { slot: "trinket2", en: "Emberwing Feather", ko: "잿불날개 깃털", id: 250144, source: "Windrunner Spire", stats: [] },
   { slot: "main_hand", en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", id: 249294, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },

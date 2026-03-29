@@ -26,7 +26,7 @@ export var BIS = [
   { slot: "waist", en: "Clasp of Compliance", ko: "순응의 죔쇠띠", id: 251102, source: "Magisters' Terrace", stats: ["haste","vers"] },
   { slot: "legs", en: "Abyssal Immolator's Pillars", ko: "불태우는 심연의 기둥", id: 250041, source: "Tier", stats: ["crit","haste"] },
   { slot: "feet", en: "Dream-Scorched Striders", ko: "꿈의 불꽃 성큼장화", id: 249373, source: "Chimaerus", stats: ["crit","mastery"] },
-  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "finger2", en: "Masterwork Sin'dorei Band", ko: "걸작 신도레이 고리", id: 240949, source: "Crafted", stats: [] },
   { slot: "trinket1", en: "Emberwing Feather", ko: "잿불날개 깃털", id: 250144, source: "Windrunner Spire", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },

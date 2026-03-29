@@ -27,7 +27,7 @@ export var BIS = [
   { slot: "legs", en: "Swiftsweepers of Ra-den's Chosen", ko: "라덴에게 선택받은 자의 싹쓸이 바지", id: 250014, source: "Tier", stats: ["haste","mastery"] },
   { slot: "feet", en: "Void-Claimed Shinkickers", ko: "공허에 삼켜진 장화", id: 249334, source: "Imperator Averzian", stats: ["haste","vers"] },
   { slot: "finger1", en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", id: 251513, source: "Crafted", stats: ["crit","mastery"] },
-  { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "main_hand", en: "Weight of Command", ko: "지휘의 무게", id: 249293, source: "Imperator Averzian", stats: ["crit","vers"] },

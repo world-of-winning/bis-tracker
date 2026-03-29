@@ -26,7 +26,7 @@ export var BIS = [
   { slot: "waist", en: "Scorn-Scarred Shul'ka's Belt", ko: "멸시의 자취가 남은 술카의 허리띠", id: 249374, source: "Chimaerus", stats: ["crit","haste"] },
   { slot: "legs", en: "Devouring Reaver's Pistons", ko: "포식의 파괴자 피스톤", id: 250032, source: "Tier", stats: ["haste","vers"] },
   { slot: "feet", en: "Void-Claimed Shinkickers", ko: "공허에 삼켜진 장화", id: 249334, source: "Imperator Averzian", stats: ["haste","vers"] },
-  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "finger2", en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", id: 251513, source: "Crafted", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "trinket2", en: "Umbral Plume", ko: "암영의 꽁지깃", id: 260235, source: "Belo'ren", stats: [] },

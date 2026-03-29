@@ -26,7 +26,7 @@ export var BIS = [
   { slot: "waist", en: "Luminant Verdict's Undaunted Emblem", ko: "빛나는 선고의 의연한 문장", id: 249958, source: "Tier", stats: ["haste","mastery"] },
   { slot: "legs", en: "Luminant Verdict's Greaves", ko: "빛나는 선고의 경갑", id: 249960, source: "Vaelgor & Ezzorak", stats: ["crit","haste"] },
   { slot: "feet", en: "Luminant Verdict's Sabatons", ko: "빛나는 선고의 발덮개", id: 249963, source: "Tier", stats: ["haste","mastery"] },
-  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "finger2", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "trinket2", en: "Heart of Ancient Hunger", ko: "고대의 허기 심장", id: 249342, source: "Vorasius", stats: [] },

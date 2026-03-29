@@ -26,7 +26,7 @@ export var BIS = [
   { slot: "waist", en: "Cord of Unraveling Reality", ko: "무너지는 현실의 장식끈", id: 151302, source: "Seat of the Triumvirate", stats: ["mastery","vers"] },
   { slot: "legs", en: "Abyssal Immolator's Pillars", ko: "불태우는 심연의 기둥", id: 250041, source: "Tier", stats: ["crit","haste"] },
   { slot: "feet", en: "Dream-Scorched Striders", ko: "꿈의 불꽃 성큼장화", id: 249373, source: "Chimaerus", stats: ["crit","mastery"] },
-  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "finger2", en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", id: 249919, source: "Belo'ren", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Vaelgor's Final Stare", ko: "바엘고어의 마지막 시선", id: 249346, source: "Vaelgor & Ezzorak", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },

@@ -26,7 +26,7 @@ export var BIS = [
   { slot: "waist", en: "Arcanoweave Cord", ko: "비전매듭 장식끈", id: 239664, source: "Crafted", stats: ["crit","haste"] },
   { slot: "legs", en: "Blind Oath's Leggings", ko: "맹목적인 맹세의 다리보호구", id: 250050, source: "Tier", stats: ["haste","mastery"] },
   { slot: "feet", en: "Lightbinder Treads", ko: "빛의 결속자 발보호대", id: 258584, source: "Skyreach", stats: ["haste","mastery"] },
-  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "trinket2", en: "Vaelgor's Final Stare", ko: "바엘고어의 마지막 시선", id: 249346, source: "Vaelgor & Ezzorak", stats: [] },

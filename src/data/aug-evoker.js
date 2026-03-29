@@ -26,7 +26,7 @@ export var BIS = [
   { slot: "waist", en: "Scabrous Zombie Leather Belt", ko: "거친 좀비 가죽 허리띠", id: 49810, source: "Pit of Saron", stats: ["crit","haste"] },
   { slot: "legs", en: "Greaves of the Black Talon", ko: "검은 갈퀴발톱의 경갑", id: 249996, source: "Tier", stats: ["haste","mastery"] },
   { slot: "feet", en: "Darkstrider Treads", ko: "어둠걸이의 발보호대", id: 249377, source: "Belo'ren", stats: ["crit","haste"] },
-  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "finger2", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "trinket2", en: "Locus-Walker's Ribbon", ko: "공간 방랑자의 리본", id: 249809, source: "Crown of the Cosmos", stats: ["mastery"] },

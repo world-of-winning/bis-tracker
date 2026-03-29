@@ -27,7 +27,7 @@ export var BIS = [
   { slot: "legs", en: "Legwraps of Lingering Legacies", ko: "머무는 유산의 다리싸개", id: 251087, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "feet", en: "Void-Claimed Shinkickers", ko: "공허에 삼켜진 장화", id: 249334, source: "Imperator Averzian", stats: ["haste","vers"] },
   { slot: "finger1", en: "Signet of Azerothian Blessings", ko: "아제로스의 축복 인장", id: 241140, source: "Crafted", stats: ["mastery","vers"] },
-  { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "trinket2", en: "Umbral Plume", ko: "암영의 꽁지깃", id: 260235, source: "Belo'ren", stats: [] },
   { slot: "main_hand", en: "Alnscorned Spire", ko: "알른멸시 뾰족지팡이", id: 249278, source: "Chimaerus", stats: ["haste","vers"] },

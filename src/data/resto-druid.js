@@ -26,7 +26,7 @@ export var BIS = [
   { slot: "waist", en: "Silvermoon Agent's Utility Belt", ko: "실버문 요원의 연장허리띠", id: 244573, source: "Crafted", stats: [] },
   { slot: "legs", en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", id: 250023, source: "Tier", stats: ["haste","mastery"] },
   { slot: "feet", en: "Eclipse Espadrilles", ko: "일월식 발목화", id: 251210, source: "Nexus-Point Xenas", stats: ["haste","vers"] },
-  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },

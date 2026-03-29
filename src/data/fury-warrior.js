@@ -26,7 +26,7 @@ export var BIS = [
   { slot: "waist", en: "Night Ender's Girdle", ko: "밤의 종결자의 요대", id: 249949, source: "Tier", stats: ["crit","haste"] },
   { slot: "legs", en: "Night Ender's Chausses", ko: "밤의 종결자의 정강이싸개", id: 249951, source: "Vaelgor & Ezzorak", stats: ["crit","haste"] },
   { slot: "feet", en: "Parasite Stompers", ko: "기생 디딤장화", id: 249332, source: "Vorasius", stats: ["haste","mastery"] },
-  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "finger2", en: "Bond of Light", ko: "빛의 결속", id: 249369, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "trinket2", en: "Heart of Ancient Hunger", ko: "고대의 허기 심장", id: 249342, source: "Vorasius", stats: [] },

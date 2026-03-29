@@ -26,7 +26,7 @@ export var BIS = [
   { slot: "waist", en: "Whisper-Inscribed Sash", ko: "속삭임이 새겨진 장식띠", id: 249376, source: "Belo'ren", stats: ["haste","mastery"] },
   { slot: "legs", en: "Voidbreaker's Britches", ko: "공허파괴자의 무릎바지", id: 250059, source: "Tier", stats: ["crit","haste"] },
   { slot: "feet", en: "Voidbreaker's Treads", ko: "공허파괴자의 발보호대", id: 250062, source: "Tier", stats: ["haste","mastery"] },
-  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
+  { slot: "finger1", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
   { slot: "finger2", en: "Masterwork Sin'dorei Band", ko: "걸작 신도레이 고리", id: 240949, source: "Crafted", stats: [] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "trinket2", en: "Emberwing Feather", ko: "잿불날개 깃털", id: 250144, source: "Windrunner Spire", stats: [] },
