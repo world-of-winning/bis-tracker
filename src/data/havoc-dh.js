@@ -61,7 +61,6 @@ export var ALTS = [
   { forSlot: "legs", id: 178819, en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", source: "Halls of Atonement", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
-  { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 151319, en: "Twilight's Edge Spaulders", ko: "황혼의 서슬 어깨덮개", source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
@@ -88,7 +87,7 @@ export var KNOWN_STATS = {
   250033:["haste","mastery"],250034:["crit","haste"],250036:["crit","mastery"],250247:["haste","mastery"],
   251082:["crit","mastery"],251087:["crit","haste"],251092:["haste","mastery"],251099:["crit","mastery"],
   251109:["crit","mastery"],251113:["crit","mastery"],251135:["crit","haste"],251140:["haste","mastery"],
-  251142:["haste","mastery"],251163:["crit","vers"],251171:["haste","mastery"],251175:["crit","mastery"],
+  251163:["crit","vers"],251171:["haste","mastery"],251175:["crit","mastery"],
   251217:["crit","haste"],251513:["crit","mastery"],252420:[],258575:["crit","mastery"],
   258577:["crit","mastery"],260235:[],260408:["crit"],
 };

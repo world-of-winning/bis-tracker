@@ -36,7 +36,6 @@ export var BIS = [
 
 export var MYTHIC = [
   { slot: "head", en: "Vilefiend's Guise", ko: "썩은마귀의 복면", id: 251140, source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { slot: "neck", en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", id: 251142, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { slot: "shoulder", en: "Enthralled Bonespines", ko: "마법에 걸린 해골가시", id: 251171, source: "Maisara Caverns", stats: ["haste","mastery"] },
   { slot: "back", en: "Bloodthorn Burnous", ko: "핏빛가시 겉옷", id: 251190, source: "Skyreach", stats: ["haste","mastery"] },
   { slot: "chest", en: "War Trial Vestments", ko: "전쟁의 시련 예복", id: 251159, source: "Magisters' Terrace", stats: ["haste","mastery"] },

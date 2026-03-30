@@ -59,7 +59,6 @@ export var ALTS = [
   { forSlot: "legs", id: 251170, en: "Wickedweave Trousers", ko: "교활매듭 긴바지", source: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
-  { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", source: "Midnight Falls", stats: ["mastery","vers"] },
   { forSlot: "ring", id: 249919, en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", source: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "ring", id: 251093, en: "Omission of Light", ko: "소외된 빛", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
@@ -89,7 +88,7 @@ export var KNOWN_STATS = {
   249919:["crit","mastery"],249995:["crit","mastery"],249996:["haste","mastery"],249997:["crit","mastery"],
   250000:["crit","haste"],250247:["haste","mastery"],250256:[],251079:["crit","mastery"],
   251084:["crit","mastery"],251089:["haste","mastery"],251093:["haste","mastery"],251115:["haste","mastery"],
-  251119:["crit","mastery"],251122:["haste","mastery"],251142:["haste","mastery"],251170:["crit","mastery"],
+  251119:["crit","mastery"],251122:["haste","mastery"],251170:["crit","mastery"],
   251179:["crit","mastery"],251215:["crit","mastery"],251513:["crit","mastery"],258218:["crit","mastery"],
   258438:["haste","mastery"],258575:["crit","mastery"],258576:["crit","haste"],258585:["crit","mastery"],
 };

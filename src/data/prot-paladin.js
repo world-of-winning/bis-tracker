@@ -27,7 +27,7 @@ export var BIS = [
   { slot: "legs", en: "Luminant Verdict's Greaves", ko: "빛나는 선고의 경갑", id: 249960, source: "Tier", stats: ["crit","haste"] },
   { slot: "feet", en: "Sabatons of Furious Revenge", ko: "격노한 복수의 발덮개", id: 251091, source: "Windrunner Spire", stats: ["crit","vers"] },
   { slot: "finger1", en: "Signet of Azerothian Blessings", ko: "아제로스의 축복 인장", id: 241140, source: "Crafted", stats: ["mastery","vers"] },
-  { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
+  { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "trinket2", en: "Umbral Plume", ko: "암영의 꽁지깃", id: 260235, source: "Belo'ren", stats: [] },
   { slot: "main_hand", en: "Turalyon's False Echo", ko: "투랄리온의 마지막 메아리", id: 249295, source: "Windrunner Spire", stats: ["crit","haste"] },

@@ -57,7 +57,6 @@ export var ALTS = [
   { forSlot: "feet", id: 251169, en: "Footwraps of Ill-Fate", ko: "불길한 운명의 발등싸개", source: "Maisara Caverns", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", source: "Windrunner Spire", stats: ["haste","vers"] },
-  { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", source: "Midnight Falls", stats: ["mastery","vers"] },
   { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "waist", id: 249958, en: "Luminant Verdict's Undaunted Emblem", ko: "빛나는 선고의 의연한 문장", source: "Tier", stats: ["haste","mastery"] },
@@ -78,7 +77,7 @@ export var KNOWN_STATS = {
   249958:["haste","mastery"],249960:["crit","haste"],249961:["haste","mastery"],249962:["haste","vers"],
   249963:["haste","mastery"],249964:["haste","mastery"],250247:["haste","mastery"],250256:[],
   251093:["haste","mastery"],251096:["haste","vers"],251107:["haste","mastery"],251115:["haste","mastery"],
-  251122:["haste","mastery"],251142:["haste","mastery"],251164:["haste","mastery"],251169:["haste","mastery"],
+  251122:["haste","mastery"],251164:["haste","mastery"],251169:["haste","mastery"],
   251206:["mastery","vers"],251208:["haste","vers"],258531:["mastery","vers"],258579:["mastery","vers"],
   263193:["haste","mastery"],
 };

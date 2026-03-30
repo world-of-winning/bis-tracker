@@ -57,7 +57,6 @@ export var ALTS = [
   { forSlot: "feet", id: 250062, en: "Voidbreaker's Treads", ko: "공허파괴자의 발보호대", source: "Tier", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
-  { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 251093, en: "Omission of Light", ko: "소외된 빛", source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
@@ -80,7 +79,7 @@ export var KNOWN_STATS = {
   250059:["crit","haste"],250060:["haste","mastery"],250061:["haste","mastery"],250062:["haste","mastery"],
   250063:["crit","haste"],250144:[],250247:["haste","mastery"],250258:["mastery"],
   251077:["crit","mastery"],251085:["crit","mastery"],251093:["haste","mastery"],251108:["mastery","vers"],
-  251115:["haste","mastery"],251142:["haste","mastery"],251513:["crit","mastery"],258514:["crit","mastery"],
+  251115:["haste","mastery"],251513:["crit","mastery"],258514:["crit","mastery"],
   258574:["haste","vers"],258575:["crit","mastery"],258580:["mastery","vers"],258584:["haste","mastery"],
 };
 

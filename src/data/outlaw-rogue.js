@@ -27,7 +27,7 @@ export var BIS = [
   { slot: "legs", en: "Blade Holsters of the Grim Jest", ko: "암담한 재담의 칼날집", id: 250005, source: "Vaelgor & Ezzorak", stats: ["haste","vers"] },
   { slot: "feet", en: "Void-Claimed Shinkickers", ko: "공허에 삼켜진 장화", id: 249334, source: "Imperator Averzian", stats: ["haste","vers"] },
   { slot: "finger1", en: "Masterwork Sin'dorei Band", ko: "걸작 신도레이 고리", id: 240949, source: "Crafted", stats: [] },
-  { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Seat of the Triumvirate", stats: ["haste"] },
+  { slot: "finger2", en: "Eye of Midnight", ko: "한밤의 눈", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "trinket1", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "main_hand", en: "Arator's Swift Remembrance", ko: "아라토르의 신속한 기억", id: 260423, source: "Crown of the Cosmos", stats: ["crit","haste"] },

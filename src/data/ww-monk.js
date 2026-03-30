@@ -63,7 +63,6 @@ export var ALTS = [
   { forSlot: "legs", id: 249312, en: "Nightblade's Pantaloons", ko: "밤의 검의 통바지", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", source: "Midnight Falls", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", source: "Windrunner Spire", stats: ["haste","vers"] },
-  { forSlot: "neck", id: 251142, en: "Pendant of Malefic Fury", ko: "사악한 격노의 펜던트", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 193708, en: "Platinum Star Band", ko: "백금 별의 고리", source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", source: "Windrunner Spire", stats: ["haste","mastery"] },
@@ -87,7 +86,7 @@ export var KNOWN_STATS = {
   250013:["haste","mastery"],250014:["haste","mastery"],250015:["crit","haste"],250017:["crit","haste"],
   250018:["crit","haste"],250247:["haste","mastery"],250256:[],251092:["haste","mastery"],
   251093:["haste","mastery"],251096:["haste","vers"],251109:["crit","mastery"],251113:["crit","mastery"],
-  251115:["haste","mastery"],251122:["haste","mastery"],251142:["haste","mastery"],251159:["haste","mastery"],
+  251115:["haste","mastery"],251122:["haste","mastery"],251159:["haste","mastery"],
   251171:["haste","mastery"],251216:["haste","mastery"],251513:["crit","mastery"],258438:["haste","mastery"],
   258577:["crit","mastery"],260312:["crit","haste"],
 };
