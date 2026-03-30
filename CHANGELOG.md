@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.5.2
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.5.1...v1.5.2)
+
+### 🩹 Fixes
+
+- Revert Eye of Midnight source to Midnight Falls, remove non-season item 251142 ([eba0874](https://github.com/world-of-winning/bis-tracker/commit/eba0874))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.5.1
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.5.0...v1.5.1)
