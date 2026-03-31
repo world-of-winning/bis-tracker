@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.7.1
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.7.0...v1.7.1)
+
+### 🩹 Fixes
+
+- Strip invalid Sitemap line when VITE_SITE_URL is unset ([edbac2b](https://github.com/world-of-winning/bis-tracker/commit/edbac2b))
+- Strip canonical and OG URL tags when VITE_SITE_URL is unset ([c51a2c6](https://github.com/world-of-winning/bis-tracker/commit/c51a2c6))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.7.0
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.6.0...v1.7.0)
