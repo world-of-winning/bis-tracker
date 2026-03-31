@@ -194,6 +194,52 @@
     "catalogMode": "Catalog mode — Import SimC to compare gear and see farming priorities",
     "browsing": "Browse"
   },
+  "diffLabels": {
+    "header": "Stat changes if equipped:",
+    "amr": "Armor",
+    "stat3": "Agility",
+    "stat4": "Strength",
+    "stat5": "Intellect",
+    "stat71": "Agility/Strength/Intellect",
+    "stat72": "Agility/Strength",
+    "stat73": "Agility/Intellect",
+    "stat74": "Strength/Intellect",
+    "stat7": "Stamina",
+    "rtg32": "Critical Strike",
+    "rtg36": "Haste",
+    "rtg49": "Mastery",
+    "rtg40": "Versatility",
+    "rtg24": "Random Stat 1",
+    "rtg25": "Random Stat 2",
+    "rtg62": "Leech"
+  },
+  "legal": {
+    "lastUpdated": "Last updated: March 24, 2026",
+    "terms": {
+      "title": "Terms of Service",
+      "sections": [
+        { "heading": "1. Purpose", "body": "These terms govern the use of Midnight BiS Tracker (the 'Service')." },
+        { "heading": "2. Service Description", "body": "The Service provides a free tool for tracking Best in Slot items in World of Warcraft. The Service is not affiliated with Blizzard Entertainment. World of Warcraft and related trademarks belong to Blizzard Entertainment, Inc." },
+        { "heading": "3. Data Storage", "body": "All user data is stored in your browser's localStorage and is never transmitted to external servers. Clearing your browser data may result in loss of saved information." },
+        { "heading": "4. Disclaimer", "body": "The Service is provided 'as is' without warranty of accuracy or completeness. BiS data is based on external sources such as Maxroll.gg and may change with game patches. We are not liable for any damages resulting from use of the Service." },
+        { "heading": "5. Third-Party Services", "body": "The Service uses the Wowhead tooltip API and scripts. Use of these external services is subject to their respective terms of service and privacy policies." },
+        { "heading": "6. Intellectual Property", "body": "The Service's source code is available on GitHub. World of Warcraft content copyrights belong to Blizzard Entertainment, Inc." },
+        { "heading": "7. Changes to Terms", "body": "These terms may be updated without prior notice. Changes take effect upon posting to the Service." }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "sections": [
+        { "heading": "1. Information We Collect", "body": "The Service does not require registration and does not collect or store personal information on any server. Character and gear data entered by users is stored only in the browser's localStorage." },
+        { "heading": "2. Cookies & Local Storage", "body": "The Service uses browser localStorage to provide its functionality. This data exists only on your device and is never transmitted externally." },
+        { "heading": "3. Third-Party Services", "body": "The Service uses the following external services, each subject to their own privacy policies:\n• Wowhead (wow.zamimg.com) — Item tooltips and stat lookups\n• Google Fonts — Web font delivery\n• Cloudflare Pages — Website hosting\n\nThese external services may collect basic connection information such as IP addresses." },
+        { "heading": "4. Data Deletion", "body": "You can delete all stored data at any time through your browser's site data settings. You can also delete individual character data using the 'Reset' feature within the Service." },
+        { "heading": "5. Children's Privacy", "body": "The Service does not intentionally collect personal information from children under the age of 14." },
+        { "heading": "6. Changes to This Policy", "body": "This privacy policy may be updated without prior notice. Changes take effect upon posting to the Service." },
+        { "heading": "Contact", "body": "For privacy-related inquiries, please reach out through our Discord channel." }
+      ]
+    }
+  },
   "tutorial": {
     "skip": "Skip",
     "prev": "Prev",

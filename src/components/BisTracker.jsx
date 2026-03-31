@@ -223,10 +223,7 @@ function StatPills({ stats: itemStats }) {
 }
 
 var DIFF_ORDER = ["amr", "stat3", "stat4", "stat5", "stat71", "stat72", "stat73", "stat74", "stat7", "rtg32", "rtg36", "rtg49", "rtg40", "rtg24", "rtg25", "rtg62"];
-var DIFF_LABELS = {
-  0: { amr: "Armor", stat3: "Agility", stat4: "Strength", stat5: "Intellect", stat71: "Agility/Strength/Intellect", stat72: "Agility/Strength", stat73: "Agility/Intellect", stat74: "Strength/Intellect", stat7: "Stamina", rtg32: "Critical Strike", rtg36: "Haste", rtg49: "Mastery", rtg40: "Versatility", rtg24: "Random Stat 1", rtg25: "Random Stat 2", rtg62: "Leech" },
-  1: { amr: "방어도", stat3: "민첩성", stat4: "힘", stat5: "지능", stat71: "민첩/힘/지능", stat72: "민첩/힘", stat73: "민첩/지능", stat74: "힘/지능", stat7: "체력", rtg32: "치명타", rtg36: "가속", rtg49: "특화", rtg40: "유연성", rtg24: "무작위 능력치 1", rtg25: "무작위 능력치 2", rtg62: "생기흡수" }
-};
+// DIFF_LABELS moved to i18n (diffLabels section in ko.json/en.json)
 function parseTooltipStats(html) {
   var stats = {};
   var re = /<!--(amr|stat\d+|rtg\d+)-->[^\d<]*?(\d[\d,]*)/g;
@@ -268,9 +265,7 @@ function computeStatDiff(newStats, oldStats, whSpecId) {
   });
   return diff;
 }
-function renderDiffHTML(diff, loc) {
-  var labels = DIFF_LABELS[loc];
-  var header = loc === 1 ? "아이템 교체 시 나타나는 변화:" : "Stat changes if equipped:";
+function renderDiffHTML(diff, labels, header) {
   var lines = ['<br><span style="border-top:1px solid #333;display:block;padding-top:6px;margin-top:2px;color:#ffd100;font-size:11px">' + header + '</span>'];
   diff.forEach(function(d) {
     var color = d.val > 0 ? "#0f0" : "#f44";
@@ -281,7 +276,7 @@ function renderDiffHTML(diff, loc) {
 }
 
 var eqTooltipCache = {};
-function EqTooltipObserver({ locale, whSpecId }) {
+function EqTooltipObserver({ locale, whSpecId, t }) {
   var loc = locale === "ko" ? 1 : 0;
   var elRef = useRef(null);
   useEffect(function() {
@@ -304,7 +299,10 @@ function EqTooltipObserver({ locale, whSpecId }) {
     var activeLink = null;
     var diffComputed = false;
     var hoverTime = 0;
-    var eqLabelText = loc === 1 ? "장착" : "Equipped";
+    var eqLabelText = t("ui.equipped");
+    var diffHeader = t("diffLabels.header");
+    var diffLabels = {};
+    DIFF_ORDER.forEach(function(k) { diffLabels[k] = t("diffLabels." + k); });
 
     function trackPosition() {
       var el = elRef.current; if (!el || !activeLink) return;
@@ -337,7 +335,7 @@ function EqTooltipObserver({ locale, whSpecId }) {
               }
               var eqStats = parseTooltipStats(eqHtml);
               var diff = computeStatDiff(bisStats, eqStats, whSpecId);
-              diffDiv.innerHTML = diff.length > 0 ? renderDiffHTML(diff, loc) : "";
+              diffDiv.innerHTML = diff.length > 0 ? renderDiffHTML(diff, diffLabels, diffHeader) : "";
             }
           }
         }
@@ -493,7 +491,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
           {isDoneState ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4dca6b" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg> : <div style={{ width: 14, height: 14, borderRadius: 3, border: "2px solid #333344" }} />}
         </div>
       </div>
-      <EqTooltipObserver locale={locale} whSpecId={whSpecId} />
+      <EqTooltipObserver locale={locale} whSpecId={whSpecId} t={t} />
     </div>
   );
 }

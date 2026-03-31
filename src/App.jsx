@@ -116,60 +116,7 @@ function findInitialChar() {
   return null;
 }
 
-var LEGAL_CONTENT = {
-  terms: {
-    ko: {
-      title: "이용약관",
-      sections: [
-        { heading: "제1조 (목적)", body: "이 약관은 Midnight BiS Tracker(이하 '서비스')의 이용에 관한 기본적인 사항을 규정합니다." },
-        { heading: "제2조 (서비스의 내용)", body: "서비스는 World of Warcraft의 Best in Slot 아이템을 추적하기 위한 무료 도구를 제공합니다. 서비스는 Blizzard Entertainment와 공식적인 관련이 없으며, World of Warcraft 및 관련 상표는 Blizzard Entertainment, Inc.에 귀속됩니다." },
-        { heading: "제3조 (데이터 저장)", body: "모든 사용자 데이터는 브라우저의 localStorage에 저장되며, 외부 서버로 전송되지 않습니다. 브라우저 데이터를 삭제하면 저장된 정보가 사라질 수 있습니다." },
-        { heading: "제4조 (면책조항)", body: "서비스는 '있는 그대로' 제공되며, 정확성이나 완전성을 보장하지 않습니다. BiS 데이터는 Maxroll.gg 등 외부 출처를 기반으로 하며, 게임 패치에 따라 변경될 수 있습니다. 서비스 이용으로 인한 어떠한 손해에 대해서도 책임을 지지 않습니다." },
-        { heading: "제5조 (외부 서비스)", body: "서비스는 Wowhead 툴팁 API 및 스크립트를 사용합니다. 해당 외부 서비스의 이용에는 각 서비스의 이용약관 및 개인정보처리방침이 적용됩니다." },
-        { heading: "제6조 (지적재산권)", body: "서비스의 소스 코드는 GitHub에서 공개되어 있습니다. World of Warcraft 관련 콘텐츠의 저작권은 Blizzard Entertainment, Inc.에 있습니다." },
-        { heading: "제7조 (약관의 변경)", body: "본 약관은 사전 고지 없이 변경될 수 있으며, 변경된 약관은 서비스에 게시됨과 동시에 효력이 발생합니다." }
-      ]
-    },
-    en: {
-      title: "Terms of Service",
-      sections: [
-        { heading: "1. Purpose", body: "These terms govern the use of Midnight BiS Tracker (the 'Service')." },
-        { heading: "2. Service Description", body: "The Service provides a free tool for tracking Best in Slot items in World of Warcraft. The Service is not affiliated with Blizzard Entertainment. World of Warcraft and related trademarks belong to Blizzard Entertainment, Inc." },
-        { heading: "3. Data Storage", body: "All user data is stored in your browser's localStorage and is never transmitted to external servers. Clearing your browser data may result in loss of saved information." },
-        { heading: "4. Disclaimer", body: "The Service is provided 'as is' without warranty of accuracy or completeness. BiS data is based on external sources such as Maxroll.gg and may change with game patches. We are not liable for any damages resulting from use of the Service." },
-        { heading: "5. Third-Party Services", body: "The Service uses the Wowhead tooltip API and scripts. Use of these external services is subject to their respective terms of service and privacy policies." },
-        { heading: "6. Intellectual Property", body: "The Service's source code is available on GitHub. World of Warcraft content copyrights belong to Blizzard Entertainment, Inc." },
-        { heading: "7. Changes to Terms", body: "These terms may be updated without prior notice. Changes take effect upon posting to the Service." }
-      ]
-    }
-  },
-  privacy: {
-    ko: {
-      title: "개인정보처리방침",
-      sections: [
-        { heading: "제1조 (수집하는 개인정보)", body: "본 서비스는 별도의 회원가입을 요구하지 않으며, 서버에 개인정보를 수집하거나 저장하지 않습니다. 사용자가 입력한 캐릭터 정보 및 장비 데이터는 오직 브라우저의 localStorage에만 저장됩니다." },
-        { heading: "제2조 (쿠키 및 로컬 스토리지)", body: "서비스는 기능 제공을 위해 브라우저의 localStorage를 사용합니다. 이 데이터는 사용자의 기기에만 존재하며 외부로 전송되지 않습니다." },
-        { heading: "제3조 (제3자 서비스)", body: "서비스는 다음 외부 서비스를 사용하며, 각 서비스의 개인정보처리방침이 적용됩니다:\n• Wowhead (wow.zamimg.com) — 아이템 툴팁 표시 및 스탯 조회\n• Google Fonts — 웹 폰트 제공\n• Cloudflare Pages — 웹사이트 호스팅\n\n이러한 외부 서비스는 자체적으로 IP 주소 등 기본적인 접속 정보를 수집할 수 있습니다." },
-        { heading: "제4조 (데이터 삭제)", body: "브라우저의 사이트 데이터 삭제 기능을 통해 언제든지 저장된 모든 데이터를 삭제할 수 있습니다. 서비스 내 '초기화' 기능을 통해 개별 캐릭터 데이터를 삭제할 수도 있습니다." },
-        { heading: "제5조 (아동의 개인정보)", body: "본 서비스는 만 14세 미만 아동의 개인정보를 의도적으로 수집하지 않습니다." },
-        { heading: "제6조 (방침의 변경)", body: "본 개인정보처리방침은 사전 고지 없이 변경될 수 있으며, 변경 사항은 서비스에 게시됨과 동시에 효력이 발생합니다." },
-        { heading: "연락처", body: "개인정보 관련 문의는 Discord 채널을 통해 접수하실 수 있습니다." }
-      ]
-    },
-    en: {
-      title: "Privacy Policy",
-      sections: [
-        { heading: "1. Information We Collect", body: "The Service does not require registration and does not collect or store personal information on any server. Character and gear data entered by users is stored only in the browser's localStorage." },
-        { heading: "2. Cookies & Local Storage", body: "The Service uses browser localStorage to provide its functionality. This data exists only on your device and is never transmitted externally." },
-        { heading: "3. Third-Party Services", body: "The Service uses the following external services, each subject to their own privacy policies:\n• Wowhead (wow.zamimg.com) — Item tooltips and stat lookups\n• Google Fonts — Web font delivery\n• Cloudflare Pages — Website hosting\n\nThese external services may collect basic connection information such as IP addresses." },
-        { heading: "4. Data Deletion", body: "You can delete all stored data at any time through your browser's site data settings. You can also delete individual character data using the 'Reset' feature within the Service." },
-        { heading: "5. Children's Privacy", body: "The Service does not intentionally collect personal information from children under the age of 14." },
-        { heading: "6. Changes to This Policy", body: "This privacy policy may be updated without prior notice. Changes take effect upon posting to the Service." },
-        { heading: "Contact", body: "For privacy-related inquiries, please reach out through our Discord channel." }
-      ]
-    }
-  }
-};
+// Legal content moved to i18n (legal section in ko.json/en.json)
 
 function VersionBadge({ accent, bg, border, size }) {
   var { locale } = useLocale();
@@ -200,10 +147,11 @@ function VersionBadge({ accent, bg, border, size }) {
 
 function LegalModal(props) {
   var page = props.page;
-  var locale = props.locale;
   var onClose = props.onClose;
+  var { t } = useLocale();
   if (!page) return null;
-  var content = LEGAL_CONTENT[page][locale] || LEGAL_CONTENT[page].en;
+  var content = t("legal." + page);
+  if (!content || !content.sections) return null;
   return (
     <div onClick={onClose} style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.75)", zIndex: 10000, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div onClick={function(e) { e.stopPropagation(); }} style={{ background: "#0c0c16", border: "1px solid #2a2a3a", borderRadius: 12, maxWidth: 640, width: "100%", maxHeight: "80vh", overflow: "auto", padding: "32px 28px" }}>
@@ -220,7 +168,7 @@ function LegalModal(props) {
           );
         })}
         <div style={{ marginTop: 16, fontSize: 11, color: "#334444", textAlign: "center" }}>
-          {locale === "ko" ? "최종 수정일: 2026년 3월 24일" : "Last updated: March 24, 2026"}
+          {t("legal.lastUpdated")}
         </div>
       </div>
     </div>
@@ -648,7 +596,7 @@ export default function App() {
         </div>
         </div>
       </div>
-      <LegalModal page={legalPage} locale={locale} onClose={function() { setLegalPage(null); }} />
+      <LegalModal page={legalPage} onClose={function() { setLegalPage(null); }} />
       </>
     );
   }
@@ -740,7 +688,7 @@ export default function App() {
       </div>
       </div>
       <TutorialOverlay step={tutorialStep} steps={isBrowseMode ? CATALOG_TUTORIAL_STEPS : undefined} onNext={function() { var steps = isBrowseMode ? CATALOG_TUTORIAL_STEPS : TUTORIAL_STEPS; setTutorialStep(function(s) { return s >= steps.length - 1 ? null : s + 1; }); }} onPrev={function() { setTutorialStep(function(s) { return s <= 0 ? 0 : s - 1; }); }} onSkip={function() { setTutorialStep(null); }} />
-      <LegalModal page={legalPage} locale={locale} onClose={function() { setLegalPage(null); }} />
+      <LegalModal page={legalPage} onClose={function() { setLegalPage(null); }} />
     </div>
   );
 }
