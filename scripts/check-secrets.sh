@@ -71,7 +71,7 @@ done
 # Check for .env files
 for file in $STAGED_FILES; do
   case "$file" in
-    .env|.env.*|*.pem|*.key|credentials*)
+    .env|.env.local|.env.production|.env.development|*.pem|*.key|credentials*)
       if [ "$FOUND" -eq 0 ]; then
         echo "🚨 Potential secrets detected in staged files:"
         echo ""
