@@ -2,11 +2,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { TUTORIAL_STEPS } from '../data/tutorial.js';
 import { useLocale } from '../i18n/index.jsx';
 
-export default function TutorialOverlay({ step, onNext, onPrev, onSkip }) {
+export default function TutorialOverlay({ step, steps, onNext, onPrev, onSkip }) {
   var { t } = useLocale();
   var [rect, setRect] = useState(null);
-  var total = TUTORIAL_STEPS.length;
-  var stepConfig = step !== null ? TUTORIAL_STEPS[step] : null;
+  var activeSteps = steps || TUTORIAL_STEPS;
+  var total = activeSteps.length;
+  var stepConfig = step !== null ? activeSteps[step] : null;
 
   var measure = useCallback(function() {
     if (!stepConfig) return;

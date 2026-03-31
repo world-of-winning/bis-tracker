@@ -22,7 +22,7 @@ export var BIS = [
   { slot: "back", en: "Draconic Nullcape", ko: "용족 무위단망토", id: 249370, source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
   { slot: "chest", en: "Primal Sentry's Scaleplate", ko: "원시 파수꾼의 비늘판금", id: 249991, source: "Chimaerus", stats: ["crit","haste"] },
   { slot: "wrist", en: "Farstrider's Plated Bracers", ko: "원정순찰대원의 철판 팔보호구", id: 244584, source: "Crafted", stats: [] },
-  { slot: "hands", en: "Primal Sentry's Talonguards", ko: "원시 파수꾼의 갈퀴보호대", id: 249989, source: "Voracius", stats: ["crit","mastery"] },
+  { slot: "hands", en: "Primal Sentry's Talonguards", ko: "원시 파수꾼의 갈퀴보호대", id: 249989, source: "Vorasius", stats: ["crit","mastery"] },
   { slot: "waist", en: "Scornbane Waistguard", ko: "멸시파멸 허리보호대", id: 249371, source: "Chimaerus", stats: ["haste","mastery"] },
   { slot: "legs", en: "Primal Sentry's Legguards", ko: "원시 파수꾼의 다리보호대", id: 249987, source: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
   { slot: "feet", en: "Primal Sentry's Swiftsteps", ko: "원시 파수꾼의 날쌘 발걸음", id: 249990, source: "Tier", stats: ["crit","mastery"] },

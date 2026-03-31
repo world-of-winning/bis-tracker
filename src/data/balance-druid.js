@@ -19,7 +19,7 @@ export var BIS = [
   { slot: "head", en: "Branches of the Luminous Bloom", ko: "영롱한 꽃의 나뭇가지", id: 250024, source: "Tier", stats: ["haste","mastery"] },
   { slot: "neck", en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", id: 250247, source: "Seat of the Triumvirate", stats: ["haste","mastery"] },
   { slot: "shoulder", en: "Seedpods of the Luminous Bloom", ko: "영롱한 꽃의 씨앗 깍지", id: 250022, source: "Tier", stats: ["crit","mastery"] },
-  { slot: "back", en: "Draconic Nullcape", ko: "용족 무위단망토", id: 249370, source: "Vaelgor", stats: ["haste","mastery"] },
+  { slot: "back", en: "Draconic Nullcape", ko: "용족 무위단망토", id: 249370, source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
   { slot: "chest", en: "Trunk of the Luminous Bloom", ko: "영롱한 꽃의 밑동", id: 250027, source: "Tier", stats: ["crit","mastery"] },
   { slot: "wrist", en: "Silvermoon Agent's Deflectors", ko: "실버문 요원의 굴절보호대", id: 244576, source: "Crafted", stats: [] },
   { slot: "hands", en: "Arbortenders of the Luminous Bloom", ko: "영롱한 꽃의 나무지기", id: 250025, source: "Tier", stats: ["haste","vers"] },
@@ -29,7 +29,7 @@ export var BIS = [
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "trinket2", en: "Vaelgor's Final Stare", ko: "바엘고어의 마지막 시선", id: 249346, source: "Vaelgor", stats: [] },
+  { slot: "trinket2", en: "Vaelgor's Final Stare", ko: "바엘고어의 마지막 시선", id: 249346, source: "Vaelgor & Ezzorak", stats: [] },
   { slot: "main_hand", en: "Belo'melorn, the Shattered Talon", ko: "벨로멜로른 - 으스러진 갈퀴발톱", id: 249283, source: "Belo'ren", stats: ["haste","mastery"] },
   { slot: "off_hand", en: "Tome of Alnscorned Regret", ko: "알른멸시 회한의 고서", id: 249922, source: "Chimaerus", stats: ["haste","mastery"] },
 ];
@@ -59,7 +59,6 @@ export var ALTS = [
   { forSlot: "hands", id: 249321, en: "Vaelgor's Fearsome Grasp", ko: "바엘고어의 섬찟한 손아귀", source: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
   { forSlot: "hands", id: 251204, en: "Corewright's Zappers", ko: "핵장인의 제어 장치", source: "Nexus-Point Xenas", stats: ["haste","vers"] },
   { forSlot: "legs", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", source: "Pit of Saron", stats: ["haste","mastery"] },
-  { forSlot: "legs", id: 178819, en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", source: "Halls of Atonement", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 249312, en: "Nightblade's Pantaloons", ko: "밤의 검의 통바지", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", source: "Pit of Saron", stats: ["crit","haste"] },
@@ -81,7 +80,7 @@ export var STAT_CACHE_KEY = "balance-druid-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49812:["crit","haste"],49817:["haste","mastery"],50264:["crit","haste"],151315:["crit","haste"],
-  151317:["mastery","vers"],151319:["crit","mastery"],178819:["haste","mastery"],244573:[],
+  151317:["mastery","vers"],151319:["crit","mastery"],244573:[],
   244576:[],249283:["haste","mastery"],249287:["haste","mastery"],249312:["haste","mastery"],
   249321:["crit","mastery"],249327:["crit","haste"],249343:["mastery"],249346:[],
   249368:["haste","mastery"],249369:["haste","mastery"],249370:["haste","mastery"],249382:["crit","mastery"],

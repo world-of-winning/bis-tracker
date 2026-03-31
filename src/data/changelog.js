@@ -1,6 +1,8 @@
 // Changelog entries — newest first
 // { date: "YYYY-MM-DD", text: { ko, en } }
 export var CHANGELOG = [
+  { date: "2025-03-31", text: { ko: "카탈로그 모드 — SimC 없이 스펙별 BiS/Alt 목록 열람", en: "Catalog mode — Browse BiS/Alt lists per spec without SimC" } },
+  { date: "2025-03-31", text: { ko: "아이템 소스 데이터 정리 (합성 소스 분리, 오타 수정, 비시즌 던전 제거)", en: "Item source data cleanup (split combined sources, fix typos, remove non-season dungeons)" } },
   { date: "2025-03-29", text: { ko: "잘못된 방어구 타입 착용 감지 및 경고 표시", en: "Detect and warn when wearing wrong armor type" } },
   { date: "2025-03-28", text: { ko: "파밍 카운트 통합 및 등급↑ 필요 아이템 빨간색 표시", en: "Unified farming count logic, tierUp items shown in red" } },
   { date: "2025-03-27", text: { ko: "아이템 등급 판별 bonus_id 기반으로 개선", en: "Improved item grade detection using bonus_id ranges" } },

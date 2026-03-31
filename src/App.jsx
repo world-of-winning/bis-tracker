@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { SPECS, getSpec, findSpecBySimC } from './data/specs.js';
 import { CHANGELOG } from './data/changelog.js';
 import { getSampleChars, SAMPLE_CHARS } from './data/sample.js';
@@ -7,7 +7,8 @@ import { TIERS, parseSimC } from './data/shared.js';
 import { useLocale } from './i18n/index.jsx';
 import BisTracker from './components/BisTracker.jsx';
 import TutorialOverlay from './components/TutorialOverlay.jsx';
-import { TUTORIAL_STEPS } from './data/tutorial.js';
+import { TUTORIAL_STEPS, CATALOG_TUTORIAL_STEPS } from './data/tutorial.js';
+import { version as APP_VERSION } from '../package.json';
 
 var ICON_BASE = "https://wow.zamimg.com/images/wow/icons/medium/";
 var CLASS_COLOR = {
@@ -28,11 +29,13 @@ var LAST_CHAR_KEY = "bis-last-char";
 
 var SPEC_GROUPS = (function() {
   var groups = {};
+  var order = [];
   SPECS.forEach(function(s) {
     var cls = s.SIMC_CLASS;
-    if (!groups[cls]) groups[cls] = [];
+    if (!groups[cls]) { groups[cls] = []; order.push(cls); }
     groups[cls].push(s);
   });
+  groups._order = order;
   return groups;
 })();
 
@@ -168,6 +171,33 @@ var LEGAL_CONTENT = {
   }
 };
 
+function VersionBadge({ accent, bg, border, size }) {
+  var { locale } = useLocale();
+  var [open, setOpen] = useState(false);
+  var ref = useRef(null);
+  var timerRef = useRef(null);
+  function enter() { clearTimeout(timerRef.current); setOpen(true); }
+  function leave() { timerRef.current = setTimeout(function() { setOpen(false); }, 200); }
+  return (
+    <span ref={ref} onMouseEnter={enter} onMouseLeave={leave} style={{ position: "relative", display: "inline-block", verticalAlign: "middle" }}>
+      <span style={{ fontSize: size || 10, fontFamily: "'Noto Sans KR',sans-serif", fontWeight: 700, color: accent, background: bg || (accent + "18"), border: "1px solid " + (border || (accent + "44")), borderRadius: 4, padding: "1px 6px", letterSpacing: 0, cursor: "default" }}>{"v" + APP_VERSION}</span>
+      {open && (
+        <div onMouseEnter={enter} onMouseLeave={leave} style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 10000, background: "#0c0c16", border: "1px solid #2a2a3a", borderRadius: 8, padding: "12px 14px", minWidth: 300, maxHeight: 320, overflowY: "auto", boxShadow: "0 8px 32px rgba(0,0,0,0.6)" }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#556666", marginBottom: 8, letterSpacing: 0.5, textTransform: "uppercase" }}>Changelog</div>
+          {CHANGELOG.map(function(entry, i) {
+            return (
+              <div key={i} style={{ display: "flex", gap: 10, padding: "4px 0", borderBottom: i < CHANGELOG.length - 1 ? "1px solid #1a1a2a" : "none" }}>
+                <span style={{ fontSize: 10, color: "#445555", fontFamily: "monospace", whiteSpace: "nowrap", minWidth: 72 }}>{entry.date}</span>
+                <span style={{ fontSize: 11, color: "#99887a" }}>{locale === "ko" ? entry.text.ko : entry.text.en}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </span>
+  );
+}
+
 function LegalModal(props) {
   var page = props.page;
   var locale = props.locale;
@@ -208,6 +238,8 @@ export default function App() {
   var [charsRev, setCharsRev] = useState(0);
   var [tutorialStep, setTutorialStep] = useState(null);
   var [legalPage, setLegalPage] = useState(null);
+  var [specBrowseOpen, setSpecBrowseOpen] = useState(false);
+  var isBrowseMode = specKey && !charName;
   var [sampleMode, setSampleMode] = useState(function() {
     // Detect sample mode by checking if any sample character exists
     var index = loadCharsIndex();
@@ -230,6 +262,18 @@ export default function App() {
     setCharName(cn);
     setPendingSimcText("");
     persist(LAST_CHAR_KEY, { specKey: sk, charName: cn });
+  }
+
+  var catalogTutorialShown = useRef(false);
+  function browseSpec(sk) {
+    setSpecKey(sk);
+    setCharName(null);
+    setPendingSimcText("");
+    setSpecBrowseOpen(false);
+    if (!catalogTutorialShown.current && !sampleMode) {
+      catalogTutorialShown.current = true;
+      setTimeout(function() { setTutorialStep(0); }, 500);
+    }
   }
 
   var handlePaste = useCallback(function(e) {
@@ -362,11 +406,10 @@ export default function App() {
       addCharToIndex(specKey, name);
       setCharsRev(function(r) { return r + 1; });
       persist(LAST_CHAR_KEY, { specKey: specKey, charName: name });
-      if (name !== charName) {
-        setCharName(name);
-      }
+      setCharName(name);
+      setSpecBrowseOpen(false);
     }
-  }, [specKey, charName]);
+  }, [specKey]);
 
   var handleResetAll = useCallback(function() {
     // Remove all character data
@@ -378,9 +421,11 @@ export default function App() {
         remove(s.STORAGE_KEY + ":" + name);
       });
     });
-    // Remove stat caches
+    // Remove stat caches and base storage keys (catalog mode data)
     SPECS.forEach(function(s) {
       remove(s.STAT_CACHE_KEY);
+      remove(s.STAT_CACHE_KEY + "-armor");
+      remove(s.STORAGE_KEY);
     });
     // Remove index and last char
     remove(CHARS_KEY);
@@ -519,9 +564,10 @@ export default function App() {
           <circle cx="352" cy="148" r="5" fill="#DCBEFF" opacity="0.8" />
           <circle cx="256" cy="256" r="252" fill="none" stroke="#501E8C" strokeWidth="3" opacity="0.2" />
         </svg>
-        <h1 className="grad-text" style={{ fontFamily: "'Cinzel',serif", fontSize: 32, fontWeight: 700, background: "linear-gradient(135deg,#c9a227,#e8c84c,#c9a227)", letterSpacing: 2, marginBottom: 8 }}>
-          Midnight BiS Tracker <span style={{ fontSize: 11, fontFamily: "'Noto Sans KR',sans-serif", fontWeight: 700, WebkitTextFillColor: "#c9a227", color: "#c9a227", background: "#c9a22718", border: "1px solid #c9a22744", borderRadius: 4, padding: "1px 6px", verticalAlign: "middle", letterSpacing: 0 }}>BETA</span>
-        </h1>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: "center", marginBottom: 8 }}>
+          <h1 className="grad-text" style={{ fontFamily: "'Cinzel',serif", fontSize: 32, fontWeight: 700, background: "linear-gradient(135deg,#c9a227,#e8c84c,#c9a227)", letterSpacing: 2 }}>Midnight BiS Tracker</h1>
+          <VersionBadge accent="#c9a227" size={11} />
+        </div>
         <p style={{ fontSize: 15, color: "#99887a", marginBottom: 4, fontWeight: 600 }}>{t("ui.seasonLabel")}</p>
         <p style={{ fontSize: 12, color: "#556666", marginBottom: 24 }}>{t("ui.seasonSub")}</p>
         <div style={{ width: "100%", maxWidth: 600, background: "#0c0c16", border: "1px solid #2a2a3a", borderRadius: 12, padding: 24 }}>
@@ -536,12 +582,45 @@ export default function App() {
               {landingFeedback.msg}
             </div>
           )}
-          <div style={{ marginTop: 16, textAlign: "center" }}>
+          <div style={{ marginTop: 16, display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
             <button onClick={handleTrySample}
               style={{ padding: "10px 24px", borderRadius: 8, background: "transparent", border: "1px dashed #c9a22766", color: "#c9a227", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>
               {t("ui.trySample")}
             </button>
+            <button onClick={function() { setSpecBrowseOpen(!specBrowseOpen); }}
+              style={{ padding: "10px 24px", borderRadius: 8, background: "transparent", border: "1px dashed #55666666", color: "#778888", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>
+              {t("ui.browseSpecs")}
+            </button>
           </div>
+          {specBrowseOpen && (
+            <div style={{ marginTop: 16 }}>
+              <div style={{ fontSize: 11, color: "#556666", marginBottom: 10 }}>{t("ui.browseSpecsHint")}</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {SPEC_GROUPS._order.map(function(cls) {
+                  var clsColor = CLASS_COLOR[cls] || "#aaa";
+                  return (
+                    <div key={cls}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "3px 4px", borderBottom: "1px solid #1a1a28", marginBottom: 6 }}>
+                        <img src={ICON_BASE + CLASS_ICON[cls] + ".jpg"} alt="" style={{ width: 16, height: 16, borderRadius: 2 }} />
+                        <span style={{ fontSize: 10, fontWeight: 700, color: clsColor, textTransform: "uppercase", letterSpacing: 0.5 }}>{t("classes." + cls)}</span>
+                      </div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, paddingLeft: 4 }}>
+                        {SPEC_GROUPS[cls].map(function(s) {
+                          return (
+                            <button key={s.SPEC_KEY} onClick={function() { browseSpec(s.SPEC_KEY); }}
+                              style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 6, background: "#0a0a14", border: "1px solid " + clsColor + "33", cursor: "pointer", transition: "all 0.2s" }}>
+                              <img src={ICON_BASE + s.SPEC_ICON + ".jpg"} alt="" style={{ width: 18, height: 18, borderRadius: 3 }} />
+                              <span style={{ fontSize: 11, fontWeight: 600, color: clsColor, whiteSpace: "nowrap" }}>{t("specs." + s.SIMC_SPEC)}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div style={{ marginTop: 20 }}>
             <div style={{ fontSize: 11, color: "#445555", marginBottom: 10 }}>{t("ui.changelog")}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
@@ -579,9 +658,10 @@ export default function App() {
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
         <div style={{ padding: "24px 0 0" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <h1 className="grad-text" style={{ fontFamily: "'Cinzel',serif", fontSize: 26, fontWeight: 700, background: "linear-gradient(135deg," + spec.THEME.accent + "," + spec.THEME.accentLight + "," + spec.THEME.accent + ")", letterSpacing: 1 }}>
-              Midnight BiS Tracker <span style={{ fontSize: 10, fontFamily: "'Noto Sans KR',sans-serif", fontWeight: 700, WebkitTextFillColor: spec.THEME.accent, color: spec.THEME.accent, background: spec.THEME.accentBg, border: "1px solid " + spec.THEME.accent + "44", borderRadius: 4, padding: "1px 6px", verticalAlign: "middle", letterSpacing: 0 }}>BETA</span>
-            </h1>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <h1 className="grad-text" style={{ fontFamily: "'Cinzel',serif", fontSize: 26, fontWeight: 700, background: "linear-gradient(135deg," + spec.THEME.accent + "," + spec.THEME.accentLight + "," + spec.THEME.accent + ")", letterSpacing: 1 }}>Midnight BiS Tracker</h1>
+              <VersionBadge accent={spec.THEME.accent} bg={spec.THEME.accentBg} />
+            </div>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               {sampleMode && (
                 <button onClick={handleExitSample} style={{ padding: "5px 12px", borderRadius: 6, background: "#1a101822", border: "1px solid #3a203044", color: "#ff8d8d", fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>{t("ui.exitSample")}</button>
@@ -595,21 +675,54 @@ export default function App() {
               </a>
             </div>
           </div>
-          {allChars.length >= 1 && (
-            <div data-tutorial="char-bar" style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 8 }}>
-              {allChars.map(function(c) {
-                var active = c.specKey === specKey && c.charName === charName;
-                var specLabel = t("specs." + c.spec.SIMC_SPEC) || c.spec.SIMC_SPEC;
-                return (
-                  <button key={c.specKey + ":" + c.charName} onClick={function() { if (!active) selectChar(c.specKey, c.charName); }}
-                    style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 600, cursor: active ? "default" : "pointer", background: active ? c.spec.THEME.accentBg : "#0a0a14", border: "1px solid " + (active ? c.spec.THEME.accent + "66" : "#1e1e30"), color: active ? c.spec.THEME.accent : "#556666", transition: "all 0.2s" }}>
-                    <img src={ICON_BASE + c.spec.SPEC_ICON + ".jpg"} alt="" style={{ width: 14, height: 14, borderRadius: 2, opacity: active ? 1 : 0.5 }} />
-                    {c.charName + " · " + specLabel}
-                  </button>
-                );
-              })}
+          <div data-tutorial="char-bar" style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 8, alignItems: "center" }}>
+            {allChars.map(function(c) {
+              var active = c.specKey === specKey && c.charName === charName;
+              var specLabel = t("specs." + c.spec.SIMC_SPEC) || c.spec.SIMC_SPEC;
+              return (
+                <button key={c.specKey + ":" + c.charName} onClick={function() { if (!active) selectChar(c.specKey, c.charName); }}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 600, cursor: active ? "default" : "pointer", background: active ? c.spec.THEME.accentBg : "#0a0a14", border: "1px solid " + (active ? c.spec.THEME.accent + "66" : "#1e1e30"), color: active ? c.spec.THEME.accent : "#556666", transition: "all 0.2s" }}>
+                  <img src={ICON_BASE + c.spec.SPEC_ICON + ".jpg"} alt="" style={{ width: 14, height: 14, borderRadius: 2, opacity: active ? 1 : 0.5 }} />
+                  {c.charName + " · " + specLabel}
+                </button>
+              );
+            })}
+            <div style={{ position: "relative" }}>
+              <button onClick={function() { setSpecBrowseOpen(!specBrowseOpen); }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 600, cursor: "pointer", background: isBrowseMode ? spec.THEME.accentBg : "#0a0a14", border: "1px solid " + (isBrowseMode ? spec.THEME.accent + "66" : "#1e1e30"), color: isBrowseMode ? spec.THEME.accent : "#556666", transition: "all 0.2s" }}>
+                {isBrowseMode && <img src={ICON_BASE + spec.SPEC_ICON + ".jpg"} alt="" style={{ width: 14, height: 14, borderRadius: 3 }} />}
+                {isBrowseMode ? t("ui.browsing") + " · " + (t("specs." + spec.SIMC_SPEC) || spec.SIMC_SPEC) : t("ui.browseSpecs")}
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: specBrowseOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform .2s" }}><polyline points="6 9 12 15 18 9" /></svg>
+              </button>
+              {specBrowseOpen && (
+                <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, zIndex: 1000, background: "#0c0c16", border: "1px solid #2a2a3a", borderRadius: 8, padding: 12, minWidth: 320, maxHeight: 400, overflowY: "auto", boxShadow: "0 8px 32px rgba(0,0,0,0.6)" }}>
+                  {SPEC_GROUPS._order.map(function(cls) {
+                    var clsColor = CLASS_COLOR[cls] || "#aaa";
+                    return (
+                      <div key={cls} style={{ marginBottom: 6 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "3px 4px", borderBottom: "1px solid #1a1a28", marginBottom: 4 }}>
+                          <img src={ICON_BASE + CLASS_ICON[cls] + ".jpg"} alt="" style={{ width: 14, height: 14, borderRadius: 2 }} />
+                          <span style={{ fontSize: 10, fontWeight: 700, color: clsColor, textTransform: "uppercase", letterSpacing: 0.5 }}>{t("classes." + cls)}</span>
+                        </div>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 3, paddingLeft: 4 }}>
+                          {SPEC_GROUPS[cls].map(function(s) {
+                            var browsing = isBrowseMode && specKey === s.SPEC_KEY;
+                            return (
+                              <button key={s.SPEC_KEY} onClick={function() { browseSpec(s.SPEC_KEY); }}
+                                style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 8px", borderRadius: 4, background: browsing ? s.THEME.accentBg : "transparent", border: "1px solid " + (browsing ? s.THEME.accent + "66" : "transparent"), cursor: "pointer", fontSize: 11, fontWeight: 600, color: browsing ? s.THEME.accent : clsColor + "cc", transition: "all 0.15s" }}>
+                                <img src={ICON_BASE + s.SPEC_ICON + ".jpg"} alt="" style={{ width: 14, height: 14, borderRadius: 2, opacity: browsing ? 1 : 0.7 }} />
+                                {t("specs." + s.SIMC_SPEC)}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
 
       <BisTracker key={specKey + ":" + charName} spec={spec} charName={charName} initialSimcText={pendingSimcText} onSpecSwitch={handleSpecSwitch} onClear={handleClear} onCharDetected={handleCharDetected} tutorialStep={tutorialStep} />
@@ -626,7 +739,7 @@ export default function App() {
         </div>
       </div>
       </div>
-      <TutorialOverlay step={tutorialStep} onNext={function() { setTutorialStep(function(s) { return s >= TUTORIAL_STEPS.length - 1 ? null : s + 1; }); }} onPrev={function() { setTutorialStep(function(s) { return s <= 0 ? 0 : s - 1; }); }} onSkip={function() { setTutorialStep(null); }} />
+      <TutorialOverlay step={tutorialStep} steps={isBrowseMode ? CATALOG_TUTORIAL_STEPS : undefined} onNext={function() { var steps = isBrowseMode ? CATALOG_TUTORIAL_STEPS : TUTORIAL_STEPS; setTutorialStep(function(s) { return s >= steps.length - 1 ? null : s + 1; }); }} onPrev={function() { setTutorialStep(function(s) { return s <= 0 ? 0 : s - 1; }); }} onSkip={function() { setTutorialStep(null); }} />
       <LegalModal page={legalPage} locale={locale} onClose={function() { setLegalPage(null); }} />
     </div>
   );
