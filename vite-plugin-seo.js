@@ -26,7 +26,12 @@ export default function seoPlugin() {
         try {
           var content = readFileSync(filePath, "utf-8");
           if (content.indexOf("%VITE_SITE_URL%") !== -1) {
-            writeFileSync(filePath, content.replace(/%VITE_SITE_URL%/g, siteUrl));
+            var replaced = content.replace(/%VITE_SITE_URL%/g, siteUrl);
+            if (!siteUrl) {
+              // Remove lines that become invalid without a site URL (e.g. "Sitemap: /sitemap.xml")
+              replaced = replaced.replace(/^Sitemap:\s*\/.*$/gm, "").replace(/\n{3,}/g, "\n\n");
+            }
+            writeFileSync(filePath, replaced);
           }
         } catch (e) {
           // File doesn't exist in output, skip
