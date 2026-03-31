@@ -39,6 +39,25 @@ var SPEC_GROUPS = (function() {
   return groups;
 })();
 
+function readUrlParams() {
+  var params = new URLSearchParams(window.location.search);
+  var cls = params.get("class");
+  var sp = params.get("spec");
+  if (cls && !SPEC_GROUPS[cls]) { cls = null; sp = null; }
+  if (sp && cls) {
+    var found = SPEC_GROUPS[cls].find(function(s) { return s.SIMC_SPEC === sp; });
+    if (!found) sp = null;
+  }
+  return { cls: cls, spec: sp };
+}
+
+function buildUrl(cls, sp) {
+  if (!cls) return window.location.pathname;
+  var p = new URLSearchParams();
+  p.set("class", cls);
+  if (sp) p.set("spec", sp);
+  return window.location.pathname + "?" + p.toString();
+}
 
 function loadCharsIndex() {
   return load(CHARS_KEY) || {};
@@ -177,9 +196,16 @@ function LegalModal(props) {
 
 export default function App() {
   var { t, locale, setLocale } = useLocale();
-  var initial = findInitialChar();
-  var [specKey, setSpecKey] = useState(initial ? initial.specKey : null);
-  var [charName, setCharName] = useState(initial ? initial.charName : null);
+  var urlInit = readUrlParams();
+  var charInit = urlInit.cls ? null : findInitialChar();
+  var specFromUrl = null;
+  if (urlInit.cls && urlInit.spec) {
+    var match = (SPEC_GROUPS[urlInit.cls] || []).find(function(s) { return s.SIMC_SPEC === urlInit.spec; });
+    if (match) specFromUrl = match.SPEC_KEY;
+  }
+  var [specKey, setSpecKey] = useState(specFromUrl || (charInit ? charInit.specKey : null));
+  var [charName, setCharName] = useState(specFromUrl ? null : (charInit ? charInit.charName : null));
+  var [selectedClass, setSelectedClass] = useState(urlInit.cls || null);
   var [pendingSimcText, setPendingSimcText] = useState("");
   var [landingText, setLandingText] = useState("");
   var [landingFeedback, setLandingFeedback] = useState(null);
@@ -195,6 +221,28 @@ export default function App() {
       return index[c.specKey] && index[c.specKey].indexOf(c.name) !== -1;
     });
   });
+  // Popstate listener for browser back/forward
+  useEffect(function() {
+    function onPopState() {
+      var url = readUrlParams();
+      if (url.cls && url.spec) {
+        var m = (SPEC_GROUPS[url.cls] || []).find(function(s) { return s.SIMC_SPEC === url.spec; });
+        if (m) { setSpecKey(m.SPEC_KEY); setCharName(null); setSelectedClass(url.cls); return; }
+      }
+      if (url.cls) {
+        setSpecKey(null); setCharName(null); setSelectedClass(url.cls);
+      } else {
+        // No URL params — try to restore last character, or show landing
+        var last = findInitialChar();
+        setSpecKey(last ? last.specKey : null);
+        setCharName(last ? last.charName : null);
+        setSelectedClass(null);
+      }
+    }
+    window.addEventListener("popstate", onPopState);
+    return function() { window.removeEventListener("popstate", onPopState); };
+  }, []);
+
   var spec = specKey ? getSpec(specKey) : null;
   var charsIndex = cleanCharsIndex();
   var allChars = [];
@@ -208,20 +256,41 @@ export default function App() {
   function selectChar(sk, cn) {
     setSpecKey(sk);
     setCharName(cn);
+    setSelectedClass(null);
     setPendingSimcText("");
     persist(LAST_CHAR_KEY, { specKey: sk, charName: cn });
+    history.pushState({}, "", buildUrl(null, null));
   }
 
   var catalogTutorialShown = useRef(false);
   function browseSpec(sk) {
+    var s = getSpec(sk);
     setSpecKey(sk);
     setCharName(null);
+    setSelectedClass(s.SIMC_CLASS);
     setPendingSimcText("");
     setSpecBrowseOpen(false);
+    history.pushState({}, "", buildUrl(s.SIMC_CLASS, s.SIMC_SPEC));
     if (!catalogTutorialShown.current && !sampleMode) {
       catalogTutorialShown.current = true;
       setTimeout(function() { setTutorialStep(0); }, 500);
     }
+  }
+
+  function selectClass(cls) {
+    var next = cls === selectedClass ? null : cls;
+    setSelectedClass(next);
+    history.pushState({}, "", buildUrl(next, null));
+  }
+
+  function goHome() {
+    setSpecKey(null);
+    setCharName(null);
+    setSelectedClass(null);
+    setPendingSimcText("");
+    setLandingText("");
+    setLandingFeedback(null);
+    history.pushState({}, "", buildUrl(null, null));
   }
 
   var handlePaste = useCallback(function(e) {
@@ -243,9 +312,11 @@ export default function App() {
       var name = result.ci.name || "Unknown";
       setSpecKey(found.SPEC_KEY);
       setCharName(name);
+      setSelectedClass(null);
       setPendingSimcText(text);
       setLandingFeedback(null);
       persist(LAST_CHAR_KEY, { specKey: found.SPEC_KEY, charName: name });
+      history.pushState({}, "", buildUrl(null, null));
     } else {
       var clsName = t("classes." + result.ci.className) || result.ci.className;
       var specName = t("specs." + result.ci.spec) || result.ci.spec;
@@ -267,10 +338,12 @@ export default function App() {
     if (!existing) persist(firstKey, { acq: {}, sr: null, targetTier: null });
     setSpecKey(first.spec.SPEC_KEY);
     setCharName(first.name);
+    setSelectedClass(null);
     setPendingSimcText(first.simcText);
     setLandingFeedback(null);
     setCharsRev(function(r) { return r + 1; });
     persist(LAST_CHAR_KEY, { specKey: first.spec.SPEC_KEY, charName: first.name });
+    history.pushState({}, "", buildUrl(null, null));
     // Trigger import for remaining characters via their BisTracker storage
     samples.slice(1).forEach(function(s) {
       var key = s.spec.STORAGE_KEY + ":" + s.name;
@@ -329,15 +402,18 @@ export default function App() {
     if (next) {
       setSpecKey(next.specKey);
       setCharName(next.charName);
+      setSelectedClass(null);
       setPendingSimcText("");
     } else {
       setSpecKey(null);
       setCharName(null);
+      setSelectedClass(null);
       setPendingSimcText("");
       setLandingText("");
       setLandingFeedback(null);
     }
     persist(LAST_CHAR_KEY, next);
+    history.pushState({}, "", buildUrl(null, null));
   }, []);
 
   var handleSpecSwitch = useCallback(function(newSpecKey, simcText) {
@@ -345,8 +421,10 @@ export default function App() {
     var name = (result.ci && result.ci.name) || "Unknown";
     setSpecKey(newSpecKey);
     setCharName(name);
+    setSelectedClass(null);
     setPendingSimcText(simcText);
     persist(LAST_CHAR_KEY, { specKey: newSpecKey, charName: name });
+    history.pushState({}, "", buildUrl(null, null));
   }, []);
 
   var handleCharDetected = useCallback(function(name) {
@@ -381,11 +459,13 @@ export default function App() {
     // Reset state
     setSpecKey(null);
     setCharName(null);
+    setSelectedClass(null);
     setPendingSimcText("");
     setLandingText("");
     setLandingFeedback(null);
     setCharsRev(function(r) { return r + 1; });
     setLegalPage(null);
+    history.pushState({}, "", buildUrl(null, null));
   }, []);
 
   var handleClear = useCallback(function() {
@@ -518,6 +598,39 @@ export default function App() {
         </div>
         <p style={{ fontSize: 15, color: "#99887a", marginBottom: 4, fontWeight: 600 }}>{t("ui.seasonLabel")}</p>
         <p style={{ fontSize: 12, color: "#556666", marginBottom: 24 }}>{t("ui.seasonSub")}</p>
+        {/* Class grid — always visible */}
+        <div style={{ width: "100%", maxWidth: 720, marginBottom: 20 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 8 }}>
+            {SPEC_GROUPS._order.map(function(cls) {
+              var clsColor = CLASS_COLOR[cls] || "#aaa";
+              var isSelected = selectedClass === cls;
+              return (
+                <button key={cls} onClick={function() { selectClass(cls); }}
+                  className="class-tile"
+                  title={t("classes." + cls)}
+                  style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, padding: 0, borderRadius: 10, background: isSelected ? clsColor + "20" : "#0c0c16", border: "2px solid " + (isSelected ? clsColor + "88" : "#1e1e30"), cursor: "pointer", transition: "all 0.2s", boxShadow: isSelected ? "0 0 12px " + clsColor + "33" : "none" }}>
+                  <img src={ICON_BASE + CLASS_ICON[cls] + ".jpg"} alt={t("classes." + cls)} style={{ width: 32, height: 32, borderRadius: 6, opacity: isSelected ? 1 : 0.7 }} />
+                </button>
+              );
+            })}
+          </div>
+          {selectedClass && (
+            <div style={{ marginTop: 8, display: "flex", justifyContent: "center", gap: 8 }}>
+              {SPEC_GROUPS[selectedClass].map(function(s) {
+                var clsColor = CLASS_COLOR[selectedClass] || "#aaa";
+                return (
+                  <button key={s.SPEC_KEY} onClick={function() { browseSpec(s.SPEC_KEY); }}
+                    className="class-tile"
+                    title={t("specs." + s.SIMC_SPEC)}
+                    style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 44, height: 44, padding: 0, borderRadius: 10, background: "#0c0c16", border: "2px solid " + clsColor + "44", cursor: "pointer", transition: "all 0.2s" }}>
+                    <img src={ICON_BASE + s.SPEC_ICON + ".jpg"} alt={t("specs." + s.SIMC_SPEC)} style={{ width: 28, height: 28, borderRadius: 6 }} />
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        {/* SimC import */}
         <div style={{ width: "100%", maxWidth: 600, background: "#0c0c16", border: "1px solid #2a2a3a", borderRadius: 12, padding: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9a227" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
@@ -530,45 +643,12 @@ export default function App() {
               {landingFeedback.msg}
             </div>
           )}
-          <div style={{ marginTop: 16, display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ marginTop: 16, display: "flex", justifyContent: "center" }}>
             <button onClick={handleTrySample}
               style={{ padding: "10px 24px", borderRadius: 8, background: "transparent", border: "1px dashed #c9a22766", color: "#c9a227", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>
               {t("ui.trySample")}
             </button>
-            <button onClick={function() { setSpecBrowseOpen(!specBrowseOpen); }}
-              style={{ padding: "10px 24px", borderRadius: 8, background: "transparent", border: "1px dashed #55666666", color: "#778888", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>
-              {t("ui.browseSpecs")}
-            </button>
           </div>
-          {specBrowseOpen && (
-            <div style={{ marginTop: 16 }}>
-              <div style={{ fontSize: 11, color: "#556666", marginBottom: 10 }}>{t("ui.browseSpecsHint")}</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {SPEC_GROUPS._order.map(function(cls) {
-                  var clsColor = CLASS_COLOR[cls] || "#aaa";
-                  return (
-                    <div key={cls}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "3px 4px", borderBottom: "1px solid #1a1a28", marginBottom: 6 }}>
-                        <img src={ICON_BASE + CLASS_ICON[cls] + ".jpg"} alt="" style={{ width: 16, height: 16, borderRadius: 2 }} />
-                        <span style={{ fontSize: 10, fontWeight: 700, color: clsColor, textTransform: "uppercase", letterSpacing: 0.5 }}>{t("classes." + cls)}</span>
-                      </div>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, paddingLeft: 4 }}>
-                        {SPEC_GROUPS[cls].map(function(s) {
-                          return (
-                            <button key={s.SPEC_KEY} onClick={function() { browseSpec(s.SPEC_KEY); }}
-                              style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 6, background: "#0a0a14", border: "1px solid " + clsColor + "33", cursor: "pointer", transition: "all 0.2s" }}>
-                              <img src={ICON_BASE + s.SPEC_ICON + ".jpg"} alt="" style={{ width: 18, height: 18, borderRadius: 3 }} />
-                              <span style={{ fontSize: 11, fontWeight: 600, color: clsColor, whiteSpace: "nowrap" }}>{t("specs." + s.SIMC_SPEC)}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
           <div style={{ marginTop: 20 }}>
             <div style={{ fontSize: 11, color: "#445555", marginBottom: 10 }}>{t("ui.changelog")}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
@@ -607,7 +687,7 @@ export default function App() {
         <div style={{ padding: "24px 0 0" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <h1 className="grad-text" style={{ fontFamily: "'Cinzel',serif", fontSize: 26, fontWeight: 700, background: "linear-gradient(135deg," + spec.THEME.accent + "," + spec.THEME.accentLight + "," + spec.THEME.accent + ")", letterSpacing: 1 }}>Midnight BiS Tracker</h1>
+              <h1 onClick={goHome} className="grad-text" style={{ fontFamily: "'Cinzel',serif", fontSize: 26, fontWeight: 700, background: "linear-gradient(135deg," + spec.THEME.accent + "," + spec.THEME.accentLight + "," + spec.THEME.accent + ")", letterSpacing: 1, cursor: "pointer" }}>Midnight BiS Tracker</h1>
               <VersionBadge accent={spec.THEME.accent} bg={spec.THEME.accentBg} />
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>

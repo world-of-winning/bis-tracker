@@ -192,7 +192,9 @@
     "browseSpecs": "Browse Specs",
     "browseSpecsHint": "View BiS item lists without SimC",
     "catalogMode": "Catalog mode — Import SimC to compare gear and see farming priorities",
-    "browsing": "Browse"
+    "browsing": "Browse",
+    "selectClass": "Select a Class",
+    "selectSpec": "Select a Specialization"
   },
   "diffLabels": {
     "header": "Stat changes if equipped:",
