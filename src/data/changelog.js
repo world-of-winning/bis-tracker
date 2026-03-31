@@ -1,6 +1,7 @@
 // Changelog entries — newest first
 // { date: "YYYY-MM-DD", text: { ko, en } }
 export var CHANGELOG = [
+  { date: "2025-04-01", text: { ko: "완료 카드에서 착용 중인 아이템 이름 라벨이 표시되지 않던 버그 수정", en: "Fix equipped item name label not showing on completed cards" } },
   { date: "2025-04-01", text: { ko: "크로스스펙 SimC 공유 — 같은 클래스 다른 전문화 장비 데이터로 BiS 비교", en: "Cross-spec SimC sharing — Compare BiS using gear data from another spec of the same class" } },
   { date: "2025-04-01", text: { ko: "무기 타입/주 능력치 미스매치 감지 및 경고", en: "Weapon type and primary stat mismatch detection with warnings" } },
   { date: "2025-03-31", text: { ko: "직업/전문화 아이콘 그리드 랜딩 + URL 라우팅 (?class=paladin&spec=retribution)", en: "Class/spec icon grid landing + URL routing (?class=paladin&spec=retribution)" } },

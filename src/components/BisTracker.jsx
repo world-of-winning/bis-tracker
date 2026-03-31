@@ -488,14 +488,16 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
               <span>{t("ui.wrongPrimaryStat", { expected: t("primaryStats." + expectedPrimary), actual: t("primaryStats." + wrongPrimary) })}</span>
             </div>
           )}
-          {p && tier > 0 && tier < 4 && (
+          {p && tier > 0 && (tier < 4 || (hasDiff && eq)) && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: visualTier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : visualTier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : visualTier === 3 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : "#0d1a0d", border: "1px solid " + (visualTier === 1 ? "#6a2020" : visualTier === 2 ? "#6a5020" : visualTier === 3 ? "#6a5020" : "#1a3a1a"), color: p.color }}>
-                <span style={{ fontSize: 10 }}>{icons[tier]}</span><span>{pLabel}</span>
-                {p.deficit > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + p.deficit + "\uFF09"}</span>}
-              </div>
-              {p.upgradeStatus && <span style={{ fontSize: 9, color: p.upgradeStatus === "tierUp" ? "#cc8844" : "#5a9a5a" }}>{t(p.upgradeStatus === "tierUp" ? "ui.tierReacquireNeeded" : "ui.tierUpgradeNeeded")}</span>}
-              {p.weaponMismatch && <span style={{ fontSize: 9, color: "#cc8844" }}>{t("ui.weaponMismatch", { spec: t("specs." + simcSpec), slot: t("slots." + item.slot) })}</span>}
+              {tier < 4 && (
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: visualTier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : visualTier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : visualTier === 3 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : "#0d1a0d", border: "1px solid " + (visualTier === 1 ? "#6a2020" : visualTier === 2 ? "#6a5020" : visualTier === 3 ? "#6a5020" : "#1a3a1a"), color: p.color }}>
+                  <span style={{ fontSize: 10 }}>{icons[tier]}</span><span>{pLabel}</span>
+                  {p.deficit > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + p.deficit + "\uFF09"}</span>}
+                </div>
+              )}
+              {tier < 4 && p.upgradeStatus && <span style={{ fontSize: 9, color: p.upgradeStatus === "tierUp" ? "#cc8844" : "#5a9a5a" }}>{t(p.upgradeStatus === "tierUp" ? "ui.tierReacquireNeeded" : "ui.tierUpgradeNeeded")}</span>}
+              {tier < 4 && p.weaponMismatch && <span style={{ fontSize: 9, color: "#cc8844" }}>{t("ui.weaponMismatch", { spec: t("specs." + simcSpec), slot: t("slots." + item.slot) })}</span>}
               {hasDiff && eq && (
                 <a href={"https://www.wowhead.com" + whLocale + "/item=" + eq.id + whSpec + (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: isSimcAlt ? "#1a1508" : "#1a1520", border: "1px solid " + (isSimcAlt ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: isSimcAlt ? "#c9a040" : "#aa7799", whiteSpace: "nowrap" }}>
                   <span>{eq.name}</span>
