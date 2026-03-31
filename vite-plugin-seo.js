@@ -17,7 +17,13 @@ export default function seoPlugin() {
       outDir = config.build.outDir;
     },
     transformIndexHtml: function(html) {
-      return html.replace(/%VITE_SITE_URL%/g, siteUrl);
+      var result = html.replace(/%VITE_SITE_URL%/g, siteUrl);
+      if (!siteUrl) {
+        // Remove tags that become invalid without an absolute URL
+        result = result.replace(/<link rel="canonical"[^>]*>\s*/g, "");
+        result = result.replace(/<meta[^>]*(?:og:url|og:image|twitter:image)[^>]*>\s*/g, "");
+      }
+      return result;
     },
     closeBundle: function() {
       var targets = ["robots.txt", "sitemap.xml"];
