@@ -42,7 +42,7 @@ src/
 - **tier 4 ✓:** Done
 - Within same tier: worst stat equipped → first, larger deficit → first
 
-### Item Grade System (TWW Season 2)
+### Item Grade System (Midnight Season 1)
 Items have grade tiers with ilvl caps. Items can be upgraded within their grade but **cannot cross grade boundaries** — a Champion item maxed at 263 must be re-acquired at Hero grade to reach 276.
 
 | Grade | Key | Max ilvl | TIERS bonus |

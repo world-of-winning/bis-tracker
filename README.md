@@ -37,7 +37,7 @@ Required data: BiS list (16 slots), Alt list, KNOWN_STATS, dungeon list.
 
 ## Feedback
 
-Join the [Discord](https://discord.gg/ry7RYjBT) for feedback, bug reports, and feature requests.
+Join the [Discord](https://discord.gg/GU2Rs6y3Fh) for feedback, bug reports, and feature requests.
 
 ## Data Sources
 
