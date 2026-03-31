@@ -602,7 +602,7 @@ export default function App() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(175deg,#08080f 0%,#0a0d1a 40%,#0f1020 100%)", color: "#d4c9a8", fontFamily: "'Noto Sans KR','Segoe UI',sans-serif" }}>
+    <main style={{ minHeight: "100vh", background: "linear-gradient(175deg,#08080f 0%,#0a0d1a 40%,#0f1020 100%)", color: "#d4c9a8", fontFamily: "'Noto Sans KR','Segoe UI',sans-serif" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
         <div style={{ padding: "24px 0 0" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -615,10 +615,10 @@ export default function App() {
                 <button onClick={handleExitSample} style={{ padding: "5px 12px", borderRadius: 6, background: "#1a101822", border: "1px solid #3a203044", color: "#ff8d8d", fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>{t("ui.exitSample")}</button>
               )}
               <button onClick={function() { setLocale(locale === "ko" ? "en" : "ko"); }} style={{ padding: "3px 6px", borderRadius: 6, background: "#1a1a2822", border: "1px solid #2a2a3a44", fontSize: 16, lineHeight: 1, cursor: "pointer", color: "#8899aa" }}>{locale === "ko" ? "🇰🇷" : "🇺🇸"}</button>
-              <a href="https://discord.gg/GU2Rs6y3Fh" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", padding: "5px 8px", borderRadius: 6, background: "#5865F222", border: "1px solid #5865F244", textDecoration: "none", transition: "all 0.2s" }}>
+              <a href="https://discord.gg/GU2Rs6y3Fh" target="_blank" rel="noopener noreferrer" aria-label="Discord" style={{ display: "inline-flex", alignItems: "center", padding: "5px 8px", borderRadius: 6, background: "#5865F222", border: "1px solid #5865F244", textDecoration: "none", transition: "all 0.2s" }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" /></svg>
               </a>
-              <a href="https://github.com/world-of-winning/bis-tracker" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", padding: "5px 8px", borderRadius: 6, background: "#22222822", border: "1px solid #33333844", textDecoration: "none", transition: "all 0.2s" }}>
+              <a href="https://github.com/world-of-winning/bis-tracker" target="_blank" rel="noopener noreferrer" aria-label="GitHub" style={{ display: "inline-flex", alignItems: "center", padding: "5px 8px", borderRadius: 6, background: "#22222822", border: "1px solid #33333844", textDecoration: "none", transition: "all 0.2s" }}>
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="#778888"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
               </a>
             </div>
@@ -689,6 +689,6 @@ export default function App() {
       </div>
       <TutorialOverlay step={tutorialStep} steps={isBrowseMode ? CATALOG_TUTORIAL_STEPS : undefined} onNext={function() { var steps = isBrowseMode ? CATALOG_TUTORIAL_STEPS : TUTORIAL_STEPS; setTutorialStep(function(s) { return s >= steps.length - 1 ? null : s + 1; }); }} onPrev={function() { setTutorialStep(function(s) { return s <= 0 ? 0 : s - 1; }); }} onSkip={function() { setTutorialStep(null); }} />
       <LegalModal page={legalPage} onClose={function() { setLegalPage(null); }} />
-    </div>
+    </main>
   );
 }
