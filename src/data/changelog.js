@@ -1,6 +1,8 @@
 // Changelog entries — newest first
 // { date: "YYYY-MM-DD", text: { ko, en } }
 export var CHANGELOG = [
+  { date: "2025-04-01", text: { ko: "크로스스펙 SimC 공유 — 같은 클래스 다른 전문화 장비 데이터로 BiS 비교", en: "Cross-spec SimC sharing — Compare BiS using gear data from another spec of the same class" } },
+  { date: "2025-04-01", text: { ko: "무기 타입/주 능력치 미스매치 감지 및 경고", en: "Weapon type and primary stat mismatch detection with warnings" } },
   { date: "2025-03-31", text: { ko: "직업/전문화 아이콘 그리드 랜딩 + URL 라우팅 (?class=paladin&spec=retribution)", en: "Class/spec icon grid landing + URL routing (?class=paladin&spec=retribution)" } },
   { date: "2025-03-31", text: { ko: "카탈로그 모드 — SimC 없이 스펙별 BiS/Alt 목록 열람", en: "Catalog mode — Browse BiS/Alt lists per spec without SimC" } },
   { date: "2025-03-31", text: { ko: "아이템 소스 데이터 정리 (합성 소스 분리, 오타 수정, 비시즌 던전 제거)", en: "Item source data cleanup (split combined sources, fix typos, remove non-season dungeons)" } },

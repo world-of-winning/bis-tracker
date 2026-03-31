@@ -82,6 +82,33 @@ function removeCharFromIndex(specKey, charName) {
   saveCharsIndex(index);
 }
 
+function findCrossSpecSources(targetSpecKey) {
+  var targetSpec = getSpec(targetSpecKey);
+  var targetClass = targetSpec.SIMC_CLASS;
+  var index = loadCharsIndex();
+  var sources = [];
+  SPECS.forEach(function(s) {
+    if (s.SIMC_CLASS !== targetClass || s.SPEC_KEY === targetSpecKey) return;
+    var chars = index[s.SPEC_KEY];
+    if (!chars || !chars.length) return;
+    chars.forEach(function(name) {
+      var d = load(s.STORAGE_KEY + ":" + name);
+      if (d && d.sr && d.sr.gear) {
+        sources.push({
+          specKey: s.SPEC_KEY,
+          specLabel: s.SPEC_LABEL,
+          simcSpec: s.SIMC_SPEC,
+          charName: name,
+          storageKey: s.STORAGE_KEY + ":" + name,
+          statCacheKey: s.STAT_CACHE_KEY,
+          hasBag: !!(d.sr.bag && d.sr.bag.length),
+        });
+      }
+    });
+  });
+  return sources;
+}
+
 // Migrate old single-character storage to new per-character format
 function migrateOldData() {
   var migrated = false;
@@ -753,7 +780,7 @@ export default function App() {
           </div>
         </div>
 
-      <BisTracker key={specKey + ":" + charName} spec={spec} charName={charName} initialSimcText={pendingSimcText} onSpecSwitch={handleSpecSwitch} onClear={handleClear} onCharDetected={handleCharDetected} tutorialStep={tutorialStep} />
+      <BisTracker key={specKey + ":" + charName} spec={spec} charName={charName} initialSimcText={pendingSimcText} onSpecSwitch={handleSpecSwitch} onClear={handleClear} onCharDetected={handleCharDetected} crossSpecSources={findCrossSpecSources(specKey)} tutorialStep={tutorialStep} />
 
       <div style={{ marginTop: 24, paddingBottom: 40, textAlign: "center", fontSize: 11, color: "#334444" }}>
         <div>wowbis.gg</div>

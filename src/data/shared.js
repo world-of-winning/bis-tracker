@@ -27,10 +27,30 @@ export var CLASS_ARMOR = {
 // Slots that have an armor type (exclude accessories/weapons/back)
 export var ARMOR_SLOTS = new Set(["head", "shoulder", "chest", "wrist", "hands", "waist", "legs", "feet"]);
 
+// Spec → primary stat mapping (by SPEC_KEY)
+// Wowhead tooltip stat markers: <!--stat4--> Str, <!--stat3--> Int, <!--stat2--> Agi
+// Hybrid: <!--stat72--> Agi/Str, <!--stat73--> Str/Int, <!--stat74--> Agi/Int, <!--stat71--> Agi/Str/Int
+export var SPEC_PRIMARY_STAT = {
+  "blood-dk": "str", "frost-dk": "str", "unholy-dk": "str",
+  "havoc-dh": "agi", "devourer-dh": "int", "veng-dh": "agi",
+  "balance-druid": "int", "feral-druid": "agi", "guardian-druid": "agi", "resto-druid": "int",
+  "dev-evoker": "int", "pres-evoker": "int", "aug-evoker": "int",
+  "bm-hunter": "agi", "mm-hunter": "agi", "surv-hunter": "agi",
+  "arcane-mage": "int", "fire-mage": "int", "frost-mage": "int",
+  "brew-monk": "agi", "ww-monk": "agi", "mw-monk": "int",
+  "holy-paladin": "int", "prot-paladin": "str", "ret-paladin": "str",
+  "disc-priest": "int", "holy-priest": "int", "shadow-priest": "int",
+  "assa-rogue": "agi", "outlaw-rogue": "agi", "sub-rogue": "agi",
+  "ele-shaman": "int", "enh-shaman": "agi", "resto-shaman": "int",
+  "aff-lock": "int", "demo-lock": "int", "destro-lock": "int",
+  "arms-warrior": "str", "fury-warrior": "str", "prot-warrior": "str",
+};
+
 // Fetch stats from Wowhead tooltip API for unknown items
 export function fetchItemStats(ids) {
   var stats = {};
   var armorTypes = {};
+  var primaryStats = {};
   var promises = ids.map(function(id) {
     return fetch("https://nether.wowhead.com/tooltip/item/" + id + "?dataEnv=1&locale=0")
       .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
@@ -45,10 +65,20 @@ export function fetchItemStats(ids) {
         // Extract armor type from tooltip HTML (e.g. <span class="q1">Plate</span>)
         var am = html.match(/<span class="q1">(Plate|Mail|Leather|Cloth)<\/span>/);
         if (am) armorTypes[id] = am[1];
+        // Extract primary stat: fixed (stat4=str, stat5=int, stat3=agi) or hybrid (stat72/73/74)
+        var ps = [];
+        if (html.indexOf("<!--stat4-->") >= 0) ps.push("str");
+        if (html.indexOf("<!--stat5-->") >= 0) ps.push("int");
+        if (html.indexOf("<!--stat3-->") >= 0) ps.push("agi");
+        // Hybrid primary stats (adapts to spec)
+        if (html.indexOf("<!--stat72-->") >= 0) ps = ["agi", "str"];
+        else if (html.indexOf("<!--stat73-->") >= 0) ps = ["agi", "int"];
+        else if (html.indexOf("<!--stat74-->") >= 0) ps = ["str", "int"];
+        primaryStats[id] = ps;
       })
       .catch(function() { stats[id] = null; });
   });
-  return Promise.all(promises).then(function() { return { stats: stats, armorTypes: armorTypes }; });
+  return Promise.all(promises).then(function() { return { stats: stats, armorTypes: armorTypes, primaryStats: primaryStats }; });
 }
 
 export function resolveSlots(forSlot) {

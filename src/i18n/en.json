@@ -143,7 +143,7 @@
     "gearUpdated": "Gear data has been updated.",
     "emptySlots": "⚠ Empty slots: {slots}",
     "fetchingStats": "Fetching stats for {count} items...",
-    "reset": "Reset",
+    "reset": "Delete",
     "loading": "Loading...",
     "all": "All",
     "done": "Done",
@@ -192,9 +192,21 @@
     "browseSpecs": "Browse Specs",
     "browseSpecsHint": "View BiS item lists without SimC",
     "catalogMode": "Catalog mode — Import SimC to compare gear and see farming priorities",
+    "crossSpecAvailable": "Gear data from another spec of the same class is available",
+    "crossSpecUse": "Use {spec} '{name}' data",
+    "crossSpecImported": "Comparing BiS using gear from another spec",
+    "crossSpecNoBag": "(no bag data)",
+    "crossSpecFrom": "Based on {spec} data",
+    "weaponMismatch": "{spec} {slot} needed",
+    "wrongPrimaryStat": "Not a {expected} item!",
     "browsing": "Browse",
     "selectClass": "Select a Class",
     "selectSpec": "Select a Specialization"
+  },
+  "primaryStats": {
+    "str": "Strength",
+    "agi": "Agility",
+    "int": "Intellect"
   },
   "diffLabels": {
     "header": "Stat changes if equipped:",

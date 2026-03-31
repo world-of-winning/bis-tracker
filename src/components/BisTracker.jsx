@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { load, save as persist } from '../storage.js';
-import { DUNGEON_COLORS as DC, TIERS, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS } from '../data/shared.js';
+import { DUNGEON_COLORS as DC, TIERS, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS, SPEC_PRIMARY_STAT } from '../data/shared.js';
 import { sanitizeHTML } from '../sanitize.js';
 import { findSpecBySimC } from '../data/specs.js';
 import { useLocale } from '../i18n/index.jsx';
@@ -44,9 +44,22 @@ function calcSourceFarmCount(source, BIS, ALTS, sr, targetIlvl, stats, priorityS
 }
 function matchBiS(BIS, gear, bag, stats, knownBisIds, priorityStats) {
   var BIS_IDS = new Set(BIS.map(function(i) { return i.id; }));
-  var matched = {}, eqSlot = {}, bisInBag = {}, altItems = {};
+  // Detect weapon type mismatch (e.g. 1H+shield source vs 2H target or vice versa)
+  var bisHasOffhand = BIS.some(function(b) { return b.slot === "off_hand"; });
+  var bisHasMainhand = BIS.some(function(b) { return b.slot === "main_hand"; });
+  var gearHasOffhand = !!gear["off_hand"];
+  var gearHasMainhand = !!gear["main_hand"];
+  // Weapon mismatch: only when both sides have weapons but different types (1H+shield vs 2H)
+  var weaponMismatch = gearHasMainhand && bisHasMainhand && bisHasOffhand !== gearHasOffhand;
+  var matched = {}, eqSlot = {}, bisInBag = {}, altItems = {}, weaponMismatchIds = {};
   BIS.forEach(function(bi) {
     var s = bi.slot, d = gear[s];
+    // Weapon type mismatch (1H+shield vs 2H): show equipped but never match/alt
+    if (weaponMismatch && (s === "main_hand" || s === "off_hand")) {
+      if (d) eqSlot[bi.id] = d;
+      weaponMismatchIds[bi.id] = true;
+      return;
+    }
     if (d && d.id === bi.id) { matched[bi.id] = true; eqSlot[bi.id] = d; return; }
     if (s.indexOf("finger") === 0 || s.indexOf("trinket") === 0) {
       var alt = s.endsWith("1") ? s.replace("1", "2") : s.replace("2", "1");
@@ -86,7 +99,7 @@ function matchBiS(BIS, gear, bag, stats, knownBisIds, priorityStats) {
     // fallback: M+ BiS (stats 불일치인 경우만)
     if (knownBisIds && knownBisIds.has(eq.id)) altItems[bi.id] = "mythic";
   });
-  return { matched: matched, eqSlot: eqSlot, bisInBag: bisInBag, altItems: altItems };
+  return { matched: matched, eqSlot: eqSlot, bisInBag: bisInBag, altItems: altItems, weaponMismatch: weaponMismatchIds };
 }
 function calcAltPriority(alt, sr, allStats, priorityStats, targetIlvl, acq) {
   if (acq && acq[alt.id]) return { tier: 4, deficit: 0, ilvl: 0, labelKey: "done", color: "#4dca6b" };
@@ -152,6 +165,10 @@ function calcPriority(bisItem, sr, targetIlvl, stats, priorityStats) {
   var eqIlvl = (eq && eq.ilvl) ? eq.ilvl : 0;
   var deficit = Math.max(0, targetIlvl - eqIlvl);
   var score = eq ? statScore(eq.id, stats, priorityStats) : 0;
+  // Weapon type mismatch: incompatible weapon (1H+shield vs 2H) — no bag search, everything is wrong type
+  if (sr.weaponMismatch && sr.weaponMismatch[bisItem.id]) {
+    return { tier: 1, deficit: targetIlvl, ilvl: eqIlvl, label: eqIlvl > 0 ? eqIlvl + "" : "\u2014", color: "#ff6b6b", score: 0, weaponMismatch: true };
+  }
   var targetTierIdx = -1; for (var k = 0; k < TIERS.length; k++) { if (targetIlvl <= TIERS[k].max) { targetTierIdx = k; break; } }
   var eqTierIdx = eq ? itemTierIdx(eq.bonus, eqIlvl) : -1;
   if (isBis) {
@@ -399,7 +416,7 @@ function EqTooltipObserver({ locale, whSpecId, t }) {
   return null;
 }
 
-function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, knownBisIds, whSpecId, armorTypes, expectedArmor }) {
+function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, knownBisIds, whSpecId, armorTypes, expectedArmor, simcSpec, primaryStats, expectedPrimary }) {
   var { t, itemName, locale } = useLocale();
   var itemSource = getSource(item);
   var isDungeon = !!DC[itemSource];
@@ -427,11 +444,17 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
     var eqArmor = armorTypes[eqToCheck.id];
     if (eqArmor && eqArmor !== expectedArmor) wrongArmor = eqArmor;
   }
+  // Detect wrong primary stat on the equipped item (e.g. int weapon on a str spec)
+  var wrongPrimary = null;
+  if (expectedPrimary && eqToCheck && primaryStats) {
+    var eqPrimary = primaryStats[eqToCheck.id];
+    if (eqPrimary && eqPrimary.length > 0 && eqPrimary.indexOf(expectedPrimary) < 0) wrongPrimary = eqPrimary[0];
+  }
   var tier = (p && p.tier) ? p.tier : 0;
-  var isDoneState = wrongArmor ? false : tier === 4;
-  var canToggle = wrongArmor ? false : (isDoneState || !(p && p.deficit > 0));
+  var isDoneState = (wrongArmor || wrongPrimary) ? false : tier === 4;
+  var canToggle = (wrongArmor || wrongPrimary) ? false : (isDoneState || !(p && p.deficit > 0));
   var isMythicBisDone = !wrongArmor && p && p.labelKey === "mythicBisDone";
-  var visualTier = wrongArmor ? 1 : (isMythicBisDone || (p && p.upgradeStatus === "enhance")) ? 4 : (p && p.upgradeStatus === "tierUp") ? 2 : tier;
+  var visualTier = (wrongArmor || wrongPrimary) ? 1 : (isMythicBisDone || (p && p.upgradeStatus === "enhance")) ? 4 : (p && p.upgradeStatus === "tierUp") ? 2 : tier;
   var cardClass = "ic card-enter";
   if (wrongArmor) cardClass += " t1 wrong-armor"; else if (visualTier === 1) cardClass += " t1"; else if (visualTier === 2) cardClass += " t2"; else if (visualTier === 3) cardClass += " t3"; else if (visualTier === 4) cardClass += " t4";
   if (isAlt && !isDoneState) cardClass += " altc";
@@ -459,6 +482,12 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
               <span>{t("ui.wrongArmorType", { expected: t("armorTypes." + expectedArmor), actual: t("armorTypes." + wrongArmor) })}</span>
             </div>
           )}
+          {!wrongArmor && wrongPrimary && (
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 5, fontSize: 12, fontWeight: 800, background: "linear-gradient(135deg,#3a0a0a,#2a0505)", border: "2px solid #ff2020", color: "#ff4444", marginBottom: 6, letterSpacing: .5 }}>
+              <span style={{ fontSize: 16 }}>{"\u26A0"}</span>
+              <span>{t("ui.wrongPrimaryStat", { expected: t("primaryStats." + expectedPrimary), actual: t("primaryStats." + wrongPrimary) })}</span>
+            </div>
+          )}
           {p && tier > 0 && tier < 4 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: visualTier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : visualTier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : visualTier === 3 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : "#0d1a0d", border: "1px solid " + (visualTier === 1 ? "#6a2020" : visualTier === 2 ? "#6a5020" : visualTier === 3 ? "#6a5020" : "#1a3a1a"), color: p.color }}>
@@ -466,6 +495,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
                 {p.deficit > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + p.deficit + "\uFF09"}</span>}
               </div>
               {p.upgradeStatus && <span style={{ fontSize: 9, color: p.upgradeStatus === "tierUp" ? "#cc8844" : "#5a9a5a" }}>{t(p.upgradeStatus === "tierUp" ? "ui.tierReacquireNeeded" : "ui.tierUpgradeNeeded")}</span>}
+              {p.weaponMismatch && <span style={{ fontSize: 9, color: "#cc8844" }}>{t("ui.weaponMismatch", { spec: t("specs." + simcSpec), slot: t("slots." + item.slot) })}</span>}
               {hasDiff && eq && (
                 <a href={"https://www.wowhead.com" + whLocale + "/item=" + eq.id + whSpec + (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: isSimcAlt ? "#1a1508" : "#1a1520", border: "1px solid " + (isSimcAlt ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: isSimcAlt ? "#c9a040" : "#aa7799", whiteSpace: "nowrap" }}>
                   <span>{eq.name}</span>
@@ -496,7 +526,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
   );
 }
 
-export default function BisTracker({ spec, charName, initialSimcText, onSpecSwitch, onClear, onCharDetected }) {
+export default function BisTracker({ spec, charName, initialSimcText, onSpecSwitch, onClear, onCharDetected, crossSpecSources }) {
   var { t, locale } = useLocale();
   var { BIS, MYTHIC, ALTS, KNOWN_STATS, DUNGEONS, STORAGE_KEY: BASE_STORAGE_KEY, THEME: theme, PRIORITY_STATS, STAT_CACHE_KEY, GUIDE_URL, SPEC_KEY } = spec;
   var whSpecId = WH_SPEC_IDS[SPEC_KEY];
@@ -531,10 +561,14 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var [loaded, setLoaded] = useState(false);
   var [runtimeStats, setRuntimeStats] = useState({});
   var [runtimeArmorTypes, setRuntimeArmorTypes] = useState({});
+  var [runtimePrimaryStats, setRuntimePrimaryStats] = useState({});
   var [importing, setImporting] = useState(false);
   var targetInfo = TIERS.find(function(t) { return t.key === targetTier; }) || TIERS[1];
   var expectedArmor = sr && sr.ci && sr.ci.className ? CLASS_ARMOR[sr.ci.className] : null;
+  var expectedPrimary = SPEC_PRIMARY_STAT[SPEC_KEY] || null;
   var allStats = useMemo(function() { return Object.assign({}, KNOWN_STATS, runtimeStats); }, [KNOWN_STATS, runtimeStats]);
+  // Attach primary stat info to sr for calcPriority to use in weapon mismatch checks
+  if (sr) { sr._expectedPrimary = expectedPrimary; sr._primaryStats = runtimePrimaryStats; }
   var farmCounts = useMemo(function() {
     var c = {};
     var seen = {};
@@ -555,6 +589,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       if (cached) setRuntimeStats(cached);
       var cachedAT = load(STAT_CACHE_KEY + "-armor");
       if (cachedAT) setRuntimeArmorTypes(cachedAT);
+      var cachedPS = load(STAT_CACHE_KEY + "-primary-v4");
+      if (cachedPS) setRuntimePrimaryStats(cachedPS);
       if (d.targetTier) setTargetTier(d.targetTier);
       if (d.filter) setFilter(d.filter);
     } else {
@@ -562,18 +598,21 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       if (cached2) setRuntimeStats(cached2);
       var cachedAT2 = load(STAT_CACHE_KEY + "-armor");
       if (cachedAT2) setRuntimeArmorTypes(cachedAT2);
+      var cachedPS2 = load(STAT_CACHE_KEY + "-primary-v4");
+      if (cachedPS2) setRuntimePrimaryStats(cachedPS2);
     }
     setLoaded(true);
   }, [STORAGE_KEY, STAT_CACHE_KEY]);
-  // Auto-fetch armor types for equipped armor-slot items missing from cache
+  // Auto-fetch armor types and primary stats for equipped items missing from cache
   useEffect(function() {
     if (!sr || !sr.gear || !sr.ci) return;
     var missing = [];
     GEAR_SLOTS.forEach(function(s) {
-      if (!ARMOR_SLOTS.has(s)) return;
       var g = sr.gear[s]; if (!g) return;
-      if (!runtimeArmorTypes[g.id]) missing.push(g.id);
+      if ((ARMOR_SLOTS.has(s) && !runtimeArmorTypes[g.id]) || !runtimePrimaryStats[g.id]) missing.push(g.id);
     });
+    // Also fetch primary stats for bag items (for weapon recommendations)
+    if (sr.bag) sr.bag.forEach(function(b) { if (!runtimePrimaryStats[b.id]) missing.push(b.id); });
     // deduplicate
     missing = missing.filter(function(id, i) { return missing.indexOf(id) === i; });
     if (missing.length === 0) return;
@@ -588,8 +627,13 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         if (newRuntime[id] === undefined && fetched.stats[id] !== null) { newRuntime[id] = fetched.stats[id]; changed = true; }
       });
       if (changed) { setRuntimeStats(newRuntime); persist(STAT_CACHE_KEY, newRuntime); }
+      if (fetched.primaryStats) {
+        var newPS = Object.assign({}, runtimePrimaryStats, fetched.primaryStats);
+        setRuntimePrimaryStats(newPS);
+        persist(STAT_CACHE_KEY + "-primary-v4", newPS);
+      }
     });
-  }, [sr, runtimeArmorTypes, STAT_CACHE_KEY]);
+  }, [sr, runtimeArmorTypes, runtimePrimaryStats, STAT_CACHE_KEY]);
   useEffect(function() {
     var t = setTimeout(function() { if (window.$WowheadPower && window.$WowheadPower.refreshLinks) { try { window.$WowheadPower.refreshLinks(); } catch(e) {} } }, 500);
     return function() { clearTimeout(t); };
@@ -615,7 +659,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     if (missingArmorIds.length > 0) unknownIds = unknownIds.concat(missingArmorIds);
     function finishImport(mergedStats) {
       var result = matchBiS(BIS, parsed.gear, parsed.bag, mergedStats, knownBisIds, PRIORITY_STATS);
-      var newSr = { ci: parsed.ci, gear: parsed.gear, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched };
+      var newSr = { ci: parsed.ci, gear: parsed.gear, bag: parsed.bag, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched, weaponMismatch: result.weaponMismatch };
       var importName = parsed.ci.name || charName;
       var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
       if (importName === charName) setSr(newSr);
@@ -642,11 +686,60 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         var newAT = Object.assign({}, runtimeArmorTypes, fetched.armorTypes);
         setRuntimeArmorTypes(newAT);
         persist(STAT_CACHE_KEY + "-armor", newAT);
+        var newPS = Object.assign({}, runtimePrimaryStats, fetched.primaryStats);
+        setRuntimePrimaryStats(newPS);
+        persist(STAT_CACHE_KEY + "-primary-v4", newPS);
         finishImport(Object.assign({}, KNOWN_STATS, newRuntime));
       });
     } else { finishImport(currentStats); }
   }, [simcText, acq, targetTier, sv, BIS, KNOWN_STATS, runtimeStats, importing, STAT_CACHE_KEY, BASE_STORAGE_KEY, STORAGE_KEY, charName]);
   var clearSimc = useCallback(function() { setSr(null); setFeedback(null); setSimcOpen(true); persist(STORAGE_KEY, null); if (onClear) onClear(); }, [STORAGE_KEY, onClear]);
+  var doCrossSpecImport = useCallback(function(source) {
+    if (importing) return;
+    var d = load(source.storageKey);
+    if (!d || !d.sr || !d.sr.gear) return;
+    var sourceGear = d.sr.gear;
+    var sourceBag = d.sr.bag || [];
+    var sourceCi = d.sr.ci;
+    var allIds = Object.values(sourceGear).map(function(g) { return g.id; });
+    sourceBag.forEach(function(b) { allIds.push(b.id); });
+    var sourceCachedStats = load(source.statCacheKey) || {};
+    var currentStats = Object.assign({}, KNOWN_STATS, sourceCachedStats, runtimeStats);
+    var unknownIds = allIds.filter(function(id, i) { return allIds.indexOf(id) === i && currentStats[id] === undefined; });
+    var armorSlotIds = GEAR_SLOTS.filter(function(s) { return ARMOR_SLOTS.has(s); }).map(function(s) { return sourceGear[s]; }).filter(Boolean).map(function(g) { return g.id; });
+    var missingArmorIds = armorSlotIds.filter(function(id) { return !runtimeArmorTypes[id] && unknownIds.indexOf(id) < 0; });
+    if (missingArmorIds.length > 0) unknownIds = unknownIds.concat(missingArmorIds);
+    function finish(mergedStats) {
+      var result = matchBiS(BIS, sourceGear, sourceBag, mergedStats, knownBisIds, PRIORITY_STATS);
+      var newSr = { ci: sourceCi, gear: sourceGear, bag: sourceBag, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched, weaponMismatch: result.weaponMismatch, crossSpecSource: { specKey: source.specKey, charName: source.charName, simcSpec: source.simcSpec } };
+      var importName = sourceCi.name || charName;
+      var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
+      if (importName === charName || !charName) { setSr(newSr); }
+      var autoTier = autoSelectTier(sourceCi.avgIlvl);
+      if (importName === charName || !charName) { setTargetTier(autoTier); }
+      persist(saveKey, { acq: {}, sr: newSr, targetTier: autoTier, filter: "all" });
+      setFeedback({ ok: true, msg: t("ui.crossSpecImported") });
+      setImporting(false); setSimcOpen(false);
+      if (onCharDetected) onCharDetected(importName);
+    }
+    if (unknownIds.length > 0) {
+      setImporting(true);
+      setFeedback({ ok: true, msg: t("ui.fetchingStats", { count: unknownIds.length }) });
+      fetchItemStats(unknownIds).then(function(fetched) {
+        var newRuntime = Object.assign({}, runtimeStats);
+        Object.keys(fetched.stats).forEach(function(id) { newRuntime[id] = fetched.stats[id] !== null ? fetched.stats[id] : []; });
+        setRuntimeStats(newRuntime);
+        persist(STAT_CACHE_KEY, newRuntime);
+        var newAT = Object.assign({}, runtimeArmorTypes, fetched.armorTypes);
+        setRuntimeArmorTypes(newAT);
+        persist(STAT_CACHE_KEY + "-armor", newAT);
+        var newPS = Object.assign({}, runtimePrimaryStats, fetched.primaryStats);
+        setRuntimePrimaryStats(newPS);
+        persist(STAT_CACHE_KEY + "-primary-v4", newPS);
+        finish(Object.assign({}, KNOWN_STATS, sourceCachedStats, newRuntime));
+      });
+    } else { finish(currentStats); }
+  }, [importing, BIS, KNOWN_STATS, PRIORITY_STATS, runtimeStats, runtimeArmorTypes, runtimePrimaryStats, knownBisIds, STAT_CACHE_KEY, BASE_STORAGE_KEY, STORAGE_KEY, charName, t, onCharDetected]);
   var handlePaste = useCallback(function(e) {
     var text = e.clipboardData.getData('text');
     if (!text || !text.trim()) return;
@@ -679,6 +772,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     var d = load(STORAGE_KEY);
     var cached = load(STAT_CACHE_KEY); setRuntimeStats(cached || {});
     var cachedAT3 = load(STAT_CACHE_KEY + "-armor"); setRuntimeArmorTypes(cachedAT3 || {});
+    var cachedPS3 = load(STAT_CACHE_KEY + "-primary-v4"); setRuntimePrimaryStats(cachedPS3 || {});
     if (d) {
       setAcq(d.acq || {}); setSr(d.sr || null); setSimcOpen(!d.sr);
       if (d.targetTier) setTargetTier(d.targetTier);
@@ -734,7 +828,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         <div style={{ display: "flex", gap: 8, alignItems: "stretch" }}>
         <div data-tutorial="simc-import" className="tog" onClick={function() { setSimcOpen(!simcOpen); }} style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", borderRadius: 8, background: sr ? "#0c0c16" : theme.accentBg, border: "1px solid " + (sr ? "#1e1e30" : theme.accentBorder) }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
-          <span style={{ fontSize: 13, fontWeight: 600, color: sr ? theme.accent + "cc" : theme.accent }}>{sr ? t("ui.simcRefresh") : t("ui.simcImport")}</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: sr ? theme.accent + "cc" : theme.accent }}>{t("ui.simcImport")}</span>
           {!sr && <span style={{ fontSize: 11, color: theme.accent + "88" }}>{t("ui.simcPasteHint")}</span>}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#445566" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: "auto", transition: "transform .2s", transform: simcOpen ? "rotate(180deg)" : "rotate(0)" }}><polyline points="6 9 12 15 18 9" /></svg>
         </div>
@@ -746,6 +840,22 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
               {feedback && <span style={{ fontSize: 12, fontWeight: 600, color: feedback.ok ? "#8dffaa" : "#ff8d8d", whiteSpace: "pre-line" }}>{feedback.msg}</span>}
               {sr && <button className="sb" onClick={clearSimc} style={{ marginLeft: "auto", padding: "3px 10px", background: "#1a1520", border: "1px solid #2a2030", color: "#886678", fontSize: 11 }}>{t("ui.reset")}</button>}
+            </div>
+          </div>
+        )}
+        {!sr && crossSpecSources && crossSpecSources.length > 0 && (
+          <div style={{ marginTop: 8, padding: "10px 14px", background: "#0a0a14", border: "1px solid " + theme.accentBorder, borderRadius: 8 }}>
+            <div style={{ fontSize: 11, color: "#556666", marginBottom: 8 }}>{t("ui.crossSpecAvailable")}</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {crossSpecSources.map(function(src) {
+                return (
+                  <button key={src.specKey + ":" + src.charName} onClick={function() { doCrossSpecImport(src); }} disabled={importing}
+                    style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 12px", borderRadius: 6, background: theme.accentBg, border: "1px solid " + theme.accentBorder, color: theme.accent, fontSize: 12, fontWeight: 600, cursor: importing ? "wait" : "pointer", opacity: importing ? 0.5 : 1 }}>
+                    <span>{t("ui.crossSpecUse", { spec: t("specs." + src.simcSpec), name: src.charName })}</span>
+                    {!src.hasBag && <span style={{ fontSize: 10, color: "#886644" }}>{t("ui.crossSpecNoBag")}</span>}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -761,7 +871,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             <span style={{ fontSize: 11, fontWeight: 700, color: doneCount === activeItems.length ? "#8dffaa" : theme.accent, letterSpacing: 1, textShadow: "0 1px 3px #0008" }}>{doneCount + " / " + activeItems.length}</span>
           </div>
         </div>
-        {sr && sr.ci && sr.ci.avgIlvl > 0 && <span style={{ position: "absolute", right: 6, top: 0, height: "100%", display: "inline-flex", alignItems: "center", fontSize: 10, color: "#556666", pointerEvents: "none", textShadow: "0 1px 3px #000" }}>
+        {sr && sr.ci && sr.ci.avgIlvl > 0 && <span style={{ position: "absolute", right: 6, top: 0, height: "100%", display: "inline-flex", alignItems: "center", gap: 6, fontSize: 10, color: "#556666", pointerEvents: "none", textShadow: "0 1px 3px #000" }}>
+          {sr.crossSpecSource && <span style={{ color: "#886644" }}>{"(" + t("ui.crossSpecFrom", { spec: t("specs." + sr.crossSpecSource.simcSpec) }) + ")"}</span>}
           {"ilvl " + sr.ci.avgIlvl}
         </span>}
       </div>
@@ -845,7 +956,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           {displayBis.map(function(item, idx) {
             var p = sr ? calcPriority(item, sr, targetInfo.max, allStats, PRIORITY_STATS) : null;
             if (acq[item.id]) { if (!p || p.tier !== 4) p = { tier: 4, deficit: 0, ilvl: p ? p.ilvl : 0, labelKey: "done", color: "#4dca6b", worst: false }; }
-            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} />;
+            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} />;
           })}
         </div>
         {displayAlts.length > 0 && (
@@ -857,7 +968,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
               {displayAlts.map(function(item, idx) {
                 var altP = sr ? calcAltPriority(item, sr, allStats, PRIORITY_STATS, targetInfo.max, acq) : null;
                 if (acq[item.id] && (!altP || altP.tier !== 4)) altP = { tier: 4, deficit: 0, ilvl: 0, labelKey: "done", color: "#4dca6b" };
-                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} knownBisIds={knownBisIds} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} />;
+                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} knownBisIds={knownBisIds} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} />;
               })}
             </div>
           </div>
