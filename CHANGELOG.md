@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.6.0
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.5.2...v1.6.0)
+
+### 🚀 Enhancements
+
+- Catalog mode — browse BiS/Alt lists without SimC import ([9df2ec1](https://github.com/world-of-winning/bis-tracker/commit/9df2ec1))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.5.2
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.5.1...v1.5.2)
