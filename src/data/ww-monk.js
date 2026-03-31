@@ -59,7 +59,6 @@ export var ALTS = [
   { forSlot: "hands", id: 251113, en: "Gloves of Viscous Goo", ko: "농후한 찐득이 장갑", source: "Magisters' Terrace", stats: ["crit","mastery"] },
   { forSlot: "head", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "head", id: 151336, en: "Voidlashed Hood", ko: "공허에 스친 두건", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "legs", id: 178819, en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", source: "Halls of Atonement", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 249312, en: "Nightblade's Pantaloons", ko: "밤의 검의 통바지", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", source: "Midnight Falls", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", source: "Windrunner Spire", stats: ["haste","vers"] },
@@ -78,7 +77,7 @@ export var STAT_CACHE_KEY = "ww-monk-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49806:["crit","haste"],49807:["crit","haste"],49817:["haste","mastery"],151309:["haste","vers"],
-  151318:["crit","haste"],151336:["crit","haste"],178819:["haste","mastery"],193701:[],
+  151318:["crit","haste"],151336:["crit","haste"],193701:[],
   193708:["crit","mastery"],193710:["haste","mastery"],193714:["haste","mastery"],244576:[],
   249287:["haste","mastery"],249294:["haste","mastery"],249312:["haste","mastery"],249321:["crit","mastery"],
   249343:["mastery"],249368:["haste","mastery"],249369:["haste","mastery"],249374:["crit","haste"],

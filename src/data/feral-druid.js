@@ -58,7 +58,6 @@ export var ALTS = [
   { forSlot: "head", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "head", id: 251140, en: "Vilefiend's Guise", ko: "썩은마귀의 복면", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", source: "Pit of Saron", stats: ["haste","mastery"] },
-  { forSlot: "legs", id: 178819, en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", source: "Halls of Atonement", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 250023, en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", source: "Tier", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
@@ -80,7 +79,7 @@ export var STAT_CACHE_KEY = "feral-druid-stat-cache-v1";
 export var KNOWN_STATS = {
   49806:["crit","haste"],49807:["crit","haste"],49812:["crit","haste"],49817:["haste","mastery"],
   50228:["crit","haste"],50264:["crit","haste"],151315:["crit","haste"],151319:["crit","mastery"],
-  151336:["crit","haste"],178819:["haste","mastery"],193701:[],240949:[],
+  151336:["crit","haste"],193701:[],240949:[],
   244576:[],249277:["crit","mastery"],249312:["haste","mastery"],249321:["crit","mastery"],
   249327:["crit","haste"],249337:["crit","haste"],249343:["mastery"],249369:["haste","mastery"],
   249370:["haste","mastery"],249374:["crit","haste"],249382:["crit","mastery"],249920:["haste"],

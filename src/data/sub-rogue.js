@@ -35,7 +35,6 @@ export var BIS = [
 ];
 
 export var MYTHIC = [
-  { slot: "head", en: "Spellsnap Shadowmask", ko: "주문절단 그림자복면", id: 251109, source: "Priory of the Sacred Flame", stats: ["crit","mastery"] },
   { slot: "neck", en: "Barbed Ymirheim Choker", ko: "뾰족한 이미르하임 목장식", id: 50228, source: "Pit of Saron", stats: ["crit","haste"] },
   { slot: "shoulder", en: "Enthralled Bonespines", ko: "마법에 걸린 해골가시", id: 251171, source: "Maisara Caverns", stats: ["haste","mastery"] },
   { slot: "back", en: "Rigid Scale Greatcloak", ko: "강도 높은 미늘 큰망토", id: 258575, source: "Skyreach", stats: ["crit","mastery"] },
@@ -60,7 +59,6 @@ export var ALTS = [
   { forSlot: "hands", id: 151318, en: "Gloves of the Dark Shroud", ko: "암흑 구름의 장갑", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "hands", id: 249321, en: "Vaelgor's Fearsome Grasp", ko: "바엘고어의 섬찟한 손아귀", source: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
   { forSlot: "legs", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", source: "Pit of Saron", stats: ["haste","mastery"] },
-  { forSlot: "legs", id: 178819, en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", source: "Halls of Atonement", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "neck", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", source: "Midnight Falls", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", source: "Pit of Saron", stats: ["crit","haste"] },
@@ -70,7 +68,7 @@ export var ALTS = [
   { forSlot: "shoulder", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", source: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249295, en: "Turalyon's False Echo", ko: "투랄리온의 마지막 메아리", source: "Windrunner Spire", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 251111, en: "Splitshroud Stinger", ko: "갈라진 장막의 쐐기", source: "Magisters' Terrace", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", source: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", source: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251178, en: "Ceremonial Hexblade", ko: "의식용 사술칼날", source: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 258218, en: "Skybreaker's Blade", ko: "하늘파괴자의 칼날", source: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 258525, en: "Scepter of the Endless Night", ko: "끝없는 밤의 홀", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
@@ -83,14 +81,14 @@ export var STAT_CACHE_KEY = "sub-rogue-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49807:["crit","haste"],49812:["crit","haste"],49817:["haste","mastery"],50228:["crit","haste"],
-  151314:["mastery","vers"],151318:["crit","haste"],178819:["haste","mastery"],193701:[],
+  151314:["mastery","vers"],151318:["crit","haste"],193701:[],
   193714:["haste","mastery"],221200:["mastery","vers"],240949:[],241140:["mastery","vers"],
   244576:[],249284:["crit","mastery"],249295:["crit","haste"],249312:["haste","mastery"],
   249314:["mastery","vers"],249321:["crit","mastery"],249337:["crit","haste"],249343:["mastery"],
   249368:["haste","mastery"],249369:["haste","mastery"],249370:["haste","mastery"],249382:["crit","mastery"],
   250004:["haste","mastery"],250006:["mastery","vers"],250007:["crit","haste"],250009:["crit","mastery"],
   250247:["haste","mastery"],250256:[],251082:["crit","mastery"],251092:["haste","mastery"],
-  251093:["haste","mastery"],251099:["crit","mastery"],251109:["crit","mastery"],251111:["crit","haste"],
+  251093:["haste","mastery"],251099:["crit","mastery"],251111:["crit","haste"],
   251113:["crit","mastery"],251115:["haste","mastery"],251159:["haste","mastery"],
   251171:["haste","mastery"],251175:["crit","mastery"],251178:["crit","haste"],251190:["haste","mastery"],
   251216:["haste","mastery"],251217:["crit","haste"],258218:["crit","mastery"],258525:["crit","haste"],

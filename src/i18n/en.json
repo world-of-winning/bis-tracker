@@ -188,7 +188,11 @@
     "terms": "Terms of Service",
     "privacy": "Privacy Policy",
     "resetAll": "Delete All Data",
-    "resetAllConfirm": "All character data and settings will be deleted. Continue?"
+    "resetAllConfirm": "All character data and settings will be deleted. Continue?",
+    "browseSpecs": "Browse Specs",
+    "browseSpecsHint": "View BiS item lists without SimC",
+    "catalogMode": "Catalog mode — Import SimC to compare gear and see farming priorities",
+    "browsing": "Browse"
   },
   "tutorial": {
     "skip": "Skip",
@@ -220,8 +224,8 @@
       "desc": "Your equipped item has completely different secondary stats from BiS.\nBiggest performance loss — replace this first."
     },
     "tier2": {
-      "title": "◆ Alt / M+ BiS Equipped",
-      "desc": "You have an alt with matching stats or M+ BiS equipped.\nM+ BiS shows as a green card. Swap to raid BiS when available."
+      "title": "◆ Alt Equipped",
+      "desc": "You have an alt with matching stats equipped.\nSwap to BiS when available."
     },
     "tier3": {
       "title": "↑ Enhance / Next Tier Needed",
@@ -230,6 +234,18 @@
     "tier4": {
       "title": "✓ Farming Done",
       "desc": "BiS equipped at or above target item level.\nNo more farming needed for this slot!"
+    },
+    "catDungeon": {
+      "title": "Source Filters",
+      "desc": "Click a dungeon/raid/crafted button to show only items from that source.\nNumbers show BiS count + Alt count."
+    },
+    "catCard": {
+      "title": "Item Card",
+      "desc": "Shows slot, source, and secondary stats.\nClick the item name to view details on Wowhead.\nAlt items share the same stat combo as BiS."
+    },
+    "catSimc": {
+      "title": "Want to compare gear?",
+      "desc": "Type /simc in-game, paste the output here,\nand your equipped gear will be compared to BiS with auto-sorted farming priorities."
     }
   }
 }

@@ -30,8 +30,8 @@ export var BIS = [
   { slot: "finger2", en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", id: 251513, source: "Crafted", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "trinket2", en: "Vaelgor's Final Stare", ko: "바엘고어의 마지막 시선", id: 249346, source: "Vaelgor & Ezzorak", stats: [] },
-  { slot: "main_hand", en: "Lightless Lament", ko: "빛을 잃은 탄식", id: 260408, source: "Midnight Falls & Lightblinded Vanguard", stats: ["crit"] },
-  { slot: "off_hand", en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", id: 249294, source: "Midnight Falls & Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { slot: "main_hand", en: "Lightless Lament", ko: "빛을 잃은 탄식", id: 260408, source: "Midnight Falls", stats: ["crit"] },
+  { slot: "off_hand", en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", id: 249294, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
 ];
 
 export var MYTHIC = [
@@ -59,7 +59,6 @@ export var ALTS = [
   { forSlot: "chest", id: 251159, en: "War Trial Vestments", ko: "전쟁의 시련 예복", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "head", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "head", id: 251140, en: "Vilefiend's Guise", ko: "썩은마귀의 복면", source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "legs", id: 178819, en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", source: "Halls of Atonement", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 249312, en: "Nightblade's Pantaloons", ko: "밤의 검의 통바지", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "neck", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", source: "Midnight Falls", stats: ["haste","mastery"] },
@@ -78,7 +77,7 @@ export var STAT_CACHE_KEY = "devourer-dh-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49806:["crit","haste"],49807:["crit","haste"],49817:["haste","mastery"],50228:["crit","haste"],
-  151318:["crit","haste"],151319:["crit","mastery"],151336:["crit","haste"],178819:["haste","mastery"],
+  151318:["crit","haste"],151319:["crit","mastery"],151336:["crit","haste"],
   193708:["crit","mastery"],193710:["haste","mastery"],193714:["haste","mastery"],244748:[],
   249283:["haste","mastery"],249294:["haste","mastery"],249312:["haste","mastery"],249337:["crit","haste"],
   249343:["mastery"],249346:[],249368:["haste","mastery"],249369:["haste","mastery"],

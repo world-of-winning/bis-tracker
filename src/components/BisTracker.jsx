@@ -455,14 +455,13 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
             <StatPills stats={item.stats} />
           </div>
           <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + whSpec + (!hasDiff && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(eqForTooltip ? {"data-eq-id": eqForTooltip.id, "data-eq-bonus": eqForTooltip.bonus || "", "data-eq-ilvl": eqForTooltip.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: isDoneState ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: isDoneState ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
-          <div style={{ fontSize: 11.5, color: isDoneState ? "#445533" : "#776655", marginBottom: 6 }}>{locale === "ko" ? item.en : item.ko}</div>
           {wrongArmor && (
             <div className="wrong-armor-badge" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 5, fontSize: 12, fontWeight: 800, background: "linear-gradient(135deg,#3a0a0a,#2a0505)", border: "2px solid #ff2020", color: "#ff4444", marginBottom: 6, letterSpacing: .5 }}>
               <span style={{ fontSize: 16 }}>{"\u26A0"}</span>
               <span>{t("ui.wrongArmorType", { expected: t("armorTypes." + expectedArmor), actual: t("armorTypes." + wrongArmor) })}</span>
             </div>
           )}
-          {p && tier > 0 && (
+          {p && tier > 0 && tier < 4 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: visualTier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : visualTier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : visualTier === 3 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : "#0d1a0d", border: "1px solid " + (visualTier === 1 ? "#6a2020" : visualTier === 2 ? "#6a5020" : visualTier === 3 ? "#6a5020" : "#1a3a1a"), color: p.color }}>
                 <span style={{ fontSize: 10 }}>{icons[tier]}</span><span>{pLabel}</span>
@@ -530,7 +529,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var [simcText, setSimcText] = useState("");
   var [sr, setSr] = useState(null);
   var [feedback, setFeedback] = useState(null);
-  var [targetTier, setTargetTier] = useState("champion");
+  var [targetTier, setTargetTier] = useState("hero");
   var [loaded, setLoaded] = useState(false);
   var [runtimeStats, setRuntimeStats] = useState({});
   var [runtimeArmorTypes, setRuntimeArmorTypes] = useState({});
@@ -561,7 +560,6 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       if (d.targetTier) setTargetTier(d.targetTier);
       if (d.filter) setFilter(d.filter);
     } else {
-      setSimcOpen(true);
       var cached2 = load(STAT_CACHE_KEY);
       if (cached2) setRuntimeStats(cached2);
       var cachedAT2 = load(STAT_CACHE_KEY + "-armor");
@@ -687,7 +685,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       setAcq(d.acq || {}); setSr(d.sr || null); setSimcOpen(!d.sr);
       if (d.targetTier) setTargetTier(d.targetTier);
       setFilter(d.filter || "all");
-    } else { setAcq({}); setSr(null); setTargetTier("champion"); setSimcOpen(true); setFilter("all"); }
+    } else { setAcq({}); setSr(null); setTargetTier("hero"); setSimcOpen(false); setFilter("all"); }
   }, [STORAGE_KEY, STAT_CACHE_KEY]);
   var initialImportDone = useRef(false);
   useEffect(function() {
@@ -775,11 +773,12 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           var act = filter === ns.source;
           var fc = farmCounts[ns.source] || { bis: 0, alt: 0 };
           var nsBisRem = fc.bis, nsAltRem = fc.alt, nsRem = nsBisRem + nsAltRem;
+          var nsDone = sr && nsRem === 0;
           return (
-            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : (nsRem === 0 ? "#0d1a0d" : "#1a102844"), border: "1px solid " + (act ? "#8866aa" : (nsRem === 0 ? "#1a3a1a" : "#8866aa33")), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : (nsRem === 0 ? "#4dca6b" : "#8866aa") }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: nsRem === 0 ? "#4dca6b" : "#aa88cc", display: "inline-block" }} />
+            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : (nsDone ? "#0d1a0d" : "#1a102844"), border: "1px solid " + (act ? "#8866aa" : (nsDone ? "#1a3a1a" : "#8866aa33")), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : (nsDone ? "#4dca6b" : "#8866aa") }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: nsDone ? "#4dca6b" : "#aa88cc", display: "inline-block" }} />
               <span>{t("sources." + ns.source) || ns.source}</span>
-              {nsRem === 0 ? <span style={{ color: "#2a5a2a", fontSize: 11 }}>{"\u2713"}</span> : <span style={{ fontSize: 11 }}><span style={{ color: nsBisRem > 0 ? "#c4aadd" : "#8866aa44", fontWeight: 700 }}>{nsBisRem}</span>{nsAltRem > 0 && <span style={{ color: "#3a3a3a" }}>{" + "}</span>}{nsAltRem > 0 && <span style={{ color: "#776655", fontWeight: 400 }}>{nsAltRem}</span>}</span>}
+              {nsDone ? <span style={{ color: "#2a5a2a", fontSize: 11 }}>{"\u2713"}</span> : sr ? <span style={{ fontSize: 11 }}><span style={{ color: nsBisRem > 0 ? "#c4aadd" : "#8866aa44", fontWeight: 700 }}>{nsBisRem}</span>{nsAltRem > 0 && <span style={{ color: "#3a3a3a" }}>{" + "}</span>}{nsAltRem > 0 && <span style={{ color: "#776655", fontWeight: 400 }}>{nsAltRem}</span>}</span> : <span style={{ fontSize: 11, color: "#8866aa88" }}>{fc.bis}{fc.alt > 0 ? "+" + fc.alt : ""}</span>}
             </button>
           );
         })}
@@ -792,33 +791,39 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           var fc = farmCounts[d] || { bis: 0, alt: 0 };
           var bisRem = fc.bis, altRem = fc.alt;
           var rem = bisRem + altRem;
+          var doneStyle = sr && rem === 0;
           return (
-          <button key={d} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : d); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? c2.g : (rem === 0 ? "#0d1a0d" : c2.g + "44"), border: "1px solid " + (act ? c2.b : (rem === 0 ? "#1a3a1a" : c2.b) + "33"), fontSize: 12, fontWeight: 600, color: act ? c2.t : (rem === 0 ? "#4dca6b" : c2.t) }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: rem === 0 ? "#4dca6b" : c2.b, display: "inline-block", animation: rem === 0 ? "none" : "pulse 2s infinite" }} />
+          <button key={d} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : d); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? c2.g : (doneStyle ? "#0d1a0d" : c2.g + "44"), border: "1px solid " + (act ? c2.b : (doneStyle ? "#1a3a1a" : c2.b) + "33"), fontSize: 12, fontWeight: 600, color: act ? c2.t : (doneStyle ? "#4dca6b" : c2.t) }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: doneStyle ? "#4dca6b" : c2.b, display: "inline-block", animation: doneStyle ? "none" : (sr ? "pulse 2s infinite" : "none") }} />
             <span>{t("dungeons." + d)}</span>
-            {rem === 0 ? <span style={{ color: "#2a5a2a", fontSize: 11 }}>{"\u2713"}</span> : <span style={{ fontSize: 11 }}><span style={{ color: bisRem > 0 ? c2.t : c2.b + "88", fontWeight: 700 }}>{bisRem}</span>{altRem > 0 && <span style={{ color: "#3a3a3a" }}>{" + "}</span>}{altRem > 0 && <span style={{ color: "#776655", fontWeight: 400 }}>{altRem}</span>}</span>}
+            {doneStyle ? <span style={{ color: "#2a5a2a", fontSize: 11 }}>{"\u2713"}</span> : sr ? <span style={{ fontSize: 11 }}><span style={{ color: bisRem > 0 ? c2.t : c2.b + "88", fontWeight: 700 }}>{bisRem}</span>{altRem > 0 && <span style={{ color: "#3a3a3a" }}>{" + "}</span>}{altRem > 0 && <span style={{ color: "#776655", fontWeight: 400 }}>{altRem}</span>}</span> : <span style={{ fontSize: 11, color: c2.t + "88" }}>{fc.bis}{fc.alt > 0 ? "+" + fc.alt : ""}</span>}
           </button>); })}
         {nonDungeonSources.raid.length > 0 && <span style={{ width: 1, height: 20, background: "#2a2a3a", alignSelf: "center" }} />}
         {nonDungeonSources.raid.map(function(ns) {
           var act = filter === ns.source;
           var fc = farmCounts[ns.source] || { bis: 0, alt: 0 };
           var nsBisRem = fc.bis, nsAltRem = fc.alt, nsRem = nsBisRem + nsAltRem;
+          var nsDone = sr && nsRem === 0;
           return (
-            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : (nsRem === 0 ? "#0d1a0d" : "#1a102844"), border: "1px solid " + (act ? "#8866aa" : (nsRem === 0 ? "#1a3a1a" : "#8866aa33")), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : (nsRem === 0 ? "#4dca6b" : "#8866aa") }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: nsRem === 0 ? "#4dca6b" : "#8866aa", display: "inline-block" }} />
+            <button key={ns.source} className={"fbtn" + (act ? " active" : "")} onClick={function() { changeFilter(act ? "all" : ns.source); }} style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: act ? "#1a1028" : (nsDone ? "#0d1a0d" : "#1a102844"), border: "1px solid " + (act ? "#8866aa" : (nsDone ? "#1a3a1a" : "#8866aa33")), fontSize: 12, fontWeight: 600, color: act ? "#c4aadd" : (nsDone ? "#4dca6b" : "#8866aa") }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: nsDone ? "#4dca6b" : "#8866aa", display: "inline-block" }} />
               <span>{t("sources." + ns.source) || ns.source}</span>
-              {nsRem === 0 ? <span style={{ color: "#2a5a2a", fontSize: 11 }}>{"\u2713"}</span> : <span style={{ fontSize: 11 }}><span style={{ color: nsBisRem > 0 ? "#c4aadd" : "#8866aa44", fontWeight: 700 }}>{nsBisRem}</span>{nsAltRem > 0 && <span style={{ color: "#3a3a3a" }}>{" + "}</span>}{nsAltRem > 0 && <span style={{ color: "#776655", fontWeight: 400 }}>{nsAltRem}</span>}</span>}
+              {nsDone ? <span style={{ color: "#2a5a2a", fontSize: 11 }}>{"\u2713"}</span> : sr ? <span style={{ fontSize: 11 }}><span style={{ color: nsBisRem > 0 ? "#c4aadd" : "#8866aa44", fontWeight: 700 }}>{nsBisRem}</span>{nsAltRem > 0 && <span style={{ color: "#3a3a3a" }}>{" + "}</span>}{nsAltRem > 0 && <span style={{ color: "#776655", fontWeight: 400 }}>{nsAltRem}</span>}</span> : <span style={{ fontSize: 11, color: "#8866aa88" }}>{fc.bis}{fc.alt > 0 ? "+" + fc.alt : ""}</span>}
             </button>
           );
         })}
       </div>
-      {sr && (
+      {sr ? (
         <div style={{ display: "flex", gap: 12, marginTop: 8, fontSize: 10, color: "#556666", flexWrap: "wrap" }}>
           <span><span style={{ color: "#ff6b6b" }}>{"\u25B2"}</span>{" " + t("ui.tierStatMismatch")}</span>
           <span><span style={{ color: "#e8a84c" }}>{"\u25C6"}</span>{" " + t("ui.tierAltEquipped")}</span>
           <span><span style={{ color: "#e8a84c" }}>{"\u2191"}</span>{" " + t("ui.tierBisUpgrade")}</span>
           <span><span style={{ color: "#4dca6b" }}>{"\u2713"}</span>{" " + t("ui.tierDone")}</span>
           <span style={{ color: "#445555" }}>{t("ui.deficitInfo", { max: targetInfo.max })}</span>
+        </div>
+      ) : (
+        <div style={{ marginTop: 8, padding: "8px 14px", borderRadius: 6, background: theme.accentBg, border: "1px solid " + theme.accentBorder, fontSize: 11, color: theme.accent + "aa" }}>
+          {t("ui.catalogMode")}
         </div>
       )}
       {filter !== "all" && (
@@ -841,7 +846,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
           {displayBis.map(function(item, idx) {
             var p = sr ? calcPriority(item, sr, targetInfo.max, allStats, PRIORITY_STATS) : null;
-            if (acq[item.id] && p && p.tier !== 4) p = { tier: 4, deficit: 0, ilvl: p.ilvl, labelKey: "done", color: "#4dca6b", worst: false };
+            if (acq[item.id]) { if (!p || p.tier !== 4) p = { tier: 4, deficit: 0, ilvl: p ? p.ilvl : 0, labelKey: "done", color: "#4dca6b", worst: false }; }
             return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} />;
           })}
         </div>
@@ -853,6 +858,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
               {displayAlts.map(function(item, idx) {
                 var altP = sr ? calcAltPriority(item, sr, allStats, PRIORITY_STATS, targetInfo.max, acq) : null;
+                if (acq[item.id] && (!altP || altP.tier !== 4)) altP = { tier: 4, deficit: 0, ilvl: 0, labelKey: "done", color: "#4dca6b" };
                 return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} knownBisIds={knownBisIds} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} />;
               })}
             </div>

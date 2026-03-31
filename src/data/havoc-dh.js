@@ -30,8 +30,8 @@ export var BIS = [
   { slot: "finger2", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Umbral Plume", ko: "암영의 꽁지깃", id: 260235, source: "Belo'ren", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "main_hand", en: "Lightless Lament", ko: "빛을 잃은 탄식", id: 260408, source: "Midnight Falls & Crafted", stats: ["crit"] },
-  { slot: "off_hand", en: "Spellbreaker's Warglaive", ko: "주문파괴자의 전투검", id: 237840, source: "Midnight Falls & Crafted", stats: [] },
+  { slot: "main_hand", en: "Lightless Lament", ko: "빛을 잃은 탄식", id: 260408, source: "Midnight Falls", stats: ["crit"] },
+  { slot: "off_hand", en: "Spellbreaker's Warglaive", ko: "주문파괴자의 전투검", id: 237840, source: "Crafted", stats: [] },
 ];
 
 export var MYTHIC = [
@@ -49,8 +49,8 @@ export var MYTHIC = [
   { slot: "finger2", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Algeth'ar Puzzle Box", ko: "알게타르 수수께끼 상자", id: 193701, source: "Algeth'ar Academy", stats: [] },
   { slot: "trinket2", en: "Solarflare Prism", ko: "태양섬광 분광경", id: 252420, source: "Skyreach", stats: [] },
-  { slot: "main_hand", en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", id: 193717, source: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","vers"] },
-  { slot: "off_hand", en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", id: 251175, source: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
+  { slot: "main_hand", en: "Mystakria's Harvester", ko: "미스타크리아의 수확기", id: 193717, source: "Algeth'ar Academy", stats: ["crit","vers"] },
+  { slot: "off_hand", en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", id: 251175, source: "Maisara Caverns", stats: ["crit","mastery"] },
 ];
 
 export var ALTS = [
@@ -58,7 +58,6 @@ export var ALTS = [
   { forSlot: "hands", id: 249321, en: "Vaelgor's Fearsome Grasp", ko: "바엘고어의 섬찟한 손아귀", source: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
   { forSlot: "head", id: 251140, en: "Vilefiend's Guise", ko: "썩은마귀의 복면", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", source: "Pit of Saron", stats: ["haste","mastery"] },
-  { forSlot: "legs", id: 178819, en: "Skyterror's Stonehide Leggings", ko: "하늘공포의 돌껍질 다리보호구", source: "Halls of Atonement", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "neck", id: 249368, en: "Eternal Voidsong Chain", ko: "영원한 공허노래 사슬", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", source: "Pit of Saron", stats: ["crit","haste"] },
@@ -80,7 +79,7 @@ export var STAT_CACHE_KEY = "havoc-dh-stat-cache-v1";
 export var KNOWN_STATS = {
   49812:["crit","haste"],49817:["haste","mastery"],50227:["crit","vers"],50228:["crit","haste"],
   50264:["crit","haste"],151315:["crit","haste"],151318:["crit","haste"],151319:["crit","mastery"],
-  178819:["haste","mastery"],193701:[],193708:["crit","mastery"],193717:["crit","vers"],
+  193701:[],193708:["crit","mastery"],193717:["crit","vers"],
   237840:[],244576:[],249284:["crit","mastery"],249312:["haste","mastery"],
   249321:["crit","mastery"],249327:["crit","haste"],249337:["crit","haste"],249343:["mastery"],
   249368:["haste","mastery"],249382:["crit","mastery"],249919:["crit","mastery"],250031:["crit","mastery"],
@@ -93,5 +92,5 @@ export var KNOWN_STATS = {
 };
 
 export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Algeth'ar Academy & Maisara Caverns", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
+  "Nexus-Point Xenas", "Windrunner Spire", "Algeth'ar Academy", "Maisara Caverns", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
 ];

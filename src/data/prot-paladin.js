@@ -59,7 +59,7 @@ export var ALTS = [
   { forSlot: "ring", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", source: "Midnight Falls", stats: ["mastery","vers"] },
   { forSlot: "shoulder", id: 50234, en: "Shoulderplates of Frozen Blood", ko: "얼어붙은 피의 어깨철갑", source: "Pit of Saron", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251105, en: "Ward of the Spellbreaker", ko: "주문파괴자의 수호물", source: "Magisters' Terrace", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", source: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251175, en: "Soulblight Cleaver", ko: "영혼역병 가로날도끼", source: "Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251202, en: "Reflux Reflector", ko: "역류 굴절 장치", source: "Nexus-Point Xenas", stats: ["crit","vers"] },
   { forSlot: "weapon", id: 260423, en: "Arator's Swift Remembrance", ko: "아라토르의 신속한 기억", source: "Crown of the Cosmos", stats: ["crit","haste"] },
 ];
