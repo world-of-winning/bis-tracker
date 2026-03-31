@@ -1,5 +1,33 @@
 # Changelog
 
+## v1.7.0
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.6.0...v1.7.0)
+
+### 🚀 Enhancements
+
+- Add SEO, structured data, and accessibility improvements ([e8367d6](https://github.com/world-of-winning/bis-tracker/commit/e8367d6))
+
+### 🩹 Fixes
+
+- Update Discord invite link ([76e5e01](https://github.com/world-of-winning/bis-tracker/commit/76e5e01))
+
+### 💅 Refactors
+
+- Move hardcoded Korean text to i18n ([25f0f4b](https://github.com/world-of-winning/bis-tracker/commit/25f0f4b))
+
+### 📖 Documentation
+
+- Update season name and Discord invite link ([ac5633b](https://github.com/world-of-winning/bis-tracker/commit/ac5633b))
+
+### 🏡 Chore
+
+- Add .env.example and allow it in secret detection ([f7c2a37](https://github.com/world-of-winning/bis-tracker/commit/f7c2a37))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.6.0
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.5.2...v1.6.0)
