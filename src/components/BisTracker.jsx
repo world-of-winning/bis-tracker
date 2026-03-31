@@ -8,7 +8,7 @@ import { useLocale } from '../i18n/index.jsx';
 // WoW spec IDs for Wowhead tooltip spec-specific rendering (e.g. "Strength or Intellect")
 var WH_SPEC_IDS = {
   "blood-dk": 250, "frost-dk": 251, "unholy-dk": 252,
-  "havoc-dh": 577, "devourer-dh": 577, "veng-dh": 581,
+  "havoc-dh": 577, "devourer-dh": 102, "veng-dh": 581,
   "balance-druid": 102, "feral-druid": 103, "guardian-druid": 104, "resto-druid": 105,
   "dev-evoker": 1467, "pres-evoker": 1468, "aug-evoker": 1473,
   "bm-hunter": 253, "mm-hunter": 254, "surv-hunter": 255,
@@ -194,7 +194,9 @@ function calcPriority(bisItem, sr, targetIlvl, stats, priorityStats) {
     return { tier: 3, deficit: bD, ilvl: bI, labelKey: "bag", label: bI + "", color: "#caca3d", score: 0, upgradeStatus: "enhance" };
   }
   if (deficit <= 0 && eqIlvl > 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b", score: 0 };
-  return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl > 0 ? eqIlvl + "" : "\u2014", color: "#ff6b6b", score: score };
+  var fallbackUpgrade = null;
+  if (eq && deficit > 0) { var fTierIdx = itemTierIdx(eq.bonus, eqIlvl); if (fTierIdx >= 0 && fTierIdx < targetTierIdx) fallbackUpgrade = "tierUp"; }
+  return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl > 0 ? eqIlvl + "" : "\u2014", color: "#ff6b6b", score: score, upgradeStatus: fallbackUpgrade };
 }
 // Pick the next target tier based on average equipped ilvl.
 // If avgIlvl is within reach of a tier (within half the gap to next),
