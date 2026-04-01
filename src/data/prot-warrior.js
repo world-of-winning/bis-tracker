@@ -30,7 +30,7 @@ export var BIS = [
   { slot: "finger2", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "trinket1", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },
   { slot: "trinket2", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "main_hand", en: "Turalyon's False Echo", ko: "투랄리온의 마지막 메아리", id: 249295, source: "Crown of the Cosmos", stats: ["crit","haste"] },
+  { slot: "main_hand", en: "Turalyon's False Echo", ko: "투랄리온의 마지막 메아리", id: 249295, source: "Windrunner Spire", stats: ["crit","haste"] },
   { slot: "off_hand", en: "Ward of the Spellbreaker", ko: "주문파괴자의 수호물", id: 251105, source: "Magisters' Terrace", stats: ["crit","mastery"] },
 ];
 

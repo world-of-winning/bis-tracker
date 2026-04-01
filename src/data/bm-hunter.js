@@ -35,9 +35,9 @@ export var BIS = [
 
 export var MYTHIC = [
   { slot: "head", en: "Vortex Visage", ko: "회오리의 안면", id: 251119, source: "Magisters' Terrace", stats: ["crit","mastery"] },
-  { slot: "neck", en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", id: 250247, source: "Pit of Saron", stats: ["haste","mastery"] },
+  { slot: "neck", en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", id: 250247, source: "Midnight Falls", stats: ["haste","mastery"] },
   { slot: "shoulder", en: "Pauldrons of the Void Hunter", ko: "공허 사냥꾼의 견갑", id: 151323, source: "Seat of the Triumvirate", stats: ["haste","mastery"] },
-  { slot: "back", en: "Draconic Nullcape", ko: "용족 무위단망토", id: 249370, source: "Skyreach", stats: ["haste","mastery"] },
+  { slot: "back", en: "Draconic Nullcape", ko: "용족 무위단망토", id: 249370, source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
   { slot: "chest", en: "Decaying Cuirass", ko: "썩어가는 흉갑", id: 251179, source: "Maisara Caverns", stats: ["crit","mastery"] },
   { slot: "wrist", en: "Amberfrond Bracers", ko: "호박석잎 팔보호구", id: 251079, source: "Windrunner Spire", stats: ["crit","mastery"] },
   { slot: "hands", en: "Grips of Forgotten Honor", ko: "잊힌 명예의 손장갑", id: 251089, source: "Windrunner Spire", stats: ["haste","mastery"] },

@@ -29,7 +29,7 @@ export var BIS = [
   { slot: "finger1", en: "Sin'dorei Band of Hope", ko: "희망의 신도레이 고리", id: 249919, source: "Belo'ren", stats: ["crit","mastery"] },
   { slot: "finger2", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "The Great Vault", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "trinket2", en: "Light Company Guidon", ko: "빛의 부대기", id: 249344, source: "Belo'ren", stats: [] },
+  { slot: "trinket2", en: "Light Company Guidon", ko: "빛의 부대기", id: 249344, source: "Imperator Averzian", stats: [] },
   { slot: "main_hand", en: "Bellamy's Final Judgement", ko: "벨라미의 마지막 심판", id: 249277, source: "Lightblinded Vanguard", stats: ["crit","mastery"] },
 ];
 

@@ -17,7 +17,7 @@ export var THEME = {
 
 export var BIS = [
   { slot: "head", en: "Branches of the Luminous Bloom", ko: "영롱한 꽃의 나뭇가지", id: 250024, source: "Tier", stats: ["haste","mastery"] },
-  { slot: "neck", en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", id: 250247, source: "Seat of the Triumvirate", stats: ["haste","mastery"] },
+  { slot: "neck", en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", id: 250247, source: "Midnight Falls", stats: ["haste","mastery"] },
   { slot: "shoulder", en: "Seedpods of the Luminous Bloom", ko: "영롱한 꽃의 씨앗 깍지", id: 250022, source: "Tier", stats: ["crit","mastery"] },
   { slot: "back", en: "Draconic Nullcape", ko: "용족 무위단망토", id: 249370, source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
   { slot: "chest", en: "Trunk of the Luminous Bloom", ko: "영롱한 꽃의 밑동", id: 250027, source: "Tier", stats: ["crit","mastery"] },
@@ -25,7 +25,7 @@ export var BIS = [
   { slot: "hands", en: "Arbortenders of the Luminous Bloom", ko: "영롱한 꽃의 나무지기", id: 250025, source: "Tier", stats: ["haste","vers"] },
   { slot: "waist", en: "Silvermoon Agent's Utility Belt", ko: "실버문 요원의 연장허리띠", id: 244573, source: "Crafted", stats: [] },
   { slot: "legs", en: "Phloemwraps of the Luminous Bloom", ko: "영롱한 꽃의 체관싸개", id: 250023, source: "Tier", stats: ["haste","mastery"] },
-  { slot: "feet", en: "Canopy Walker's Footwraps", ko: "나무 지붕 방랑자의 발등싸개", id: 249382, source: "Windrunner Spire", stats: ["crit","mastery"] },
+  { slot: "feet", en: "Canopy Walker's Footwraps", ko: "나무 지붕 방랑자의 발등싸개", id: 249382, source: "Crown of the Cosmos", stats: ["crit","mastery"] },
   { slot: "finger1", en: "Occlusion of Void", ko: "공허의 맞물림", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "finger2", en: "Omission of Light", ko: "소외된 빛", id: 251093, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },

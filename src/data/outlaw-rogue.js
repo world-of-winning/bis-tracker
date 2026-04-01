@@ -16,7 +16,7 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", en: "Mask of Darkest Intent", ko: "어둡고 어두운 의도의 가면", id: 249913, source: "Lightblinded Vanguard", stats: ["haste"] },
+  { slot: "head", en: "Mask of Darkest Intent", ko: "어둡고 어두운 의도의 가면", id: 249913, source: "Midnight Falls", stats: ["haste"] },
   { slot: "neck", en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", id: 249337, source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { slot: "shoulder", en: "Venom Casks of the Grim Jest", ko: "암담한 재담의 맹독 보관통", id: 250004, source: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
   { slot: "back", en: "Imperator's Banner", ko: "전제군주의 깃발", id: 249335, source: "Imperator Averzian", stats: ["crit","vers"] },
