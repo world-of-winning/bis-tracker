@@ -76,14 +76,17 @@ function resolveSlot(slotEn, weaponType) {
   // Standard armor slots
   if (SLOT_MAP[slotEn]) return SLOT_MAP[slotEn];
 
+  // Normalize: lowercase, strip spaces/hyphens/underscores for fuzzy matching
+  const norm = slotEn.toLowerCase().replace(/[\s\-_]+/g, '');
+
   // Numbered-less Ring/Trinket
-  if (slotEn === 'Ring') {
+  if (/^ring\d?$/.test(norm)) {
     ringCount++;
     return ringCount <= 1
       ? { slot: '반지 1', simcSlot: 'finger1' }
       : { slot: '반지 2', simcSlot: 'finger2' };
   }
-  if (slotEn === 'Trinket') {
+  if (/^trinket\d?$/.test(norm)) {
     trinketCount++;
     return trinketCount <= 1
       ? { slot: '장신구 1', simcSlot: 'trinket1' }
@@ -95,21 +98,24 @@ function resolveSlot(slotEn, weaponType) {
   const mainSlot = weaponSlots[0];
   const offSlot = weaponSlots.length > 1 ? weaponSlots[1] : null;
 
-  // Handle Two-Hand / One-Hand weapon labels
-  // _skipTwoHand is set externally when both 2H and 1H options exist for non-2H specs
-  if (slotEn === 'Two-Hand Weapon' || slotEn === 'Two-Hand') {
+  // Two-Hand variants: "Two-Hand Weapon", "Two-Hand", "2h Weapon", "2H", etc.
+  if (/twohand|^2h/.test(norm)) {
     if (weaponType !== '2h' && resolveSlot._skipTwoHand) return null;
     return mainSlot;
   }
-  if (slotEn === 'One-Hand Weapon') {
+  // One-Hand variants: "One-Hand Weapon", "1h Weapon", "1H", etc.
+  if (/onehand|^1h/.test(norm)) {
     if (weaponType === '2h' && resolveSlot._skipOneHand) return null;
     return mainSlot;
   }
-  if (['Weapon', 'Main Hand', 'Main hand', 'Main-Hand', 'Main-hand', 'Mainhand', 'Weapon 1'].includes(slotEn)) {
-    return mainSlot;
-  }
-  if (['Off Hand', 'Off-Hand', 'Off hand', 'Off-hand', 'Offhand', 'Shield', 'Weapon 2', 'Weapon Off-Hand'].includes(slotEn)) {
+  // Off hand variants: "Off Hand", "Offhand", "Shield", "Weapon 2", "Weapon Off-Hand", etc.
+  // (must check before main hand — "offhand" contains "hand")
+  if (/offhand|shield|weapon2/.test(norm)) {
     return offSlot || mainSlot;
+  }
+  // Main hand variants: "Weapon", "Main Hand", "Mainhand", "Weapon 1", etc.
+  if (/^weapon1?$|mainhand/.test(norm)) {
+    return mainSlot;
   }
 
   return null;
@@ -568,8 +574,9 @@ async function buildGearData(gearRows, weaponType) {
 
   // Pre-analyze: check if both 2H and 1H weapon slots exist
   const slotNames = gearRows.map(r => r.slotEn);
-  const has2H = slotNames.some(s => s === 'Two-Hand Weapon' || s === 'Two-Hand');
-  const has1H = slotNames.some(s => s === 'One-Hand Weapon');
+  const normSlots = slotNames.map(s => s.toLowerCase().replace(/[\s\-_]+/g, ''));
+  const has2H = normSlots.some(s => /^(twohand|2h)(weapon)?$/.test(s));
+  const has1H = normSlots.some(s => /^(onehand|1h)(weapon)?$/.test(s));
   // Skip 2H if both options exist and spec is not 2H (and vice versa)
   resolveSlot._skipTwoHand = has2H && has1H && weaponType !== '2h';
   resolveSlot._skipOneHand = has2H && has1H && weaponType === '2h';
@@ -599,8 +606,9 @@ async function buildGearData(gearRows, weaponType) {
     }
 
     // Collect skipped weapon alternatives for ALTS
-    const isSkipped2H = (slotEn === 'Two-Hand Weapon' || slotEn === 'Two-Hand') && resolveSlot._skipTwoHand;
-    const isSkipped1H = slotEn === 'One-Hand Weapon' && resolveSlot._skipOneHand;
+    const normSlotEn = slotEn.toLowerCase().replace(/[\s\-_]+/g, '');
+    const isSkipped2H = (/twohand|^2h/.test(normSlotEn)) && resolveSlot._skipTwoHand;
+    const isSkipped1H = (/onehand|^1h/.test(normSlotEn)) && resolveSlot._skipOneHand;
     if (isSkipped2H || isSkipped1H) {
       skippedWeapons.push(row);
       continue;
