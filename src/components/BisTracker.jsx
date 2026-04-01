@@ -435,8 +435,8 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
     return sr.gear[slots[0]] || sr.gear[slots[1]];
   })() : null;
   var hasDiff = eq && eq.id !== item.id;
-  var altHasDiff = isAlt && altEq;
-  var eqForTooltip = hasDiff ? eq : (altHasDiff ? altEq : null);
+  var displayEq = isAlt ? altEq : (hasDiff ? eq : null);
+  var eqForTooltip = hasDiff ? eq : (isAlt && altEq ? altEq : null);
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
   // Detect wrong armor type on the equipped item
   var eqToCheck = eq || altEq;
@@ -490,35 +490,23 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
               <span>{t("ui.wrongPrimaryStat", { expected: t("primaryStats." + expectedPrimary), actual: t("primaryStats." + wrongPrimary) })}</span>
             </div>
           )}
-          {p && tier > 0 && (tier < 4 || (hasDiff && eq)) && (
+          {p && tier > 0 && tier < 4 && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
-              {tier < 4 && (
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: visualTier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : visualTier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : visualTier === 3 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : "#0d1a0d", border: "1px solid " + (visualTier === 1 ? "#6a2020" : visualTier === 2 ? "#6a5020" : visualTier === 3 ? "#6a5020" : "#1a3a1a"), color: p.color }}>
-                  <span style={{ fontSize: 10 }}>{icons[tier]}</span><span>{pLabel}</span>
-                  {p.deficit > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + p.deficit + "\uFF09"}</span>}
-                </div>
-              )}
-              {tier < 4 && p.upgradeStatus && <span style={{ fontSize: 9, color: p.upgradeStatus === "tierUp" ? "#cc8844" : "#5a9a5a" }}>{t(p.upgradeStatus === "tierUp" ? "ui.tierReacquireNeeded" : "ui.tierUpgradeNeeded")}</span>}
-              {tier < 4 && p.weaponMismatch && <span style={{ fontSize: 9, color: "#cc8844" }}>{t("ui.weaponMismatch", { spec: t("specs." + simcSpec), slot: t("slots." + item.slot) })}</span>}
-              {hasDiff && eq && (
-                <a href={"https://www.wowhead.com" + whLocale + "/item=" + eq.id + whSpec + (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: isSimcAlt ? "#1a1508" : "#1a1520", border: "1px solid " + (isSimcAlt ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: isSimcAlt ? "#c9a040" : "#aa7799", whiteSpace: "nowrap" }}>
-                  <span>{eq.name}</span>
-                  {allStats[eq.id] && allStats[eq.id].length > 0 && allStats[eq.id].map(function(s) {
-                    return (<span key={s} style={{ fontSize: 9, color: "#776655" }}>{"\u00B7"}{t("stats." + s)}</span>);
-                  })}
-                </a>
-              )}
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: visualTier === 1 ? "linear-gradient(135deg,#2a1515,#1a0f0f)" : visualTier === 2 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : visualTier === 3 ? "linear-gradient(135deg,#2a1f10,#1a1508)" : "#0d1a0d", border: "1px solid " + (visualTier === 1 ? "#6a2020" : visualTier === 2 ? "#6a5020" : visualTier === 3 ? "#6a5020" : "#1a3a1a"), color: p.color }}>
+                <span style={{ fontSize: 10 }}>{icons[tier]}</span><span>{pLabel}</span>
+                {p.deficit > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + p.deficit + "\uFF09"}</span>}
+              </div>
+              {p.upgradeStatus && <span style={{ fontSize: 9, color: p.upgradeStatus === "tierUp" ? "#cc8844" : "#5a9a5a" }}>{t(p.upgradeStatus === "tierUp" ? "ui.tierReacquireNeeded" : "ui.tierUpgradeNeeded")}</span>}
+              {p.weaponMismatch && <span style={{ fontSize: 9, color: "#cc8844" }}>{t("ui.weaponMismatch", { spec: t("specs." + simcSpec), slot: t("slots." + item.slot) })}</span>}
             </div>
           )}
-          {isAlt && !isDoneState && altEq && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center", marginTop: 4 }}>
-              <a href={"https://www.wowhead.com" + whLocale + "/item=" + altEq.id + whSpec + (altEq.bonus ? "&bonus=" + altEq.bonus : "") + (altEq.ilvl ? "&ilvl=" + altEq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: "#1a1508", border: "1px solid #3a2a10", textDecoration: "none", fontSize: 10, fontWeight: 600, color: "#c9a040", whiteSpace: "nowrap" }}>
-                <span>{altEq.name}{altEq.ilvl ? " (" + altEq.ilvl + ")" : ""}</span>
-                {allStats[altEq.id] && allStats[altEq.id].length > 0 && allStats[altEq.id].map(function(s) {
-                  return (<span key={s} style={{ fontSize: 9, color: "#776655" }}>{"\u00B7"}{t("stats." + s)}</span>);
-                })}
-              </a>
-            </div>
+          {displayEq && (
+            <a href={"https://www.wowhead.com" + whLocale + "/item=" + displayEq.id + whSpec + (displayEq.bonus ? "&bonus=" + displayEq.bonus : "") + (displayEq.ilvl ? "&ilvl=" + displayEq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: (isAlt || isSimcAlt) ? "#1a1508" : "#1a1520", border: "1px solid " + ((isAlt || isSimcAlt) ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: (isAlt || isSimcAlt) ? "#c9a040" : "#aa7799", whiteSpace: "nowrap", marginTop: 2 }}>
+              <span>{displayEq.name}{isAlt && displayEq.ilvl ? " (" + displayEq.ilvl + ")" : ""}</span>
+              {allStats[displayEq.id] && allStats[displayEq.id].length > 0 && allStats[displayEq.id].map(function(s) {
+                return (<span key={s} style={{ fontSize: 9, color: "#776655" }}>{"\u00B7"}{t("stats." + s)}</span>);
+              })}
+            </a>
           )}
         </div>
         <div className="ck" onClick={function() { if (canToggle) onToggle(item.id); }} style={{ width: 36, height: 36, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", background: isDoneState ? "#1a3a1a" : "#1a1a28", border: "2px solid " + (isDoneState ? "#4dca6b" : "#2a2a3a"), flexShrink: 0, marginTop: 2, cursor: canToggle ? "pointer" : "not-allowed", opacity: (!isDoneState && !canToggle) ? 0.35 : 1 }}>
