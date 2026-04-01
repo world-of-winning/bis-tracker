@@ -1,7 +1,8 @@
 // Changelog entries — newest first
 // { date: "YYYY-MM-DD", text: { ko, en } }
 export var CHANGELOG = [
-  { date: "2025-04-01", text: { ko: "크리크의 딱정벌레 단도(49807)가 9개 스펙에서 머리 부위로 잘못 등록된 데이터 수정", en: "Fix Krick's Beetle Stabber (49807) incorrectly registered as head slot across 9 specs" } },
+  { date: "2025-04-01", text: { ko: "아이템 데이터 전수 검증 — 슬롯 오류, 소스 불일치, 누락 아이템 수정 (20+ 스펙)", en: "Full item data audit — fix slot errors, source mismatches, missing items across 20+ specs" } },
+  { date: "2025-04-01", text: { ko: "generate-spec-data 슬롯 이름 퍼지 매칭으로 개선 (Maxroll 표기 변형 대응)", en: "Fuzzy slot name matching in generate-spec-data to handle Maxroll label variants" } },
   { date: "2025-04-01", text: { ko: "능력치 불일치 아이템에서 '등급↑ 필요' 라벨이 표시되지 않던 버그 수정", en: "Fix grade-up label not showing on stat-mismatched equipped items" } },
   { date: "2025-04-01", text: { ko: "포식 악사 Wowhead 툴팁 주 능력치가 민첩 대신 지능으로 올바르게 표시", en: "Fix Devourer DH Wowhead tooltip showing Agility instead of Intellect" } },
   { date: "2025-04-01", text: { ko: "완료 카드에서 착용 중인 아이템 이름 라벨이 표시되지 않던 버그 수정", en: "Fix equipped item name label not showing on completed cards" } },
