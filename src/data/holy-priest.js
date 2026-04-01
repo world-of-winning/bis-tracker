@@ -45,7 +45,7 @@ export var MYTHIC = [
   { slot: "waist", en: "Cord of Unraveling Reality", ko: "무너지는 현실의 장식끈", id: 151302, source: "Seat of the Triumvirate", stats: ["mastery","vers"] },
   { slot: "legs", en: "Leyline Leggings", ko: "지맥 다리보호구", id: 251205, source: "Nexus-Point Xenas", stats: ["crit","vers"] },
   { slot: "feet", en: "Nightprey Stalkers", ko: "밤사냥감 추적자", id: 251167, source: "Maisara Caverns", stats: ["crit","vers"] },
-  { slot: "finger1", en: "Leyline Leggings", ko: "지맥 다리보호구", id: 251205, source: "Nexus-Point Xenas", stats: ["crit","vers"] },
+  { slot: "finger1", en: "Eredath Seal of Nobility", ko: "에레다스 귀족의 인장", id: 151308, source: "Seat of the Triumvirate", stats: ["crit","vers"] },
   { slot: "finger2", en: "Platinum Star Band", ko: "백금 별의 고리", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { slot: "trinket1", en: "Emerald Coach's Whistle", ko: "에메랄드 감독의 호루라기", id: 193718, source: "Algeth'ar Academy", stats: [] },
   { slot: "trinket2", en: "Heart of Wind", ko: "바람의 심장", id: 250256, source: "Windrunner Spire", stats: [] },

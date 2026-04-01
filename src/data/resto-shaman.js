@@ -60,7 +60,7 @@ export var ALTS = [
   { forSlot: "hands", id: 249325, en: "Untethered Berserker's Grips", ko: "풀어헤쳐진 광전사의 손장갑", source: "Crown of the Cosmos", stats: ["crit","mastery"] },
   { forSlot: "neck", id: 249337, en: "Ribbon of Coiled Malice", ko: "뒤틀린 악의의 리본", source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "ring", id: 193708, en: "Platinum Star Band", ko: "백금 별의 고리", source: "Algeth'ar Academy", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 251205, en: "Leyline Leggings", ko: "지맥 다리보호구", source: "Nexus-Point Xenas", stats: ["crit","vers"] },
+  { forSlot: "legs", id: 251205, en: "Leyline Leggings", ko: "지맥 다리보호구", source: "Nexus-Point Xenas", stats: ["crit","vers"] },
   { forSlot: "ring", id: 251513, en: "Loa Worshiper's Band", ko: "로아 신봉자의 고리", source: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 193704, en: "Scaled Commencement Spaulders", ko: "비늘 학위 어깨덮개", source: "Algeth'ar Academy", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 249977, en: "Tempests of the Primal Core", ko: "원시 핵의 돌개바람", source: "Tier", stats: ["crit","haste"] },
