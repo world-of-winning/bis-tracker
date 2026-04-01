@@ -30,6 +30,7 @@ export var BIS = [
   { slot: "finger2", en: "Masterwork Sin'dorei Band", ko: "걸작 신도레이 고리", id: 240949, source: "Crafted", stats: [] },
   { slot: "trinket1", en: "Gaze of the Alnseer", ko: "알른 선견자의 응시", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "trinket2", en: "Volatile Void Suffuser", ko: "불안정한 공허 확산기", id: 249341, source: "Fallen-King Salhadaar", stats: ["haste"] },
+  { slot: "main_hand", en: "Spellboon Saber", ko: "주문은총 사브르", id: 193710, source: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { slot: "off_hand", en: "Crawth's Scaleguard", ko: "크로스의 비늘보호대", id: 258531, source: "Algeth'ar Academy", stats: ["mastery","vers"] },
 ];
 
@@ -77,9 +78,8 @@ export var KNOWN_STATS = {
   249958:["haste","mastery"],249960:["crit","haste"],249961:["haste","mastery"],249962:["haste","vers"],
   249963:["haste","mastery"],249964:["haste","mastery"],250247:["haste","mastery"],250256:[],
   251093:["haste","mastery"],251096:["haste","vers"],251107:["haste","mastery"],251115:["haste","mastery"],
-  251122:["haste","mastery"],251164:["haste","mastery"],251169:["haste","mastery"],
-  251206:["mastery","vers"],251208:["haste","vers"],258531:["mastery","vers"],258579:["mastery","vers"],
-  263193:["haste","mastery"],
+  251122:["haste","mastery"],251164:["haste","mastery"],251169:["haste","mastery"],251206:["mastery","vers"],
+  251208:["haste","vers"],258531:["mastery","vers"],258579:["mastery","vers"],263193:["haste","mastery"],
 };
 
 export var DUNGEONS = [
