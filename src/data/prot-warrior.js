@@ -78,10 +78,9 @@ export var KNOWN_STATS = {
   249949:["crit","haste"],249950:["haste","mastery"],249951:["crit","haste"],249952:["haste","mastery"],
   249954:["crit","haste"],249955:["crit","haste"],250247:["haste","mastery"],250256:[],
   251081:["crit","haste"],251091:["crit","vers"],251105:["crit","mastery"],251111:["crit","haste"],
-  251157:["crit","haste"],251164:["haste","mastery"],251175:["crit","mastery"],
-  251178:["crit","haste"],251203:["crit","vers"],251208:["haste","vers"],251217:["crit","haste"],
-  252420:[],258049:["crit","mastery"],258525:["crit","haste"],260312:["crit","haste"],
-  260423:["crit","haste"],
+  251157:["crit","haste"],251164:["haste","mastery"],251175:["crit","mastery"],251178:["crit","haste"],
+  251203:["crit","vers"],251208:["haste","vers"],251217:["crit","haste"],252420:[],
+  258049:["crit","mastery"],258525:["crit","haste"],260312:["crit","haste"],260423:["crit","haste"],
 };
 
 export var DUNGEONS = [

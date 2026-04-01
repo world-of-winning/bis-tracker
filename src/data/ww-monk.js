@@ -57,7 +57,6 @@ export var ALTS = [
   { forSlot: "chest", id: 251159, en: "War Trial Vestments", ko: "전쟁의 시련 예복", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 249382, en: "Canopy Walker's Footwraps", ko: "나무 지붕 방랑자의 발등싸개", source: "Crown of the Cosmos", stats: ["crit","mastery"] },
   { forSlot: "hands", id: 251113, en: "Gloves of Viscous Goo", ko: "농후한 찐득이 장갑", source: "Magisters' Terrace", stats: ["crit","mastery"] },
-  { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "head", id: 151336, en: "Voidlashed Hood", ko: "공허에 스친 두건", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "legs", id: 249312, en: "Nightblade's Pantaloons", ko: "밤의 검의 통바지", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", source: "Midnight Falls", stats: ["haste","mastery"] },
@@ -66,6 +65,7 @@ export var ALTS = [
   { forSlot: "ring", id: 249369, en: "Bond of Light", ko: "빛의 결속", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 251092, en: "Fallen Grunt's Mantle", ko: "전사한 그런트의 어깨덧옷", source: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "waist", id: 249374, en: "Scorn-Scarred Shul'ka's Belt", ko: "멸시의 자취가 남은 술카의 허리띠", source: "Chimaerus", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 193710, en: "Spellboon Saber", ko: "주문은총 사브르", source: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249294, en: "Blade of the Blind Verdict", ko: "맹목적인 선고의 칼날", source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 258438, en: "Blazing Sunclaws", ko: "타오르는 태양발톱", source: "Skyreach", stats: ["haste","mastery"] },
@@ -77,17 +77,16 @@ export var STAT_CACHE_KEY = "ww-monk-stat-cache-v1";
 
 export var KNOWN_STATS = {
   49806:["crit","haste"],49807:["crit","haste"],49817:["haste","mastery"],151309:["haste","vers"],
-  151318:["crit","haste"],151336:["crit","haste"],193701:[],
-  193708:["crit","mastery"],193710:["haste","mastery"],193714:["haste","mastery"],244576:[],
-  249287:["haste","mastery"],249294:["haste","mastery"],249312:["haste","mastery"],249321:["crit","mastery"],
-  249343:["mastery"],249368:["haste","mastery"],249369:["haste","mastery"],249374:["crit","haste"],
-  249382:["crit","mastery"],249919:["crit","mastery"],250010:["crit","haste"],250012:["haste","mastery"],
-  250013:["haste","mastery"],250014:["haste","mastery"],250015:["crit","haste"],250017:["crit","haste"],
-  250018:["crit","haste"],250247:["haste","mastery"],250256:[],251092:["haste","mastery"],
-  251093:["haste","mastery"],251096:["haste","vers"],251109:["crit","mastery"],251113:["crit","mastery"],
-  251115:["haste","mastery"],251122:["haste","mastery"],251159:["haste","mastery"],
-  251171:["haste","mastery"],251216:["haste","mastery"],251513:["crit","mastery"],258438:["haste","mastery"],
-  258577:["crit","mastery"],260312:["crit","haste"],
+  151318:["crit","haste"],151336:["crit","haste"],193701:[],193708:["crit","mastery"],
+  193710:["haste","mastery"],193714:["haste","mastery"],244576:[],249287:["haste","mastery"],
+  249294:["haste","mastery"],249312:["haste","mastery"],249321:["crit","mastery"],249343:["mastery"],
+  249368:["haste","mastery"],249369:["haste","mastery"],249374:["crit","haste"],249382:["crit","mastery"],
+  249919:["crit","mastery"],250010:["crit","haste"],250012:["haste","mastery"],250013:["haste","mastery"],
+  250014:["haste","mastery"],250015:["crit","haste"],250017:["crit","haste"],250018:["crit","haste"],
+  250247:["haste","mastery"],250256:[],251092:["haste","mastery"],251093:["haste","mastery"],
+  251096:["haste","vers"],251109:["crit","mastery"],251113:["crit","mastery"],251115:["haste","mastery"],
+  251122:["haste","mastery"],251159:["haste","mastery"],251171:["haste","mastery"],251216:["haste","mastery"],
+  251513:["crit","mastery"],258438:["haste","mastery"],258577:["crit","mastery"],260312:["crit","haste"],
 };
 
 export var DUNGEONS = [

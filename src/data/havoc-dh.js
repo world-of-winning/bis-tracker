@@ -79,16 +79,16 @@ export var STAT_CACHE_KEY = "havoc-dh-stat-cache-v1";
 export var KNOWN_STATS = {
   49812:["crit","haste"],49817:["haste","mastery"],50227:["crit","vers"],50228:["crit","haste"],
   50264:["crit","haste"],151315:["crit","haste"],151318:["crit","haste"],151319:["crit","mastery"],
-  193701:[],193708:["crit","mastery"],193717:["crit","vers"],
-  237840:[],244576:[],249284:["crit","mastery"],249312:["haste","mastery"],
-  249321:["crit","mastery"],249327:["crit","haste"],249337:["crit","haste"],249343:["mastery"],
-  249368:["haste","mastery"],249382:["crit","mastery"],249919:["crit","mastery"],250031:["crit","mastery"],
-  250033:["haste","mastery"],250034:["crit","haste"],250036:["crit","mastery"],250247:["haste","mastery"],
-  251082:["crit","mastery"],251087:["crit","haste"],251092:["haste","mastery"],251099:["crit","mastery"],
-  251109:["crit","mastery"],251113:["crit","mastery"],251135:["crit","haste"],251140:["haste","mastery"],
-  251163:["crit","vers"],251171:["haste","mastery"],251175:["crit","mastery"],
-  251217:["crit","haste"],251513:["crit","mastery"],252420:[],258575:["crit","mastery"],
-  258577:["crit","mastery"],260235:[],260408:["crit"],
+  193701:[],193708:["crit","mastery"],193717:["crit","vers"],237840:[],
+  244576:[],249284:["crit","mastery"],249312:["haste","mastery"],249321:["crit","mastery"],
+  249327:["crit","haste"],249337:["crit","haste"],249343:["mastery"],249368:["haste","mastery"],
+  249382:["crit","mastery"],249919:["crit","mastery"],250031:["crit","mastery"],250033:["haste","mastery"],
+  250034:["crit","haste"],250036:["crit","mastery"],250247:["haste","mastery"],251082:["crit","mastery"],
+  251087:["crit","haste"],251092:["haste","mastery"],251099:["crit","mastery"],251109:["crit","mastery"],
+  251113:["crit","mastery"],251135:["crit","haste"],251140:["haste","mastery"],251163:["crit","vers"],
+  251171:["haste","mastery"],251175:["crit","mastery"],251217:["crit","haste"],251513:["crit","mastery"],
+  252420:[],258575:["crit","mastery"],258577:["crit","mastery"],260235:[],
+  260408:["crit"],
 };
 
 export var DUNGEONS = [
