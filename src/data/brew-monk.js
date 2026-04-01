@@ -55,7 +55,7 @@ export var ALTS = [
   { forSlot: "back", id: 49823, en: "Cloak of the Fallen Cardinal", ko: "쓰러진 추기경의 망토", source: "Pit of Saron", stats: ["crit","vers"] },
   { forSlot: "back", id: 249335, en: "Imperator's Banner", ko: "전제군주의 깃발", source: "Imperator Averzian", stats: ["crit","vers"] },
   { forSlot: "feet", id: 251121, en: "Domanaar's Dire Treads", ko: "도마나르의 광포한 발보호대", source: "Magisters' Terrace", stats: ["mastery","vers"] },
-  { forSlot: "head", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "head", id: 151336, en: "Voidlashed Hood", ko: "공허에 스친 두건", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "neck", id: 151309, en: "Necklace of the Twisting Void", ko: "뒤틀리는 공허의 목걸이", source: "Seat of the Triumvirate", stats: ["haste","vers"] },
   { forSlot: "ring", id: 221200, en: "Radiant Necromancer's Band", ko: "찬란한 강령술사의 고리", source: "Midnight Falls", stats: ["mastery","vers"] },

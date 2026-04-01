@@ -54,7 +54,7 @@ export var MYTHIC = [
 export var ALTS = [
   { forSlot: "chest", id: 251099, en: "Vest of the Howling Gale", ko: "울부짖는 강풍의 조끼", source: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "chest", id: 251159, en: "War Trial Vestments", ko: "전쟁의 시련 예복", source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "head", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "head", id: 251140, en: "Vilefiend's Guise", ko: "썩은마귀의 복면", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251096, en: "Pendant of Aching Grief", ko: "괴로운 비탄의 펜던트", source: "Windrunner Spire", stats: ["haste","vers"] },
   { forSlot: "ring", id: 49812, en: "Purloined Wedding Ring", ko: "훔친 결혼반지", source: "Pit of Saron", stats: ["crit","haste"] },

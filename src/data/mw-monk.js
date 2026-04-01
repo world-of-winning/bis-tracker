@@ -56,7 +56,7 @@ export var ALTS = [
   { forSlot: "back", id: 49823, en: "Cloak of the Fallen Cardinal", ko: "쓰러진 추기경의 망토", source: "Pit of Saron", stats: ["crit","vers"] },
   { forSlot: "back", id: 251161, en: "Soulhunter's Mask", ko: "영혼사냥꾼의 가면", source: "Maisara Caverns", stats: ["crit","vers"] },
   { forSlot: "chest", id: 251159, en: "War Trial Vestments", ko: "전쟁의 시련 예복", source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "head", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "legs", id: 49817, en: "Shaggy Wyrmleather Leggings", ko: "털이 많은 고룡가죽 다리보호구", source: "Pit of Saron", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 249312, en: "Nightblade's Pantaloons", ko: "밤의 검의 통바지", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 50228, en: "Barbed Ymirheim Choker", ko: "뾰족한 이미르하임 목장식", source: "Pit of Saron", stats: ["crit","haste"] },

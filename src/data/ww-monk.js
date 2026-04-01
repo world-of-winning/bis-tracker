@@ -57,7 +57,7 @@ export var ALTS = [
   { forSlot: "chest", id: 251159, en: "War Trial Vestments", ko: "전쟁의 시련 예복", source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 249382, en: "Canopy Walker's Footwraps", ko: "나무 지붕 방랑자의 발등싸개", source: "Crown of the Cosmos", stats: ["crit","mastery"] },
   { forSlot: "hands", id: 251113, en: "Gloves of Viscous Goo", ko: "농후한 찐득이 장갑", source: "Magisters' Terrace", stats: ["crit","mastery"] },
-  { forSlot: "head", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 49807, en: "Krick's Beetle Stabber", ko: "크리크의 딱정벌레 단도", source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "head", id: 151336, en: "Voidlashed Hood", ko: "공허에 스친 두건", source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "legs", id: 249312, en: "Nightblade's Pantaloons", ko: "밤의 검의 통바지", source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 250247, en: "Amulet of the Abyssal Hymn", ko: "심연의 찬가의 아뮬렛", source: "Midnight Falls", stats: ["haste","mastery"] },
