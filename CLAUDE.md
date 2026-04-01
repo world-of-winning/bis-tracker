@@ -16,15 +16,20 @@ BiS (Best in Slot) item tracker for WoW. SimC import for gear analysis, farming 
 src/
 ├── App.jsx              # Spec selection tabs
 ├── main.jsx             # Entry point
+├── sanitize.js          # Input sanitization utilities
 ├── storage.js           # localStorage wrapper
 ├── styles.css           # Global CSS + animations
 ├── components/
-│   └── BisTracker.jsx   # Core tracker component (spec-agnostic)
+│   ├── BisTracker.jsx   # Core tracker component (spec-agnostic)
+│   └── TutorialOverlay.jsx  # First-time user tutorial overlay
 └── data/
     ├── shared.js         # Dungeon colors, tiers, stat names, fetchItemStats()
-    ├── prot-paladin.js   # Protection Paladin BiS/Alt/KNOWN_STATS
-    ├── dev-evoker.js     # Devastation Evoker BiS/Alt/KNOWN_STATS
-    └── specs.js          # Spec registry
+    ├── specs.js          # Spec registry (40 specs)
+    ├── changelog.js      # Version changelog data
+    ├── tutorial.js       # Tutorial content/steps
+    ├── sample.js         # Sample SimC data for demo
+    ├── prot-paladin.js   # Example: Protection Paladin BiS/Alt/KNOWN_STATS
+    └── ...               # 40 spec data files total
 ```
 
 ## Architecture

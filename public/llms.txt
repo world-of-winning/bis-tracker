@@ -3,7 +3,7 @@
 > World of Warcraft Best in Slot gear tracking web app
 
 ## What this tool does
-- Tracks Best in Slot (BiS) gear for all 39 WoW specs
+- Tracks Best in Slot (BiS) gear for all 40 WoW specs
 - Imports current gear via SimulationCraft (/simc) paste
 - Analyzes stat priorities and flags suboptimal gear
 - Shows farming priority per dungeon based on gear gaps
@@ -17,6 +17,6 @@
 4. View your BiS gaps, alt items, and dungeon farming priorities
 
 ## Supported content
-- All 13 WoW classes, all 39 specializations
+- All 13 WoW classes, all 40 specializations
 - Midnight Season 1 dungeon and raid BiS lists
 - Item grade system: Veteran / Champion / Hero / Myth
