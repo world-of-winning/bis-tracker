@@ -1,5 +1,30 @@
 # Changelog
 
+## v1.11.1
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.9.1...v1.11.1)
+
+### 🩹 Fixes
+
+- Show grade-up label on stat-mismatched items, fix Devourer DH tooltip primary stat ([ad85314](https://github.com/world-of-winning/bis-tracker/commit/ad85314))
+- Correct Krick's Beetle Stabber slot from head to weapon across 9 specs ([fa7c53e](https://github.com/world-of-winning/bis-tracker/commit/fa7c53e))
+- Correct Leyline Leggings slot from ring to legs, remove duplicate entries ([6001cab](https://github.com/world-of-winning/bis-tracker/commit/6001cab))
+- Correct item source values across 5 spec data files ([2dfb616](https://github.com/world-of-winning/bis-tracker/commit/2dfb616))
+- Fuzzy slot name matching in generate-spec-data ([543d8ad](https://github.com/world-of-winning/bis-tracker/commit/543d8ad))
+- Veng-dh crafted cloak stats, holy-paladin missing main_hand ([7104fb4](https://github.com/world-of-winning/bis-tracker/commit/7104fb4))
+- Unify BIS/ALT equipped item display into single code path ([8238dbf](https://github.com/world-of-winning/bis-tracker/commit/8238dbf))
+
+### 🏡 Chore
+
+- **release:** V1.10.0 ([7b70e61](https://github.com/world-of-winning/bis-tracker/commit/7b70e61))
+- **release:** V1.10.1 ([55962fb](https://github.com/world-of-winning/bis-tracker/commit/55962fb))
+- Re-sort ALTS and KNOWN_STATS via find-alts script ([28c5745](https://github.com/world-of-winning/bis-tracker/commit/28c5745))
+- **release:** V1.11.0 ([e152870](https://github.com/world-of-winning/bis-tracker/commit/e152870))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.7.1
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.7.0...v1.7.1)
