@@ -541,7 +541,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     var sources = new Set();
     BIS.forEach(function(b) { if (DUNGEONS[b.source]) sources.add(b.source); });
     mergedAlts.forEach(function(a) { if (DUNGEONS[a.source]) sources.add(a.source); });
-    return Object.keys(DC).filter(function(d) { return sources.has(d); });
+    return Object.keys(DUNGEONS).filter(function(d) { return sources.has(d); });
   }, [BIS, mergedAlts]);
   // All known good item IDs (BiS + MYTHIC) for alt recognition
   var knownBisIds = useMemo(function() {
