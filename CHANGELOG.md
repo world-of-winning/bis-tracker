@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.11.2
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.11.1...v1.11.2)
+
+### 🩹 Fixes
+
+- Replace remaining DC reference with DUNGEONS ([21800b1](https://github.com/world-of-winning/bis-tracker/commit/21800b1))
+
+### 💅 Refactors
+
+- Derive dungeon list dynamically from BIS/ALTS sources ([3eb6825](https://github.com/world-of-winning/bis-tracker/commit/3eb6825))
+- Remove DC alias and clarify DUNGEONS color keys ([e1c8639](https://github.com/world-of-winning/bis-tracker/commit/e1c8639))
+
+### 📖 Documentation
+
+- Update project structure and spec count to 40 ([9a3f613](https://github.com/world-of-winning/bis-tracker/commit/9a3f613))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.11.1
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.9.1...v1.11.1)
