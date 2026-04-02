@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { load, save as persist } from '../storage.js';
-import { DUNGEONS as DC, TIERS, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS, SPEC_PRIMARY_STAT } from '../data/shared.js';
+import { DUNGEONS, TIERS, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS, SPEC_PRIMARY_STAT } from '../data/shared.js';
 import { sanitizeHTML } from '../sanitize.js';
 import { findSpecBySimC } from '../data/specs.js';
 import { useLocale } from '../i18n/index.jsx';
@@ -421,8 +421,8 @@ function EqTooltipObserver({ locale, whSpecId, t }) {
 function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, knownBisIds, whSpecId, armorTypes, expectedArmor, simcSpec, primaryStats, expectedPrimary }) {
   var { t, itemName, locale } = useLocale();
   var itemSource = getSource(item);
-  var isDungeon = !!DC[itemSource];
-  var c = DC[itemSource] || { b: "#8866aa", t: "#c4aadd", g: "#1a1028" };
+  var isDungeon = !!DUNGEONS[itemSource];
+  var c = DUNGEONS[itemSource] || { b: "#8866aa", t: "#c4aadd", g: "#1a1028" };
   var eq = !isAlt && sr && sr.eqSlot ? sr.eqSlot[item.id] : null;
   var altEq = isAlt && sr && sr.gear ? (function() {
     var slots = resolveSlots(item.forSlot);
@@ -536,11 +536,11 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     });
     return farmableAlts.concat(ALTS);
   }, [BIS, MYTHIC, ALTS]);
-  // Derive dungeon list from BIS + ALTS sources
-  var DUNGEONS = useMemo(function() {
+  // Only include dungeons that actually have items for this spec
+  var specDungeons = useMemo(function() {
     var sources = new Set();
-    BIS.forEach(function(b) { if (DC[b.source]) sources.add(b.source); });
-    mergedAlts.forEach(function(a) { if (DC[a.source]) sources.add(a.source); });
+    BIS.forEach(function(b) { if (DUNGEONS[b.source]) sources.add(b.source); });
+    mergedAlts.forEach(function(a) { if (DUNGEONS[a.source]) sources.add(a.source); });
     return Object.keys(DC).filter(function(d) { return sources.has(d); });
   }, [BIS, mergedAlts]);
   // All known good item IDs (BiS + MYTHIC) for alt recognition
@@ -811,7 +811,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   }, [filter, mergedAlts, sr, acq, allStats, PRIORITY_STATS, targetInfo.max]);
   var nonDungeonSources = useMemo(function() {
     var sources = {};
-    activeItems.forEach(function(item) { var s = getSource(item); if (!DC[s]) sources[s] = (sources[s] || 0) + 1; });
+    activeItems.forEach(function(item) { var s = getSource(item); if (!DUNGEONS[s]) sources[s] = (sources[s] || 0) + 1; });
     var all = Object.keys(sources).map(function(s) { return { source: s, count: sources[s] }; });
     var prep = all.filter(function(s) { return /^Tier/i.test(s.source) || s.source === "Crafted"; });
     prep.sort(function(a, b) { return (/^Tier/i.test(a.source) ? 0 : 1) - (/^Tier/i.test(b.source) ? 0 : 1); });
@@ -891,11 +891,11 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           );
         })}
         {(nonDungeonSources.prep.length > 0) && <span style={{ width: 1, height: 20, background: "#2a2a3a", alignSelf: "center" }} />}
-        {DUNGEONS.map(function(d) {
+        {specDungeons.map(function(d) {
           if (!farmCounts[d]) return null;
           return { source: d, score: sr ? calcDungeonScore(d, farmCounts[d], activeItems, sr, targetInfo.max, allStats, PRIORITY_STATS, acq) : 0 };
         }).filter(Boolean).sort(function(a, b) { return b.score - a.score; }).map(function(item) {
-          var d = item.source, c2 = DC[d] || { g: "#333", b: "#555", t: "#aaa" }, act = filter === d;
+          var d = item.source, c2 = DUNGEONS[d] || { g: "#333", b: "#555", t: "#aaa" }, act = filter === d;
           var fc = farmCounts[d] || { bis: 0, alt: 0 };
           var bisRem = fc.bis, altRem = fc.alt;
           var rem = bisRem + altRem;
@@ -936,9 +936,9 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       )}
       {filter !== "all" && (
         <div style={{ padding: "8px 0" }}>
-          {DC[filter] ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 8, background: DC[filter].g + "cc", border: "1px solid " + DC[filter].b + "44" }}>
-              <span style={{ fontSize: 18, fontWeight: 700, color: DC[filter].t, fontFamily: "'Cinzel',serif" }}>{t("dungeonsFull." + filter)}</span>
+          {DUNGEONS[filter] ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 8, background: DUNGEONS[filter].g + "cc", border: "1px solid " + DUNGEONS[filter].b + "44" }}>
+              <span style={{ fontSize: 18, fontWeight: 700, color: DUNGEONS[filter].t, fontFamily: "'Cinzel',serif" }}>{t("dungeonsFull." + filter)}</span>
               <span style={{ marginLeft: "auto", fontSize: 12, color: "#778888" }}>{"BiS " + displayBis.length}{displayAlts.length > 0 ? " + Alt " + displayAlts.length : ""}{sr && " \u00B7 " + t("ui.priority")}</span>
             </div>
           ) : (

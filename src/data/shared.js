@@ -1,3 +1,4 @@
+// b: badge/border accent, t: text color, g: gradient background
 export var DUNGEONS = {
   "Pit of Saron": { b: "#3d8ecf", t: "#7dc4ff", g: "#0f2640" },
   "Nexus-Point Xenas": { b: "#9b4dca", t: "#c88dff", g: "#25103a" },
