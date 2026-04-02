@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { load, save as persist } from '../storage.js';
-import { DUNGEON_COLORS as DC, TIERS, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS, SPEC_PRIMARY_STAT } from '../data/shared.js';
+import { DUNGEONS as DC, TIERS, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS, SPEC_PRIMARY_STAT } from '../data/shared.js';
 import { sanitizeHTML } from '../sanitize.js';
 import { findSpecBySimC } from '../data/specs.js';
 import { useLocale } from '../i18n/index.jsx';
@@ -520,7 +520,7 @@ function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats
 
 export default function BisTracker({ spec, charName, initialSimcText, onSpecSwitch, onClear, onCharDetected, crossSpecSources }) {
   var { t, locale } = useLocale();
-  var { BIS, MYTHIC, ALTS, KNOWN_STATS, DUNGEONS, STORAGE_KEY: BASE_STORAGE_KEY, THEME: theme, PRIORITY_STATS, STAT_CACHE_KEY, GUIDE_URL, SPEC_KEY } = spec;
+  var { BIS, MYTHIC, ALTS, KNOWN_STATS, STORAGE_KEY: BASE_STORAGE_KEY, THEME: theme, PRIORITY_STATS, STAT_CACHE_KEY, GUIDE_URL, SPEC_KEY } = spec;
   var whSpecId = WH_SPEC_IDS[SPEC_KEY];
   var STORAGE_KEY = charName ? BASE_STORAGE_KEY + ":" + charName : BASE_STORAGE_KEY;
   // Merge MYTHIC items into ALTS as farmable alternatives
@@ -536,6 +536,13 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     });
     return farmableAlts.concat(ALTS);
   }, [BIS, MYTHIC, ALTS]);
+  // Derive dungeon list from BIS + ALTS sources
+  var DUNGEONS = useMemo(function() {
+    var sources = new Set();
+    BIS.forEach(function(b) { if (DC[b.source]) sources.add(b.source); });
+    mergedAlts.forEach(function(a) { if (DC[a.source]) sources.add(a.source); });
+    return Object.keys(DC).filter(function(d) { return sources.has(d); });
+  }, [BIS, mergedAlts]);
   // All known good item IDs (BiS + MYTHIC) for alt recognition
   var knownBisIds = useMemo(function() {
     var ids = new Set(BIS.map(function(b) { return b.id; }));

@@ -712,10 +712,7 @@ function sortDungeons(dungeons) {
 
 function generateFullJs(spec, bisItems, mythicItems, knownStats, altsStr, priorityStatsOverride) {
   const theme = makeTheme(spec.accent);
-  // Collect all sources — dungeons are for DUNGEONS array, others for SOURCES
   const allItems = [...(bisItems || []), ...(mythicItems || [])];
-  const allSources = [...new Set(allItems.map(b => b.source))];
-  const dungeons = sortDungeons(allSources.filter(s => isDungeonSource(s)));
   const nonDungeonSources = [...new Set((bisItems || []).map(b => b.source).filter(s => !isDungeonSource(s)))];
 
   // Preserve existing SPEC_LABEL if available (avoid overwriting English with Korean)
@@ -792,11 +789,6 @@ function generateFullJs(spec, bisItems, mythicItems, knownStats, altsStr, priori
   }
   out += `};\n`;
   out += '\n';
-
-  // DUNGEONS
-  out += `export var DUNGEONS = [\n`;
-  out += `  ${dungeons.map(d => JSON.stringify(d)).join(', ')},\n`;
-  out += `];\n`;
 
   return out;
 }
@@ -1167,19 +1159,6 @@ function normalizeDataFiles(targetKey) {
         return `${prefix}"${normalized}"`;
       }
       return match;
-    });
-
-    // Normalize DUNGEONS array values
-    content = content.replace(/(export var DUNGEONS = \[)([^]*?)(\];)/g, (match, start, body, end) => {
-      const newBody = body.replace(/"([^"]+)"/g, (m, val) => {
-        const n = normalizeDungeon(val);
-        if (VALID_DUNGEONS.includes(n) && n !== val) {
-          changes.push(`DUNGEONS: ${val} → ${n}`);
-          return `"${n}"`;
-        }
-        return m;
-      });
-      return start + newBody + end;
     });
 
     if (changes.length > 0) {

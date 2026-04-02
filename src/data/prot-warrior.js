@@ -83,6 +83,3 @@ export var KNOWN_STATS = {
   258049:["crit","mastery"],258525:["crit","haste"],260312:["crit","haste"],260423:["crit","haste"],
 };
 
-export var DUNGEONS = [
-  "Nexus-Point Xenas", "Windrunner Spire", "Magisters' Terrace", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
-];

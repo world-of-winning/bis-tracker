@@ -1,4 +1,4 @@
-export var DUNGEON_COLORS = {
+export var DUNGEONS = {
   "Pit of Saron": { b: "#3d8ecf", t: "#7dc4ff", g: "#0f2640" },
   "Nexus-Point Xenas": { b: "#9b4dca", t: "#c88dff", g: "#25103a" },
   "Windrunner Spire": { b: "#4dca6b", t: "#8dffaa", g: "#0f2818" },

@@ -88,6 +88,3 @@ export var KNOWN_STATS = {
   258576:["crit","haste"],
 };
 
-export var DUNGEONS = [
-  "Nexus-Point Xenas", "Algeth'ar Academy", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
-];

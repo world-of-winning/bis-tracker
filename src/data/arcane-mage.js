@@ -82,6 +82,3 @@ export var KNOWN_STATS = {
   258580:["mastery","vers"],258584:["haste","mastery"],
 };
 
-export var DUNGEONS = [
-  "Maisara Caverns", "Nexus-Point Xenas", "Windrunner Spire", "Pit of Saron", "Seat of the Triumvirate", "Skyreach",
-];

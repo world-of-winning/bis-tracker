@@ -59,6 +59,85 @@ Items have grade tiers with ilvl caps. Items can be upgraded within their grade 
 
 Defined in `src/data/shared.js` as `TIERS[]`. The target grade filter determines `targetIlvl`. If an equipped/bag item's grade max < targetIlvl, it shows "재획득 필요" (re-acquire needed) because upgrading alone cannot reach the target.
 
+### Game Mechanics (Domain Logic)
+
+> Rules encoding WoW-specific mechanics. Each subsection documents a concept that is frequently misunderstood.
+
+#### 1. bonus_id vs ilvl — Not Interchangeable
+- **bonus_id**: Encoded grade indicator from SimC (`####/####` slash-separated → stored as `####:####` colon-separated). Each TIERS entry has a `bonusMin..bonusMax` range.
+- **ilvl**: Item power level (e.g., 250, 263, 276, 289). Represents upgrade progress *within* a grade.
+- `itemTierIdx(bonus, ilvl)` in BisTracker.jsx: checks bonus_id ranges **first** → falls back to ilvl **only** if no bonus_id match.
+```
+WRONG: Treating bonus_id and ilvl as equivalent for grade detection
+RIGHT: bonus_id determines grade; ilvl is fallback only when bonus_id is absent
+```
+
+#### 2. Grade Boundaries Cannot Be Crossed by Upgrade
+This is the single most misunderstood mechanic. A Veteran item at max ilvl 250 **cannot** be upgraded to Hero 276 — it must be **re-acquired** (re-farmed) at Hero grade.
+
+Two distinct upgrade statuses (`upgradeStatus` field):
+- **`"tierUp"`** → "재획득 필요" (re-acquire needed): item's grade < target grade. Must re-farm the item.
+- **`"enhance"`** → "강화 필요" (upgrade needed): item's grade >= target grade but ilvl < target ilvl. Can upgrade in place.
+```
+WRONG: "ilvl 250, target 276 → upgrade needed"
+RIGHT: "Veteran grade (max 250), target Hero (276) → RE-ACQUIRE needed (tierUp)"
+       "Hero grade at ilvl 270, target Hero 276 → UPGRADE needed (enhance)"
+```
+
+#### 3. Priority Tier Calculation (in `calcPriority`)
+
+| Tier | Icon | Condition | upgradeStatus |
+|------|------|-----------|---------------|
+| 4 ✓ | Green | BiS/Alt at target ilvl, or user-marked acquired | null |
+| 3 ↑ | Yellow | BiS/Alt equipped, at target grade, ilvl below target | `"enhance"` |
+| 2 ◆ | Orange | Alt equipped (stat match but not BiS item ID) | varies |
+| 1 ▲ | Red | Stat mismatch OR below target grade | `"tierUp"` |
+
+**visualTier** (for UI display) differs from actual priority tier:
+- `wrongArmor` OR `wrongPrimary` → visualTier **always 1** (red warning)
+- `upgradeStatus === "enhance"` → visualTier **4** (green, just needs upgrade currency)
+- `upgradeStatus === "tierUp"` → visualTier **2** (orange, needs re-farming)
+- Otherwise → visualTier = actual priority tier
+```
+WRONG: Using priority tier value directly for UI display
+RIGHT: Apply visualTier overrides — enhance shows green, tierUp shows orange, wrong armor always red
+```
+
+**Sort order** within same tier: worse stat score first (lower `statScore` = worse stats = higher farming priority), then larger ilvl deficit first.
+
+#### 4. Stat Matching (`matchBiS` function)
+- **PRIORITY_STATS**: Ordered array `[best, ..., worst]` of 4 secondary stats (crit, haste, mastery, vers) per spec.
+- **Exact match**: equipped item stats === BiS item stats (same set)
+- **Top-2 match**: equipped item has BOTH top 2 priority stats AND has ONLY those stats
+- **Stat-less items** (some trinkets with empty `stats` array): skip stat check, match by item ID only
+- **statScore formula**: `sum of (n - indexOf(stat))` where n = total priority stats count. Higher score = better stats. Items with lower score appear first in farming priority.
+
+#### 5. Slot Matching & Weapons
+- **Rings**: finger1 ↔ finger2 interchangeable. If BiS finger1 matches equipped finger2, auto-redirects.
+- **Trinkets**: trinket1 ↔ trinket2 interchangeable. Same redirect logic.
+- **Weapons**: 1H+shield vs 2H are **NOT interchangeable** → `weaponMismatch` flag blocks matching.
+- **ALTS `forSlot` expansion**: `"ring"` → finger1+finger2, `"trinket"` → trinket1+trinket2, `"weapon"` → main_hand+off_hand.
+
+#### 6. Armor Type & Primary Stat
+| Armor | Classes |
+|-------|---------|
+| Plate | Warrior, Paladin, Death Knight |
+| Mail | Hunter, Shaman, Evoker |
+| Leather | Rogue, Monk, Druid, Demon Hunter |
+| Cloth | Mage, Warlock, Priest |
+
+- **Armor-restricted slots** (`ARMOR_SLOTS`): head, shoulder, chest, wrist, hands, waist, legs, feet
+- Accessories (neck, back, rings, trinkets) have **no** armor type restriction
+- Wrong armor type or wrong primary stat → **visualTier forced to 1** regardless of actual match
+
+#### 7. Data Pipeline Rules
+- **`priority-stats.json`** is manually curated — **never auto-purge or regenerate**. Manual entries take precedence over Maxroll auto-fetch.
+- **`find-alts.mjs`** runs once across ALL specs (cross-referencing BiS lists) — not per-spec. Existing weapon ALTS from `generate-spec-data` are preserved.
+- **`--fix`**: Read-only cache, normalize data only, no network calls. Safe to run anytime.
+- **`--regenerate`**: Purges Wowhead cache for target specs, full re-fetch. Slow and should be used sparingly.
+- **Duplicate item IDs**: When same ID appears in multiple slots, prefer existing file's version for stability.
+- **Item source/dungeon names**: Do NOT arbitrarily replace when source doesn't match expectations — verify with Wowhead first.
+
 ### Per-Spec Data File Format
 ```js
 export var SPEC_LABEL = "Spec Name";
@@ -67,7 +146,7 @@ export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/{spec}-raid-guide";
 export var STORAGE_KEY = "bis-{key}-v1";
 export var STAT_CACHE_KEY = "{key}-stat-cache-v1";
 export var THEME = { accent, accentLight, accentBg, accentBorder, shimmer, btnBg };
-export var PRIORITY_STATS = ["crit","haste"];  // priority secondary stats; non-priority stats are flagged as bad
+export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
 export var KNOWN_STATS = { itemId: ["crit","haste"], ... };  // BiS+Alt only
 export var BIS = [ { slot, simcSlot, en, ko, id, dungeon, stats }, ... ];
 export var ALTS = [ { forSlot, id, en, ko, dungeon, stats }, ... ];
