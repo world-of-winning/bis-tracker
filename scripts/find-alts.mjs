@@ -136,12 +136,12 @@ function parseSpecFile(filePath) {
   const bisItems = [];
   const bisMatch = content.match(/export var BIS = \[([^]*?)\];/);
   if (bisMatch) {
-    const re = /\{\s*slot:\s*"([^"]+)",\s*(?:simcSlot:\s*"([^"]+)",\s*)?en:\s*"([^"]+)",\s*ko:\s*"([^"]+)",\s*id:\s*(\d+),\s*(?:dungeon|source):\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])/g;
+    const re = /\{\s*slot:\s*"([^"]+)",\s*(?:simcSlot:\s*"([^"]+)",\s*)?id:\s*(\d+),\s*(?:dungeon|source):\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])/g;
     let m;
     while ((m = re.exec(bisMatch[1]))) {
       bisItems.push({
-        slot: m[1], simcSlot: m[2] || m[1], en: m[3], ko: m[4],
-        id: parseInt(m[5]), source: m[6], stats: JSON.parse(m[7]),
+        slot: m[1], simcSlot: m[2] || m[1],
+        id: parseInt(m[3]), source: m[4], stats: JSON.parse(m[5]),
       });
     }
   }
@@ -149,12 +149,12 @@ function parseSpecFile(filePath) {
   // Also index MYTHIC items (farmable dungeon alternatives)
   const mythicMatch = content.match(/export var MYTHIC = \[([^]*?)\];/);
   if (mythicMatch) {
-    const re = /\{\s*slot:\s*"([^"]+)",\s*en:\s*"([^"]+)",\s*ko:\s*"([^"]+)",\s*id:\s*(\d+),\s*source:\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])/g;
+    const re = /\{\s*slot:\s*"([^"]+)",\s*id:\s*(\d+),\s*source:\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])/g;
     let m;
     while ((m = re.exec(mythicMatch[1]))) {
       bisItems.push({
-        slot: m[1], simcSlot: m[1], en: m[2], ko: m[3],
-        id: parseInt(m[4]), source: m[5], stats: JSON.parse(m[6]),
+        slot: m[1], simcSlot: m[1],
+        id: parseInt(m[2]), source: m[3], stats: JSON.parse(m[4]),
       });
     }
   }
@@ -191,7 +191,7 @@ function buildItemIndex() {
 
       if (!slotMap.has(item.id)) {
         slotMap.set(item.id, {
-          id: item.id, en: item.en, ko: item.ko,
+          id: item.id,
           source: item.source, stats: item.stats,
         });
       }
@@ -251,22 +251,22 @@ async function findAltsForSpec(specKey, index) {
       if (needsCheck) {
         const info = await fetchTooltipInfo(id);
         if (info.classRestriction && info.classRestriction !== className) {
-          console.log(`  skip ${item.en} (${id}): class-locked to ${info.classRestriction}`);
+          console.log(`  skip ${item.id} (${id}): class-locked to ${info.classRestriction}`);
           continue;
         }
         if (WEAPON_SLOTS.has(bis.simcSlot) && info.weaponType) {
           const allowed = CLASS_WEAPONS[simcClass];
           if (allowed && !allowed.has(info.weaponType)) {
-            console.log(`  skip ${item.en} (${id}): weapon type ${info.weaponType} not usable by ${simcClass}`);
+            console.log(`  skip ${item.id} (${id}): weapon type ${info.weaponType} not usable by ${simcClass}`);
             continue;
           }
           // Filter by weapon style: dual wield specs need 1h, 2h specs need 2h
           if (isDual && TWO_HAND_TYPES.has(info.weaponType)) {
-            console.log(`  skip ${item.en} (${id}): 2h weapon not usable in dual wield build`);
+            console.log(`  skip ${item.id} (${id}): 2h weapon not usable in dual wield build`);
             continue;
           }
           if (!isDual && ONE_HAND_TYPES.has(info.weaponType)) {
-            console.log(`  skip ${item.en} (${id}): 1h weapon not usable in 2h build`);
+            console.log(`  skip ${item.id} (${id}): 1h weapon not usable in 2h build`);
             continue;
           }
         }
@@ -276,8 +276,6 @@ async function findAltsForSpec(specKey, index) {
       alts.push({
         forSlot,
         id: item.id,
-        en: item.en,
-        ko: item.ko,
         source: item.source,
         stats: item.stats,
       });
@@ -297,14 +295,14 @@ function updateSpecFile(specKey, alts) {
   const existingAltsMatch = content.match(/export var ALTS = \[([^]*?)\];/);
   if (existingAltsMatch) {
     const altIds = new Set(alts.map(a => a.id));
-    const existingRe = /\{\s*forSlot:\s*"([^"]+)",\s*id:\s*(\d+),\s*en:\s*"([^"]+)",\s*ko:\s*"([^"]+)",\s*source:\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])\s*\}/g;
+    const existingRe = /\{\s*forSlot:\s*"([^"]+)",\s*id:\s*(\d+),\s*source:\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])\s*\}/g;
     let m;
     while ((m = existingRe.exec(existingAltsMatch[1]))) {
       const id = parseInt(m[2]);
       if (!altIds.has(id)) {
         alts.push({
-          forSlot: m[1], id, en: m[3], ko: m[4],
-          source: m[5], stats: JSON.parse(m[6]),
+          forSlot: m[1], id,
+          source: m[3], stats: JSON.parse(m[4]),
         });
         altIds.add(id);
       }
@@ -314,7 +312,7 @@ function updateSpecFile(specKey, alts) {
 
   let altsStr = 'export var ALTS = [\n';
   for (const alt of alts) {
-    altsStr += `  { forSlot: ${JSON.stringify(alt.forSlot)}, id: ${alt.id}, en: ${JSON.stringify(alt.en)}, ko: ${JSON.stringify(alt.ko)}, source: ${JSON.stringify(alt.source)}, stats: ${JSON.stringify(alt.stats)} },\n`;
+    altsStr += `  { forSlot: ${JSON.stringify(alt.forSlot)}, id: ${alt.id}, source: ${JSON.stringify(alt.source)}, stats: ${JSON.stringify(alt.stats)} },\n`;
   }
   altsStr += '];';
 

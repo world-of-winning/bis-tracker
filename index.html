@@ -52,9 +52,14 @@
     </script>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Sans+KR:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Sans:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;600;700&display=swap" rel="stylesheet" />
     <!-- Wowhead tooltips -->
-    <script>var whTooltips = { colorLinks: false, iconizeLinks: false, renameLinks: false };</script>
+    <script>
+      var whLocaleMap = { en:"enus", ko:"kokr", fr:"frfr", de:"dede", zhCN:"zhcn", es:"eses", ru:"ruru", pt:"ptbr", it:"itit", zhTW:"zhtw" };
+      var whLoc = whLocaleMap[localStorage.getItem("bis-locale")] || "";
+      var whTooltips = { colorLinks: false, iconizeLinks: false, renameLinks: false };
+      if (whLoc) whTooltips.ptrRegion = whLoc;
+    </script>
     <!-- SRI intentionally omitted: power.js is updated frequently without versioning,
          so pinning a hash would break tooltips on every upstream change.
          CSP script-src restricts to this specific origin as mitigation. -->

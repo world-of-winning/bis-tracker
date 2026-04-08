@@ -4,7 +4,7 @@ import { CHANGELOG } from './data/changelog.js';
 import { getSampleChars, SAMPLE_CHARS } from './data/sample.js';
 import { load, save as persist, remove } from './storage.js';
 import { TIERS, parseSimC } from './data/shared.js';
-import { useLocale } from './i18n/index.jsx';
+import { useLocale, LOCALE_META, LOCALE_KEYS } from './i18n/index.jsx';
 import BisTracker from './components/BisTracker.jsx';
 import TutorialOverlay from './components/TutorialOverlay.jsx';
 import { TUTORIAL_STEPS, CATALOG_TUTORIAL_STEPS } from './data/tutorial.js';
@@ -181,7 +181,7 @@ function VersionBadge({ accent, bg, border, size }) {
             return (
               <div key={i} style={{ display: "flex", gap: 10, padding: "4px 0", borderBottom: i < CHANGELOG.length - 1 ? "1px solid #1a1a2a" : "none" }}>
                 <span style={{ fontSize: 10, color: "#445555", fontFamily: "monospace", whiteSpace: "nowrap", minWidth: 72 }}>{entry.date}</span>
-                <span style={{ fontSize: 11, color: "#99887a" }}>{locale === "ko" ? entry.text.ko : entry.text.en}</span>
+                <span style={{ fontSize: 11, color: "#99887a" }}>{entry.text[locale] || entry.text.en}</span>
               </div>
             );
           })}
@@ -683,7 +683,7 @@ export default function App() {
                 return (
                   <div key={i} style={{ display: "flex", gap: 12, padding: "8px 0", borderBottom: i < arr.length - 1 ? "1px solid #1a1a2a" : "none" }}>
                     <span style={{ fontSize: 11, color: "#445555", fontFamily: "monospace", whiteSpace: "nowrap", minWidth: 80 }}>{entry.date}</span>
-                    <span style={{ fontSize: 12, color: "#99887a" }}>{locale === "ko" ? entry.text.ko : entry.text.en}</span>
+                    <span style={{ fontSize: 12, color: "#99887a" }}>{entry.text[locale] || entry.text.en}</span>
                   </div>
                 );
               })}
@@ -694,7 +694,7 @@ export default function App() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" /></svg>
           <a href="https://discord.gg/GU2Rs6y3Fh" target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: "#5865F2", textDecoration: "none", fontWeight: 600 }}>{t("ui.feedbackAndInquiry")}</a>
           <span style={{ color: "#223333" }}>·</span>
-          <button onClick={function() { setLocale(locale === "ko" ? "en" : "ko"); }} style={{ fontSize: 16, lineHeight: 1, background: "none", border: "1px solid #2a2a3a", borderRadius: 4, padding: "2px 6px", cursor: "pointer", color: "#8899aa" }}>{locale === "ko" ? "🇰🇷" : "🇺🇸"}</button>
+          <select value={locale} onChange={function(e) { setLocale(e.target.value); }} style={{ fontSize: 12, lineHeight: 1.2, background: "#0a0a14", border: "1px solid #2a2a3a", borderRadius: 4, padding: "3px 6px", cursor: "pointer", color: "#8899aa", fontFamily: "'Noto Sans',sans-serif" }}>{LOCALE_KEYS.map(function(k) { return <option key={k} value={k}>{LOCALE_META[k].name}</option>; })}</select>
         </div>
         <div style={{ marginTop: 12, fontSize: 11, color: "#334444", display: "flex", justifyContent: "center", gap: 4 }}>
           <button onClick={function() { setLegalPage("terms"); }} style={{ background: "none", border: "none", color: "#445555", fontSize: 11, cursor: "pointer", textDecoration: "underline", fontFamily: "'Noto Sans KR',sans-serif" }}>{t("ui.terms")}</button>
@@ -721,7 +721,7 @@ export default function App() {
               {sampleMode && (
                 <button onClick={handleExitSample} style={{ padding: "5px 12px", borderRadius: 6, background: "#1a101822", border: "1px solid #3a203044", color: "#ff8d8d", fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>{t("ui.exitSample")}</button>
               )}
-              <button onClick={function() { setLocale(locale === "ko" ? "en" : "ko"); }} style={{ padding: "3px 6px", borderRadius: 6, background: "#1a1a2822", border: "1px solid #2a2a3a44", fontSize: 16, lineHeight: 1, cursor: "pointer", color: "#8899aa" }}>{locale === "ko" ? "🇰🇷" : "🇺🇸"}</button>
+              <select value={locale} onChange={function(e) { setLocale(e.target.value); }} style={{ fontSize: 11, lineHeight: 1.2, background: "#0a0a14", border: "1px solid #2a2a3a44", borderRadius: 6, padding: "4px 6px", cursor: "pointer", color: "#8899aa", fontFamily: "'Noto Sans',sans-serif" }}>{LOCALE_KEYS.map(function(k) { return <option key={k} value={k}>{LOCALE_META[k].name}</option>; })}</select>
               <a href="https://discord.gg/GU2Rs6y3Fh" target="_blank" rel="noopener noreferrer" aria-label="Discord" style={{ display: "inline-flex", alignItems: "center", padding: "5px 8px", borderRadius: 6, background: "#5865F222", border: "1px solid #5865F244", textDecoration: "none", transition: "all 0.2s" }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" /></svg>
               </a>

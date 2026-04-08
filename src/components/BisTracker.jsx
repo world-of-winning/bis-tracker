@@ -66,7 +66,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       if (forSlot.indexOf("finger") === 0) forSlot = "ring";
       else if (forSlot.indexOf("trinket") === 0) forSlot = "trinket";
       else if (forSlot === "main_hand") forSlot = "weapon";
-      return { forSlot: forSlot, id: m.id, en: m.en, ko: m.ko, source: m.source, stats: m.stats, farmable: true };
+      return { forSlot: forSlot, id: m.id, source: m.source, stats: m.stats, farmable: true };
     });
     return farmableAlts.concat(ALTS);
   }, [BIS, MYTHIC, ALTS]);

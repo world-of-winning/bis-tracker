@@ -927,11 +927,10 @@ async function searchItemId(name) {
 }
 
 async function fetchItemTooltip(id) {
-    // Korean name
-    const koData = await fetchTooltip(id, 1);
-    const ko = koData.name || "";
+    // Fetch both locales to populate cache (used by generate-item-names)
+    await fetchTooltip(id, 1); // Korean — cached for item name generation
 
-    // Stats
+    // Stats from English tooltip
     const enData = await fetchTooltip(id, 0);
     const tooltip = enData.tooltip || "";
     const stats = [];
@@ -940,7 +939,7 @@ async function fetchItemTooltip(id) {
     if (tooltip.includes("<!--rtg49-->")) stats.push("mastery");
     if (tooltip.includes("<!--rtg40-->")) stats.push("vers");
 
-    return { ko, stats };
+    return { stats };
 }
 
 // Detect weapon type from Maxroll gear table slot names.
@@ -992,11 +991,9 @@ async function buildGearData(gearRows, weaponType) {
                     console.log(`    Looking up: ${name}...`);
                 if (!id) continue;
                 if (lastSearchWasNetwork) await delay(200);
-                const { ko, stats } = await fetchItemTooltip(id);
+                const { stats } = await fetchItemTooltip(id);
                 items.push({
                     slot,
-                    en: name,
-                    ko: ko || name,
                     id,
                     source: row.source,
                     stats,
@@ -1022,7 +1019,7 @@ async function buildGearData(gearRows, weaponType) {
         if (!id) continue;
 
         if (lastSearchWasNetwork) await delay(200);
-        const { ko, stats } = await fetchItemTooltip(id);
+        const { stats } = await fetchItemTooltip(id);
 
         const slot = resolveSlot(slotName, weaponType);
         if (!slot) {
@@ -1032,8 +1029,6 @@ async function buildGearData(gearRows, weaponType) {
 
         items.push({
             slot,
-            en: itemName,
-            ko: ko || itemName,
             id,
             source: row.source,
             stats,
@@ -1071,12 +1066,10 @@ async function buildGearData(gearRows, weaponType) {
             console.log(`    Looking up (alt weapon): ${itemName}...`);
         if (!id) continue;
         if (lastSearchWasNetwork) await delay(200);
-        const { ko, stats } = await fetchItemTooltip(id);
+        const { stats } = await fetchItemTooltip(id);
         skippedItems.push({
             forSlot: "weapon",
             id,
-            en: itemName,
-            ko: ko || itemName,
             source: row.source,
             stats,
         });
@@ -1103,7 +1096,7 @@ async function buildBisData(farmableRows, weaponType) {
 
 // ─── Generate JS file content ────────────────────────────────
 function generateItemLine(item) {
-    return `  { slot: ${JSON.stringify(item.slot)}, en: ${JSON.stringify(item.en)}, ko: ${JSON.stringify(item.ko)}, id: ${item.id}, source: ${JSON.stringify(item.source)}, stats: ${JSON.stringify(item.stats)} },\n`;
+    return `  { slot: ${JSON.stringify(item.slot)}, id: ${item.id}, source: ${JSON.stringify(item.source)}, stats: ${JSON.stringify(item.stats)} },\n`;
 }
 
 function sortDungeons(dungeons) {
@@ -1223,7 +1216,7 @@ function resolveDuplicateIds(items, existingItems, label) {
                 (prev.slot === "off_hand" && item.slot === "main_hand");
             if (!isWeaponPair) {
                 console.warn(
-                    `    ⚠ ${label} DUPLICATE ID ${item.id}: "${prev.en}" (${prev.slot}) and "${item.en}" (${item.slot})`,
+                    `    ⚠ ${label} DUPLICATE ID ${item.id}: (${prev.slot}) and (${item.slot})`,
                 );
                 dupSlots.add(item.slot);
             }
@@ -1240,7 +1233,7 @@ function resolveDuplicateIds(items, existingItems, label) {
         const existing = existingBySlot.get(item.slot);
         if (existing && existing.id !== item.id) {
             console.log(
-                `    → Using existing ${item.slot}: "${existing.en}" (${existing.id}) instead of duplicate`,
+                `    → Using existing ${item.slot}: ${existing.id} instead of duplicate`,
             );
             return existing;
         }
@@ -1426,7 +1419,7 @@ async function processSpec(spec, { force = false } = {}) {
                     if (match) inner = match[1].trimEnd();
                 }
                 for (const alt of newAlts) {
-                    inner += `\n  { forSlot: ${JSON.stringify(alt.forSlot)}, id: ${alt.id}, en: ${JSON.stringify(alt.en)}, ko: ${JSON.stringify(alt.ko)}, source: ${JSON.stringify(alt.source)}, stats: ${JSON.stringify(alt.stats)} },`;
+                    inner += `\n  { forSlot: ${JSON.stringify(alt.forSlot)}, id: ${alt.id}, source: ${JSON.stringify(alt.source)}, stats: ${JSON.stringify(alt.stats)} },`;
                     allKnownStats[alt.id] = alt.stats;
                 }
                 altsStr = `export var ALTS = [${inner}\n];`;
@@ -1482,15 +1475,11 @@ function parseItemsFromContent(content, varName) {
     while ((match = re.exec(m[1]))) {
         const s = match[0];
         const slotM = s.match(/slot:\s*"([^"]+)"/);
-        const enM = s.match(/en:\s*"([^"]+)"/);
-        const koM = s.match(/ko:\s*"([^"]+)"/);
         const idM = s.match(/id:\s*(\d+)/);
         const sourceM = s.match(/source:\s*"([^"]+)"/);
         const statsM = s.match(/stats:\s*(\[[^\]]*\])/);
         const item = {};
         if (slotM) item.slot = slotM[1];
-        if (enM) item.en = enM[1];
-        if (koM) item.ko = koM[1];
         if (idM) item.id = parseInt(idM[1]);
         if (sourceM) item.source = sourceM[1];
         item.stats = statsM ? JSON.parse(statsM[1]) : [];

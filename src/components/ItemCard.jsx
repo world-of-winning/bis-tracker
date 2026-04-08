@@ -1,4 +1,4 @@
-import { useLocale } from '../i18n/index.jsx';
+import { useLocale, LOCALE_META } from '../i18n/index.jsx';
 import { DUNGEONS, resolveSlots, ARMOR_SLOTS } from '../data/shared.js';
 import { getSource } from '../logic/priority.js';
 import EqTooltipObserver from './EqTooltipObserver.jsx';
@@ -58,7 +58,7 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
   var acs = { 0: c.b, 1: "#ff6b6b", 2: "#c9a227", 3: "#c9a227", 4: "#1a3a1a" };
   var icons = { 1: "\u25B2", 2: "\u25C6", 3: "\u2191", 4: "\u2713" };
   var pLabel = p ? (p.labelKey ? t("ui." + p.labelKey) : p.label) : "";
-  var whLocale = locale === "ko" ? "/ko" : "";
+  var whLocale = (LOCALE_META[locale] || LOCALE_META.en).whPath;
   var whSpec = whSpecId ? "&spec=" + whSpecId : "";
   return (
     <div className={cardClass} style={{ animationDelay: (idx * .04) + "s", background: bgs[visualTier] || bgs[0], borderRadius: 10, padding: "14px 16px", position: "relative", overflow: "hidden" }}>

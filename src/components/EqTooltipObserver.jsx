@@ -5,7 +5,8 @@ import { DIFF_ORDER, parseTooltipStats, computeStatDiff, renderDiffHTML } from '
 var eqTooltipCache = {};
 
 export default function EqTooltipObserver({ locale, whSpecId, t }) {
-  var loc = locale === "ko" ? 1 : 0;
+  var LOCALE_WH = { en: 0, ko: 1, fr: 2, de: 3, zhCN: 4, es: 6, ru: 7, pt: 8, it: 9, zhTW: 10 };
+  var loc = LOCALE_WH[locale] || 0;
   var elRef = useRef(null);
   useEffect(function() {
     var el = document.getElementById("eq-tooltip-singleton");
@@ -123,6 +124,6 @@ export default function EqTooltipObserver({ locale, whSpecId, t }) {
       document.removeEventListener("mouseout", onOut, true);
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [loc, whSpecId]);
+  }, [loc, whSpecId, t]);
   return null;
 }

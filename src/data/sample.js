@@ -3,6 +3,7 @@
 
 import { SPECS } from './specs.js';
 import { TIERS } from './shared.js';
+import enItems from '../i18n/items/en.json';
 
 // Curated sample specs: diverse classes, some share names to demo multi-spec
 // tierLevel: 2 = hero→myth progression (default), 1 = champion→hero progression
@@ -109,12 +110,12 @@ function generateSampleSimC(spec, charName, tierLevel) {
     var tierBonus;
     if (assign === "bis-done") {
       itemId = b.id;
-      itemName = b.ko || b.en;
+      itemName = enItems[b.id] || String(b.id);
       ilvl = doneTier.max;
       tierBonus = doneTier.tooltipBonus;
     } else if (assign === "bis-upgrade") {
       itemId = b.id;
-      itemName = b.ko || b.en;
+      itemName = enItems[b.id] || String(b.id);
       ilvl = upgradeTier.max;
       tierBonus = upgradeTier.tooltipBonus;
     } else if (assign === "alt") {
@@ -122,10 +123,10 @@ function generateSampleSimC(spec, charName, tierLevel) {
       // Skip if already used (unique-equip), fall back to BiS
       if (usedIds.has(alt.id)) {
         itemId = b.id;
-        itemName = b.ko || b.en;
+        itemName = enItems[b.id] || String(b.id);
       } else {
         itemId = alt.id;
-        itemName = alt.ko || alt.en;
+        itemName = enItems[alt.id] || String(alt.id);
       }
       ilvl = upgradeTier.max;
       tierBonus = upgradeTier.tooltipBonus;
@@ -139,7 +140,7 @@ function generateSampleSimC(spec, charName, tierLevel) {
           var candidate = pool[(wrongCounters[b.slot] + attempt) % pool.length];
           if (!usedIds.has(candidate.id)) {
             itemId = candidate.id;
-            itemName = candidate.ko || candidate.en;
+            itemName = enItems[candidate.id] || String(candidate.id);
             wrongCounters[b.slot] += attempt + 1;
             break;
           }
@@ -148,7 +149,7 @@ function generateSampleSimC(spec, charName, tierLevel) {
       if (!itemId) {
         // Fallback: use own BiS item (will show as tier 3 instead of tier 1)
         itemId = b.id;
-        itemName = b.ko || b.en;
+        itemName = enItems[b.id] || String(b.id);
       }
       ilvl = upgradeTier.max;
       tierBonus = upgradeTier.tooltipBonus;

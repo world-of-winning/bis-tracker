@@ -1,311 +1,353 @@
 {
-  "slots": {
-    "head": "Head",
-    "neck": "Neck",
-    "shoulder": "Shoulder",
-    "back": "Back",
-    "chest": "Chest",
-    "wrist": "Wrist",
-    "hands": "Hands",
-    "waist": "Waist",
-    "legs": "Legs",
-    "feet": "Feet",
-    "finger1": "Ring 1",
-    "finger2": "Ring 2",
-    "trinket1": "Trinket 1",
-    "trinket2": "Trinket 2",
-    "main_hand": "Main Hand",
-    "off_hand": "Off Hand",
-    "main_hand_2h": "Two-Hand",
-    "off_hand_shield": "Shield",
-    "weapon": "Weapon",
-    "ring": "Ring",
-    "trinket": "Trinket"
-  },
-  "stats": {
-    "crit": "Crit",
-    "haste": "Haste",
-    "mastery": "Mastery",
-    "vers": "Vers"
-  },
-  "armorTypes": {
-    "Plate": "Plate",
-    "Mail": "Mail",
-    "Leather": "Leather",
-    "Cloth": "Cloth"
-  },
-  "tiers": {
-    "veteran": "Veteran",
-    "champion": "Champion",
-    "hero": "Hero",
-    "myth": "Myth"
-  },
-  "dungeons": {
-    "Pit of Saron": "PoS",
-    "Nexus-Point Xenas": "NPX",
-    "Windrunner Spire": "WS",
-    "Magisters' Terrace": "MT",
-    "Skyreach": "SR",
-    "Seat of the Triumvirate": "SotT",
-    "Algeth'ar Academy": "AA",
-    "Maisara Caverns": "MC",
-    "Halls of Atonement": "HoA",
-    "Priory of the Sacred Flame": "PSF"
-  },
-  "sources": {
-    "Tier": "Tier",
-    "Crafted": "Crafted",
-    "Midnight Falls": "Midnight Falls",
-    "Chimaerus": "Chimaerus",
-    "Fallen-King Salhadaar": "Salhadaar",
-    "Crown of the Cosmos": "Crown of Cosmos",
-    "Lightblinded Vanguard": "Vanguard",
-    "Belo'ren": "Belo'ren",
-    "Vorasius": "Vorasius",
-    "Vaelgor & Ezzorak": "Vaelgor & Ezzorak",
-    "Imperator Averzian": "Averzian",
-    "The Great Vault": "Great Vault"
-  },
-  "dungeonsFull": {
-    "Pit of Saron": "Pit of Saron",
-    "Nexus-Point Xenas": "Nexus-Point Xenas",
-    "Windrunner Spire": "Windrunner Spire",
-    "Magisters' Terrace": "Magisters' Terrace",
-    "Skyreach": "Skyreach",
-    "Seat of the Triumvirate": "Seat of the Triumvirate",
-    "Algeth'ar Academy": "Algeth'ar Academy",
-    "Maisara Caverns": "Maisara Caverns",
-    "Halls of Atonement": "Halls of Atonement",
-    "Priory of the Sacred Flame": "Priory of the Sacred Flame"
-  },
-  "classes": {
-    "deathknight": "Death Knight",
-    "demonhunter": "Demon Hunter",
-    "druid": "Druid",
-    "evoker": "Evoker",
-    "hunter": "Hunter",
-    "mage": "Mage",
-    "monk": "Monk",
-    "paladin": "Paladin",
-    "priest": "Priest",
-    "rogue": "Rogue",
-    "shaman": "Shaman",
-    "warlock": "Warlock",
-    "warrior": "Warrior"
-  },
-  "specs": {
-    "blood": "Blood",
-    "frost": "Frost",
-    "unholy": "Unholy",
-    "havoc": "Havoc",
-    "vengeance": "Vengeance",
-    "balance": "Balance",
-    "feral": "Feral",
-    "guardian": "Guardian",
-    "restoration": "Restoration",
-    "devastation": "Devastation",
-    "preservation": "Preservation",
-    "augmentation": "Augmentation",
-    "beastmastery": "Beast Mastery",
-    "marksmanship": "Marksmanship",
-    "survival": "Survival",
-    "arcane": "Arcane",
-    "fire": "Fire",
-    "brewmaster": "Brewmaster",
-    "windwalker": "Windwalker",
-    "mistweaver": "Mistweaver",
-    "holy": "Holy",
-    "protection": "Protection",
-    "retribution": "Retribution",
-    "discipline": "Discipline",
-    "shadow": "Shadow",
-    "assassination": "Assassination",
-    "outlaw": "Outlaw",
-    "subtlety": "Subtlety",
-    "elemental": "Elemental",
-    "enhancement": "Enhancement",
-    "affliction": "Affliction",
-    "demonology": "Demonology",
-    "destruction": "Destruction",
-    "arms": "Arms",
-    "fury": "Fury",
-    "devourer": "Devourer"
-  },
-  "ui": {
-    "simcImport": "SimC Import",
-    "simcRefresh": "SimC Refresh",
-    "simcPasteHint": "— Paste /simc output to compare your gear",
-    "simcPlaceholder": "Paste full /simc output here",
-    "simcInstructions": "Type <cmd>/simc</cmd> in-game, then paste the output below.",
-    "noGearData": "No gear data found.",
-    "noClassSpec": "Class/spec info not found.",
-    "unsupportedSpec": "{cls} {spec} is not yet supported.",
-    "gearUpdated": "Gear data has been updated.",
-    "emptySlots": "⚠ Empty slots: {slots}",
-    "fetchingStats": "Fetching stats for {count} items...",
-    "reset": "Delete",
-    "loading": "Loading...",
-    "all": "All",
-    "done": "Done",
-    "bagDone": "In Bag ✓",
-    "bag": "In Bag",
-    "mythicBis": "M+ BiS",
-    "compare": "Compare",
-    "equipped": "Equipped",
-    "mythicBisDone": "M+ BiS ✓",
+    "slots": {
+        "head": "Head",
+        "neck": "Neck",
+        "shoulder": "Shoulder",
+        "back": "Back",
+        "chest": "Chest",
+        "wrist": "Wrist",
+        "hands": "Hands",
+        "waist": "Waist",
+        "legs": "Legs",
+        "feet": "Feet",
+        "finger1": "Ring 1",
+        "finger2": "Ring 2",
+        "trinket1": "Trinket 1",
+        "trinket2": "Trinket 2",
+        "main_hand": "Main Hand",
+        "off_hand": "Off Hand",
+        "main_hand_2h": "Two-Hand",
+        "off_hand_shield": "Shield",
+        "weapon": "Weapon",
+        "ring": "Ring",
+        "trinket": "Trinket"
+    },
+    "stats": {
+        "crit": "Crit",
+        "haste": "Haste",
+        "mastery": "Mastery",
+        "vers": "Vers"
+    },
+    "armorTypes": {
+        "Plate": "Plate",
+        "Mail": "Mail",
+        "Leather": "Leather",
+        "Cloth": "Cloth"
+    },
+    "tiers": {
+        "veteran": "Veteran",
+        "champion": "Champion",
+        "hero": "Hero",
+        "myth": "Myth"
+    },
+    "dungeons": {
+        "Pit of Saron": "PoS",
+        "Nexus-Point Xenas": "NPX",
+        "Windrunner Spire": "WS",
+        "Magisters' Terrace": "MT",
+        "Skyreach": "SR",
+        "Seat of the Triumvirate": "SotT",
+        "Algeth'ar Academy": "AA",
+        "Maisara Caverns": "MC",
+        "Halls of Atonement": "HoA",
+        "Priory of the Sacred Flame": "PSF"
+    },
+    "sources": {
+        "Tier": "Tier",
+        "Crafted": "Crafted",
+        "Midnight Falls": "Midnight Falls",
+        "Chimaerus": "Chimaerus",
+        "Fallen-King Salhadaar": "Salhadaar",
+        "Crown of the Cosmos": "Crown of Cosmos",
+        "Lightblinded Vanguard": "Vanguard",
+        "Belo'ren": "Belo'ren",
+        "Vorasius": "Vorasius",
+        "Vaelgor & Ezzorak": "Vaelgor & Ezzorak",
+        "Imperator Averzian": "Averzian",
+        "The Great Vault": "Great Vault"
+    },
+    "dungeonsFull": {
+        "Pit of Saron": "Pit of Saron",
+        "Nexus-Point Xenas": "Nexus-Point Xenas",
+        "Windrunner Spire": "Windrunner Spire",
+        "Magisters' Terrace": "Magisters' Terrace",
+        "Skyreach": "Skyreach",
+        "Seat of the Triumvirate": "Seat of the Triumvirate",
+        "Algeth'ar Academy": "Algeth'ar Academy",
+        "Maisara Caverns": "Maisara Caverns",
+        "Halls of Atonement": "Halls of Atonement",
+        "Priory of the Sacred Flame": "Priory of the Sacred Flame"
+    },
+    "classes": {
+        "deathknight": "Death Knight",
+        "demonhunter": "Demon Hunter",
+        "druid": "Druid",
+        "evoker": "Evoker",
+        "hunter": "Hunter",
+        "mage": "Mage",
+        "monk": "Monk",
+        "paladin": "Paladin",
+        "priest": "Priest",
+        "rogue": "Rogue",
+        "shaman": "Shaman",
+        "warlock": "Warlock",
+        "warrior": "Warrior"
+    },
+    "specs": {
+        "blood": "Blood",
+        "frost": "Frost",
+        "unholy": "Unholy",
+        "havoc": "Havoc",
+        "vengeance": "Vengeance",
+        "balance": "Balance",
+        "feral": "Feral",
+        "guardian": "Guardian",
+        "restoration": "Restoration",
+        "devastation": "Devastation",
+        "preservation": "Preservation",
+        "augmentation": "Augmentation",
+        "beastmastery": "Beast Mastery",
+        "marksmanship": "Marksmanship",
+        "survival": "Survival",
+        "arcane": "Arcane",
+        "fire": "Fire",
+        "brewmaster": "Brewmaster",
+        "windwalker": "Windwalker",
+        "mistweaver": "Mistweaver",
+        "holy": "Holy",
+        "protection": "Protection",
+        "retribution": "Retribution",
+        "discipline": "Discipline",
+        "shadow": "Shadow",
+        "assassination": "Assassination",
+        "outlaw": "Outlaw",
+        "subtlety": "Subtlety",
+        "elemental": "Elemental",
+        "enhancement": "Enhancement",
+        "affliction": "Affliction",
+        "demonology": "Demonology",
+        "destruction": "Destruction",
+        "arms": "Arms",
+        "fury": "Fury",
+        "devourer": "Devourer"
+    },
+    "ui": {
+        "simcImport": "SimC Import",
+        "simcRefresh": "SimC Refresh",
+        "simcPasteHint": "— Paste /simc output to compare your gear",
+        "simcPlaceholder": "Paste full /simc output here",
+        "simcInstructions": "Type <cmd>/simc</cmd> in-game, then paste the output below.",
+        "noGearData": "No gear data found.",
+        "noClassSpec": "Class/spec info not found.",
+        "unsupportedSpec": "{cls} {spec} is not yet supported.",
+        "gearUpdated": "Gear data has been updated.",
+        "emptySlots": "⚠ Empty slots: {slots}",
+        "fetchingStats": "Fetching stats for {count} items...",
+        "reset": "Delete",
+        "loading": "Loading...",
+        "all": "All",
+        "done": "Done",
+        "bagDone": "In Bag ✓",
+        "bag": "In Bag",
+        "mythicBis": "M+ BiS",
+        "compare": "Compare",
+        "equipped": "Equipped",
+        "mythicBisDone": "M+ BiS ✓",
 
-    "viewBis": "BiS",
-    "viewMythic": "M+",
-    "bisItems": "BiS Items",
-    "mythicItems": "M+ Items",
-    "raidSource": "Raid",
-    "craftSource": "Crafting",
-    "catalystSource": "Catalyst",
-    "altSameStats": "Alt — Same Secondary Stats",
-    "tierStatMismatch": "Stat Mismatch",
-    "tierAltEquipped": "Alt Equipped",
-    "tierBisUpgrade": "BiS Upgrade↑",
-    "tierDone": "Done",
-    "tierUpgradeNeeded": "Enhance needed",
-    "tierReacquireNeeded": "Next tier needed",
-    "wrongArmorType": "Wearing {actual} gear!",
-    "deficitInfo": "(−N) = Gap from target {max}",
-    "supportedSpecs": "Supported Specializations",
-    "changelog": "Changelog",
-    "avg": "Avg",
-    "count": "",
-    "priority": "by priority",
-    "midnight": "Midnight",
-    "seasonLabel": "Half the battle is knowing what to farm",
-    "seasonSub": "The other half is RNG.",
-    "guideLink": "Maxroll Guide",
-    "bisAttribution": "BiS data from",
-    "feedback": "Feedback",
-    "feedbackAndInquiry": "Feedback & Contact",
-    "trySample": "Try Demo",
-    "orTrySample": "Or try a sample first",
-    "exitSample": "Exit Demo",
-    "terms": "Terms of Service",
-    "privacy": "Privacy Policy",
-    "resetAll": "Delete All Data",
-    "resetAllConfirm": "All character data and settings will be deleted. Continue?",
-    "browseSpecs": "Browse Specs",
-    "browseSpecsHint": "View BiS item lists without SimC",
-    "catalogMode": "Catalog mode — Import SimC to compare gear and see farming priorities",
-    "crossSpecAvailable": "Gear data from another spec of the same class is available",
-    "crossSpecUse": "Use {spec} '{name}' data",
-    "crossSpecImported": "Comparing BiS using gear from another spec",
-    "crossSpecNoBag": "(no bag data)",
-    "crossSpecFrom": "Based on {spec} data",
-    "weaponMismatch": "{spec} {slot} needed",
-    "wrongPrimaryStat": "Not a {expected} item!",
-    "browsing": "Browse",
-    "selectClass": "Select a Class",
-    "selectSpec": "Select a Specialization"
-  },
-  "primaryStats": {
-    "str": "Strength",
-    "agi": "Agility",
-    "int": "Intellect"
-  },
-  "diffLabels": {
-    "header": "Stat changes if equipped:",
-    "amr": "Armor",
-    "stat3": "Agility",
-    "stat4": "Strength",
-    "stat5": "Intellect",
-    "stat71": "Agility/Strength/Intellect",
-    "stat72": "Agility/Strength",
-    "stat73": "Agility/Intellect",
-    "stat74": "Strength/Intellect",
-    "stat7": "Stamina",
-    "rtg32": "Critical Strike",
-    "rtg36": "Haste",
-    "rtg49": "Mastery",
-    "rtg40": "Versatility",
-    "rtg24": "Random Stat 1",
-    "rtg25": "Random Stat 2",
-    "rtg62": "Leech"
-  },
-  "legal": {
-    "lastUpdated": "Last updated: March 24, 2026",
-    "terms": {
-      "title": "Terms of Service",
-      "sections": [
-        { "heading": "1. Purpose", "body": "These terms govern the use of Midnight BiS Tracker (the 'Service')." },
-        { "heading": "2. Service Description", "body": "The Service provides a free tool for tracking Best in Slot items in World of Warcraft. The Service is not affiliated with Blizzard Entertainment. World of Warcraft and related trademarks belong to Blizzard Entertainment, Inc." },
-        { "heading": "3. Data Storage", "body": "All user data is stored in your browser's localStorage and is never transmitted to external servers. Clearing your browser data may result in loss of saved information." },
-        { "heading": "4. Disclaimer", "body": "The Service is provided 'as is' without warranty of accuracy or completeness. BiS data is based on external sources such as Maxroll.gg and may change with game patches. We are not liable for any damages resulting from use of the Service." },
-        { "heading": "5. Third-Party Services", "body": "The Service uses the Wowhead tooltip API and scripts. Use of these external services is subject to their respective terms of service and privacy policies." },
-        { "heading": "6. Intellectual Property", "body": "The Service's source code is available on GitHub. World of Warcraft content copyrights belong to Blizzard Entertainment, Inc." },
-        { "heading": "7. Changes to Terms", "body": "These terms may be updated without prior notice. Changes take effect upon posting to the Service." }
-      ]
+        "viewBis": "BiS",
+        "viewMythic": "M+",
+        "bisItems": "BiS Items",
+        "mythicItems": "M+ Items",
+        "raidSource": "Raid",
+        "craftSource": "Crafting",
+        "catalystSource": "Catalyst",
+        "altSameStats": "Alt — Same Secondary Stats",
+        "tierStatMismatch": "Stat Mismatch",
+        "tierAltEquipped": "Alt Equipped",
+        "tierBisUpgrade": "BiS Upgrade↑",
+        "tierDone": "Done",
+        "tierUpgradeNeeded": "Enhance needed",
+        "tierReacquireNeeded": "Next tier needed",
+        "wrongArmorType": "Wearing {actual} gear!",
+        "deficitInfo": "(−N) = Gap from target {max}",
+        "supportedSpecs": "Supported Specializations",
+        "changelog": "Changelog",
+        "avg": "Avg",
+        "count": "",
+        "priority": "by priority",
+        "midnight": "Midnight",
+        "seasonLabel": "Half the battle is knowing what to farm",
+        "seasonSub": "The other half is RNG.",
+        "guideLink": "Maxroll Guide",
+        "bisAttribution": "BiS data from",
+        "feedback": "Feedback",
+        "feedbackAndInquiry": "Feedback & Contact",
+        "trySample": "Try Demo",
+        "orTrySample": "Or try a sample first",
+        "exitSample": "Exit Demo",
+        "terms": "Terms of Service",
+        "privacy": "Privacy Policy",
+        "resetAll": "Delete All Data",
+        "resetAllConfirm": "All character data and settings will be deleted. Continue?",
+        "browseSpecs": "Browse Specs",
+        "browseSpecsHint": "View BiS item lists without SimC",
+        "catalogMode": "Catalog mode — Import SimC to compare gear and see farming priorities",
+        "crossSpecAvailable": "Gear data from another spec of the same class is available",
+        "crossSpecUse": "Use {spec} '{name}' data",
+        "crossSpecImported": "Comparing BiS using gear from another spec",
+        "crossSpecNoBag": "(no bag data)",
+        "crossSpecFrom": "Based on {spec} data",
+        "weaponMismatch": "{spec} {slot} needed",
+        "wrongPrimaryStat": "Not a {expected} item!",
+        "browsing": "Browse",
+        "selectClass": "Select a Class",
+        "selectSpec": "Select a Specialization"
     },
-    "privacy": {
-      "title": "Privacy Policy",
-      "sections": [
-        { "heading": "1. Information We Collect", "body": "The Service does not require registration and does not collect or store personal information on any server. Character and gear data entered by users is stored only in the browser's localStorage." },
-        { "heading": "2. Cookies & Local Storage", "body": "The Service uses browser localStorage to provide its functionality. This data exists only on your device and is never transmitted externally." },
-        { "heading": "3. Third-Party Services", "body": "The Service uses the following external services, each subject to their own privacy policies:\n• Wowhead (wow.zamimg.com) — Item tooltips and stat lookups\n• Google Fonts — Web font delivery\n• Cloudflare Pages — Website hosting\n\nThese external services may collect basic connection information such as IP addresses." },
-        { "heading": "4. Data Deletion", "body": "You can delete all stored data at any time through your browser's site data settings. You can also delete individual character data using the 'Reset' feature within the Service." },
-        { "heading": "5. Children's Privacy", "body": "The Service does not intentionally collect personal information from children under the age of 14." },
-        { "heading": "6. Changes to This Policy", "body": "This privacy policy may be updated without prior notice. Changes take effect upon posting to the Service." },
-        { "heading": "Contact", "body": "For privacy-related inquiries, please reach out through our Discord channel." }
-      ]
+    "primaryStats": {
+        "str": "Strength",
+        "agi": "Agility",
+        "int": "Intellect"
+    },
+    "diffLabels": {
+        "header": "Stat changes if equipped:",
+        "amr": "Armor",
+        "stat3": "Agility",
+        "stat4": "Strength",
+        "stat5": "Intellect",
+        "stat71": "Agility/Strength/Intellect",
+        "stat72": "Agility/Strength",
+        "stat73": "Agility/Intellect",
+        "stat74": "Strength/Intellect",
+        "stat7": "Stamina",
+        "rtg32": "Critical Strike",
+        "rtg36": "Haste",
+        "rtg49": "Mastery",
+        "rtg40": "Versatility",
+        "rtg24": "Random Stat 1",
+        "rtg25": "Random Stat 2",
+        "rtg62": "Leech"
+    },
+    "legal": {
+        "lastUpdated": "Last updated: March 24, 2026",
+        "terms": {
+            "title": "Terms of Service",
+            "sections": [
+                {
+                    "heading": "1. Purpose",
+                    "body": "These terms govern the use of Midnight BiS Tracker (the 'Service')."
+                },
+                {
+                    "heading": "2. Service Description",
+                    "body": "The Service provides a free tool for tracking Best in Slot items in World of Warcraft. The Service is not affiliated with Blizzard Entertainment. World of Warcraft and related trademarks belong to Blizzard Entertainment, Inc."
+                },
+                {
+                    "heading": "3. Data Storage",
+                    "body": "All user data is stored in your browser's localStorage and is never transmitted to external servers. Clearing your browser data may result in loss of saved information."
+                },
+                {
+                    "heading": "4. Disclaimer",
+                    "body": "The Service is provided 'as is' without warranty of accuracy or completeness. BiS data is based on external sources such as Maxroll.gg and may change with game patches. We are not liable for any damages resulting from use of the Service."
+                },
+                {
+                    "heading": "5. Third-Party Services",
+                    "body": "The Service uses the Wowhead tooltip API and scripts. Use of these external services is subject to their respective terms of service and privacy policies."
+                },
+                {
+                    "heading": "6. Intellectual Property",
+                    "body": "The Service's source code is available on GitHub. World of Warcraft content copyrights belong to Blizzard Entertainment, Inc."
+                },
+                {
+                    "heading": "7. Changes to Terms",
+                    "body": "These terms may be updated without prior notice. Changes take effect upon posting to the Service."
+                }
+            ]
+        },
+        "privacy": {
+            "title": "Privacy Policy",
+            "sections": [
+                {
+                    "heading": "1. Information We Collect",
+                    "body": "The Service does not require registration and does not collect or store personal information on any server. Character and gear data entered by users is stored only in the browser's localStorage."
+                },
+                {
+                    "heading": "2. Cookies & Local Storage",
+                    "body": "The Service uses browser localStorage to provide its functionality. This data exists only on your device and is never transmitted externally."
+                },
+                {
+                    "heading": "3. Third-Party Services",
+                    "body": "The Service uses the following external services, each subject to their own privacy policies:\n• Wowhead (wow.zamimg.com) — Item tooltips and stat lookups\n• Google Fonts — Web font delivery\n• Cloudflare Pages — Website hosting\n\nThese external services may collect basic connection information such as IP addresses."
+                },
+                {
+                    "heading": "4. Data Deletion",
+                    "body": "You can delete all stored data at any time through your browser's site data settings. You can also delete individual character data using the 'Reset' feature within the Service."
+                },
+                {
+                    "heading": "5. Children's Privacy",
+                    "body": "The Service does not intentionally collect personal information from children under the age of 14."
+                },
+                {
+                    "heading": "6. Changes to This Policy",
+                    "body": "This privacy policy may be updated without prior notice. Changes take effect upon posting to the Service."
+                },
+                {
+                    "heading": "Contact",
+                    "body": "For privacy-related inquiries, please reach out through our Discord channel."
+                }
+            ]
+        }
+    },
+    "tutorial": {
+        "skip": "Skip",
+        "prev": "Prev",
+        "next": "Next",
+        "done": "Done",
+        "charBar": {
+            "title": "Character Bar",
+            "desc": "Switch between registered characters here.\nEach spec is tracked separately, even for the same character.\nClick an icon to switch."
+        },
+        "simc": {
+            "title": "Gear Import",
+            "desc": "Paste the text from the /simc command in-game to auto-detect your equipped gear.\nSample data is already loaded for this demo."
+        },
+        "tier": {
+            "title": "Target Item Level",
+            "desc": "Set your farming goal item level tier.\nPriorities update based on your selection, and slots that already meet the target are marked done."
+        },
+        "progress": {
+            "title": "Completion Rate",
+            "desc": "Shows how many of your 16 slots meet the target.\nSolid bar = BiS done, green bar = M+ BiS equipped, faint bar = Alt equipped.\nAcquiring BiS grows the solid portion."
+        },
+        "dungeon": {
+            "title": "Source Filter",
+            "desc": "Click a dungeon/raid/crafted source to show only its items.\nBright number = BiS remaining, dim number = Alt remaining.\nHigher priority sources are sorted first."
+        },
+        "tier1": {
+            "title": "▲ Stat Mismatch (Top Priority)",
+            "desc": "Your equipped item has completely different secondary stats from BiS.\nBiggest performance loss — replace this first."
+        },
+        "tier2": {
+            "title": "◆ Alt Equipped",
+            "desc": "You have an alt with matching stats equipped.\nSwap to BiS when available."
+        },
+        "tier3": {
+            "title": "↑ Enhance / Next Tier Needed",
+            "desc": "You have the BiS item but below target item level.\n'Enhance needed' = upgradeable within current tier. 'Next tier needed' = re-acquire from higher content."
+        },
+        "tier4": {
+            "title": "✓ Farming Done",
+            "desc": "BiS equipped at or above target item level.\nNo more farming needed for this slot!"
+        },
+        "catDungeon": {
+            "title": "Source Filters",
+            "desc": "Click a dungeon/raid/crafted button to show only items from that source.\nNumbers show BiS count + Alt count."
+        },
+        "catCard": {
+            "title": "Item Card",
+            "desc": "Shows slot, source, and secondary stats.\nClick the item name to view details on Wowhead.\nAlt items share the same stat combo as BiS."
+        },
+        "catSimc": {
+            "title": "Want to compare gear?",
+            "desc": "Type /simc in-game, paste the output here,\nand your equipped gear will be compared to BiS with auto-sorted farming priorities."
+        }
     }
-  },
-  "tutorial": {
-    "skip": "Skip",
-    "prev": "Prev",
-    "next": "Next",
-    "done": "Done",
-    "charBar": {
-      "title": "Character Bar",
-      "desc": "Switch between registered characters here.\nEach spec is tracked separately, even for the same character.\nClick an icon to switch."
-    },
-    "simc": {
-      "title": "Gear Import",
-      "desc": "Paste the text from the /simc command in-game to auto-detect your equipped gear.\nSample data is already loaded for this demo."
-    },
-    "tier": {
-      "title": "Target Item Level",
-      "desc": "Set your farming goal item level tier.\nPriorities update based on your selection, and slots that already meet the target are marked done."
-    },
-    "progress": {
-      "title": "Completion Rate",
-      "desc": "Shows how many of your 16 slots meet the target.\nSolid bar = BiS done, green bar = M+ BiS equipped, faint bar = Alt equipped.\nAcquiring BiS grows the solid portion."
-    },
-    "dungeon": {
-      "title": "Source Filter",
-      "desc": "Click a dungeon/raid/crafted source to show only its items.\nBright number = BiS remaining, dim number = Alt remaining.\nHigher priority sources are sorted first."
-    },
-    "tier1": {
-      "title": "▲ Stat Mismatch (Top Priority)",
-      "desc": "Your equipped item has completely different secondary stats from BiS.\nBiggest performance loss — replace this first."
-    },
-    "tier2": {
-      "title": "◆ Alt Equipped",
-      "desc": "You have an alt with matching stats equipped.\nSwap to BiS when available."
-    },
-    "tier3": {
-      "title": "↑ Enhance / Next Tier Needed",
-      "desc": "You have the BiS item but below target item level.\n'Enhance needed' = upgradeable within current tier. 'Next tier needed' = re-acquire from higher content."
-    },
-    "tier4": {
-      "title": "✓ Farming Done",
-      "desc": "BiS equipped at or above target item level.\nNo more farming needed for this slot!"
-    },
-    "catDungeon": {
-      "title": "Source Filters",
-      "desc": "Click a dungeon/raid/crafted button to show only items from that source.\nNumbers show BiS count + Alt count."
-    },
-    "catCard": {
-      "title": "Item Card",
-      "desc": "Shows slot, source, and secondary stats.\nClick the item name to view details on Wowhead.\nAlt items share the same stat combo as BiS."
-    },
-    "catSimc": {
-      "title": "Want to compare gear?",
-      "desc": "Type /simc in-game, paste the output here,\nand your equipped gear will be compared to BiS with auto-sorted farming priorities."
-    }
-  }
 }

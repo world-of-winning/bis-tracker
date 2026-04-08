@@ -1,0 +1,353 @@
+{
+    "slots": {
+        "head": "Tête",
+        "neck": "Cou",
+        "shoulder": "Épaules",
+        "back": "Dos",
+        "chest": "Torse",
+        "wrist": "Poignets",
+        "hands": "Mains",
+        "waist": "Taille",
+        "legs": "Jambes",
+        "feet": "Pieds",
+        "finger1": "Anneau 1",
+        "finger2": "Anneau 2",
+        "trinket1": "Bijou 1",
+        "trinket2": "Bijou 2",
+        "main_hand": "Main droite",
+        "off_hand": "Main gauche",
+        "main_hand_2h": "Deux mains",
+        "off_hand_shield": "Bouclier",
+        "weapon": "Arme",
+        "ring": "Anneau",
+        "trinket": "Bijou"
+    },
+    "stats": {
+        "crit": "Critique",
+        "haste": "Hâte",
+        "mastery": "Maîtrise",
+        "vers": "Polyvalence"
+    },
+    "armorTypes": {
+        "Plate": "Plaques",
+        "Mail": "Mailles",
+        "Leather": "Cuir",
+        "Cloth": "Tissu"
+    },
+    "tiers": {
+        "veteran": "Vétéran",
+        "champion": "Champion",
+        "hero": "Héros",
+        "myth": "Mythe"
+    },
+    "dungeons": {
+        "Pit of Saron": "PoS",
+        "Nexus-Point Xenas": "NPX",
+        "Windrunner Spire": "WS",
+        "Magisters' Terrace": "MT",
+        "Skyreach": "SR",
+        "Seat of the Triumvirate": "SotT",
+        "Algeth'ar Academy": "AA",
+        "Maisara Caverns": "MC",
+        "Halls of Atonement": "HoA",
+        "Priory of the Sacred Flame": "PSF"
+    },
+    "sources": {
+        "Tier": "Tier",
+        "Crafted": "Fabriqué",
+        "Midnight Falls": "Midnight Falls",
+        "Chimaerus": "Chimaerus",
+        "Fallen-King Salhadaar": "Salhadaar",
+        "Crown of the Cosmos": "Couronne du Cosmos",
+        "Lightblinded Vanguard": "Avant-garde",
+        "Belo'ren": "Belo'ren",
+        "Vorasius": "Vorasius",
+        "Vaelgor & Ezzorak": "Vaelgor & Ezzorak",
+        "Imperator Averzian": "Averzian",
+        "The Great Vault": "Grande chambre forte"
+    },
+    "dungeonsFull": {
+        "Pit of Saron": "Fosse de Saron",
+        "Nexus-Point Xenas": "Point-Nexus Xenas",
+        "Windrunner Spire": "Flèche de Coursevent",
+        "Magisters' Terrace": "Terrasse des Magistères",
+        "Skyreach": "Flèche-du-Ciel",
+        "Seat of the Triumvirate": "Siège du Triumvirat",
+        "Algeth'ar Academy": "Académie d'Algeth'ar",
+        "Maisara Caverns": "Cavernes de Maisara",
+        "Halls of Atonement": "Salles de l'Expiation",
+        "Priory of the Sacred Flame": "Prieuré de la Flamme sacrée"
+    },
+    "classes": {
+        "deathknight": "Chevalier de la mort",
+        "demonhunter": "Chasseur de démons",
+        "druid": "Druide",
+        "evoker": "Évocateur",
+        "hunter": "Chasseur",
+        "mage": "Mage",
+        "monk": "Moine",
+        "paladin": "Paladin",
+        "priest": "Prêtre",
+        "rogue": "Voleur",
+        "shaman": "Chaman",
+        "warlock": "Démoniste",
+        "warrior": "Guerrier"
+    },
+    "specs": {
+        "blood": "Sang",
+        "frost": "Givre",
+        "unholy": "Impie",
+        "havoc": "Dévastation",
+        "vengeance": "Vengeance",
+        "balance": "Équilibre",
+        "feral": "Farouche",
+        "guardian": "Gardien",
+        "restoration": "Restauration",
+        "devastation": "Dévastation",
+        "preservation": "Préservation",
+        "augmentation": "Augmentation",
+        "beastmastery": "Maîtrise des bêtes",
+        "marksmanship": "Précision",
+        "survival": "Survie",
+        "arcane": "Arcanes",
+        "fire": "Feu",
+        "brewmaster": "Maître brasseur",
+        "windwalker": "Marche-vent",
+        "mistweaver": "Tisse-brume",
+        "holy": "Sacré",
+        "protection": "Protection",
+        "retribution": "Vindicte",
+        "discipline": "Discipline",
+        "shadow": "Ombre",
+        "assassination": "Assassinat",
+        "outlaw": "Hors-la-loi",
+        "subtlety": "Finesse",
+        "elemental": "Élémentaire",
+        "enhancement": "Amélioration",
+        "affliction": "Affliction",
+        "demonology": "Démonologie",
+        "destruction": "Destruction",
+        "arms": "Armes",
+        "fury": "Fureur",
+        "devourer": "Dévoreur"
+    },
+    "ui": {
+        "simcImport": "Import SimC",
+        "simcRefresh": "Actualiser SimC",
+        "simcPasteHint": "— Collez la sortie de /simc pour comparer votre équipement",
+        "simcPlaceholder": "Collez la sortie complète de /simc ici",
+        "simcInstructions": "Tapez <cmd>/simc</cmd> en jeu, puis collez le résultat ci-dessous.",
+        "noGearData": "Aucune donnée d'équipement trouvée.",
+        "noClassSpec": "Informations de classe/spécialisation introuvables.",
+        "unsupportedSpec": "{cls} {spec} n'est pas encore pris en charge.",
+        "gearUpdated": "Les données d'équipement ont été mises à jour.",
+        "emptySlots": "⚠ Emplacements vides : {slots}",
+        "fetchingStats": "Récupération des stats pour {count} objets...",
+        "reset": "Supprimer",
+        "loading": "Chargement...",
+        "all": "Tous",
+        "done": "Terminé",
+        "bagDone": "En sac ✓",
+        "bag": "En sac",
+        "mythicBis": "BiS M+",
+        "compare": "Comparer",
+        "equipped": "Équipé",
+        "mythicBisDone": "BiS M+ ✓",
+
+        "viewBis": "BiS",
+        "viewMythic": "M+",
+        "bisItems": "Objets BiS",
+        "mythicItems": "Objets M+",
+        "raidSource": "Raid",
+        "craftSource": "Fabrication",
+        "catalystSource": "Catalyseur",
+        "altSameStats": "Alt — Mêmes stats secondaires",
+        "tierStatMismatch": "Stats inadaptées",
+        "tierAltEquipped": "Alt équipé",
+        "tierBisUpgrade": "Amélioration BiS↑",
+        "tierDone": "Terminé",
+        "tierUpgradeNeeded": "Amélioration nécessaire",
+        "tierReacquireNeeded": "Palier supérieur nécessaire",
+        "wrongArmorType": "Porte un équipement {actual} !",
+        "deficitInfo": "(−N) = Écart avec la cible {max}",
+        "supportedSpecs": "Spécialisations prises en charge",
+        "changelog": "Journal des modifications",
+        "avg": "Moy",
+        "count": "",
+        "priority": "par priorité",
+        "midnight": "Midnight",
+        "seasonLabel": "La moitié du combat, c'est savoir quoi farmer",
+        "seasonSub": "L'autre moitié, c'est la RNG.",
+        "guideLink": "Guide Maxroll",
+        "bisAttribution": "Données BiS issues de",
+        "feedback": "Retour",
+        "feedbackAndInquiry": "Retour et contact",
+        "trySample": "Essayer la démo",
+        "orTrySample": "Ou essayez d'abord un exemple",
+        "exitSample": "Quitter la démo",
+        "terms": "Conditions d'utilisation",
+        "privacy": "Politique de confidentialité",
+        "resetAll": "Supprimer toutes les données",
+        "resetAllConfirm": "Toutes les données de personnages et les paramètres seront supprimés. Continuer ?",
+        "browseSpecs": "Parcourir les spés",
+        "browseSpecsHint": "Voir les listes d'objets BiS sans SimC",
+        "catalogMode": "Mode catalogue — Importez SimC pour comparer l'équipement et voir les priorités de farm",
+        "crossSpecAvailable": "Des données d'équipement d'une autre spé de la même classe sont disponibles",
+        "crossSpecUse": "Utiliser les données de {spec} « {name} »",
+        "crossSpecImported": "Comparaison BiS avec l'équipement d'une autre spé",
+        "crossSpecNoBag": "(pas de données de sac)",
+        "crossSpecFrom": "Basé sur les données de {spec}",
+        "weaponMismatch": "{spec} {slot} nécessaire",
+        "wrongPrimaryStat": "Ce n'est pas un objet {expected} !",
+        "browsing": "Parcourir",
+        "selectClass": "Sélectionner une classe",
+        "selectSpec": "Sélectionner une spécialisation"
+    },
+    "primaryStats": {
+        "str": "Force",
+        "agi": "Agilité",
+        "int": "Intelligence"
+    },
+    "diffLabels": {
+        "header": "Changements de stats si équipé :",
+        "amr": "Armure",
+        "stat3": "Agilité",
+        "stat4": "Force",
+        "stat5": "Intelligence",
+        "stat71": "Agilité/Force/Intelligence",
+        "stat72": "Agilité/Force",
+        "stat73": "Agilité/Intelligence",
+        "stat74": "Force/Intelligence",
+        "stat7": "Endurance",
+        "rtg32": "Coup critique",
+        "rtg36": "Hâte",
+        "rtg49": "Maîtrise",
+        "rtg40": "Polyvalence",
+        "rtg24": "Stat aléatoire 1",
+        "rtg25": "Stat aléatoire 2",
+        "rtg62": "Drain de vie"
+    },
+    "legal": {
+        "lastUpdated": "Dernière mise à jour : 24 mars 2026",
+        "terms": {
+            "title": "Conditions d'utilisation",
+            "sections": [
+                {
+                    "heading": "1. Objet",
+                    "body": "Les présentes conditions régissent l'utilisation de Midnight BiS Tracker (le « Service »)."
+                },
+                {
+                    "heading": "2. Description du Service",
+                    "body": "Le Service fournit un outil gratuit de suivi des objets Best in Slot dans World of Warcraft. Le Service n'est pas affilié à Blizzard Entertainment. World of Warcraft et les marques associées appartiennent à Blizzard Entertainment, Inc."
+                },
+                {
+                    "heading": "3. Stockage des données",
+                    "body": "Toutes les données utilisateur sont stockées dans le localStorage de votre navigateur et ne sont jamais transmises à des serveurs externes. La suppression des données de votre navigateur peut entraîner la perte des informations sauvegardées."
+                },
+                {
+                    "heading": "4. Avertissement",
+                    "body": "Le Service est fourni « en l'état » sans garantie d'exactitude ni d'exhaustivité. Les données BiS sont basées sur des sources externes telles que Maxroll.gg et peuvent changer avec les mises à jour du jeu. Nous ne sommes pas responsables des dommages résultant de l'utilisation du Service."
+                },
+                {
+                    "heading": "5. Services tiers",
+                    "body": "Le Service utilise l'API et les scripts de Wowhead. L'utilisation de ces services externes est soumise à leurs conditions d'utilisation et politiques de confidentialité respectives."
+                },
+                {
+                    "heading": "6. Propriété intellectuelle",
+                    "body": "Le code source du Service est disponible sur GitHub. Les droits d'auteur du contenu de World of Warcraft appartiennent à Blizzard Entertainment, Inc."
+                },
+                {
+                    "heading": "7. Modification des conditions",
+                    "body": "Ces conditions peuvent être mises à jour sans préavis. Les modifications prennent effet dès leur publication sur le Service."
+                }
+            ]
+        },
+        "privacy": {
+            "title": "Politique de confidentialité",
+            "sections": [
+                {
+                    "heading": "1. Informations collectées",
+                    "body": "Le Service ne nécessite pas d'inscription et ne collecte ni ne stocke d'informations personnelles sur aucun serveur. Les données de personnages et d'équipement saisies par les utilisateurs sont stockées uniquement dans le localStorage du navigateur."
+                },
+                {
+                    "heading": "2. Cookies et stockage local",
+                    "body": "Le Service utilise le localStorage du navigateur pour assurer son fonctionnement. Ces données n'existent que sur votre appareil et ne sont jamais transmises à l'extérieur."
+                },
+                {
+                    "heading": "3. Services tiers",
+                    "body": "Le Service utilise les services externes suivants, chacun soumis à sa propre politique de confidentialité :\n• Wowhead (wow.zamimg.com) — Infobulles d'objets et recherche de stats\n• Google Fonts — Distribution de polices web\n• Cloudflare Pages — Hébergement du site web\n\nCes services externes peuvent collecter des informations de connexion de base telles que les adresses IP."
+                },
+                {
+                    "heading": "4. Suppression des données",
+                    "body": "Vous pouvez supprimer toutes les données stockées à tout moment via les paramètres de données de site de votre navigateur. Vous pouvez également supprimer les données de personnages individuels en utilisant la fonction « Supprimer » dans le Service."
+                },
+                {
+                    "heading": "5. Protection des mineurs",
+                    "body": "Le Service ne collecte pas intentionnellement d'informations personnelles auprès d'enfants de moins de 14 ans."
+                },
+                {
+                    "heading": "6. Modification de cette politique",
+                    "body": "Cette politique de confidentialité peut être mise à jour sans préavis. Les modifications prennent effet dès leur publication sur le Service."
+                },
+                {
+                    "heading": "Contact",
+                    "body": "Pour toute question relative à la confidentialité, veuillez nous contacter via notre canal Discord."
+                }
+            ]
+        }
+    },
+    "tutorial": {
+        "skip": "Passer",
+        "prev": "Préc",
+        "next": "Suiv",
+        "done": "Terminé",
+        "charBar": {
+            "title": "Barre de personnage",
+            "desc": "Basculez entre vos personnages enregistrés ici.\nChaque spé est suivie séparément, même pour le même personnage.\nCliquez sur une icône pour changer."
+        },
+        "simc": {
+            "title": "Import d'équipement",
+            "desc": "Collez le texte de la commande /simc en jeu pour détecter automatiquement votre équipement.\nDes données d'exemple sont déjà chargées pour cette démo."
+        },
+        "tier": {
+            "title": "Niveau d'objet cible",
+            "desc": "Définissez le palier de niveau d'objet que vous visez.\nLes priorités se mettent à jour selon votre sélection, et les emplacements qui atteignent déjà la cible sont marqués comme terminés."
+        },
+        "progress": {
+            "title": "Taux de complétion",
+            "desc": "Affiche combien de vos 16 emplacements atteignent la cible.\nBarre pleine = BiS obtenu, barre verte = BiS M+ équipé, barre pâle = Alt équipé.\nObtenir le BiS fait croître la partie pleine."
+        },
+        "dungeon": {
+            "title": "Filtre de source",
+            "desc": "Cliquez sur un donjon/raid/source de fabrication pour n'afficher que ses objets.\nChiffre clair = BiS restants, chiffre sombre = Alt restants.\nLes sources de plus haute priorité sont triées en premier."
+        },
+        "tier1": {
+            "title": "▲ Stats inadaptées (Priorité maximale)",
+            "desc": "Votre objet équipé a des stats secondaires complètement différentes du BiS.\nPlus grande perte de performance — remplacez-le en premier."
+        },
+        "tier2": {
+            "title": "◆ Alt équipé",
+            "desc": "Vous avez un alt avec les mêmes stats équipé.\nPassez au BiS dès que possible."
+        },
+        "tier3": {
+            "title": "↑ Amélioration / Palier supérieur nécessaire",
+            "desc": "Vous avez l'objet BiS mais en dessous du niveau d'objet cible.\n« Amélioration nécessaire » = améliorable dans le palier actuel. « Palier supérieur nécessaire » = à réobtenir dans un contenu supérieur."
+        },
+        "tier4": {
+            "title": "✓ Farm terminé",
+            "desc": "BiS équipé au niveau d'objet cible ou supérieur.\nPlus besoin de farmer cet emplacement !"
+        },
+        "catDungeon": {
+            "title": "Filtres de source",
+            "desc": "Cliquez sur un bouton donjon/raid/fabrication pour n'afficher que les objets de cette source.\nLes chiffres indiquent le nombre de BiS + le nombre d'Alt."
+        },
+        "catCard": {
+            "title": "Fiche d'objet",
+            "desc": "Affiche l'emplacement, la source et les stats secondaires.\nCliquez sur le nom de l'objet pour voir les détails sur Wowhead.\nLes objets Alt partagent la même combinaison de stats que le BiS."
+        },
+        "catSimc": {
+            "title": "Envie de comparer votre équipement ?",
+            "desc": "Tapez /simc en jeu, collez le résultat ici,\net votre équipement sera comparé au BiS avec des priorités de farm triées automatiquement."
+        }
+    }
+}

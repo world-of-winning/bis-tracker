@@ -1,0 +1,353 @@
+{
+    "slots": {
+        "head": "頭部",
+        "neck": "頸部",
+        "shoulder": "肩部",
+        "back": "背部",
+        "chest": "胸部",
+        "wrist": "腕部",
+        "hands": "手",
+        "waist": "腰部",
+        "legs": "腿部",
+        "feet": "腳",
+        "finger1": "戒指 1",
+        "finger2": "戒指 2",
+        "trinket1": "飾品 1",
+        "trinket2": "飾品 2",
+        "main_hand": "主手",
+        "off_hand": "副手",
+        "main_hand_2h": "雙手",
+        "off_hand_shield": "盾牌",
+        "weapon": "武器",
+        "ring": "戒指",
+        "trinket": "飾品"
+    },
+    "stats": {
+        "crit": "致命",
+        "haste": "加速",
+        "mastery": "精通",
+        "vers": "臨機"
+    },
+    "armorTypes": {
+        "Plate": "鎧甲",
+        "Mail": "鎖甲",
+        "Leather": "皮甲",
+        "Cloth": "布甲"
+    },
+    "tiers": {
+        "veteran": "老兵",
+        "champion": "勇士",
+        "hero": "英雄",
+        "myth": "神話"
+    },
+    "dungeons": {
+        "Pit of Saron": "PoS",
+        "Nexus-Point Xenas": "NPX",
+        "Windrunner Spire": "WS",
+        "Magisters' Terrace": "MT",
+        "Skyreach": "SR",
+        "Seat of the Triumvirate": "SotT",
+        "Algeth'ar Academy": "AA",
+        "Maisara Caverns": "MC",
+        "Halls of Atonement": "HoA",
+        "Priory of the Sacred Flame": "PSF"
+    },
+    "sources": {
+        "Tier": "套裝",
+        "Crafted": "製造",
+        "Midnight Falls": "午夜降臨",
+        "Chimaerus": "乘騎魯斯",
+        "Fallen-King Salhadaar": "墮落王者薩爾哈達爾",
+        "Crown of the Cosmos": "宇宙之冠",
+        "Lightblinded Vanguard": "光盲先鋒",
+        "Belo'ren": "乘騎倫",
+        "Vorasius": "乘騎休斯",
+        "Vaelgor & Ezzorak": "維爾戈與伊佐拉克",
+        "Imperator Averzian": "統帥亞弗辛安",
+        "The Great Vault": "乘騎寶庫"
+    },
+    "dungeonsFull": {
+        "Pit of Saron": "乘騎坑",
+        "Nexus-Point Xenas": "乘騎點乘騎斯",
+        "Windrunner Spire": "風行者尖塔",
+        "Magisters' Terrace": "乘騎學者平臺",
+        "Skyreach": "天頂",
+        "Seat of the Triumvirate": "乘騎議會之座",
+        "Algeth'ar Academy": "阿爾乘騎學院",
+        "Maisara Caverns": "乘騎拉洞窟",
+        "Halls of Atonement": "贖罪之廳",
+        "Priory of the Sacred Flame": "聖焰修道院"
+    },
+    "classes": {
+        "deathknight": "死亡騎士",
+        "demonhunter": "惡魔獵人",
+        "druid": "德魯伊",
+        "evoker": "喚能師",
+        "hunter": "獵人",
+        "mage": "法師",
+        "monk": "武僧",
+        "paladin": "聖騎士",
+        "priest": "牧師",
+        "rogue": "盜賊",
+        "shaman": "薩滿",
+        "warlock": "術士",
+        "warrior": "戰士"
+    },
+    "specs": {
+        "blood": "血魄",
+        "frost": "冰霜",
+        "unholy": "穢邪",
+        "havoc": "浩劫",
+        "vengeance": "乘騎復仇",
+        "balance": "平衡",
+        "feral": "野性",
+        "guardian": "守護",
+        "restoration": "恢復",
+        "devastation": "毀滅",
+        "preservation": "乘騎",
+        "augmentation": "增輝",
+        "beastmastery": "乘騎",
+        "marksmanship": "射擊",
+        "survival": "生存",
+        "arcane": "秘法",
+        "fire": "火焰",
+        "brewmaster": "乘騎",
+        "windwalker": "御風",
+        "mistweaver": "織霧",
+        "holy": "神聖",
+        "protection": "防護",
+        "retribution": "懲戒",
+        "discipline": "戒律",
+        "shadow": "暗影",
+        "assassination": "刺殺",
+        "outlaw": "狂徒",
+        "subtlety": "敏銳",
+        "elemental": "元素",
+        "enhancement": "增強",
+        "affliction": "痛苦",
+        "demonology": "惡魔學識",
+        "destruction": "毀滅",
+        "arms": "武器",
+        "fury": "狂怒",
+        "devourer": "乘騎"
+    },
+    "ui": {
+        "simcImport": "SimC 匯入",
+        "simcRefresh": "SimC 重新整理",
+        "simcPasteHint": "— 貼上 /simc 輸出以比較你的裝備",
+        "simcPlaceholder": "在此貼上完整的 /simc 輸出",
+        "simcInstructions": "在遊戲中輸入 <cmd>/simc</cmd>，然後將輸出貼在下方。",
+        "noGearData": "未找到裝備資料。",
+        "noClassSpec": "未找到職業/專精資訊。",
+        "unsupportedSpec": "尚不支援 {cls} {spec}。",
+        "gearUpdated": "裝備資料已更新。",
+        "emptySlots": "⚠ 空欄位：{slots}",
+        "fetchingStats": "正在取得 {count} 件物品的屬性...",
+        "reset": "刪除",
+        "loading": "載入中...",
+        "all": "全部",
+        "done": "完成",
+        "bagDone": "背包中 ✓",
+        "bag": "背包中",
+        "mythicBis": "M+ BiS",
+        "compare": "比較",
+        "equipped": "已裝備",
+        "mythicBisDone": "M+ BiS ✓",
+
+        "viewBis": "BiS",
+        "viewMythic": "M+",
+        "bisItems": "BiS 物品",
+        "mythicItems": "M+ 物品",
+        "raidSource": "團隊副本",
+        "craftSource": "製造",
+        "catalystSource": "催化石",
+        "altSameStats": "替代 — 相同副屬性",
+        "tierStatMismatch": "屬性不符",
+        "tierAltEquipped": "已裝備替代品",
+        "tierBisUpgrade": "BiS 升級↑",
+        "tierDone": "完成",
+        "tierUpgradeNeeded": "需要強化",
+        "tierReacquireNeeded": "需要下一階",
+        "wrongArmorType": "穿戴了{actual}裝備！",
+        "deficitInfo": "(−N) = 與目標 {max} 的差距",
+        "supportedSpecs": "已支援的專精",
+        "changelog": "更新紀錄",
+        "avg": "平均",
+        "count": "",
+        "priority": "依優先度",
+        "midnight": "午夜",
+        "seasonLabel": "打裝的戰鬥，一半靠知識",
+        "seasonSub": "另一半靠運氣。",
+        "guideLink": "Maxroll 攻略",
+        "bisAttribution": "BiS 資料來自",
+        "feedback": "意見回饋",
+        "feedbackAndInquiry": "意見回饋與聯絡",
+        "trySample": "試用範例",
+        "orTrySample": "或先試試範例",
+        "exitSample": "離開範例",
+        "terms": "服務條款",
+        "privacy": "隱私權政策",
+        "resetAll": "刪除所有資料",
+        "resetAllConfirm": "所有角色資料與設定將被刪除。是否繼續？",
+        "browseSpecs": "瀏覽專精",
+        "browseSpecsHint": "不需 SimC 即可檢視 BiS 物品清單",
+        "catalogMode": "目錄模式 — 匯入 SimC 以比較裝備並查看刷裝優先度",
+        "crossSpecAvailable": "同職業其他專精的裝備資料可用",
+        "crossSpecUse": "使用 {spec}「{name}」的資料",
+        "crossSpecImported": "正在以其他專精的裝備比較 BiS",
+        "crossSpecNoBag": "(無背包資料)",
+        "crossSpecFrom": "基於 {spec} 資料",
+        "weaponMismatch": "需要 {spec} {slot}",
+        "wrongPrimaryStat": "不是{expected}物品！",
+        "browsing": "瀏覽",
+        "selectClass": "選擇職業",
+        "selectSpec": "選擇專精"
+    },
+    "primaryStats": {
+        "str": "力量",
+        "agi": "敏捷",
+        "int": "智力"
+    },
+    "diffLabels": {
+        "header": "裝備後的屬性變化：",
+        "amr": "護甲",
+        "stat3": "敏捷",
+        "stat4": "力量",
+        "stat5": "智力",
+        "stat71": "敏捷/力量/智力",
+        "stat72": "敏捷/力量",
+        "stat73": "敏捷/智力",
+        "stat74": "力量/智力",
+        "stat7": "耐力",
+        "rtg32": "致命一擊",
+        "rtg36": "加速",
+        "rtg49": "精通",
+        "rtg40": "臨機應變",
+        "rtg24": "隨機屬性 1",
+        "rtg25": "隨機屬性 2",
+        "rtg62": "汲取"
+    },
+    "legal": {
+        "lastUpdated": "最後更新：2026 年 3 月 24 日",
+        "terms": {
+            "title": "服務條款",
+            "sections": [
+                {
+                    "heading": "1. 目的",
+                    "body": "本條款規範 Midnight BiS Tracker（以下簡稱「本服務」）的使用。"
+                },
+                {
+                    "heading": "2. 服務說明",
+                    "body": "本服務提供免費的《魔獸世界》最佳裝備（Best in Slot）追蹤工具。本服務與暴雪娛樂無任何關聯。《魔獸世界》及相關商標歸暴雪娛樂公司所有。"
+                },
+                {
+                    "heading": "3. 資料儲存",
+                    "body": "所有使用者資料儲存於您瀏覽器的 localStorage 中，絕不會傳送至外部伺服器。清除瀏覽器資料可能導致已儲存的資訊遺失。"
+                },
+                {
+                    "heading": "4. 免責聲明",
+                    "body": "本服務以「現狀」提供，不保證其準確性或完整性。BiS 資料來自 Maxroll.gg 等外部來源，可能因遊戲更新而變動。我們不對因使用本服務而造成的任何損害承擔責任。"
+                },
+                {
+                    "heading": "5. 第三方服務",
+                    "body": "本服務使用 Wowhead 的提示資訊 API 和腳本。使用這些外部服務須遵守其各自的服務條款和隱私權政策。"
+                },
+                {
+                    "heading": "6. 智慧財產權",
+                    "body": "本服務的原始碼可在 GitHub 上取得。《魔獸世界》內容的著作權歸暴雪娛樂公司所有。"
+                },
+                {
+                    "heading": "7. 條款變更",
+                    "body": "本條款可能在不事先通知的情況下更新。變更在發布至本服務後立即生效。"
+                }
+            ]
+        },
+        "privacy": {
+            "title": "隱私權政策",
+            "sections": [
+                {
+                    "heading": "1. 我們收集的資訊",
+                    "body": "本服務不需要註冊，也不會在任何伺服器上收集或儲存個人資訊。使用者輸入的角色和裝備資料僅儲存於瀏覽器的 localStorage 中。"
+                },
+                {
+                    "heading": "2. Cookie 與本機儲存",
+                    "body": "本服務使用瀏覽器的 localStorage 來提供功能。這些資料僅存在於您的裝置上，絕不會傳送至外部。"
+                },
+                {
+                    "heading": "3. 第三方服務",
+                    "body": "本服務使用以下外部服務，各有其隱私權政策：\n• Wowhead (wow.zamimg.com) — 物品提示資訊與屬性查詢\n• Google Fonts — 網頁字型\n• Cloudflare Pages — 網站託管\n\n這些外部服務可能會收集基本的連線資訊，例如 IP 位址。"
+                },
+                {
+                    "heading": "4. 資料刪除",
+                    "body": "您可以隨時透過瀏覽器的網站資料設定刪除所有已儲存的資料。您也可以使用本服務中的「刪除」功能來刪除個別角色的資料。"
+                },
+                {
+                    "heading": "5. 兒童隱私",
+                    "body": "本服務不會故意收集 14 歲以下兒童的個人資訊。"
+                },
+                {
+                    "heading": "6. 政策變更",
+                    "body": "本隱私權政策可能在不事先通知的情況下更新。變更在發布至本服務後立即生效。"
+                },
+                {
+                    "heading": "聯絡方式",
+                    "body": "如有隱私相關問題，請透過我們的 Discord 頻道聯絡。"
+                }
+            ]
+        }
+    },
+    "tutorial": {
+        "skip": "略過",
+        "prev": "上一步",
+        "next": "下一步",
+        "done": "完成",
+        "charBar": {
+            "title": "角色列",
+            "desc": "在此切換已註冊的角色。\n即使是同一角色，每個專精都會分別追蹤。\n點擊圖示即可切換。"
+        },
+        "simc": {
+            "title": "裝備匯入",
+            "desc": "在遊戲中輸入 /simc 指令，將輸出文字貼上即可自動偵測你的裝備。\n此範例已預先載入資料。"
+        },
+        "tier": {
+            "title": "目標物品等級",
+            "desc": "設定你的刷裝目標等級階層。\n優先度會根據你的選擇更新，已達標的欄位會標記為完成。"
+        },
+        "progress": {
+            "title": "完成率",
+            "desc": "顯示 16 個欄位中有多少已達標。\n實心條 = BiS 完成、綠色條 = M+ BiS 已裝備、淺色條 = 替代品已裝備。\n取得 BiS 會增加實心部分。"
+        },
+        "dungeon": {
+            "title": "來源篩選",
+            "desc": "點擊副本/團隊/製造來源以僅顯示該來源的物品。\n亮色數字 = 剩餘 BiS、暗色數字 = 剩餘替代品。\n優先度較高的來源會排在前面。"
+        },
+        "tier1": {
+            "title": "▲ 屬性不符（最高優先）",
+            "desc": "你裝備的物品副屬性與 BiS 完全不同。\n效能損失最大 — 優先替換此裝備。"
+        },
+        "tier2": {
+            "title": "◆ 已裝備替代品",
+            "desc": "你裝備了屬性相符的替代品。\n取得 BiS 後再替換。"
+        },
+        "tier3": {
+            "title": "↑ 需要強化 / 下一階",
+            "desc": "你已有 BiS 物品但低於目標等級。\n「需要強化」= 可在目前階層內升級。「需要下一階」= 需從更高內容重新取得。"
+        },
+        "tier4": {
+            "title": "✓ 刷裝完成",
+            "desc": "BiS 已裝備且達到或超過目標物品等級。\n此欄位不需要再刷裝了！"
+        },
+        "catDungeon": {
+            "title": "來源篩選",
+            "desc": "點擊副本/團隊/製造按鈕以僅顯示該來源的物品。\n數字顯示 BiS 數量 + 替代品數量。"
+        },
+        "catCard": {
+            "title": "物品卡片",
+            "desc": "顯示欄位、來源與副屬性。\n點擊物品名稱可在 Wowhead 查看詳情。\n替代品與 BiS 擁有相同的屬性組合。"
+        },
+        "catSimc": {
+            "title": "想比較裝備嗎？",
+            "desc": "在遊戲中輸入 /simc，將輸出貼在這裡，\n你的裝備將與 BiS 進行比較，並自動排序刷裝優先度。"
+        }
+    }
+}
