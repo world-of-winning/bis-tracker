@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.12.2
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.12.1...v1.12.2)
+
+### 🩹 Fixes
+
+- Allow unsafe-eval in CSP for Wowhead power.js ([881af06](https://github.com/world-of-winning/bis-tracker/commit/881af06))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.12.1
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.12.0...v1.12.1)
