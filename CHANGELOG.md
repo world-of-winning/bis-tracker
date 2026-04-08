@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.12.1
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.12.0...v1.12.1)
+
+### 🚀 Enhancements
+
+- Add multi-language SEO support for all 10 locales ([fa166b0](https://github.com/world-of-winning/bis-tracker/commit/fa166b0))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.12.0
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.11.2...v1.12.0)
