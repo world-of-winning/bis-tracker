@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.12.0
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.11.2...v1.12.0)
+
+### 🚀 Enhancements
+
+- Add multi-language support for 10 locales ([d5a8cf3](https://github.com/world-of-winning/bis-tracker/commit/d5a8cf3))
+
+### 💅 Refactors
+
+- Extract logic modules and components from BisTracker ([464227a](https://github.com/world-of-winning/bis-tracker/commit/464227a))
+- Remove duplicate locale map and dead code from i18n ([6b1272e](https://github.com/world-of-winning/bis-tracker/commit/6b1272e))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.11.2
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.11.1...v1.11.2)
