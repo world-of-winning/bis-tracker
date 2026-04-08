@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { sanitizeHTML } from '../sanitize.js';
 import { DIFF_ORDER, parseTooltipStats, computeStatDiff, renderDiffHTML } from '../logic/tooltip.js';
+import { LOCALE_META } from '../i18n/index.jsx';
 
 var eqTooltipCache = {};
 
 export default function EqTooltipObserver({ locale, whSpecId, t }) {
-  var LOCALE_WH = { en: 0, ko: 1, fr: 2, de: 3, zhCN: 4, es: 6, ru: 7, pt: 8, it: 9, zhTW: 10 };
-  var loc = LOCALE_WH[locale] || 0;
+  var loc = (LOCALE_META[locale] || LOCALE_META.en).wh;
   var elRef = useRef(null);
   useEffect(function() {
     var el = document.getElementById("eq-tooltip-singleton");

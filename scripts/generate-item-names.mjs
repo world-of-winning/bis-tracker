@@ -57,16 +57,10 @@ function collectItemIds() {
     const re = /\bid:\s*(\d+)/g;
     let m;
     while ((m = re.exec(content))) {
-      const id = parseInt(m[1]);
-      // Skip KNOWN_STATS keys (they're also numbers but part of a different structure)
-      // Check context: only match inside array item objects (has slot/forSlot nearby)
-      ids.add(id);
+      ids.add(parseInt(m[1]));
     }
   }
 
-  // Filter out false positives from KNOWN_STATS by also collecting those IDs
-  // and intersecting. Actually, KNOWN_STATS reuses the same item IDs, so
-  // all IDs from id: fields are valid items.
   return [...ids].sort((a, b) => a - b);
 }
 
@@ -75,7 +69,6 @@ async function fetchLocaleNames(ids, localeKey) {
   const { code, name } = LOCALES[localeKey];
   const names = {};
   let fetched = 0;
-  let cached = 0;
 
   console.log(`\nFetching ${name} (${localeKey}, locale=${code}) for ${ids.length} items...`);
 
@@ -85,7 +78,6 @@ async function fetchLocaleNames(ids, localeKey) {
       if (data && data.name) {
         names[id] = data.name;
       }
-      // Check if this was a cache hit (no network delay) by tracking
       fetched++;
       if (fetched % 50 === 0) {
         console.log(`  ${fetched}/${ids.length} done`);

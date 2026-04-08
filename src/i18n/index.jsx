@@ -120,7 +120,7 @@ export function LocaleProvider({ children }) {
   }, [strings]);
 
   var itemName = useCallback(function(item) {
-    return itemNamesMap[item.id] || enItems[item.id] || item.en || String(item.id);
+    return itemNamesMap[item.id] || enItems[item.id] || String(item.id);
   }, [itemNamesMap]);
 
   var value = useMemo(function() {
