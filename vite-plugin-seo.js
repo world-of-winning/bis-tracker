@@ -21,6 +21,7 @@ export default function seoPlugin() {
       if (!siteUrl) {
         // Remove tags that become invalid without an absolute URL
         result = result.replace(/<link rel="canonical"[^>]*>\s*/g, "");
+        result = result.replace(/<link rel="alternate"[^>]*hreflang[^>]*>\s*/g, "");
         result = result.replace(/<meta[^>]*(?:og:url|og:image|twitter:image)[^>]*>\s*/g, "");
       }
       return result;
