@@ -2,6 +2,13 @@
 // { date: "YYYY-MM-DD", text: { ko, en } }
 export var CHANGELOG = [
     {
+        date: "2026-06-21",
+        text: {
+            ko: "Rotmire 던전 신규 아이템 추가 — 전 40 스펙 ALTS 업데이트",
+            en: "Add Rotmire dungeon items — ALTS updated for all 40 specs",
+        },
+    },
+    {
         date: "2025-04-08",
         text: {
             ko: "10개 언어 지원 — 아이템명·UI·튜토리얼 전체 현지화 (en/ko/fr/de/zhCN/zhTW/es/ru/pt/it)",
