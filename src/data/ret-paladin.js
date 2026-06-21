@@ -52,14 +52,16 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "chest", id: 151329, source: "The Great Vault", stats: ["haste","mastery"] },
+  { forSlot: "chest", id: 151329, source: "Seat of the Triumvirate", stats: ["haste","mastery"] },
   { forSlot: "chest", id: 249309, source: "Windrunner Spire", stats: ["crit","haste"] },
+  { forSlot: "chest", id: 268285, source: "Rotmire", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 249332, source: "Vorasius", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 251107, source: "Magisters' Terrace", stats: ["haste","mastery"] },
   { forSlot: "hands", id: 151332, source: "Seat of the Triumvirate", stats: ["haste","vers"] },
   { forSlot: "ring", id: 49812, source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "ring", id: 249369, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 251115, source: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 268290, source: "Rotmire", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 50234, source: "Pit of Saron", stats: ["crit","mastery"] },
   { forSlot: "waist", id: 151327, source: "Seat of the Triumvirate", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251162, source: "Maisara Caverns", stats: ["crit","haste"] },
@@ -79,6 +81,7 @@ export var KNOWN_STATS = {
   249962:["haste","vers"],249963:["haste","mastery"],249964:["haste","mastery"],250256:[],
   251081:["crit","haste"],251093:["haste","mastery"],251107:["haste","mastery"],251115:["haste","mastery"],
   251118:["crit","mastery"],251157:["crit","haste"],251162:["crit","haste"],251169:["haste","mastery"],
-  251217:["crit","haste"],252420:[],260312:["crit","haste"],
+  251217:["crit","haste"],252420:[],260312:["crit","haste"],268285:["haste","mastery"],
+  268290:["haste","mastery"],
 };
 

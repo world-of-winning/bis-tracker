@@ -56,10 +56,13 @@ export var MYTHIC = [
 export var ALTS = [
   { forSlot: "back", id: 251190, source: "Skyreach", stats: ["haste","mastery"] },
   { forSlot: "chest", id: 49825, source: "Pit of Saron", stats: ["crit","haste"] },
+  { forSlot: "chest", id: 268284, source: "Rotmire", stats: ["haste","mastery"] },
+  { forSlot: "feet", id: 268287, source: "Rotmire", stats: ["haste","mastery"] },
   { forSlot: "head", id: 193703, source: "Algeth'ar Academy", stats: ["crit","haste"] },
   { forSlot: "neck", id: 249337, source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
-  { forSlot: "neck", id: 250247, source: "Midnight Falls", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 250247, source: "Pit of Saron", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 249369, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 268290, source: "Rotmire", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 249328, source: "Belo'ren", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 251085, source: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 251213, source: "Nexus-Point Xenas", stats: ["haste","mastery"] },
@@ -70,6 +73,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 249295, source: "Windrunner Spire", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 249922, source: "Chimaerus", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251111, source: "Magisters' Terrace", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 258436, source: "Skyreach", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 258525, source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "wrist", id: 249315, source: "Vorasius", stats: ["haste","mastery"] },
 ];
@@ -89,7 +93,8 @@ export var KNOWN_STATS = {
   250054:["haste","mastery"],250247:["haste","mastery"],250256:[],250258:["mastery"],
   251085:["crit","mastery"],251093:["haste","mastery"],251102:["haste","vers"],251111:["crit","haste"],
   251115:["haste","mastery"],251172:["crit","haste"],251178:["crit","haste"],251190:["haste","mastery"],
-  251213:["haste","mastery"],258472:["haste","mastery"],258525:["crit","haste"],258574:["haste","vers"],
-  258578:["haste","mastery"],258584:["haste","mastery"],260312:["crit","haste"],
+  251213:["haste","mastery"],258436:["haste","mastery"],258472:["haste","mastery"],258525:["crit","haste"],
+  258574:["haste","vers"],258578:["haste","mastery"],258584:["haste","mastery"],260312:["crit","haste"],
+  268284:["haste","mastery"],268287:["haste","mastery"],268290:["haste","mastery"],
 };
 

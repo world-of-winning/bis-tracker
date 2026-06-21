@@ -17,27 +17,27 @@ export var THEME = {
 
 export var BIS = [
   { slot: "head", id: 249988, source: "Lightblinded Vanguard", stats: ["crit","haste"] },
-  { slot: "neck", id: 250247, source: "Midnight Falls", stats: ["haste","mastery"] },
+  { slot: "neck", id: 268291, source: "Rotmire", stats: ["crit","mastery"] },
   { slot: "shoulder", id: 249986, source: "Fallen-King Salhadaar", stats: ["haste","vers"] },
-  { slot: "back", id: 249370, source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
+  { slot: "back", id: 239656, source: "Crafted", stats: [] },
   { slot: "chest", id: 249991, source: "Chimaerus", stats: ["crit","haste"] },
   { slot: "wrist", id: 244584, source: "Crafted", stats: [] },
-  { slot: "hands", id: 249989, source: "Vorasius", stats: ["crit","mastery"] },
+  { slot: "hands", id: 249989, source: "Voracius", stats: ["crit","mastery"] },
   { slot: "waist", id: 249371, source: "Chimaerus", stats: ["haste","mastery"] },
-  { slot: "legs", id: 249987, source: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
-  { slot: "feet", id: 249990, source: "Tier", stats: ["crit","mastery"] },
+  { slot: "legs", id: 249987, source: "Rotmire + Catalyst", stats: ["crit","mastery"] },
+  { slot: "feet", id: 268287, source: "Rotmire", stats: ["haste","mastery"] },
   { slot: "finger1", id: 249920, source: "Midnight Falls", stats: ["haste"] },
-  { slot: "finger2", id: 240949, source: "Crafted", stats: [] },
-  { slot: "trinket1", id: 249806, source: "Belo'ren", stats: [] },
+  { slot: "finger2", id: 268290, source: "Rotmire", stats: ["haste","mastery"] },
+  { slot: "trinket1", id: 193701, source: "Belo'ren", stats: [] },
   { slot: "trinket2", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "main_hand", id: 251174, source: "Maisara Caverns", stats: ["haste","mastery"] },
 ];
 
 export var MYTHIC = [
   { slot: "head", id: 251119, source: "Magisters' Terrace", stats: ["crit","mastery"] },
-  { slot: "neck", id: 250247, source: "Midnight Falls", stats: ["haste","mastery"] },
+  { slot: "neck", id: 250247, source: "Pit of Saron", stats: ["haste","mastery"] },
   { slot: "shoulder", id: 151323, source: "Seat of the Triumvirate", stats: ["haste","mastery"] },
-  { slot: "back", id: 249370, source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
+  { slot: "back", id: 249370, source: "Skyreach", stats: ["haste","mastery"] },
   { slot: "chest", id: 251179, source: "Maisara Caverns", stats: ["crit","mastery"] },
   { slot: "wrist", id: 251079, source: "Windrunner Spire", stats: ["crit","mastery"] },
   { slot: "hands", id: 251089, source: "Windrunner Spire", stats: ["haste","mastery"] },
@@ -54,6 +54,7 @@ export var MYTHIC = [
 export var ALTS = [
   { forSlot: "back", id: 251190, source: "Skyreach", stats: ["haste","mastery"] },
   { forSlot: "chest", id: 258576, source: "Skyreach", stats: ["crit","haste"] },
+  { forSlot: "feet", id: 151320, source: "Seat of the Triumvirate", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 249377, source: "Belo'ren", stats: ["crit","haste"] },
   { forSlot: "feet", id: 251084, source: "Windrunner Spire", stats: ["crit","mastery"] },
   { forSlot: "hands", id: 249325, source: "Crown of the Cosmos", stats: ["crit","mastery"] },
@@ -72,15 +73,16 @@ export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
 export var STAT_CACHE_KEY = "bm-hunter-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  49810:["crit","haste"],49824:["crit","haste"],151321:["crit","mastery"],151323:["haste","mastery"],
-  193701:[],193715:["crit","haste"],240949:[],244584:[],
-  244611:["haste","mastery"],249304:["crit","mastery"],249325:["crit","mastery"],249343:["mastery"],
-  249368:["haste","mastery"],249369:["haste","mastery"],249370:["haste","mastery"],249371:["haste","mastery"],
-  249377:["crit","haste"],249806:[],249920:["haste"],249986:["haste","vers"],
-  249987:["crit","mastery"],249988:["crit","haste"],249989:["crit","mastery"],249990:["crit","mastery"],
-  249991:["crit","haste"],250247:["haste","mastery"],250256:[],251079:["crit","mastery"],
-  251084:["crit","mastery"],251089:["haste","mastery"],251093:["haste","mastery"],251115:["haste","mastery"],
-  251119:["crit","mastery"],251170:["crit","mastery"],251174:["haste","mastery"],251179:["crit","mastery"],
-  251190:["haste","mastery"],251215:["crit","mastery"],258576:["crit","haste"],258585:["crit","mastery"],
+  49810:["crit","haste"],49824:["crit","haste"],151320:["haste","mastery"],151321:["crit","mastery"],
+  151323:["haste","mastery"],193701:[],193715:["crit","haste"],239656:[],
+  244584:[],244611:["haste","mastery"],249304:["crit","mastery"],249325:["crit","mastery"],
+  249343:["mastery"],249368:["haste","mastery"],249369:["haste","mastery"],249370:["haste","mastery"],
+  249371:["haste","mastery"],249377:["crit","haste"],249920:["haste"],249986:["haste","vers"],
+  249987:["crit","mastery"],249988:["crit","haste"],249989:["crit","mastery"],249991:["crit","haste"],
+  250247:["haste","mastery"],250256:[],251079:["crit","mastery"],251084:["crit","mastery"],
+  251089:["haste","mastery"],251093:["haste","mastery"],251115:["haste","mastery"],251119:["crit","mastery"],
+  251170:["crit","mastery"],251174:["haste","mastery"],251179:["crit","mastery"],251190:["haste","mastery"],
+  251215:["crit","mastery"],258576:["crit","haste"],258585:["crit","mastery"],268287:["haste","mastery"],
+  268290:["haste","mastery"],268291:["crit","mastery"],
 };
 

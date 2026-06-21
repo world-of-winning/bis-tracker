@@ -17,19 +17,19 @@ export var THEME = {
 
 export var BIS = [
   { slot: "head", id: 249961, source: "Tier", stats: ["haste","mastery"] },
-  { slot: "neck", id: 250247, source: "Midnight Falls", stats: ["haste","mastery"] },
+  { slot: "neck", id: 268291, source: "Rotmire", stats: ["crit","mastery"] },
   { slot: "shoulder", id: 251164, source: "Maisara Caverns", stats: ["haste","mastery"] },
-  { slot: "back", id: 251206, source: "Nexus-Point Xenas", stats: ["mastery","vers"] },
-  { slot: "chest", id: 249964, source: "Tier", stats: ["haste","mastery"] },
-  { slot: "wrist", id: 263193, source: "Maisara Caverns", stats: ["haste","mastery"] },
+  { slot: "back", id: 239656, source: "Crafted", stats: [] },
+  { slot: "chest", id: 249964, source: "Rotmire Catalysted", stats: ["haste","mastery"] },
+  { slot: "wrist", id: 237834, source: "Crafted", stats: [] },
   { slot: "hands", id: 249962, source: "Tier", stats: ["haste","vers"] },
-  { slot: "waist", id: 151327, source: "Seat of the Triumvirate", stats: ["haste","mastery"] },
+  { slot: "waist", id: 268289, source: "Rotmire", stats: ["crit","mastery"] },
   { slot: "legs", id: 249960, source: "Tier", stats: ["crit","haste"] },
   { slot: "feet", id: 249332, source: "Vorasius", stats: ["haste","mastery"] },
-  { slot: "finger1", id: 241140, source: "Crafted", stats: ["mastery","vers"] },
-  { slot: "finger2", id: 240949, source: "Crafted", stats: [] },
+  { slot: "finger1", id: 249369, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { slot: "finger2", id: 268290, source: "Rotmire", stats: ["haste","mastery"] },
   { slot: "trinket1", id: 249343, source: "Chimaerus", stats: ["mastery"] },
-  { slot: "trinket2", id: 249341, source: "Fallen-King Salhadaar", stats: ["haste"] },
+  { slot: "trinket2", id: 249809, source: "Windrunner Spire", stats: ["mastery"] },
   { slot: "main_hand", id: 193710, source: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { slot: "off_hand", id: 258531, source: "Algeth'ar Academy", stats: ["mastery","vers"] },
 ];
@@ -54,6 +54,8 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
+  { forSlot: "back", id: 239661, source: "Crafted", stats: ["mastery","vers"] },
+  { forSlot: "chest", id: 268285, source: "Rotmire", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 249963, source: "Tier", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 251169, source: "Maisara Caverns", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249368, source: "Crown of the Cosmos", stats: ["haste","mastery"] },
@@ -72,13 +74,14 @@ export var STAT_CACHE_KEY = "holy-paladin-stat-cache-v1";
 
 export var KNOWN_STATS = {
   151309:["haste","vers"],151327:["haste","mastery"],151329:["haste","mastery"],151332:["haste","vers"],
-  193710:["haste","mastery"],193718:[],221200:["mastery","vers"],240949:[],
-  241140:["mastery","vers"],249287:["haste","mastery"],249294:["haste","mastery"],249332:["haste","mastery"],
-  249341:["haste"],249343:["mastery"],249368:["haste","mastery"],249369:["haste","mastery"],
-  249958:["haste","mastery"],249960:["crit","haste"],249961:["haste","mastery"],249962:["haste","vers"],
-  249963:["haste","mastery"],249964:["haste","mastery"],250247:["haste","mastery"],250256:[],
+  193710:["haste","mastery"],193718:[],221200:["mastery","vers"],237834:[],
+  239656:[],239661:["mastery","vers"],249287:["haste","mastery"],249294:["haste","mastery"],
+  249332:["haste","mastery"],249343:["mastery"],249368:["haste","mastery"],249369:["haste","mastery"],
+  249809:["mastery"],249958:["haste","mastery"],249960:["crit","haste"],249961:["haste","mastery"],
+  249962:["haste","vers"],249963:["haste","mastery"],249964:["haste","mastery"],250256:[],
   251093:["haste","mastery"],251096:["haste","vers"],251107:["haste","mastery"],251115:["haste","mastery"],
   251122:["haste","mastery"],251164:["haste","mastery"],251169:["haste","mastery"],251206:["mastery","vers"],
   251208:["haste","vers"],258531:["mastery","vers"],258579:["mastery","vers"],263193:["haste","mastery"],
+  268285:["haste","mastery"],268289:["crit","mastery"],268290:["haste","mastery"],268291:["crit","mastery"],
 };
 

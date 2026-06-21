@@ -57,13 +57,16 @@ export var ALTS = [
   { forSlot: "back", id: 258575, source: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "back", id: 260312, source: "Magisters' Terrace", stats: ["crit","haste"] },
   { forSlot: "chest", id: 251159, source: "Magisters' Terrace", stats: ["haste","mastery"] },
+  { forSlot: "chest", id: 258586, source: "Skyreach", stats: ["haste","mastery"] },
   { forSlot: "hands", id: 151318, source: "Seat of the Triumvirate", stats: ["crit","haste"] },
+  { forSlot: "head", id: 49807, source: "Seat of the Triumvirate", stats: ["crit","haste"] },
   { forSlot: "head", id: 251140, source: "Magisters' Terrace", stats: ["haste","mastery"] },
-  { forSlot: "neck", id: 250247, source: "Midnight Falls", stats: ["haste","mastery"] },
+  { forSlot: "head", id: 268283, source: "Rotmire", stats: ["crit","haste"] },
+  { forSlot: "neck", id: 250247, source: "Pit of Saron", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251096, source: "Windrunner Spire", stats: ["haste","vers"] },
   { forSlot: "ring", id: 49812, source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "ring", id: 193708, source: "Algeth'ar Academy", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 249919, source: "Belo'ren", stats: ["crit","mastery"] },
+  { forSlot: "ring", id: 249919, source: "Belo'ren Child of Al'ar", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 151319, source: "Seat of the Triumvirate", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 251092, source: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "waist", id: 49806, source: "Pit of Saron", stats: ["crit","haste"] },
@@ -72,6 +75,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 193710, source: "Algeth'ar Academy", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249283, source: "Belo'ren", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249294, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 258436, source: "Skyreach", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 258438, source: "Skyreach", stats: ["haste","mastery"] },
 ];
 
@@ -90,7 +94,8 @@ export var KNOWN_STATS = {
   251092:["haste","mastery"],251096:["haste","vers"],251103:["haste","vers"],251122:["haste","mastery"],
   251140:["haste","mastery"],251159:["haste","mastery"],251166:["haste","vers"],251171:["haste","mastery"],
   251204:["haste","vers"],251210:["haste","vers"],251216:["haste","mastery"],251217:["crit","haste"],
-  251513:["crit","mastery"],252420:[],258438:["haste","mastery"],258575:["crit","mastery"],
-  260235:[],260312:["crit","haste"],260408:["crit"],260423:["crit","haste"],
+  251513:["crit","mastery"],252420:[],258436:["haste","mastery"],258438:["haste","mastery"],
+  258575:["crit","mastery"],258586:["haste","mastery"],260235:[],260312:["crit","haste"],
+  260408:["crit"],260423:["crit","haste"],268283:["crit","haste"],
 };
 

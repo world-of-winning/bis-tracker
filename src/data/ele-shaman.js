@@ -55,17 +55,19 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "back", id: 251190, source: "Skyreach", stats: ["haste","mastery"] },
+  { forSlot: "feet", id: 268287, source: "Rotmire", stats: ["haste","mastery"] },
   { forSlot: "hands", id: 249325, source: "Crown of the Cosmos", stats: ["crit","mastery"] },
   { forSlot: "legs", id: 251215, source: "Nexus-Point Xenas", stats: ["crit","mastery"] },
-  { forSlot: "neck", id: 250247, source: "Midnight Falls", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 250247, source: "Pit of Saron", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251096, source: "Windrunner Spire", stats: ["haste","vers"] },
   { forSlot: "ring", id: 249369, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 268290, source: "Rotmire", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 50233, source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "waist", id: 244611, source: "Crafted", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 49807, source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 249284, source: "Belo'ren", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 249295, source: "Windrunner Spire", stats: ["crit","haste"] },
-  { forSlot: "weapon", id: 251175, source: "Maisara Caverns", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 251175, source: "Algeth'ar Academy & Maisara Caverns", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251178, source: "Maisara Caverns", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 258049, source: "Skyreach", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 258525, source: "Seat of the Triumvirate", stats: ["crit","haste"] },
@@ -87,5 +89,6 @@ export var KNOWN_STATS = {
   251111:["crit","haste"],251115:["haste","mastery"],251170:["crit","mastery"],251175:["crit","mastery"],
   251178:["crit","haste"],251190:["haste","mastery"],251209:["mastery","vers"],251215:["crit","mastery"],
   258049:["crit","mastery"],258525:["crit","haste"],258576:["crit","haste"],260312:["crit","haste"],
+  268287:["haste","mastery"],268290:["haste","mastery"],
 };
 

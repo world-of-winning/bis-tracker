@@ -55,14 +55,17 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "back", id: 251190, source: "Skyreach", stats: ["haste","mastery"] },
+  { forSlot: "feet", id: 268287, source: "Rotmire", stats: ["haste","mastery"] },
   { forSlot: "hands", id: 249325, source: "Crown of the Cosmos", stats: ["crit","mastery"] },
   { forSlot: "legs", id: 251215, source: "Nexus-Point Xenas", stats: ["crit","mastery"] },
-  { forSlot: "neck", id: 250247, source: "Midnight Falls", stats: ["haste","mastery"] },
+  { forSlot: "neck", id: 250247, source: "Pit of Saron", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251096, source: "Windrunner Spire", stats: ["haste","vers"] },
   { forSlot: "ring", id: 249369, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { forSlot: "ring", id: 268290, source: "Rotmire", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 50233, source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "waist", id: 244611, source: "Crafted", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249283, source: "Belo'ren", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 258436, source: "Skyreach", stats: ["haste","mastery"] },
 ];
 
 export var PRIORITY_STATS = ["haste","mastery","crit","vers"];
@@ -78,7 +81,8 @@ export var KNOWN_STATS = {
   249977:["crit","haste"],249979:["haste","mastery"],249980:["crit","mastery"],249982:["haste","mastery"],
   250144:[],250247:["haste","mastery"],250256:[],251089:["haste","mastery"],
   251093:["haste","mastery"],251096:["haste","vers"],251115:["haste","mastery"],251170:["crit","mastery"],
-  251190:["haste","mastery"],251209:["mastery","vers"],251215:["crit","mastery"],258438:["haste","mastery"],
-  258576:["crit","haste"],260312:["crit","haste"],
+  251190:["haste","mastery"],251209:["mastery","vers"],251215:["crit","mastery"],258436:["haste","mastery"],
+  258438:["haste","mastery"],258576:["crit","haste"],260312:["crit","haste"],268287:["haste","mastery"],
+  268290:["haste","mastery"],
 };
 
