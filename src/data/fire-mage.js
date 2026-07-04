@@ -25,7 +25,7 @@ export var BIS = [
   { slot: "hands", id: 250061, source: "Tier", stats: ["haste","mastery"] },
   { slot: "waist", id: 249376, source: "Belo'ren", stats: ["haste","mastery"] },
   { slot: "legs", id: 250059, source: "Tier", stats: ["crit","haste"] },
-  { slot: "feet", id: 250062, source: "Tier", stats: ["haste","mastery"] },
+  { slot: "feet", id: 250062, source: "Catalyst", stats: ["haste","mastery"] },
   { slot: "finger1", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "finger2", id: 268290, source: "Rotmire", stats: ["haste","mastery"] },
   { slot: "trinket1", id: 250144, source: "Windrunner Spire", stats: [] },

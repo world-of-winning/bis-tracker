@@ -23,7 +23,7 @@ export var BIS = [
   { slot: "chest", id: 250063, source: "Tier", stats: ["crit","haste"] },
   { slot: "wrist", id: 239648, source: "Crafted", stats: [] },
   { slot: "hands", id: 250061, source: "Tier", stats: ["haste","mastery"] },
-  { slot: "waist", id: 250057, source: "Tier", stats: ["crit","haste"] },
+  { slot: "waist", id: 250057, source: "Catalyst", stats: ["crit","haste"] },
   { slot: "legs", id: 250059, source: "Tier", stats: ["crit","haste"] },
   { slot: "feet", id: 268282, source: "Rotmire", stats: ["crit","mastery"] },
   { slot: "finger1", id: 249919, source: "Belo'ren", stats: ["crit","mastery"] },
@@ -55,7 +55,7 @@ export var MYTHIC = [
 export var ALTS = [
   { forSlot: "chest", id: 49825, source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "chest", id: 151303, source: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "feet", id: 250062, source: "Tier", stats: ["haste","mastery"] },
+  { forSlot: "feet", id: 250062, source: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 268287, source: "Rotmire", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249337, source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "neck", id: 249368, source: "Crown of the Cosmos", stats: ["haste","mastery"] },

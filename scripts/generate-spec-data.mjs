@@ -661,12 +661,15 @@ function toGearRows(rows) {
 }
 
 // ─── Source normalization (shared by generation + --fix) ─────
+// NOTE: bare "Catalyst" is deliberately absent — Catalyst also produces
+// non-tier embellishment items (e.g. waist/feet slots with no set bonus),
+// so it cannot be assumed to mean "Tier" from text alone. Real Tier-set
+// detection happens via the item's Wowhead "item-set=" marker (see
+// hasItemSet/TIER_SLOTS) at generation time and in normalizeDataFiles.
 const SOURCE_FIXES = {
     "Tier Set": "Tier",
     "Tier/Catalyst": "Tier",
     "Tier / Catalyst": "Tier",
-    Catalyst: "Tier",
-    "Catalyst / Raid": "Tier",
     Craft: "Crafted",
     Crafting: "Crafted",
     Blacksmithing: "Crafted",
@@ -926,6 +929,31 @@ async function searchItemId(name) {
     return id;
 }
 
+// Tier-set armor always occupies these 5 slots. Combined with the
+// per-spec set-bonus marker below, this gives a per-item ground truth
+// instead of guessing from Maxroll's free-text source label
+// ("Catalyst", "Tier / Catalyst", etc).
+const TIER_SLOTS = new Set(["head", "shoulder", "chest", "hands", "legs"]);
+
+// A bare "/item-set=" link isn't enough — Wowhead uses it for any item
+// set, including old legacy dungeon sets and crafted embellishment sets
+// that have nothing to do with the current class tier system (verified:
+// a legacy 2pc ring set and a 3pc crafted embellishment set both carry
+// "/item-set=" but neither is Tier). Two things are true of every real
+// class tier set and only real class tier sets:
+//   1. Per-spec set bonus text ("(2) Set Holy:" / "(2) Set Protection:"),
+//      rendered as "itemeffectspecNN:" HTML comments.
+//   2. Always exactly a 5-piece set (head/shoulder/chest/hands/legs),
+//      shown as "(0/5)" next to the set link.
+// Require both so a hypothetical non-5-piece item with spec-conditional
+// text (or vice versa) can't slip through on either signal alone.
+function hasItemSet(tooltipHtml) {
+    return (
+        /itemeffectspec\d+:/.test(tooltipHtml) &&
+        /\(\d+\/5\)/.test(tooltipHtml)
+    );
+}
+
 async function fetchItemTooltip(id) {
     // Fetch both locales to populate cache (used by generate-item-names)
     await fetchTooltip(id, 1); // Korean — cached for item name generation
@@ -939,7 +967,7 @@ async function fetchItemTooltip(id) {
     if (tooltip.includes("<!--rtg49-->")) stats.push("mastery");
     if (tooltip.includes("<!--rtg40-->")) stats.push("vers");
 
-    return { stats };
+    return { stats, isTier: hasItemSet(tooltip) };
 }
 
 // Detect weapon type from Maxroll gear table slot names.
@@ -1019,7 +1047,7 @@ async function buildGearData(gearRows, weaponType) {
         if (!id) continue;
 
         if (lastSearchWasNetwork) await delay(200);
-        const { stats } = await fetchItemTooltip(id);
+        const { stats, isTier } = await fetchItemTooltip(id);
 
         const slot = resolveSlot(slotName, weaponType);
         if (!slot) {
@@ -1030,7 +1058,7 @@ async function buildGearData(gearRows, weaponType) {
         items.push({
             slot,
             id,
-            source: row.source,
+            source: isTier && TIER_SLOTS.has(slot) ? "Tier" : row.source,
             stats,
         });
         knownStats[id] = stats;
@@ -1632,11 +1660,16 @@ function normalizeDataFiles(targetKey) {
             );
         }
 
-        // Normalize source/dungeon field values
+        // Normalize source/dungeon field values. Item id (always present
+        // earlier on the same line) lets us check the real Wowhead
+        // "item-set=" marker instead of guessing "Tier" from free text.
         content = content.replace(
-            /((?:source|dungeon):\s*)"([^"]+)"/g,
-            (match, prefix, value) => {
-                const normalized = normalizeSource(value);
+            /(id:\s*(\d+),\s*(?:source|dungeon):\s*)"([^"]+)"/g,
+            (match, prefix, id, value) => {
+                const cached = cacheGet(`${id}-0`);
+                const isTier =
+                    cached && hasItemSet(cached.tooltip || "");
+                const normalized = isTier ? "Tier" : normalizeSource(value);
                 if (normalized !== value) {
                     changes.push(`${value} → ${normalized}`);
                     return `${prefix}"${normalized}"`;

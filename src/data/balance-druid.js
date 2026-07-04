@@ -16,7 +16,7 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", id: 250024, source: "Rotmire", stats: ["haste","mastery"] },
+  { slot: "head", id: 250024, source: "Tier", stats: ["haste","mastery"] },
   { slot: "neck", id: 268291, source: "Rotmire", stats: ["crit","mastery"] },
   { slot: "shoulder", id: 250022, source: "Tier", stats: ["crit","mastery"] },
   { slot: "back", id: 249370, source: "Vaelgor", stats: ["haste","mastery"] },

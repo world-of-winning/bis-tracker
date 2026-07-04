@@ -16,15 +16,15 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", id: 249988, source: "Lightblinded Vanguard", stats: ["crit","haste"] },
+  { slot: "head", id: 249988, source: "Tier", stats: ["crit","haste"] },
   { slot: "neck", id: 268291, source: "Sporefall", stats: ["crit","mastery"] },
   { slot: "shoulder", id: 151323, source: "Seat of the Triumvirate", stats: ["haste","mastery"] },
   { slot: "back", id: 239656, source: "Crafted", stats: [] },
-  { slot: "chest", id: 249991, source: "Chimaerus", stats: ["crit","haste"] },
+  { slot: "chest", id: 249991, source: "Tier", stats: ["crit","haste"] },
   { slot: "wrist", id: 249304, source: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
-  { slot: "hands", id: 249989, source: "Vorasius", stats: ["crit","mastery"] },
+  { slot: "hands", id: 249989, source: "Tier", stats: ["crit","mastery"] },
   { slot: "waist", id: 249371, source: "Chimaerus", stats: ["haste","mastery"] },
-  { slot: "legs", id: 249987, source: "Catalyst legs from Sporefall", stats: ["crit","mastery"] },
+  { slot: "legs", id: 249987, source: "Tier", stats: ["crit","mastery"] },
   { slot: "feet", id: 268287, source: "Sporefall", stats: ["haste","mastery"] },
   { slot: "finger1", id: 268290, source: "Sporefall", stats: ["haste","mastery"] },
   { slot: "finger2", id: 249920, source: "Midnight Falls", stats: ["haste"] },

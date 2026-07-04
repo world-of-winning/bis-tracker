@@ -2,9 +2,16 @@
 // { date: "YYYY-MM-DD", text: { ko, en } }
 export var CHANGELOG = [
     {
+        date: "2026-07-04",
+        text: {
+            ko: "티어 세트 판정 로직 개선 — 세트효과 마커 기반 검증으로 34개 스펙 소스 라벨 정정, 사제 다리/발 오류 아이템 수정",
+            en: "Improve Tier-set detection — verify via set-bonus marker instead of text guessing, fixing source labels across 34 specs and correcting invalid priest legs/feet items",
+        },
+    },
+    {
         date: "2026-06-21",
         text: {
-            ko: "Rotmire 던전 신규 아이템 추가 — 전 40 스펙 ALTS 업데이트",
+            ko: "부식수렁 던전 신규 아이템 추가 — 전 40 스펙 ALTS 업데이트",
             en: "Add Rotmire dungeon items — ALTS updated for all 40 specs",
         },
     },

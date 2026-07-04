@@ -30,8 +30,8 @@ export var BIS = [
   { slot: "finger2", id: 251513, source: "Crafted", stats: ["crit","mastery"] },
   { slot: "trinket1", id: 249343, source: "Chimaerus", stats: ["mastery"] },
   { slot: "trinket2", id: 249346, source: "Vaelgor & Ezzorak", stats: [] },
-  { slot: "main_hand", id: 260408, source: "Midnight Falls & Lightblinded Vanguard", stats: ["crit"] },
-  { slot: "off_hand", id: 249294, source: "Midnight Falls & Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { slot: "main_hand", id: 260408, source: "Midnight Falls", stats: ["crit"] },
+  { slot: "off_hand", id: 249294, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
 ];
 
 export var MYTHIC = [

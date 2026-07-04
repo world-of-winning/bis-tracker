@@ -55,7 +55,7 @@ export var MYTHIC = [
 export var ALTS = [
   { forSlot: "back", id: 251206, source: "Nexus-Point Xenas", stats: ["mastery","vers"] },
   { forSlot: "chest", id: 151303, source: "Seat of the Triumvirate", stats: ["crit","haste"] },
-  { forSlot: "feet", id: 250062, source: "Tier", stats: ["haste","mastery"] },
+  { forSlot: "feet", id: 250062, source: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 268287, source: "Rotmire", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 249337, source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
   { forSlot: "neck", id: 249368, source: "Crown of the Cosmos", stats: ["haste","mastery"] },

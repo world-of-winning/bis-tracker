@@ -16,16 +16,16 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", id: 250015, source: "Lightblinded Vanguard", stats: ["crit","haste"] },
+  { slot: "head", id: 250015, source: "Tier", stats: ["crit","haste"] },
   { slot: "neck", id: 249368, source: "Crown of the Cosmos", stats: ["haste","mastery"] },
-  { slot: "shoulder", id: 250013, source: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
-  { slot: "back", id: 250010, source: "Tier", stats: ["crit","haste"] },
-  { slot: "chest", id: 250018, source: "Chimaerus", stats: ["crit","haste"] },
+  { slot: "shoulder", id: 250013, source: "Tier", stats: ["haste","mastery"] },
+  { slot: "back", id: 250010, source: "Catalyst", stats: ["crit","haste"] },
+  { slot: "chest", id: 250018, source: "Tier", stats: ["crit","haste"] },
   { slot: "wrist", id: 244576, source: "Crafted", stats: [] },
   { slot: "hands", id: 249321, source: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
-  { slot: "waist", id: 250012, source: "Tier", stats: ["haste","mastery"] },
-  { slot: "legs", id: 250014, source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
-  { slot: "feet", id: 250017, source: "Tier", stats: ["crit","haste"] },
+  { slot: "waist", id: 250012, source: "Catalyst", stats: ["haste","mastery"] },
+  { slot: "legs", id: 250014, source: "Tier", stats: ["haste","mastery"] },
+  { slot: "feet", id: 250017, source: "Catalyst", stats: ["crit","haste"] },
   { slot: "finger1", id: 251513, source: "Crafted", stats: ["crit","mastery"] },
   { slot: "finger2", id: 249919, source: "Belo'ren", stats: ["crit","mastery"] },
   { slot: "trinket1", id: 249343, source: "Chimaerus", stats: ["mastery"] },

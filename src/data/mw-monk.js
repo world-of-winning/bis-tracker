@@ -67,7 +67,7 @@ export var ALTS = [
   { forSlot: "ring", id: 249369, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 249919, source: "Belo'ren Child of Al'ar", stats: ["crit","mastery"] },
   { forSlot: "ring", id: 268290, source: "Rotmire", stats: ["haste","mastery"] },
-  { forSlot: "shoulder", id: 250013, source: "Fallen-King Salhadaar", stats: ["haste","mastery"] },
+  { forSlot: "shoulder", id: 250013, source: "Tier", stats: ["haste","mastery"] },
   { forSlot: "shoulder", id: 251092, source: "Windrunner Spire", stats: ["haste","mastery"] },
   { forSlot: "waist", id: 49806, source: "Pit of Saron", stats: ["crit","haste"] },
   { forSlot: "waist", id: 151316, source: "Seat of the Triumvirate", stats: ["haste","vers"] },

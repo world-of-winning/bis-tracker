@@ -20,7 +20,7 @@ export var BIS = [
   { slot: "neck", id: 268291, source: "Rotmire", stats: ["crit","mastery"] },
   { slot: "shoulder", id: 249959, source: "Tier", stats: ["crit","mastery"] },
   { slot: "back", id: 239656, source: "Crafted", stats: [] },
-  { slot: "chest", id: 249964, source: "Rotmire + Catalyst", stats: ["haste","mastery"] },
+  { slot: "chest", id: 249964, source: "Tier", stats: ["haste","mastery"] },
   { slot: "wrist", id: 151328, source: "Midnight Falls", stats: ["crit","haste"] },
   { slot: "hands", id: 151332, source: "Seat of the Triumvirate", stats: ["haste","vers"] },
   { slot: "waist", id: 268289, source: "Rotmire", stats: ["crit","mastery"] },

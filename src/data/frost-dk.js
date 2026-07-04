@@ -20,7 +20,7 @@ export var BIS = [
   { slot: "neck", id: 268291, source: "Rotmire", stats: ["crit","mastery"] },
   { slot: "shoulder", id: 249968, source: "Tier", stats: ["haste","vers"] },
   { slot: "back", id: 239656, source: "Crafted", stats: [] },
-  { slot: "chest", id: 249973, source: "Rotmire", stats: ["crit","haste"] },
+  { slot: "chest", id: 249973, source: "Tier", stats: ["crit","haste"] },
   { slot: "wrist", id: 237834, source: "Crafted", stats: [] },
   { slot: "hands", id: 249971, source: "Tier", stats: ["haste","mastery"] },
   { slot: "waist", id: 268289, source: "Rotmire", stats: ["crit","mastery"] },

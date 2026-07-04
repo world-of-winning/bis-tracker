@@ -16,15 +16,15 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", id: 249970, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { slot: "head", id: 249970, source: "Tier", stats: ["haste","mastery"] },
   { slot: "neck", id: 240950, source: "Crafted", stats: [] },
-  { slot: "shoulder", id: 249968, source: "Fallen-King Salhadaar", stats: ["haste","vers"] },
+  { slot: "shoulder", id: 249968, source: "Tier", stats: ["haste","vers"] },
   { slot: "back", id: 251161, source: "Maisara Caverns", stats: ["crit","vers"] },
   { slot: "chest", id: 268285, source: "Rotmire", stats: ["haste","mastery"] },
   { slot: "wrist", id: 251203, source: "Nexus-Point Xenas", stats: ["crit","vers"] },
-  { slot: "hands", id: 249971, source: "Vorasius", stats: ["haste","mastery"] },
+  { slot: "hands", id: 249971, source: "Tier", stats: ["haste","mastery"] },
   { slot: "waist", id: 268289, source: "Rotmire", stats: ["crit","mastery"] },
-  { slot: "legs", id: 249969, source: "Vaelgor & Ezzorak", stats: ["crit","mastery"] },
+  { slot: "legs", id: 249969, source: "Tier", stats: ["crit","mastery"] },
   { slot: "feet", id: 151330, source: "Seat of the Triumvirate", stats: ["mastery","vers"] },
   { slot: "finger1", id: 241140, source: "Crafted", stats: ["mastery","vers"] },
   { slot: "finger2", id: 151308, source: "Seat of the Triumvirate", stats: ["crit","vers"] },

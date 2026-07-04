@@ -16,13 +16,13 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", id: 250024, source: "Rotmire", stats: ["haste","mastery"] },
+  { slot: "head", id: 250024, source: "Tier", stats: ["haste","mastery"] },
   { slot: "neck", id: 268291, source: "Rotmire", stats: ["crit","mastery"] },
-  { slot: "shoulder", id: 250022, source: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
+  { slot: "shoulder", id: 250022, source: "Tier", stats: ["crit","mastery"] },
   { slot: "back", id: 249370, source: "Vaelgor & Ezzorak", stats: ["haste","mastery"] },
-  { slot: "chest", id: 250027, source: "Chimaerus", stats: ["crit","mastery"] },
+  { slot: "chest", id: 250027, source: "Tier", stats: ["crit","mastery"] },
   { slot: "wrist", id: 244576, source: "Crafted", stats: [] },
-  { slot: "hands", id: 250025, source: "Vorasius", stats: ["haste","vers"] },
+  { slot: "hands", id: 250025, source: "Tier", stats: ["haste","vers"] },
   { slot: "waist", id: 268286, source: "Rotmire", stats: ["crit","mastery"] },
   { slot: "legs", id: 249312, source: "Crown of the Cosmos", stats: ["haste","mastery"] },
   { slot: "feet", id: 244569, source: "Crafted", stats: [] },

@@ -16,16 +16,16 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", id: 249961, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
+  { slot: "head", id: 249961, source: "Tier", stats: ["haste","mastery"] },
   { slot: "neck", id: 249337, source: "Fallen-King Salhadaar", stats: ["crit","haste"] },
-  { slot: "shoulder", id: 249959, source: "Fallen-King Salhadaar", stats: ["crit","mastery"] },
+  { slot: "shoulder", id: 249959, source: "Tier", stats: ["crit","mastery"] },
   { slot: "back", id: 260312, source: "Magisters' Terrace", stats: ["crit","haste"] },
-  { slot: "chest", id: 249964, source: "Chimaerus", stats: ["haste","mastery"] },
+  { slot: "chest", id: 249964, source: "Tier", stats: ["haste","mastery"] },
   { slot: "wrist", id: 237834, source: "Crafted", stats: [] },
-  { slot: "hands", id: 249962, source: "Windrunner Spire", stats: ["haste","vers"] },
-  { slot: "waist", id: 249958, source: "Tier", stats: ["haste","mastery"] },
-  { slot: "legs", id: 249960, source: "Vaelgor & Ezzorak", stats: ["crit","haste"] },
-  { slot: "feet", id: 249963, source: "Tier", stats: ["haste","mastery"] },
+  { slot: "hands", id: 249962, source: "Tier", stats: ["haste","vers"] },
+  { slot: "waist", id: 249958, source: "Catalyst", stats: ["haste","mastery"] },
+  { slot: "legs", id: 249960, source: "Tier", stats: ["crit","haste"] },
+  { slot: "feet", id: 249963, source: "Catalyst", stats: ["haste","mastery"] },
   { slot: "finger1", id: 249920, source: "Midnight Falls", stats: ["haste"] },
   { slot: "finger2", id: 251217, source: "Nexus-Point Xenas", stats: ["crit","haste"] },
   { slot: "trinket1", id: 249343, source: "Chimaerus", stats: ["mastery"] },

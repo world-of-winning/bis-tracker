@@ -16,15 +16,15 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", id: 249988, source: "Lightblinded Vanguard", stats: ["crit","haste"] },
+  { slot: "head", id: 249988, source: "Tier", stats: ["crit","haste"] },
   { slot: "neck", id: 268291, source: "Rotmire", stats: ["crit","mastery"] },
   { slot: "shoulder", id: 151323, source: "Seat of the Triumvirate", stats: ["haste","mastery"] },
   { slot: "back", id: 239656, source: "Crafted", stats: [] },
-  { slot: "chest", id: 249991, source: "Chimaerus", stats: ["crit","haste"] },
+  { slot: "chest", id: 249991, source: "Tier", stats: ["crit","haste"] },
   { slot: "wrist", id: 244584, source: "Crafted", stats: [] },
-  { slot: "hands", id: 249989, source: "Vorasius", stats: ["crit","mastery"] },
+  { slot: "hands", id: 249989, source: "Tier", stats: ["crit","mastery"] },
   { slot: "waist", id: 249303, source: "Lightblinded Vanguard", stats: ["crit","vers"] },
-  { slot: "legs", id: 249987, source: "Rotmire + Catalyst", stats: ["crit","mastery"] },
+  { slot: "legs", id: 249987, source: "Tier", stats: ["crit","mastery"] },
   { slot: "feet", id: 249990, source: "Rotmire + Catalyst", stats: ["crit","mastery"] },
   { slot: "finger1", id: 268290, source: "Rotmire", stats: ["haste","mastery"] },
   { slot: "finger2", id: 249919, source: "Belo'ren", stats: ["crit","mastery"] },
