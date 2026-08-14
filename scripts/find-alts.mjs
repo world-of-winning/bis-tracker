@@ -12,6 +12,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { fetchTooltip, saveCache } from './wowhead-cache.mjs';
+import { DUNGEONS } from '../src/data/shared.js';
 
 // ─── Wowhead class restriction check ────────────────────────
 const CLASS_NAME_MAP = {
@@ -62,9 +63,12 @@ async function fetchTooltipInfo(itemId) {
       weaponType = 'shield';
     }
 
-    return { classRestriction, weaponType };
+    const slotMatch = tooltip.match(/<td>(Head|Neck|Shoulder|Back|Chest|Wrist|Hands|Waist|Legs|Feet|Finger|Trinket)<\/td>/);
+    const invSlot = slotMatch ? slotMatch[1] : null;
+
+    return { classRestriction, weaponType, invSlot };
   } catch {
-    return { classRestriction: null, weaponType: null };
+    return { classRestriction: null, weaponType: null, invSlot: null };
   }
 }
 
@@ -106,6 +110,19 @@ const UNIVERSAL_SLOTS = new Set(['neck', 'back', 'finger1', 'finger2', 'trinket1
 // Weapon slots (complex compatibility, skip for now)
 const WEAPON_SLOTS = new Set(['main_hand', 'off_hand']);
 
+// What inventory slot an item must actually occupy to be offered for a gear
+// slot. Maxroll occasionally files an item under the wrong one — a tier helm
+// listed in a Neck row — and cross-referencing would then offer that helm as a
+// neck alt to every spec sharing the stats. The guide's own spec keeps the bad
+// row; other specs should not inherit it.
+const SLOT_INV_EXPECT = {
+  head: 'Head', neck: 'Neck', shoulder: 'Shoulder', back: 'Back',
+  chest: 'Chest', wrist: 'Wrist', hands: 'Hands', waist: 'Waist',
+  legs: 'Legs', feet: 'Feet',
+  finger1: 'Finger', finger2: 'Finger',
+  trinket1: 'Trinket', trinket2: 'Trinket',
+};
+
 // Slot groups for forSlot naming
 function getForSlot(simcSlot) {
   const map = {
@@ -140,7 +157,7 @@ function parseSpecFile(filePath) {
     let m;
     while ((m = re.exec(bisMatch[1]))) {
       bisItems.push({
-        slot: m[1], simcSlot: m[2] || m[1],
+        slot: m[1], simcSlot: m[2] || m[1], from: 'BIS',
         id: parseInt(m[3]), source: m[4], stats: JSON.parse(m[5]),
       });
     }
@@ -153,7 +170,7 @@ function parseSpecFile(filePath) {
     let m;
     while ((m = re.exec(mythicMatch[1]))) {
       bisItems.push({
-        slot: m[1], simcSlot: m[1],
+        slot: m[1], simcSlot: m[1], from: 'MYTHIC',
         id: parseInt(m[2]), source: m[3], stats: JSON.parse(m[4]),
       });
     }
@@ -165,6 +182,25 @@ function parseSpecFile(filePath) {
 
   return { simcClass, armorType: ARMOR_TYPE[simcClass], bisItems, isDual, content };
 }
+
+// A spec whose items name no dungeon from the current pool is running on an
+// outdated Maxroll guide. Raid-only sources are fine — MYTHIC always carries
+// dungeon drops, so a current spec always matches at least one.
+function isStaleSeason(items) {
+  return items.length > 0 && !items.some(i => DUNGEONS[i.source]);
+}
+
+// MYTHIC is dungeon drops by definition, so a source outside the current pool
+// is a retired dungeon — a guide Maxroll has updated only in part. Indexing it
+// would offer every other spec an alt it can no longer farm.
+function isRetiredDungeonDrop(item) {
+  return item.from === 'MYTHIC' && !DUNGEONS[item.source];
+}
+
+// Every source the current crawl produced — dungeons, raid bosses, Tier,
+// Crafted. Filled while the index is built and used to decide whether a
+// preserved weapon alt still belongs to this season.
+const CURRENT_SOURCES = new Set();
 
 // ─── Build global item index ─────────────────────────────────
 function buildItemIndex() {
@@ -183,7 +219,18 @@ function buildItemIndex() {
   for (const file of files) {
     const { simcClass, armorType, bisItems } = parseSpecFile(resolve(DATA_DIR, file));
 
+    // Maxroll updates guides one at a time, so at a season boundary a few are
+    // still on last season's dungeons. Indexing those would hand every other
+    // spec alts pointing at dungeons that are no longer in rotation, which is
+    // worse than the stale spec simply being stale on its own.
+    if (isStaleSeason(bisItems)) {
+      console.log(`  skip ${file}: no current-season dungeon in its data (Maxroll guide not updated yet)`);
+      continue;
+    }
+
     for (const item of bisItems) {
+      if (isRetiredDungeonDrop(item)) continue;
+      for (const part of item.source.split(' & ')) CURRENT_SOURCES.add(part.trim());
       const normSlot = normalizeSlot(item.simcSlot);
 
       if (!slotItems.has(normSlot)) slotItems.set(normSlot, new Map());
@@ -244,6 +291,15 @@ async function findAltsForSpec(specKey, index) {
         const armorTypes = itemSlotArmor.get(armKey);
         if (!armorTypes || !armorTypes.has(armorType)) continue;
       }
+      const wantInv = SLOT_INV_EXPECT[bis.simcSlot];
+      if (wantInv) {
+        const { invSlot } = await fetchTooltipInfo(id);
+        if (invSlot && invSlot !== wantInv) {
+          console.log(`  skip ${id}: ${invSlot} item offered for ${bis.simcSlot}`);
+          continue;
+        }
+      }
+
       // Check class restriction and weapon type via Wowhead tooltip
       const classes = itemClasses.get(id);
       const needsCheck = (classes && !classes.has(simcClass)) || WEAPON_SLOTS.has(bis.simcSlot);
@@ -291,7 +347,13 @@ function updateSpecFile(specKey, alts) {
   const filePath = resolve(DATA_DIR, `${specKey}.js`);
   let content = readFileSync(filePath, 'utf8');
 
-  // Preserve existing weapon alts added by generate-spec-data (skipped 2H/1H options)
+  // Preserve existing weapon alts added by generate-spec-data (skipped 2H/1H
+  // options), which this script cannot derive from the index.
+  //
+  // Weapon alts ONLY, and only ones still sourced from somewhere in the current
+  // season. Carrying over every unrecognised id would make ALTS append-only:
+  // a retired season's items would never leave the file, because nothing else
+  // ever deletes them.
   const existingAltsMatch = content.match(/export var ALTS = \[([^]*?)\];/);
   if (existingAltsMatch) {
     const altIds = new Set(alts.map(a => a.id));
@@ -299,7 +361,10 @@ function updateSpecFile(specKey, alts) {
     let m;
     while ((m = existingRe.exec(existingAltsMatch[1]))) {
       const id = parseInt(m[2]);
-      if (!altIds.has(id)) {
+      const stillCurrent = m[3]
+        .split(' & ')
+        .every(part => CURRENT_SOURCES.has(part.trim()));
+      if (m[1] === 'weapon' && stillCurrent && !altIds.has(id)) {
         alts.push({
           forSlot: m[1], id,
           source: m[3], stats: JSON.parse(m[4]),

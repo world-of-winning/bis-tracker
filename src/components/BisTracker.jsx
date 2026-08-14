@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { load, save as persist } from '../storage.js';
-import { DUNGEONS, TIERS, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS, SPEC_PRIMARY_STAT } from '../data/shared.js';
+import { DUNGEONS, TIERS, DEFAULT_TIER, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS, SPEC_PRIMARY_STAT } from '../data/shared.js';
 import { findSpecBySimC } from '../data/specs.js';
 import { useLocale } from '../i18n/index.jsx';
 import { matchBiS } from '../logic/matching.js';
@@ -43,6 +43,12 @@ function collectUnknownIds(gear, bag, currentStats, armorTypes) {
 var NON_DUNGEON_COLORS = { activeBg: "#1a1028", bg: "#1a102844", activeBorder: "#8866aa", border: "#8866aa33", activeText: "#c4aadd", text: "#8866aa", dot: "#8866aa", countHi: "#c4aadd", countLo: "#8866aa44", countNoSr: "#8866aa88" };
 var PREP_COLORS = Object.assign({}, NON_DUNGEON_COLORS, { dot: "#aa88cc" });
 
+// Stored state only survives a season swap if it still names something this
+// build knows about. Season 2 retires every Season 1 dungeon, so restoring an
+// old filter unchecked leaves the user on an empty grid with no active button.
+function validFilter(f, sources) { return f && (f === "all" || sources.has(f)) ? f : "all"; }
+function validTier(k) { return TIERS.some(function(t) { return t.key === k && !t.hidden; }) ? k : DEFAULT_TIER; }
+
 var dungeonFilterColorCache = {};
 function getDungeonFilterColors(c) {
   var key = c.g + c.b + c.t;
@@ -77,6 +83,13 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     mergedAlts.forEach(function(a) { if (DUNGEONS[a.source]) sources.add(a.source); });
     return Object.keys(DUNGEONS).filter(function(d) { return sources.has(d); });
   }, [BIS, mergedAlts]);
+  // Every source string this spec can show — the whitelist a stored filter must pass
+  var itemSources = useMemo(function() {
+    var s = new Set();
+    BIS.forEach(function(b) { s.add(getSource(b)); });
+    mergedAlts.forEach(function(a) { s.add(getSource(a)); });
+    return s;
+  }, [BIS, mergedAlts]);
   // All known good item IDs (BiS + MYTHIC) for alt recognition
   var knownBisIds = useMemo(function() {
     var ids = new Set(BIS.map(function(b) { return b.id; }));
@@ -90,13 +103,13 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var [simcText, setSimcText] = useState("");
   var [sr, setSr] = useState(null);
   var [feedback, setFeedback] = useState(null);
-  var [targetTier, setTargetTier] = useState("hero");
+  var [targetTier, setTargetTier] = useState(DEFAULT_TIER);
   var [loaded, setLoaded] = useState(false);
   var [runtimeStats, setRuntimeStats] = useState({});
   var [runtimeArmorTypes, setRuntimeArmorTypes] = useState({});
   var [runtimePrimaryStats, setRuntimePrimaryStats] = useState({});
   var [importing, setImporting] = useState(false);
-  var targetInfo = TIERS.find(function(t) { return t.key === targetTier; }) || TIERS[1];
+  var targetInfo = TIERS.find(function(t) { return t.key === targetTier; }) || TIERS.find(function(t) { return t.key === DEFAULT_TIER; });
   var expectedArmor = sr && sr.ci && sr.ci.className ? CLASS_ARMOR[sr.ci.className] : null;
   var expectedPrimary = SPEC_PRIMARY_STAT[SPEC_KEY] || null;
   var allStats = useMemo(function() { return Object.assign({}, KNOWN_STATS, runtimeStats); }, [KNOWN_STATS, runtimeStats]);
@@ -124,8 +137,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       if (cachedAT) setRuntimeArmorTypes(cachedAT);
       var cachedPS = load(STAT_CACHE_KEY + "-primary-v4");
       if (cachedPS) setRuntimePrimaryStats(cachedPS);
-      if (d.targetTier) setTargetTier(d.targetTier);
-      if (d.filter) setFilter(d.filter);
+      setTargetTier(validTier(d.targetTier));
+      setFilter(validFilter(d.filter, itemSources));
     } else {
       var cached2 = load(STAT_CACHE_KEY);
       if (cached2) setRuntimeStats(cached2);
@@ -135,7 +148,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       if (cachedPS2) setRuntimePrimaryStats(cachedPS2);
     }
     setLoaded(true);
-  }, [STORAGE_KEY, STAT_CACHE_KEY]);
+  }, [STORAGE_KEY, STAT_CACHE_KEY, itemSources]);
   // Auto-fetch armor types and primary stats for equipped items missing from cache
   useEffect(function() {
     if (!sr || !sr.gear || !sr.ci) return;
@@ -295,10 +308,10 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     var cachedPS3 = load(STAT_CACHE_KEY + "-primary-v4"); setRuntimePrimaryStats(cachedPS3 || {});
     if (d) {
       setAcq(d.acq || {}); setSr(d.sr || null); setSimcOpen(!d.sr);
-      if (d.targetTier) setTargetTier(d.targetTier);
-      setFilter(d.filter || "all");
-    } else { setAcq({}); setSr(null); setTargetTier("hero"); setSimcOpen(false); setFilter("all"); }
-  }, [STORAGE_KEY, STAT_CACHE_KEY]);
+      setTargetTier(validTier(d.targetTier));
+      setFilter(validFilter(d.filter, itemSources));
+    } else { setAcq({}); setSr(null); setTargetTier(DEFAULT_TIER); setSimcOpen(false); setFilter("all"); }
+  }, [STORAGE_KEY, STAT_CACHE_KEY, itemSources]);
   var initialImportDone = useRef(false);
   useEffect(function() {
     if (initialSimcText && initialSimcText.trim() && !initialImportDone.current) {
@@ -381,7 +394,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         )}
       </div>
       <div data-tutorial="tier-buttons" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-        {TIERS.map(function(ti) { var sel = targetTier === ti.key; return (<button key={ti.key} className="tier-btn" onClick={function() { changeTarget(ti.key); }} style={{ borderColor: sel ? ti.color : ti.color + "44", color: ti.color, opacity: sel ? 1 : 0.5, background: sel ? ti.color + "22" : "transparent" }}>{t("tiers." + ti.key) + " (" + ti.max + ")"}</button>); })}
+        {TIERS.filter(function(ti) { return !ti.hidden; }).map(function(ti) { var sel = targetTier === ti.key; return (<button key={ti.key} className="tier-btn" onClick={function() { changeTarget(ti.key); }} style={{ borderColor: sel ? ti.color : ti.color + "44", color: ti.color, opacity: sel ? 1 : 0.5, background: sel ? ti.color + "22" : "transparent" }}>{t("tiers." + ti.key) + " (" + ti.max + ")"}</button>); })}
       </div>
       <div data-tutorial="progress-bar" style={{ marginTop: 8, position: "relative" }}>
         <div style={{ height: 20, background: "#1a1a28", borderRadius: 6, overflow: "hidden", position: "relative" }}>

@@ -1,7 +1,7 @@
 {
   "name": "Midnight BiS Tracker",
   "short_name": "BiS Tracker",
-  "description": "WoW Best in Slot gear tracker with SimC import",
+  "description": "WoW Midnight Season 2 Best in Slot gear tracker with SimC import",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#080412",

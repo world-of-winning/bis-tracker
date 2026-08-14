@@ -14,3 +14,6 @@ scripts/.wowhead-cache.json
 !.env.example
 
 .rtk
+
+# db2 CSV exports from wago.tools
+scripts/.wago-cache/

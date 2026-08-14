@@ -1,21 +1,30 @@
 // b: badge/border accent, t: text color, g: gradient background
+// Midnight Season 2 pool. Key order is the filter-button order (BisTracker
+// reads Object.keys), so the new Midnight dungeons lead and the returning
+// ones follow.
 export var DUNGEONS = {
-  "Pit of Saron": { b: "#3d8ecf", t: "#7dc4ff", g: "#0f2640" },
-  "Nexus-Point Xenas": { b: "#9b4dca", t: "#c88dff", g: "#25103a" },
-  "Windrunner Spire": { b: "#4dca6b", t: "#8dffaa", g: "#0f2818" },
-  "Magisters' Terrace": { b: "#ca7a3d", t: "#ffb86c", g: "#3a1a0f" },
-  "Skyreach": { b: "#caca3d", t: "#ffff7d", g: "#33330f" },
-  "Seat of the Triumvirate": { b: "#4d6dca", t: "#8da8ff", g: "#0f1a3a" },
-  "Algeth'ar Academy": { b: "#6daa6d", t: "#a0dda0", g: "#0f280f" },
-  "Maisara Caverns": { b: "#aa6d9b", t: "#dda0cc", g: "#280f22" },
+  "The Blinding Vale": { b: "#3d8ecf", t: "#7dc4ff", g: "#0f2640" },
+  "Altar of Fangs": { b: "#9b4dca", t: "#c88dff", g: "#25103a" },
+  "Murder Row": { b: "#4dca6b", t: "#8dffaa", g: "#0f2818" },
+  "Voidscar Arena": { b: "#ca7a3d", t: "#ffb86c", g: "#3a1a0f" },
+  "Kings' Rest": { b: "#caca3d", t: "#ffff7d", g: "#33330f" },
+  "Den of Nalorakk": { b: "#4d6dca", t: "#8da8ff", g: "#0f1a3a" },
+  "Temple of Sethraliss": { b: "#6daa6d", t: "#a0dda0", g: "#0f280f" },
+  "Ruby Life Pools": { b: "#aa6d9b", t: "#dda0cc", g: "#280f22" },
 };
 
+// hidden: graded like any other track, but never offered as a target.
 export var TIERS = [
-  { key: "veteran", max: 250, color: "#6daa6d", bonusMin: 12776, bonusMax: 12783, tooltipBonus: 12782 },
-  { key: "champion", max: 263, color: "#4d8ecf", bonusMin: 12784, bonusMax: 12791, tooltipBonus: 12790 },
-  { key: "hero", max: 276, color: "#9b4dca", bonusMin: 12792, bonusMax: 12799, tooltipBonus: 12798 },
-  { key: "myth", max: 289, color: "#ca7a3d", bonusMin: 12800, bonusMax: 12807, tooltipBonus: 12806 },
+  { key: "adventurer", min: 266, max: 282, color: "#8a8a8a", bonusMin: 12817, bonusMax: 12824, tooltipBonus: 12822, hidden: true },
+  { key: "veteran", min: 279, max: 295, color: "#6daa6d", bonusMin: 12825, bonusMax: 12832, tooltipBonus: 12830 },
+  { key: "champion", min: 292, max: 308, color: "#4d8ecf", bonusMin: 12833, bonusMax: 12840, tooltipBonus: 12838 },
+  { key: "hero", min: 305, max: 321, color: "#9b4dca", bonusMin: 12841, bonusMax: 12848, tooltipBonus: 12846 },
+  { key: "myth", min: 318, max: 334, color: "#ca7a3d", bonusMin: 12849, bonusMax: 12856, tooltipBonus: 12854 },
 ];
+
+// Target tier a fresh tracker starts on, and the landing spot whenever a
+// stored targetTier no longer names a visible track.
+export var DEFAULT_TIER = "hero";
 
 // Class → expected armor type mapping
 export var CLASS_ARMOR = {

@@ -3,7 +3,8 @@ import { SPECS, getSpec, findSpecBySimC } from './data/specs.js';
 import { CHANGELOG } from './data/changelog.js';
 import { getSampleChars, SAMPLE_CHARS } from './data/sample.js';
 import { load, save as persist, remove } from './storage.js';
-import { TIERS, parseSimC } from './data/shared.js';
+import { parseSimC } from './data/shared.js';
+import { autoSelectTier } from './logic/priority.js';
 import { useLocale, LOCALE_META, LOCALE_KEYS } from './i18n/index.jsx';
 import BisTracker from './components/BisTracker.jsx';
 import TutorialOverlay from './components/TutorialOverlay.jsx';
@@ -188,6 +189,30 @@ function VersionBadge({ accent, bg, border, size }) {
         </div>
       )}
     </span>
+  );
+}
+
+// Bumping the key re-shows the banner; the old key stays dismissed forever.
+var SEASON_BANNER_KEY = "bis-banner-midnight-s2";
+
+function SeasonBanner({ maxWidth }) {
+  var { t } = useLocale();
+  var [dismissed, setDismissed] = useState(function() { return !!load(SEASON_BANNER_KEY); });
+  if (dismissed) return null;
+  function close() {
+    persist(SEASON_BANNER_KEY, 1);
+    setDismissed(true);
+  }
+  return (
+    <div role="status" style={{ width: "100%", maxWidth: maxWidth || 600, margin: "0 auto 20px", display: "flex", alignItems: "flex-start", gap: 12, textAlign: "left", padding: "12px 14px", borderRadius: 10, background: "linear-gradient(135deg,#1a0b33 0%,#0c0c16 70%)", border: "1px solid #7832C855", boxShadow: "0 0 18px #7832C81f" }}>
+      <span style={{ flexShrink: 0, marginTop: 1, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#C88CFF", background: "#7832C822", border: "1px solid #7832C866", borderRadius: 4, padding: "2px 7px" }}>{t("ui.s2BannerTag")}</span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#DCBEFF", marginBottom: 3 }}>{t("ui.s2BannerTitle")}</div>
+        <div style={{ fontSize: 12, color: "#99887a", lineHeight: 1.6 }}>{t("ui.s2BannerBody")}</div>
+      </div>
+      <button onClick={close} aria-label={t("ui.s2BannerDismiss")} title={t("ui.s2BannerDismiss")}
+        style={{ flexShrink: 0, background: "none", border: "none", color: "#66557a", fontSize: 16, lineHeight: 1, cursor: "pointer", padding: "2px 4px" }}>&times;</button>
+    </div>
   );
 }
 
@@ -393,13 +418,7 @@ export default function App() {
           var es = s.spec.KNOWN_STATS[eq.id];
           if (es && bi.stats.slice().sort().join() === es.slice().sort().join()) altItems[bi.id] = true;
         });
-        // Auto-select target tier based on avgIlvl
-        var autoTier = TIERS[TIERS.length - 1].key;
-        for (var ti = 0; ti < TIERS.length; ti++) {
-          var gap = ti < TIERS.length - 1 ? (TIERS[ti + 1].max - TIERS[ti].max) / 2 : 0;
-          if (ci.avgIlvl < TIERS[ti].max - gap) { autoTier = TIERS[ti].key; break; }
-        }
-        persist(key, { acq: {}, sr: { ci: ci, eqSlot: eqSlot, bisInBag: {}, altItems: altItems, matched: matched }, targetTier: autoTier });
+        persist(key, { acq: {}, sr: { ci: ci, eqSlot: eqSlot, bisInBag: {}, altItems: altItems, matched: matched }, targetTier: autoSelectTier(ci.avgIlvl) });
       }
     });
     setSampleMode(true);
@@ -625,6 +644,7 @@ export default function App() {
         </div>
         <p style={{ fontSize: 15, color: "#99887a", marginBottom: 4, fontWeight: 600 }}>{t("ui.seasonLabel")}</p>
         <p style={{ fontSize: 12, color: "#556666", marginBottom: 24 }}>{t("ui.seasonSub")}</p>
+        <SeasonBanner />
         {/* Class grid — always visible */}
         <div style={{ width: "100%", maxWidth: 720, marginBottom: 20 }}>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 8 }}>
@@ -779,6 +799,8 @@ export default function App() {
             </div>
           </div>
         </div>
+
+      <div style={{ marginTop: 16 }}><SeasonBanner maxWidth="100%" /></div>
 
       <BisTracker key={specKey + ":" + charName} spec={spec} charName={charName} initialSimcText={pendingSimcText} onSpecSwitch={handleSpecSwitch} onClear={handleClear} onCharDetected={handleCharDetected} crossSpecSources={findCrossSpecSources(specKey)} tutorialStep={tutorialStep} />
 

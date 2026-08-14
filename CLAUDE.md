@@ -47,17 +47,22 @@ src/
 - **tier 4 ✓:** Done
 - Within same tier: worst stat equipped → first, larger deficit → first
 
-### Item Grade System (Midnight Season 1)
-Items have grade tiers with ilvl caps. Items can be upgraded within their grade but **cannot cross grade boundaries** — a Champion item maxed at 263 must be re-acquired at Hero grade to reach 276.
+### Item Grade System (Midnight Season 2)
+Items have grade tiers with ilvl caps. Items can be upgraded within their grade but **cannot cross grade boundaries** — a Champion item maxed at 308 must be re-acquired at Hero grade to reach 321.
 
-| Grade | Key | Max ilvl | TIERS bonus |
-|---|---|---|---|
-| Veteran (노련가) | veteran | 250 | 12782 |
-| Champion (챔피언) | champion | 263 | 12790 |
-| Hero (영웅) | hero | 276 | 12798 |
-| Myth (신화) | myth | 289 | 12806 |
+| Grade | Key | ilvl range | bonus_id range | TIERS bonus |
+|---|---|---|---|---|
+| Adventurer (모험가) | adventurer | 266–282 | 12817–12824 | 12822 |
+| Veteran (노련가) | veteran | 279–295 | 12825–12832 | 12830 |
+| Champion (챔피언) | champion | 292–308 | 12833–12840 | 12838 |
+| Hero (영웅) | hero | 305–321 | 12841–12848 | 12846 |
+| Myth (신화) | myth | 318–334 | 12849–12856 | 12854 |
 
 Defined in `src/data/shared.js` as `TIERS[]`. The target grade filter determines `targetIlvl`. If an equipped/bag item's grade max < targetIlvl, it shows "재획득 필요" (re-acquire needed) because upgrading alone cannot reach the target.
+
+**Adventurer is `hidden: true`** — it gets no target button, but it must stay in `TIERS`. Drop it and its bonus_ids match nothing, the ilvl fallback grades a 282-capped Adventurer item as Veteran, and the tracker tells the user to upgrade an item that cannot be upgraded. Anything reading `TIERS` for the UI filters on `!hidden`; anything grading an item does not.
+
+Regenerate the table with `node scripts/generate-tiers.mjs --write`, which derives it from Raidbots' bonus data (`--season N` to pin a season, print-only without `--write`). The Season 1 table was written by hand and sat a step out of alignment with the real bonus_id blocks.
 
 ### Game Mechanics (Domain Logic)
 
@@ -65,23 +70,25 @@ Defined in `src/data/shared.js` as `TIERS[]`. The target grade filter determines
 
 #### 1. bonus_id vs ilvl — Not Interchangeable
 - **bonus_id**: Encoded grade indicator from SimC (`####/####` slash-separated → stored as `####:####` colon-separated). Each TIERS entry has a `bonusMin..bonusMax` range.
-- **ilvl**: Item power level (e.g., 250, 263, 276, 289). Represents upgrade progress *within* a grade.
-- `itemTierIdx(bonus, ilvl)` in BisTracker.jsx: checks bonus_id ranges **first** → falls back to ilvl **only** if no bonus_id match.
+- **ilvl**: Item power level (e.g., 295, 308, 321, 334). Represents upgrade progress *within* a grade.
+- Grade ilvl bands **overlap** — 305 is both Champion 5/6 and Hero 1/6 — so the ilvl fallback picks the *highest* grade containing the ilvl. Guessing low would claim an item must be re-farmed when it only needs upgrading; guessing high merely withholds a warning.
+- `itemTierIdx(bonus, ilvl)` in `src/logic/priority.js`: checks bonus_id ranges **first** → falls back to ilvl **only** if no bonus_id match.
 ```
 WRONG: Treating bonus_id and ilvl as equivalent for grade detection
 RIGHT: bonus_id determines grade; ilvl is fallback only when bonus_id is absent
 ```
 
 #### 2. Grade Boundaries Cannot Be Crossed by Upgrade
-This is the single most misunderstood mechanic. A Veteran item at max ilvl 250 **cannot** be upgraded to Hero 276 — it must be **re-acquired** (re-farmed) at Hero grade.
+This is the single most misunderstood mechanic. A Veteran item at max ilvl 295 **cannot** be upgraded to Hero 321 — it must be **re-acquired** (re-farmed) at Hero grade. Grade beats ilvl: a Champion 6/6 at 308 still reads "re-acquire" against a Hero target, even though 308 is above Hero's floor of 305.
 
 Two distinct upgrade statuses (`upgradeStatus` field):
 - **`"tierUp"`** → "재획득 필요" (re-acquire needed): item's grade < target grade. Must re-farm the item.
 - **`"enhance"`** → "강화 필요" (upgrade needed): item's grade >= target grade but ilvl < target ilvl. Can upgrade in place.
 ```
-WRONG: "ilvl 250, target 276 → upgrade needed"
-RIGHT: "Veteran grade (max 250), target Hero (276) → RE-ACQUIRE needed (tierUp)"
-       "Hero grade at ilvl 270, target Hero 276 → UPGRADE needed (enhance)"
+WRONG: "ilvl 295, target 321 → upgrade needed"
+RIGHT: "Veteran grade (max 295), target Hero (321) → RE-ACQUIRE needed (tierUp)"
+       "Hero grade at ilvl 311, target Hero 321 → UPGRADE needed (enhance)"
+       "Champion grade at ilvl 308, target Hero 321 → RE-ACQUIRE needed (tierUp)"
 ```
 
 #### 3. Priority Tier Calculation (in `calcPriority`)
@@ -132,11 +139,19 @@ RIGHT: Apply visualTier overrides — enhance shows green, tierUp shows orange, 
 
 #### 7. Data Pipeline Rules
 - **`priority-stats.json`** is manually curated — **never auto-purge or regenerate**. Manual entries take precedence over Maxroll auto-fetch.
-- **`find-alts.mjs`** runs once across ALL specs (cross-referencing BiS lists) — not per-spec. Existing weapon ALTS from `generate-spec-data` are preserved.
+- **`find-alts.mjs`** runs once across ALL specs (cross-referencing BiS lists) — not per-spec. It preserves existing **weapon** ALTS from `generate-spec-data`, and only while their source still exists this season. Preserving anything else would make ALTS append-only: nothing else ever deletes an entry, so a retired season's items would live in the files forever.
+- **Stale upstream guides**: Maxroll updates guides one at a time, so at a season boundary some still carry last season's dungeons. `find-alts` keeps those out of the cross-spec index — by spec (no current dungeon anywhere in its data) and by row (a MYTHIC entry whose source is not a current dungeon) — so one lagging guide does not hand every other spec alts it cannot farm. The lagging spec keeps its own stale data; re-run the pipeline once Maxroll updates.
+- **Wrong slots upstream**: an item whose Wowhead tooltip contradicts the slot Maxroll filed it under is warned about during generation and kept out of the alt index, but left in its own spec's data. Do not invent a replacement.
 - **`--fix`**: Read-only cache, normalize data only, no network calls. Safe to run anytime.
 - **`--regenerate`**: Purges Wowhead cache for target specs, full re-fetch. Slow and should be used sparingly.
 - **Duplicate item IDs**: When same ID appears in multiple slots, prefer existing file's version for stability.
 - **Item source/dungeon names**: Do NOT arbitrarily replace when source doesn't match expectations — verify with Wowhead first.
+- **Localized dungeon/boss names**: `node scripts/generate-source-names.mjs` fills four blocks in `src/i18n/*.json` from the client's own DB2 tables, served as per-locale CSV by wago.tools (`MapChallengeMode` for dungeons, `JournalEncounter`/`JournalInstance` for bosses and raids). Rows join across locales by DB2 row ID, never by name. Print-only without `--write`; `--resolve` prints candidate rows for a key that has no ID yet; `--refresh` bypasses the CSV cache in `scripts/.wago-cache/`.
+  - **Stage 1** writes `dungeonsFull` and `sourcesFull` — the client's own strings, every locale including `en`.
+  - **Stage 2** derives the short labels the filter row uses. `dungeons` is generated for **ko/zhCN/zhTW only**; the Latin and Cyrillic locales keep their hand-written English acronyms, which is what the tooling those players already use ships them (the Raider.IO addon hands `POS`/`SR` to every client regardless of locale, and `MapChallengeMode` has no `ShortName_lang` to draw a localized one from). `sources` is trimmed from `sourcesFull` by rule — leading bracketed epithet, appositive clause after a comma, trailing determiner clause that is not part of a prepositional phrase.
+  - **Ownership is per block, not per file**: `en.dungeons` (M+ acronyms) and `en.sources` (trimmed badge labels) are hand-written and never generated; the `*Full` blocks beside them are.
+  - A `dungeons` label wider than 18 display columns (CJK counts 2) needs an entry in `scripts/dungeon-short.json`; two dungeons resolving to the same label is also fatal. Both exit non-zero rather than shipping a button the user cannot read or tell apart. Wide `sources` labels only warn — fix them in `scripts/source-short.json` if the filter row bothers you.
+- **Season swap**: update `VALID_DUNGEONS` (`generate-spec-data.mjs`), `DUNGEONS` (`shared.js`) and `TIERS` (via `generate-tiers.mjs`) **before** running the pipeline, and rebuild `PART_FIXES` from scratch. Stale entries are worse than none: Season 1 mapped "Murder Row" and "Den of Nalorakk" onto Magisters' Terrace, and both are standalone dungeons in Season 2. Confirm the dungeon pool against **two or more** specs — a single spec takes nothing from some dungeons.
 i
 
 ## Bug Fix Approach
@@ -186,141 +201,17 @@ bun run preview  # Preview built output
 - **Wowhead tooltip API:** Dynamic stat lookup for unregistered items during SimC import. No CORS issues (self-hosted domain).
 - **Google Fonts:** Cinzel + Noto Sans KR
 
+## Agent skills
+
+### Issue tracker
+
+Issues live as GitHub issues on `world-of-winning/bis-tracker`, via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context layout — `CONTEXT.md` + `docs/adr/` at repo root (create lazily, not yet present). See `docs/agents/domain.md`.
+
 ## Notes
 - Do NOT call `localStorage` directly → use `load()`/`save()` from `src/storage.js`
 - BiS/Alt item stats are statically registered in `KNOWN_STATS`; equipped items use dynamic lookup
 - Artifact (claude.ai) version is managed separately — uses `window.storage` API, manual sync if needed
-
-<!-- rtk-instructions v2 -->
-# RTK (Rust Token Killer) - Token-Optimized Commands
-
-## Golden Rule
-
-**Always prefix commands with `rtk`**. If RTK has a dedicated filter, it uses it. If not, it passes through unchanged. This means RTK is always safe to use.
-
-**Important**: Even in command chains with `&&`, use `rtk`:
-```bash
-# ❌ Wrong
-git add . && git commit -m "msg" && git push
-
-# ✅ Correct
-rtk git add . && rtk git commit -m "msg" && rtk git push
-```
-
-## RTK Commands by Workflow
-
-### Build & Compile (80-90% savings)
-```bash
-rtk cargo build         # Cargo build output
-rtk cargo check         # Cargo check output
-rtk cargo clippy        # Clippy warnings grouped by file (80%)
-rtk tsc                 # TypeScript errors grouped by file/code (83%)
-rtk lint                # ESLint/Biome violations grouped (84%)
-rtk prettier --check    # Files needing format only (70%)
-rtk next build          # Next.js build with route metrics (87%)
-```
-
-### Test (90-99% savings)
-```bash
-rtk cargo test          # Cargo test failures only (90%)
-rtk vitest run          # Vitest failures only (99.5%)
-rtk playwright test     # Playwright failures only (94%)
-rtk test <cmd>          # Generic test wrapper - failures only
-```
-
-### Git (59-80% savings)
-```bash
-rtk git status          # Compact status
-rtk git log             # Compact log (works with all git flags)
-rtk git diff            # Compact diff (80%)
-rtk git show            # Compact show (80%)
-rtk git add             # Ultra-compact confirmations (59%)
-rtk git commit          # Ultra-compact confirmations (59%)
-rtk git push            # Ultra-compact confirmations
-rtk git pull            # Ultra-compact confirmations
-rtk git branch          # Compact branch list
-rtk git fetch           # Compact fetch
-rtk git stash           # Compact stash
-rtk git worktree        # Compact worktree
-```
-
-Note: Git passthrough works for ALL subcommands, even those not explicitly listed.
-
-### GitHub (26-87% savings)
-```bash
-rtk gh pr view <num>    # Compact PR view (87%)
-rtk gh pr checks        # Compact PR checks (79%)
-rtk gh run list         # Compact workflow runs (82%)
-rtk gh issue list       # Compact issue list (80%)
-rtk gh api              # Compact API responses (26%)
-```
-
-### JavaScript/TypeScript Tooling (70-90% savings)
-```bash
-rtk pnpm list           # Compact dependency tree (70%)
-rtk pnpm outdated       # Compact outdated packages (80%)
-rtk pnpm install        # Compact install output (90%)
-rtk npm run <script>    # Compact npm script output
-rtk npx <cmd>           # Compact npx command output
-rtk prisma              # Prisma without ASCII art (88%)
-```
-
-### Files & Search (60-75% savings)
-```bash
-rtk ls <path>           # Tree format, compact (65%)
-rtk read <file>         # Code reading with filtering (60%)
-rtk grep <pattern>      # Search grouped by file (75%)
-rtk find <pattern>      # Find grouped by directory (70%)
-```
-
-### Analysis & Debug (70-90% savings)
-```bash
-rtk err <cmd>           # Filter errors only from any command
-rtk log <file>          # Deduplicated logs with counts
-rtk json <file>         # JSON structure without values
-rtk deps                # Dependency overview
-rtk env                 # Environment variables compact
-rtk summary <cmd>       # Smart summary of command output
-rtk diff                # Ultra-compact diffs
-```
-
-### Infrastructure (85% savings)
-```bash
-rtk docker ps           # Compact container list
-rtk docker images       # Compact image list
-rtk docker logs <c>     # Deduplicated logs
-rtk kubectl get         # Compact resource list
-rtk kubectl logs        # Deduplicated pod logs
-```
-
-### Network (65-70% savings)
-```bash
-rtk curl <url>          # Compact HTTP responses (70%)
-rtk wget <url>          # Compact download output (65%)
-```
-
-### Meta Commands
-```bash
-rtk gain                # View token savings statistics
-rtk gain --history      # View command history with savings
-rtk discover            # Analyze Claude Code sessions for missed RTK usage
-rtk proxy <cmd>         # Run command without filtering (for debugging)
-rtk init                # Add RTK instructions to CLAUDE.md
-rtk init --global       # Add RTK to ~/.claude/CLAUDE.md
-```
-
-## Token Savings Overview
-
-| Category | Commands | Typical Savings |
-|----------|----------|-----------------|
-| Tests | vitest, playwright, cargo test | 90-99% |
-| Build | next, tsc, lint, prettier | 70-87% |
-| Git | status, log, diff, add, commit | 59-80% |
-| GitHub | gh pr, gh run, gh issue | 26-87% |
-| Package Managers | pnpm, npm, npx | 70-90% |
-| Files | ls, read, grep, find | 60-75% |
-| Infrastructure | docker, kubectl | 85% |
-| Network | curl, wget | 65-70% |
-
-Overall average: **60-90% token reduction** on common development operations.
-<!-- /rtk-instructions -->

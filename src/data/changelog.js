@@ -2,6 +2,13 @@
 // { date: "YYYY-MM-DD", text: { ko, en } }
 export var CHANGELOG = [
     {
+        date: "2026-08-15",
+        text: {
+            ko: "미드나잇 시즌 2 지원 — 시즌 2 던전 8곳 기준으로 전 40개 스펙 BiS 재생성, 등급 체계를 노련가~신화로 교체, 던전·보스 이름 10개 언어 현지화",
+            en: "Midnight Season 2 support — all 40 spec BiS lists regenerated on the 8 Season 2 dungeons, grade system replaced with Veteran–Myth, dungeon and boss names localized in 10 languages",
+        },
+    },
+    {
         date: "2026-07-04",
         text: {
             ko: "티어 세트 판정 로직 개선 — 세트효과 마커 기반 검증으로 34개 스펙 소스 라벨 정정, 사제 다리/발 오류 아이템 수정",
