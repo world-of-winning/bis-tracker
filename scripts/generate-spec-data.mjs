@@ -122,7 +122,10 @@ function resolveSlot(slotName, weaponType) {
         ringCount++;
         return ringCount <= 1 ? "finger1" : "finger2";
     }
-    if (/^trinket\d?$/.test(norm)) {
+    // Any trinket label. Season 2 guides qualify them by how they work
+    // ("Passive Trinket", "On-Use Trinket") rather than numbering them, and an
+    // unrecognised slot is dropped outright — two empty trinket slots per spec.
+    if (/trinket/.test(norm)) {
         trinketCount++;
         return trinketCount <= 1 ? "trinket1" : "trinket2";
     }
@@ -873,9 +876,37 @@ const ITEM_NAME_FIXES = {
 };
 
 // Items with "&" (dual wield) need to be split
+// A dual-wield row carries one source per weapon, comma-separated. Split only
+// when the count lines up — a lone item whose own source contains a comma has
+// to be left alone.
+function splitPairedSources(source, count) {
+    const parts = source.split(/\s*,\s*/).map((p) => normalizeSource(p.trim()));
+    return parts.length === count ? parts : new Array(count).fill(source);
+}
+
 function splitDualWeaponName(name) {
     if (name.includes(" & ")) return name.split(" & ").map((s) => s.trim());
     return [name];
+}
+
+// Maxroll also writes dual-wield rows as two names separated by a comma, and
+// WoW item names carry commas of their own ("Aman'muso, Warlord's Vengeance"),
+// so the split point cannot be read off the text. Try each comma and keep the
+// one where both halves resolve to real items. Only called once the whole
+// string has already failed to resolve, so the extra lookups are rare and end
+// up cached either way.
+async function splitCommaWeaponName(name) {
+    for (let i = 0; i < name.length; i++) {
+        if (name[i] !== ",") continue;
+        const left = name.slice(0, i).trim();
+        const right = name.slice(i + 1).trim();
+        if (!left || !right) continue;
+        if (!(await searchItemId(left, true))) continue;
+        if (!(await searchItemId(right, true))) continue;
+        console.log(`    Dual weapon: "${left}" + "${right}"`);
+        return [left, right];
+    }
+    return null;
 }
 
 // ─── Wowhead APIs ────────────────────────────────────────────
@@ -939,7 +970,11 @@ async function fetchWithRetry(url, opts = {}, retries = 5) {
 // Track whether the last call made a network request
 let lastSearchWasNetwork = false;
 
-async function searchItemId(name) {
+// probe: testing whether a name is a real item (see splitCommaWeaponName).
+// A miss is an answer rather than a problem, so it goes unlogged, and only an
+// exact name counts — Wowhead's fuzzy search would otherwise confirm a wrong
+// split by matching a prefix back to the whole item.
+async function searchItemId(name, probe = false) {
     // Apply name fixes
     const fixedName = ITEM_NAME_FIXES[name] || name;
     const cacheKey = `search:${fixedName}`;
@@ -953,7 +988,7 @@ async function searchItemId(name) {
     const url = `https://www.wowhead.com/search/suggestions-template?id=items&q=${encodeURIComponent(fixedName)}`;
     const data = await fetchWithRetry(url);
     if (!data.results || data.results.length === 0) {
-        console.warn(`    WARNING: No results for "${fixedName}"`);
+        if (!probe) console.warn(`    WARNING: No results for "${fixedName}"`);
         return null;
     }
     // Prefer an exact name match. Wowhead's search is fuzzy, so a query it
@@ -963,6 +998,7 @@ async function searchItemId(name) {
     // differ, and a logged line is reviewable where a silent swap is not.
     const norm = (s) => s.toLowerCase().replace(/['’]/g, "").trim();
     const exact = data.results.filter((r) => norm(r.name) === norm(fixedName));
+    if (probe && !exact.length) return null;
     const pool = exact.length ? exact : data.results;
     if (!exact.length) {
         console.warn(
@@ -974,7 +1010,9 @@ async function searchItemId(name) {
     // missing quality-4 hit is not by itself a problem.
     const epic = pool.find((r) => r.quality === 4);
     const id = (epic || pool[0]).id;
-    cacheSet(cacheKey, id);
+    // Only exact hits are cached. A fuzzy one is a guess, and caching it would
+    // let a later probe read it back as confirmation that the name is real.
+    if (exact.length) cacheSet(cacheKey, id);
     return id;
 }
 
@@ -1055,11 +1093,22 @@ async function buildGearData(gearRows, weaponType) {
         const slotName = row.slotName;
 
         // Handle dual weapon entries like "Mystakria's Harvester & Soulblight Cleaver"
-        const itemNames = splitDualWeaponName(row.itemName);
+        let itemNames = splitDualWeaponName(row.itemName);
+        // Comma-separated dual-wield rows only reveal themselves by failing to
+        // resolve as one item, so check that before treating this as a single.
+        if (
+            itemNames.length === 1 &&
+            row.itemName.includes(",") &&
+            !(await searchItemId(row.itemName, true))
+        ) {
+            const pair = await splitCommaWeaponName(row.itemName);
+            if (pair) itemNames = pair;
+        }
 
         if (itemNames.length === 2) {
             // Dual wield: first = main_hand, second = off_hand
             const weaponSlots = WEAPON_SLOTS[weaponType];
+            const sources = splitPairedSources(row.source, 2);
             for (let wi = 0; wi < 2; wi++) {
                 const name = itemNames[wi];
                 const slot = weaponSlots[wi] || weaponSlots[0];
@@ -1072,7 +1121,7 @@ async function buildGearData(gearRows, weaponType) {
                 items.push({
                     slot,
                     id,
-                    source: row.source,
+                    source: sources[wi],
                     stats,
                 });
                 knownStats[id] = stats;
