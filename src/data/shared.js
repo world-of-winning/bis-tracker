@@ -1,13 +1,16 @@
 // b: badge/border accent, t: text color, g: gradient background
+// Midnight Season 2 pool. Key order is the filter-button order (BisTracker
+// reads Object.keys), so the new Midnight dungeons lead and the returning
+// ones follow.
 export var DUNGEONS = {
-  "Pit of Saron": { b: "#3d8ecf", t: "#7dc4ff", g: "#0f2640" },
-  "Nexus-Point Xenas": { b: "#9b4dca", t: "#c88dff", g: "#25103a" },
-  "Windrunner Spire": { b: "#4dca6b", t: "#8dffaa", g: "#0f2818" },
-  "Magisters' Terrace": { b: "#ca7a3d", t: "#ffb86c", g: "#3a1a0f" },
-  "Skyreach": { b: "#caca3d", t: "#ffff7d", g: "#33330f" },
-  "Seat of the Triumvirate": { b: "#4d6dca", t: "#8da8ff", g: "#0f1a3a" },
-  "Algeth'ar Academy": { b: "#6daa6d", t: "#a0dda0", g: "#0f280f" },
-  "Maisara Caverns": { b: "#aa6d9b", t: "#dda0cc", g: "#280f22" },
+  "The Blinding Vale": { b: "#3d8ecf", t: "#7dc4ff", g: "#0f2640" },
+  "Altar of Fangs": { b: "#9b4dca", t: "#c88dff", g: "#25103a" },
+  "Murder Row": { b: "#4dca6b", t: "#8dffaa", g: "#0f2818" },
+  "The Coiled Altar": { b: "#ca7a3d", t: "#ffb86c", g: "#3a1a0f" },
+  "Kings' Rest": { b: "#caca3d", t: "#ffff7d", g: "#33330f" },
+  "Den of Nalorakk": { b: "#4d6dca", t: "#8da8ff", g: "#0f1a3a" },
+  "Temple of Sethraliss": { b: "#6daa6d", t: "#a0dda0", g: "#0f280f" },
+  "Ruby Life Pools": { b: "#aa6d9b", t: "#dda0cc", g: "#280f22" },
 };
 
 // hidden: graded like any other track, but never offered as a target.

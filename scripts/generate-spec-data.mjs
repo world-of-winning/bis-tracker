@@ -64,15 +64,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname, "../src/data");
 
 // ─── Known dungeons ──────────────────────────────────────────
+// Midnight Season 2 pool. Keep in sync with DUNGEONS in src/data/shared.js.
 const VALID_DUNGEONS = [
-    "Pit of Saron",
-    "Nexus-Point Xenas",
-    "Windrunner Spire",
-    "Magisters' Terrace",
-    "Skyreach",
-    "Seat of the Triumvirate",
-    "Algeth'ar Academy",
-    "Maisara Caverns",
+    "The Blinding Vale",
+    "Altar of Fangs",
+    "Murder Row",
+    "The Coiled Altar",
+    "Kings' Rest",
+    "Den of Nalorakk",
+    "Temple of Sethraliss",
+    "Ruby Life Pools",
 ];
 
 // ─── Slot mapping (maxroll → project) ────────────────────────
@@ -652,10 +653,25 @@ function isDungeonTable(rows) {
     return nonDungeon.length <= 2;
 }
 
+// Season 2 writes catalyst rows as "Convert <base item> into <tier item>".
+// Wowhead's search returns nothing for that whole sentence, and buildGearData
+// drops rows it cannot resolve — silently, so a spec just comes out short a
+// few slots. The tier item on the right is the BiS one; the base item on the
+// left shows up on its own in the farmable table, so nothing is lost.
+//
+// The separator is not reliably spaced: Maxroll's markup glues it to the
+// preceding word ("...Pauldronsinto Pauldrons of..."), hence \s* not \s+.
+function resolveCatalystItemName(name) {
+    const m = name.match(/^Convert\s+(.+?)\s*into\s+(.+)$/i);
+    if (!m) return name;
+    console.log(`    Catalyst row: "${m[1].trim()}" → "${m[2].trim()}"`);
+    return m[2].trim();
+}
+
 function toGearRows(rows) {
     return rows.map((r) => ({
         slotName: r[0],
-        itemName: r[1],
+        itemName: resolveCatalystItemName(r[1]),
         source: normalizeSource(r[2]),
     }));
 }
@@ -678,33 +694,32 @@ const SOURCE_FIXES = {
     Jewelcrafting: "Crafted",
 };
 
-const PART_FIXES = {
-    "Chimaerus the Undreamt God": "Chimaerus",
-    "Chimaerus the undreamt God": "Chimaerus",
-    "Chimaerus, the Undreamt God": "Chimaerus",
-    "Crown of Cosmos": "Crown of the Cosmos",
-    "The Crown of Cosmos": "Crown of the Cosmos",
-    Salhadaar: "Fallen-King Salhadaar",
-    Imperator: "Imperator Averzian",
-    "Bel'oren": "Belo'ren",
-    "Belo'ren, Child of Al'ar": "Belo'ren",
-    "Murder Row": "Magisters' Terrace",
-    "Den of Nalorakk": "Magisters' Terrace",
-    "L'ura": "Seat of the Triumvirate",
-    "Blinding Vale": "Skyreach",
-    "Alleria Windrunner": "Windrunner Spire",
-    "Nexus-Point": "Nexus-Point Xenas",
-    Seat: "Seat of the Triumvirate",
-    Academy: "Algeth'ar Academy",
-    "Seat of the Triumvirute": "Seat of the Triumvirate",
-    "Seat of the Triumvurate": "Seat of the Triumvirate",
-    "Widnrunner Spire": "Windrunner Spire",
-    "Windrunners Spire": "Windrunner Spire",
-    "Miasara Caverns": "Maisara Caverns",
-};
+// Aliases and typos seen in Maxroll's own tables. Season-specific: every
+// entry here names something in the CURRENT pool, so this map has to be
+// rebuilt on a season swap. Leaving stale entries is actively dangerous —
+// Season 1 mapped "Murder Row" and "Den of Nalorakk" onto Magisters' Terrace,
+// and both are standalone dungeons in Season 2.
+//
+// Raid boss names are deliberately absent: they pass through untouched and
+// become non-dungeon sources, which is how Season 1 surfaced raid drops too.
+// Empty for Season 2 so far: normalizeDungeon already absorbs the casing slip
+// Maxroll makes ("Den Of Nalorakk" alongside "Den of Nalorakk", in one table),
+// the curly-apostrophe variants, and missing articles. Add entries here only
+// for inconsistencies the regeneration run actually surfaces.
+const PART_FIXES = {};
+
+// Season 2 labels catalyst conversions "Catalyst of <Dungeon>". The dungeon is
+// where the base item drops, so that is the farm location worth showing. Tier
+// pieces get overridden to "Tier" later anyway, via the item-set marker.
+function stripCatalystOf(s) {
+    const m = s.match(/^Catalyst of\s+(.+)$/i);
+    if (!m) return s;
+    const d = normalizeDungeon(m[1].trim());
+    return VALID_DUNGEONS.includes(d) ? d : s;
+}
 
 function normalizeSourcePart(part) {
-    const trimmed = part.trim();
+    const trimmed = stripCatalystOf(part.trim());
     if (PART_FIXES[trimmed]) return PART_FIXES[trimmed];
     const noTier = trimmed.replace(/\s+Tier$/i, "");
     if (noTier !== trimmed) {
@@ -716,7 +731,8 @@ function normalizeSourcePart(part) {
     return trimmed;
 }
 
-function normalizeSource(raw) {
+function normalizeSource(rawInput) {
+    const raw = stripCatalystOf(rawInput.trim());
     if (SOURCE_FIXES[raw]) return SOURCE_FIXES[raw];
     if (PART_FIXES[raw]) return PART_FIXES[raw];
     const whole = normalizeDungeon(raw);
@@ -776,17 +792,28 @@ async function fetchMaxrollGearTables(slug, urlSuffix = "mythic-plus-guide") {
     const html = await res.text();
     const gearTables = parseGearTables(html);
 
-    // Identify BiS table (first table, may contain non-dungeon sources)
-    // and Farmable table (all locations are dungeon names)
+    // Identify the BiS table (may contain raid, crafted and catalyst sources)
+    // and the Farmable table (dungeon drops only).
     let bisTable = null;
     let farmableTable = null;
 
-    for (const rows of gearTables) {
-        if (rows.length < 14) continue;
-        if (isDungeonTable(rows)) {
-            if (!farmableTable) farmableTable = rows;
-        } else {
-            if (!bisTable) bisTable = rows;
+    // Maxroll lays both guides out as BiS first, Farmable Alternatives second.
+    // Trust that when there are exactly two: the source-based guess misfires
+    // on a dungeon-heavy BiS table, and its failure mode is a spec file
+    // written with no BIS array at all, which is silent across 40 specs.
+    const sized = gearTables.filter((rows) => rows.length >= 14);
+    if (sized.length === 2) {
+        console.log("  Tables: by position (BiS, Farmable)");
+        bisTable = sized[0];
+        farmableTable = sized[1];
+    } else {
+        console.log(`  Tables: by source (${sized.length} sized tables found)`);
+        for (const rows of sized) {
+            if (isDungeonTable(rows)) {
+                if (!farmableTable) farmableTable = rows;
+            } else {
+                if (!bisTable) bisTable = rows;
+            }
         }
     }
 
@@ -817,15 +844,19 @@ async function fetchMaxrollBis(slug, urlSuffix = "mythic-plus-guide") {
 function normalizeDungeon(raw) {
     // Strip suffixes: "(Vault)", "/ Vault", etc.
     const stripped = raw.replace(/\s*[(/]\s*Vault\s*\)?$/i, "").trim();
-    // Normalize: strip apostrophes, collapse a/e variants (Algath'ar ↔ Algeth'ar), lowercase
+    // Normalize: strip apostrophes, collapse a/e variants, lowercase.
+    // The a/e collapse also turns "the" into "tha", which dropArticle below
+    // depends on — the two are coupled, so do not remove one without the other.
     const normalize = (s) =>
-        s.replace(/['']/g, "").toLowerCase().replace(/[ae]/g, "a");
+        s.replace(/['’]/g, "").toLowerCase().replace(/[ae]/g, "a");
     const norm = normalize(stripped);
     for (const d of VALID_DUNGEONS) {
         if (normalize(d) === norm) return d;
     }
-    // Handle missing articles: "Seat of Triumvirate" → "Seat of the Triumvirate"
-    const dropArticle = (s) => s.replace(/ tha /g, " ");
+    // Handle missing articles, leading ("Blinding Vale" for "The Blinding Vale")
+    // and internal ("Seat of Triumvirate"). Matches on the collapsed form, so
+    // the article reads as "tha" here, not "the".
+    const dropArticle = (s) => s.replace(/^tha /, "").replace(/ tha /g, " ");
     for (const d of VALID_DUNGEONS) {
         if (dropArticle(normalize(d)) === dropArticle(norm)) return d;
     }
@@ -922,9 +953,24 @@ async function searchItemId(name) {
         console.warn(`    WARNING: No results for "${fixedName}"`);
         return null;
     }
-    // Prefer quality 4 (Epic) items
-    const epic = data.results.find((r) => r.quality === 4);
-    const id = (epic || data.results[0]).id;
+    // Prefer an exact name match. Wowhead's search is fuzzy, so a query it
+    // does not really know still comes back with a plausible-looking wrong
+    // item — and with a whole season of unfamiliar names, nothing downstream
+    // would catch that. Warn rather than reject: some names legitimately
+    // differ, and a logged line is reviewable where a silent swap is not.
+    const norm = (s) => s.toLowerCase().replace(/['’]/g, "").trim();
+    const exact = data.results.filter((r) => norm(r.name) === norm(fixedName));
+    const pool = exact.length ? exact : data.results;
+    if (!exact.length) {
+        console.warn(
+            `    WARNING: no exact match for "${fixedName}" — using "${data.results[0].name}"`,
+        );
+    }
+    // Season 2 revives legacy dungeons, and Wowhead's search index still
+    // reports some of those items at their original rare quality, so a
+    // missing quality-4 hit is not by itself a problem.
+    const epic = pool.find((r) => r.quality === 4);
+    const id = (epic || pool[0]).id;
     cacheSet(cacheKey, id);
     return id;
 }
@@ -1127,19 +1173,6 @@ function generateItemLine(item) {
     return `  { slot: ${JSON.stringify(item.slot)}, id: ${item.id}, source: ${JSON.stringify(item.source)}, stats: ${JSON.stringify(item.stats)} },\n`;
 }
 
-function sortDungeons(dungeons) {
-    const midnightDungeons = [
-        "Nexus-Point Xenas",
-        "Windrunner Spire",
-        "Maisara Caverns",
-    ];
-    return dungeons.slice().sort((a, b) => {
-        const aNew = midnightDungeons.includes(a) ? 0 : 1;
-        const bNew = midnightDungeons.includes(b) ? 0 : 1;
-        if (aNew !== bNew) return aNew - bNew;
-        return a.localeCompare(b);
-    });
-}
 
 function generateFullJs(
     spec,
@@ -1336,6 +1369,12 @@ async function processSpec(spec, { force = false } = {}) {
             spec.slug,
             mythicSuffix,
         );
+
+        // Fail loudly rather than writing a spec file with a missing array.
+        // Downstream this only shows up as a length check quietly going false.
+        if (!bisRows) throw new Error(`No BiS table found on ${bisSuffix}`);
+        if (!farmableRows)
+            throw new Error(`No farmable table found on ${mythicSuffix}`);
 
         // Compare crawled data with existing file — skip Wowhead lookups if unchanged
         const existingPath = resolve(DATA_DIR, `${spec.key}.js`);
