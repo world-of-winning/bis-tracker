@@ -6,7 +6,7 @@ export var DUNGEONS = {
   "The Blinding Vale": { b: "#3d8ecf", t: "#7dc4ff", g: "#0f2640" },
   "Altar of Fangs": { b: "#9b4dca", t: "#c88dff", g: "#25103a" },
   "Murder Row": { b: "#4dca6b", t: "#8dffaa", g: "#0f2818" },
-  "The Coiled Altar": { b: "#ca7a3d", t: "#ffb86c", g: "#3a1a0f" },
+  "Voidscar Arena": { b: "#ca7a3d", t: "#ffb86c", g: "#3a1a0f" },
   "Kings' Rest": { b: "#caca3d", t: "#ffff7d", g: "#33330f" },
   "Den of Nalorakk": { b: "#4d6dca", t: "#8da8ff", g: "#0f1a3a" },
   "Temple of Sethraliss": { b: "#6daa6d", t: "#a0dda0", g: "#0f280f" },

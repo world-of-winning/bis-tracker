@@ -64,12 +64,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname, "../src/data");
 
 // ─── Known dungeons ──────────────────────────────────────────
-// Midnight Season 2 pool. Keep in sync with DUNGEONS in src/data/shared.js.
+// Midnight Season 2 Mythic+ pool. Keep in sync with DUNGEONS in
+// src/data/shared.js. Only what appears in Maxroll's farmable tables belongs
+// here — the Ula'tek raid and its bosses (The Coiled Altar, The Twin Fangs,
+// Nymrissa Wavecaller, The Lost Explorers, Entombed Sentinels) show up in BiS
+// tables and stay non-dungeon sources, the same way Season 1 handled raids.
 const VALID_DUNGEONS = [
     "The Blinding Vale",
     "Altar of Fangs",
     "Murder Row",
-    "The Coiled Altar",
+    "Voidscar Arena",
     "Kings' Rest",
     "Den of Nalorakk",
     "Temple of Sethraliss",
@@ -708,14 +712,13 @@ const SOURCE_FIXES = {
 // for inconsistencies the regeneration run actually surfaces.
 const PART_FIXES = {};
 
-// Season 2 labels catalyst conversions "Catalyst of <Dungeon>". The dungeon is
-// where the base item drops, so that is the farm location worth showing. Tier
-// pieces get overridden to "Tier" later anyway, via the item-set marker.
+// Season 2 labels catalyst conversions "Catalyst of <source>", where the
+// source is where the base item drops — a dungeon, or a raid boss such as
+// "Catalyst of The Coiled Altar". Either way that is the farm location worth
+// showing. Tier pieces get overridden to "Tier" later, via the item-set marker.
 function stripCatalystOf(s) {
     const m = s.match(/^Catalyst of\s+(.+)$/i);
-    if (!m) return s;
-    const d = normalizeDungeon(m[1].trim());
-    return VALID_DUNGEONS.includes(d) ? d : s;
+    return m ? normalizeDungeon(m[1].trim()) : s;
 }
 
 function normalizeSourcePart(part) {
