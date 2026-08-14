@@ -660,25 +660,55 @@ function isDungeonTable(rows) {
     return nonDungeon.length <= 2;
 }
 
-// Season 2 writes catalyst rows as "Convert <base item> into <tier item>".
-// Wowhead's search returns nothing for that whole sentence, and buildGearData
-// drops rows it cannot resolve — silently, so a spec just comes out short a
-// few slots. The tier item on the right is the BiS one; the base item on the
-// left shows up on its own in the farmable table, so nothing is lost.
+// Season 2 catalyst rows name two items in one cell, and Maxroll phrases them
+// a different way in almost every guide:
 //
-// The separator is not reliably spaced: Maxroll's markup glues it to the
-// preceding word ("...Pauldronsinto Pauldrons of..."), hence \s* not \s+.
+//   Convert <base> into <tier>            Catalyze <base> into <tier>
+//   Catalyst <base>into <tier>            <base> Catalysed into <tier>
+//   Convert<base>into <tier>              <base> Catalyst into <tier>
+//   <base> (Catalyst to Tier)             Convert <base>
+//
+// Wowhead's search returns nothing for any of those sentences, and
+// buildGearData drops rows it cannot resolve — silently, so the spec just
+// comes out missing its tier slots.
+//
+// Where a conversion target is named, that is the BiS piece and the base item
+// appears on its own in the farmable table anyway. Where none is named, the
+// base item is all the row offers, and it is what actually gets farmed.
+//
+// Requires a catalyst word before touching anything, so an ordinary item name
+// that happens to contain "into" is left alone. Separators are not reliably
+// spaced — Maxroll's markup glues them to the neighbouring word.
+const CATALYST_VERB = /(?:convert|cataly[sz]e?d?|catalyst)/i;
+
 function resolveCatalystItemName(name) {
-    const m = name.match(/^Convert\s+(.+?)\s*into\s+(.+)$/i);
-    if (!m) return name;
-    console.log(`    Catalyst row: "${m[1].trim()}" → "${m[2].trim()}"`);
-    return m[2].trim();
+    if (!/convert|cataly/i.test(name)) return name;
+
+    const into = name.toLowerCase().lastIndexOf("into");
+    if (into > 0) {
+        const target = name.slice(into + 4).trim();
+        if (target) {
+            console.log(`    Catalyst row → "${target}"`);
+            return target;
+        }
+    }
+
+    const base = name
+        .replace(new RegExp(`\\s*\\(${CATALYST_VERB.source}[^)]*\\)\\s*$`, "i"), "")
+        .replace(new RegExp(`^\\s*${CATALYST_VERB.source}\\s*`, "i"), "")
+        .replace(new RegExp(`\\s*${CATALYST_VERB.source}\\s*$`, "i"), "")
+        .trim();
+    if (base && base !== name) {
+        console.log(`    Catalyst row (no target named) → "${base}"`);
+        return base;
+    }
+    return name;
 }
 
 function toGearRows(rows) {
     return rows.map((r) => ({
         slotName: r[0],
-        itemName: resolveCatalystItemName(r[1]),
+        itemName: stripQuantity(resolveCatalystItemName(r[1])),
         source: normalizeSource(r[2]),
     }));
 }
@@ -709,11 +739,47 @@ const SOURCE_FIXES = {
 //
 // Raid boss names are deliberately absent: they pass through untouched and
 // become non-dungeon sources, which is how Season 1 surfaced raid drops too.
-// Empty for Season 2 so far: normalizeDungeon already absorbs the casing slip
-// Maxroll makes ("Den Of Nalorakk" alongside "Den of Nalorakk", in one table),
-// the curly-apostrophe variants, and missing articles. Add entries here only
-// for inconsistencies the regeneration run actually surfaces.
-const PART_FIXES = {};
+// Spellings Maxroll actually uses, collected from a full 40-spec crawl.
+// normalizeDungeon already absorbs casing, curly apostrophes and missing
+// articles; what is left is truncations and typos, plus the raid bosses, which
+// are not in VALID_DUNGEONS and so get no fuzzy matching at all.
+//
+// Season-specific: every target here names something in the CURRENT pool, so
+// rebuild this on a season swap. Canonical spellings verified on Wowhead.
+const PART_FIXES = {
+    // Mythic+ dungeons — truncations and typos
+    Temple: "Temple of Sethraliss",
+    Tempel: "Temple of Sethraliss",
+    "Temple of Sethralis": "Temple of Sethraliss",
+    "Temple of Sehtraliss": "Temple of Sethraliss",
+    Den: "Den of Nalorakk",
+    "Den of Nalorakke": "Den of Nalorakk",
+    "Voidcar Arena": "Voidscar Arena",
+    "Ruby Life-Pools": "Ruby Life Pools",
+
+    // Ula'tek raid bosses
+    "Coiled Altar": "The Coiled Altar",
+    "The Coiled Alter": "The Coiled Altar",
+    "Twin Fangs": "The Twin Fangs",
+    "Lost Explorers": "The Lost Explorers",
+    "The Lost Exploreres": "The Lost Explorers",
+    Nymrissa: "Nymrissa Wavecaller",
+    Vashnik: "Vashnik the Malignant",
+    "Vashnik The Malignant": "Vashnik the Malignant",
+    "Nek'Zali": "Nek'zali the Soulcoiler",
+    "Nez'Kali the Soulcoiler": "Nek'zali the Soulcoiler",
+    Ulatek: "Ula'tek",
+    "Ula'tel": "Ula'tek",
+
+    // Season 1 leftovers. Two Mythic+ guides (Retribution Paladin, Devourer
+    // Demon Hunter) are still on Season 1 upstream, and a few Season 2 guides
+    // cite a retired dungeon by mistake. Normalizing them at least keeps the
+    // names translatable until Maxroll updates.
+    "Magisters Terrace": "Magisters' Terrace",
+    "Magister's Terrace": "Magisters' Terrace",
+    Academy: "Algeth'ar Academy",
+    "Chimaerus the Undreamt God": "Chimaerus",
+};
 
 // Season 2 labels catalyst conversions "Catalyst of <source>", where the
 // source is where the base item drops — a dungeon, or a raid boss such as
@@ -884,6 +950,12 @@ function splitPairedSources(source, count) {
     return parts.length === count ? parts : new Array(count).fill(source);
 }
 
+// Dual-wield rows sometimes read "2x <item>", meaning wield two of the same.
+// The count is not part of the item name and Wowhead finds nothing with it.
+function stripQuantity(name) {
+    return name.replace(/^\s*\d+\s*x\s+/i, "").trim();
+}
+
 function splitDualWeaponName(name) {
     if (name.includes(" & ")) return name.split(" & ").map((s) => s.trim());
     return [name];
@@ -1041,6 +1113,33 @@ function hasItemSet(tooltipHtml) {
     );
 }
 
+// The tooltip's inventory slot is the item's own truth. Maxroll occasionally
+// files an item under the wrong slot — a tier helm listed in the Neck row —
+// and nothing downstream would notice. Warn rather than drop: the guide is
+// what it is, and inventing a replacement would be worse.
+const SLOT_INV_TYPES = {
+    head: ["Head"], neck: ["Neck"], shoulder: ["Shoulder"], back: ["Back"],
+    chest: ["Chest"], wrist: ["Wrist"], hands: ["Hands"], waist: ["Waist"],
+    legs: ["Legs"], feet: ["Feet"],
+    finger1: ["Finger"], finger2: ["Finger"],
+    trinket1: ["Trinket"], trinket2: ["Trinket"],
+};
+
+function tooltipInvSlot(tooltip) {
+    const m = tooltip.match(
+        /<td>(Head|Neck|Shoulder|Back|Chest|Wrist|Hands|Waist|Legs|Feet|Finger|Trinket|One-Hand|Two-Hand|Main Hand|Off Hand|Ranged|Held In Off-hand|Shield)<\/td>/,
+    );
+    return m ? m[1] : null;
+}
+
+function warnSlotMismatch(slot, invSlot, name) {
+    const expected = SLOT_INV_TYPES[slot];
+    if (!expected || !invSlot || expected.includes(invSlot)) return;
+    console.warn(
+        `    WARNING: "${name}" is a ${invSlot} item but Maxroll lists it under ${slot}`,
+    );
+}
+
 async function fetchItemTooltip(id) {
     // Fetch both locales to populate cache (used by generate-item-names)
     await fetchTooltip(id, 1); // Korean — cached for item name generation
@@ -1054,7 +1153,12 @@ async function fetchItemTooltip(id) {
     if (tooltip.includes("<!--rtg49-->")) stats.push("mastery");
     if (tooltip.includes("<!--rtg40-->")) stats.push("vers");
 
-    return { stats, isTier: hasItemSet(tooltip) };
+    return {
+        stats,
+        isTier: hasItemSet(tooltip),
+        invSlot: tooltipInvSlot(tooltip),
+        name: enData.name,
+    };
 }
 
 // Detect weapon type from Maxroll gear table slot names.
@@ -1091,6 +1195,13 @@ async function buildGearData(gearRows, weaponType) {
 
     for (const row of gearRows) {
         const slotName = row.slotName;
+
+        // "Option for Dual Wielding" and the like: a weapon for a build this
+        // spec is not running. It belongs in ALTS, not in the bin.
+        if (/^option/.test(row.slotName.toLowerCase().replace(/[\s\-_]+/g, ""))) {
+            skippedWeapons.push(row);
+            continue;
+        }
 
         // Handle dual weapon entries like "Mystakria's Harvester & Soulblight Cleaver"
         let itemNames = splitDualWeaponName(row.itemName);
@@ -1145,13 +1256,14 @@ async function buildGearData(gearRows, weaponType) {
         if (!id) continue;
 
         if (lastSearchWasNetwork) await delay(200);
-        const { stats, isTier } = await fetchItemTooltip(id);
+        const { stats, isTier, invSlot, name } = await fetchItemTooltip(id);
 
         const slot = resolveSlot(slotName, weaponType);
         if (!slot) {
             console.warn(`    WARNING: Unknown slot "${slotName}", skipping`);
             continue;
         }
+        warnSlotMismatch(slot, invSlot, name || itemName);
 
         items.push({
             slot,
