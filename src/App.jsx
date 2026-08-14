@@ -192,6 +192,30 @@ function VersionBadge({ accent, bg, border, size }) {
   );
 }
 
+// Bumping the key re-shows the banner; the old key stays dismissed forever.
+var SEASON_BANNER_KEY = "bis-banner-midnight-s2";
+
+function SeasonBanner({ maxWidth }) {
+  var { t } = useLocale();
+  var [dismissed, setDismissed] = useState(function() { return !!load(SEASON_BANNER_KEY); });
+  if (dismissed) return null;
+  function close() {
+    persist(SEASON_BANNER_KEY, 1);
+    setDismissed(true);
+  }
+  return (
+    <div role="status" style={{ width: "100%", maxWidth: maxWidth || 600, margin: "0 auto 20px", display: "flex", alignItems: "flex-start", gap: 12, textAlign: "left", padding: "12px 14px", borderRadius: 10, background: "linear-gradient(135deg,#1a0b33 0%,#0c0c16 70%)", border: "1px solid #7832C855", boxShadow: "0 0 18px #7832C81f" }}>
+      <span style={{ flexShrink: 0, marginTop: 1, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#C88CFF", background: "#7832C822", border: "1px solid #7832C866", borderRadius: 4, padding: "2px 7px" }}>{t("ui.s2BannerTag")}</span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#DCBEFF", marginBottom: 3 }}>{t("ui.s2BannerTitle")}</div>
+        <div style={{ fontSize: 12, color: "#99887a", lineHeight: 1.6 }}>{t("ui.s2BannerBody")}</div>
+      </div>
+      <button onClick={close} aria-label={t("ui.s2BannerDismiss")} title={t("ui.s2BannerDismiss")}
+        style={{ flexShrink: 0, background: "none", border: "none", color: "#66557a", fontSize: 16, lineHeight: 1, cursor: "pointer", padding: "2px 4px" }}>&times;</button>
+    </div>
+  );
+}
+
 function LegalModal(props) {
   var page = props.page;
   var onClose = props.onClose;
@@ -620,6 +644,7 @@ export default function App() {
         </div>
         <p style={{ fontSize: 15, color: "#99887a", marginBottom: 4, fontWeight: 600 }}>{t("ui.seasonLabel")}</p>
         <p style={{ fontSize: 12, color: "#556666", marginBottom: 24 }}>{t("ui.seasonSub")}</p>
+        <SeasonBanner />
         {/* Class grid — always visible */}
         <div style={{ width: "100%", maxWidth: 720, marginBottom: 20 }}>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 8 }}>
@@ -774,6 +799,8 @@ export default function App() {
             </div>
           </div>
         </div>
+
+      <div style={{ marginTop: 16 }}><SeasonBanner maxWidth="100%" /></div>
 
       <BisTracker key={specKey + ":" + charName} spec={spec} charName={charName} initialSimcText={pendingSimcText} onSpecSwitch={handleSpecSwitch} onClear={handleClear} onCharDetected={handleCharDetected} crossSpecSources={findCrossSpecSources(specKey)} tutorialStep={tutorialStep} />
 
