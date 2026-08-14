@@ -3,7 +3,8 @@ import { SPECS, getSpec, findSpecBySimC } from './data/specs.js';
 import { CHANGELOG } from './data/changelog.js';
 import { getSampleChars, SAMPLE_CHARS } from './data/sample.js';
 import { load, save as persist, remove } from './storage.js';
-import { TIERS, parseSimC } from './data/shared.js';
+import { parseSimC } from './data/shared.js';
+import { autoSelectTier } from './logic/priority.js';
 import { useLocale, LOCALE_META, LOCALE_KEYS } from './i18n/index.jsx';
 import BisTracker from './components/BisTracker.jsx';
 import TutorialOverlay from './components/TutorialOverlay.jsx';
@@ -393,13 +394,7 @@ export default function App() {
           var es = s.spec.KNOWN_STATS[eq.id];
           if (es && bi.stats.slice().sort().join() === es.slice().sort().join()) altItems[bi.id] = true;
         });
-        // Auto-select target tier based on avgIlvl
-        var autoTier = TIERS[TIERS.length - 1].key;
-        for (var ti = 0; ti < TIERS.length; ti++) {
-          var gap = ti < TIERS.length - 1 ? (TIERS[ti + 1].max - TIERS[ti].max) / 2 : 0;
-          if (ci.avgIlvl < TIERS[ti].max - gap) { autoTier = TIERS[ti].key; break; }
-        }
-        persist(key, { acq: {}, sr: { ci: ci, eqSlot: eqSlot, bisInBag: {}, altItems: altItems, matched: matched }, targetTier: autoTier });
+        persist(key, { acq: {}, sr: { ci: ci, eqSlot: eqSlot, bisInBag: {}, altItems: altItems, matched: matched }, targetTier: autoSelectTier(ci.avgIlvl) });
       }
     });
     setSampleMode(true);

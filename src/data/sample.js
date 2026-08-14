@@ -2,51 +2,54 @@
 // Shows: multiple characters, same name + different specs, all priority tiers
 
 import { SPECS } from './specs.js';
-import { TIERS } from './shared.js';
+import { TIERS, DEFAULT_TIER } from './shared.js';
 import enItems from '../i18n/items/en.json';
 
 // Curated sample specs: diverse classes, some share names to demo multi-spec
-// tierLevel: 2 = hero→myth progression (default), 1 = champion→hero progression
+// tier: the grade the character has finished. Items one grade below it show as
+// still-upgrading. Named by key, not index, so adding a grade cannot silently
+// re-point every sample character at a different one.
 export var SAMPLE_CHARS = [
   // Evoker (mail, 2 specs) — hero gear
-  { specKey: "dev-evoker", name: "Aetherion", tierLevel: 2 },
-  { specKey: "aug-evoker", name: "Aetherion", tierLevel: 2 },
+  { specKey: "dev-evoker", name: "Aetherion", tier: "hero" },
+  { specKey: "aug-evoker", name: "Aetherion", tier: "hero" },
   // Mage (cloth) — hero gear
-  { specKey: "fire-mage", name: "Elyndra", tierLevel: 2 },
+  { specKey: "fire-mage", name: "Elyndra", tier: "hero" },
   // Paladin (plate, 2 specs) — champion gear
-  { specKey: "prot-paladin", name: "Kargath", tierLevel: 1 },
-  { specKey: "ret-paladin", name: "Kargath", tierLevel: 1 },
+  { specKey: "prot-paladin", name: "Kargath", tier: "champion" },
+  { specKey: "ret-paladin", name: "Kargath", tier: "champion" },
   // Death Knight (plate, 2 specs) — hero gear
-  { specKey: "frost-dk", name: "Morvaine", tierLevel: 2 },
-  { specKey: "blood-dk", name: "Morvaine", tierLevel: 2 },
+  { specKey: "frost-dk", name: "Morvaine", tier: "hero" },
+  { specKey: "blood-dk", name: "Morvaine", tier: "hero" },
   // Rogue (leather) — champion gear
-  { specKey: "sub-rogue", name: "Nyx", tierLevel: 1 },
+  { specKey: "sub-rogue", name: "Nyx", tier: "champion" },
   // Demon Hunter (leather, 2 specs) — hero gear
-  { specKey: "havoc-dh", name: "Zul'khar", tierLevel: 2 },
-  { specKey: "veng-dh", name: "Zul'khar", tierLevel: 1 },
+  { specKey: "havoc-dh", name: "Zul'khar", tier: "hero" },
+  { specKey: "veng-dh", name: "Zul'khar", tier: "champion" },
   // Shaman (mail) — champion gear
-  { specKey: "resto-shaman", name: "Tidecaller", tierLevel: 1 },
+  { specKey: "resto-shaman", name: "Tidecaller", tier: "champion" },
   // Priest (cloth, 2 specs) — hero gear
-  { specKey: "shadow-priest", name: "Solace", tierLevel: 2 },
-  { specKey: "disc-priest", name: "Solace", tierLevel: 1 },
+  { specKey: "shadow-priest", name: "Solace", tier: "hero" },
+  { specKey: "disc-priest", name: "Solace", tier: "champion" },
   // Warrior (plate) — hero gear
-  { specKey: "fury-warrior", name: "Grimjaw", tierLevel: 2 },
+  { specKey: "fury-warrior", name: "Grimjaw", tier: "hero" },
   // Hunter (mail) — champion gear
-  { specKey: "bm-hunter", name: "Ashvane", tierLevel: 1 },
+  { specKey: "bm-hunter", name: "Ashvane", tier: "champion" },
   // Druid (leather) — hero gear
-  { specKey: "feral-druid", name: "Thornweald", tierLevel: 2 },
+  { specKey: "feral-druid", name: "Thornweald", tier: "hero" },
   // Warlock (cloth) — champion gear
-  { specKey: "destro-lock", name: "Nethys", tierLevel: 1 },
+  { specKey: "destro-lock", name: "Nethys", tier: "champion" },
   // Monk (leather) — hero gear
-  { specKey: "ww-monk", name: "Zenjin", tierLevel: 2 },
+  { specKey: "ww-monk", name: "Zenjin", tier: "hero" },
 ];
 
-function generateSampleSimC(spec, charName, tierLevel) {
+function generateSampleSimC(spec, charName, tierKey) {
   var BIS = spec.BIS;
   var ALTS = spec.ALTS;
-  // tierLevel indexes into TIERS: done tier = tierLevel, upgrade tier = tierLevel - 1
-  var doneTier = TIERS[tierLevel] || TIERS[2];
-  var upgradeTier = TIERS[tierLevel - 1] || TIERS[0];
+  var doneIdx = TIERS.findIndex(function(t) { return t.key === tierKey; });
+  if (doneIdx < 0) doneIdx = TIERS.findIndex(function(t) { return t.key === DEFAULT_TIER; });
+  var doneTier = TIERS[doneIdx];
+  var upgradeTier = TIERS[doneIdx - 1] || TIERS[0];
 
   // Weapon/off_hand slots are skipped for alt/wrong — too many compatibility issues
   var SKIP_SLOTS = new Set(["main_hand", "off_hand"]);
@@ -166,6 +169,6 @@ function generateSampleSimC(spec, charName, tierLevel) {
 export function getSampleChars() {
   return SAMPLE_CHARS.map(function(c) {
     var spec = SPECS.find(function(s) { return s.SPEC_KEY === c.specKey; });
-    return { spec: spec, name: c.name, simcText: generateSampleSimC(spec, c.name, c.tierLevel || 2) };
+    return { spec: spec, name: c.name, simcText: generateSampleSimC(spec, c.name, c.tier || DEFAULT_TIER) };
   });
 }

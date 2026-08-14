@@ -13,7 +13,15 @@ export function statScore(eqId, stats, priorityStats) {
   return score;
 }
 
-// Determine item grade tier index from bonus_id string, fallback to ilvl
+// Determine item grade tier index from bonus_id string, fallback to ilvl.
+// SimC emits bonus_id for equipped gear, so the ilvl path only runs on
+// hand-edited or truncated imports.
+//
+// The ilvl path is genuinely ambiguous: grade ilvl bands overlap heavily
+// (a Season 2 item at 305 is both Champion 5/6 and Hero 1/6), so it picks the
+// HIGHEST grade containing the ilvl. Guessing too low would claim the item
+// cannot be upgraded and must be re-farmed — a false "재획득 필요" alarm.
+// Guessing too high only withholds a warning. Silence is the cheaper error.
 export function itemTierIdx(bonus, ilvl) {
   if (bonus) {
     var parts = bonus.split(":");
@@ -22,7 +30,11 @@ export function itemTierIdx(bonus, ilvl) {
       for (var i = 0; i < TIERS.length; i++) { if (b >= TIERS[i].bonusMin && b <= TIERS[i].bonusMax) return i; }
     }
   }
-  if (ilvl) { for (var i = 0; i < TIERS.length; i++) { if (ilvl <= TIERS[i].max) return i; } }
+  if (ilvl) {
+    for (var i = TIERS.length - 1; i >= 0; i--) { if (ilvl >= TIERS[i].min && ilvl <= TIERS[i].max) return i; }
+    // Below every band (or in a gap between them): lowest grade that can hold it
+    for (var i = 0; i < TIERS.length; i++) { if (ilvl <= TIERS[i].max) return i; }
+  }
   return -1;
 }
 
@@ -103,12 +115,14 @@ export function calcAltPriority(alt, sr, allStats, priorityStats, targetIlvl, ac
 }
 
 // Pick the next target tier based on average equipped ilvl.
+// Hidden tracks are graded but never offered as a goal, so skip them here.
 export function autoSelectTier(avgIlvl) {
-  for (var i = 0; i < TIERS.length; i++) {
-    var gap = i < TIERS.length - 1 ? (TIERS[i + 1].max - TIERS[i].max) / 2 : 0;
-    if (avgIlvl < TIERS[i].max - gap) return TIERS[i].key;
+  var pick = TIERS.filter(function(t) { return !t.hidden; });
+  for (var i = 0; i < pick.length; i++) {
+    var gap = i < pick.length - 1 ? (pick[i + 1].max - pick[i].max) / 2 : 0;
+    if (avgIlvl < pick[i].max - gap) return pick[i].key;
   }
-  return TIERS[TIERS.length - 1].key;
+  return pick[pick.length - 1].key;
 }
 
 function sortKey(p) { if (p.labelKey === "mythicBisDone") return 3.5; return p.tier; }
