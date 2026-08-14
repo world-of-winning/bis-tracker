@@ -50,7 +50,15 @@
         "Algeth'ar Academy": "AA",
         "Maisara Caverns": "MC",
         "Halls of Atonement": "HoA",
-        "Priory of the Sacred Flame": "PSF"
+        "Priory of the Sacred Flame": "PSF",
+        "The Blinding Vale": "TBV",
+        "Altar of Fangs": "AoF",
+        "Murder Row": "MR",
+        "Voidscar Arena": "VA",
+        "Kings' Rest": "KR",
+        "Den of Nalorakk": "DoN",
+        "Temple of Sethraliss": "ToS",
+        "Ruby Life Pools": "RLP"
     },
     "sources": {
         "Tier": "Tier",
@@ -64,7 +72,18 @@
         "Vorasius": "Vorasius",
         "Vaelgor & Ezzorak": "Vaelgor & Ezzorak",
         "Imperator Averzian": "Averzian",
-        "The Great Vault": "Große Schatzkammer"
+        "The Great Vault": "Große Schatzkammer",
+        "Ula'tek": "Ula'tek",
+        "The Coiled Altar": "Coiled Altar",
+        "The Twin Fangs": "Twin Fangs",
+        "The Lost Explorers": "Lost Explorers",
+        "Entombed Sentinels": "Entombed Sentinels",
+        "Nymrissa Wavecaller": "Nymrissa",
+        "Nek'zali the Soulcoiler": "Nek'zali",
+        "Vashnik the Malignant": "Vashnik",
+        "Sszorak": "Sszorak",
+        "Catalyst": "Catalyst",
+        "Rotmire": "Rotmire"
     },
     "dungeonsFull": {
         "Pit of Saron": "Grube von Saron",
@@ -76,7 +95,15 @@
         "Algeth'ar Academy": "Akademie von Algeth'ar",
         "Maisara Caverns": "Maisarahöhlen",
         "Halls of Atonement": "Hallen der Sühne",
-        "Priory of the Sacred Flame": "Priorat der Heiligen Flamme"
+        "Priory of the Sacred Flame": "Priorat der Heiligen Flamme",
+        "The Blinding Vale": "Das blendende Tal",
+        "Altar of Fangs": "Der Altar der Fänge",
+        "Murder Row": "Mördergasse",
+        "Voidscar Arena": "Arena der Leerennarbe",
+        "Kings' Rest": "Die Königsruh",
+        "Den of Nalorakk": "Nalorakks Bau",
+        "Temple of Sethraliss": "Der Tempel von Sethraliss",
+        "Ruby Life Pools": "Rubinlebensbecken"
     },
     "classes": {
         "deathknight": "Todesritter",
@@ -153,7 +180,6 @@
         "compare": "Vergleichen",
         "equipped": "Angelegt",
         "mythicBisDone": "M+ BiS ✓",
-
         "viewBis": "BiS",
         "viewMythic": "M+",
         "bisItems": "BiS-Gegenstände",

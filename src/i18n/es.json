@@ -50,7 +50,15 @@
         "Algeth'ar Academy": "AA",
         "Maisara Caverns": "MC",
         "Halls of Atonement": "HoA",
-        "Priory of the Sacred Flame": "PSF"
+        "Priory of the Sacred Flame": "PSF",
+        "The Blinding Vale": "TBV",
+        "Altar of Fangs": "AoF",
+        "Murder Row": "MR",
+        "Voidscar Arena": "VA",
+        "Kings' Rest": "KR",
+        "Den of Nalorakk": "DoN",
+        "Temple of Sethraliss": "ToS",
+        "Ruby Life Pools": "RLP"
     },
     "sources": {
         "Tier": "Tier",
@@ -64,7 +72,18 @@
         "Vorasius": "Vorasius",
         "Vaelgor & Ezzorak": "Vaelgor y Ezzorak",
         "Imperator Averzian": "Averzian",
-        "The Great Vault": "Gran Bóveda"
+        "The Great Vault": "Gran Bóveda",
+        "Ula'tek": "Ula'tek",
+        "The Coiled Altar": "Coiled Altar",
+        "The Twin Fangs": "Twin Fangs",
+        "The Lost Explorers": "Lost Explorers",
+        "Entombed Sentinels": "Entombed Sentinels",
+        "Nymrissa Wavecaller": "Nymrissa",
+        "Nek'zali the Soulcoiler": "Nek'zali",
+        "Vashnik the Malignant": "Vashnik",
+        "Sszorak": "Sszorak",
+        "Catalyst": "Catalyst",
+        "Rotmire": "Rotmire"
     },
     "dungeonsFull": {
         "Pit of Saron": "Foso de Saron",
@@ -76,7 +95,15 @@
         "Algeth'ar Academy": "Academia Algeth'ar",
         "Maisara Caverns": "Cavernas Maisara",
         "Halls of Atonement": "Salas de Expiación",
-        "Priory of the Sacred Flame": "Priorato de la Llama Sagrada"
+        "Priory of the Sacred Flame": "Priorato de la Llama Sagrada",
+        "The Blinding Vale": "El Valle Cegador",
+        "Altar of Fangs": "Altar de los Colmillos",
+        "Murder Row": "El Frontal de la Muerte",
+        "Voidscar Arena": "Arena Lacravacua",
+        "Kings' Rest": "Reposo de los Reyes",
+        "Den of Nalorakk": "Guarida de Nalorakk",
+        "Temple of Sethraliss": "Templo de Sethraliss",
+        "Ruby Life Pools": "Estanques de Vida Rubí"
     },
     "classes": {
         "deathknight": "Caballero de la Muerte",
@@ -153,7 +180,6 @@
         "compare": "Comparar",
         "equipped": "Equipado",
         "mythicBisDone": "BiS M+ ✓",
-
         "viewBis": "BiS",
         "viewMythic": "M+",
         "bisItems": "Objetos BiS",

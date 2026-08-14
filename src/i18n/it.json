@@ -50,7 +50,15 @@
         "Algeth'ar Academy": "AA",
         "Maisara Caverns": "MC",
         "Halls of Atonement": "HoA",
-        "Priory of the Sacred Flame": "PSF"
+        "Priory of the Sacred Flame": "PSF",
+        "The Blinding Vale": "TBV",
+        "Altar of Fangs": "AoF",
+        "Murder Row": "MR",
+        "Voidscar Arena": "VA",
+        "Kings' Rest": "KR",
+        "Den of Nalorakk": "DoN",
+        "Temple of Sethraliss": "ToS",
+        "Ruby Life Pools": "RLP"
     },
     "sources": {
         "Tier": "Set",
@@ -64,7 +72,18 @@
         "Vorasius": "Vorasius",
         "Vaelgor & Ezzorak": "Vaelgor & Ezzorak",
         "Imperator Averzian": "Averzian",
-        "The Great Vault": "Gran Camera Blindata"
+        "The Great Vault": "Gran Camera Blindata",
+        "Ula'tek": "Ula'tek",
+        "The Coiled Altar": "Coiled Altar",
+        "The Twin Fangs": "Twin Fangs",
+        "The Lost Explorers": "Lost Explorers",
+        "Entombed Sentinels": "Entombed Sentinels",
+        "Nymrissa Wavecaller": "Nymrissa",
+        "Nek'zali the Soulcoiler": "Nek'zali",
+        "Vashnik the Malignant": "Vashnik",
+        "Sszorak": "Sszorak",
+        "Catalyst": "Catalyst",
+        "Rotmire": "Rotmire"
     },
     "dungeonsFull": {
         "Pit of Saron": "Fossa di Saron",
@@ -76,7 +95,15 @@
         "Algeth'ar Academy": "Accademia di Algeth'ar",
         "Maisara Caverns": "Caverne di Maisara",
         "Halls of Atonement": "Sale dell'Espiazione",
-        "Priory of the Sacred Flame": "Priorato della Fiamma Sacra"
+        "Priory of the Sacred Flame": "Priorato della Fiamma Sacra",
+        "The Blinding Vale": "Valle Accecante",
+        "Altar of Fangs": "Altare delle Zanne",
+        "Murder Row": "Traversa degli Intrighi",
+        "Voidscar Arena": "Arena Sfregiavuoto",
+        "Kings' Rest": "Requie dei Re",
+        "Den of Nalorakk": "Tana di Nalorakk",
+        "Temple of Sethraliss": "Tempio di Sethraliss",
+        "Ruby Life Pools": "Pozze della Vita di Rubino"
     },
     "classes": {
         "deathknight": "Cavaliere della Morte",
@@ -153,7 +180,6 @@
         "compare": "Confronta",
         "equipped": "Equipaggiato",
         "mythicBisDone": "M+ BiS ✓",
-
         "viewBis": "BiS",
         "viewMythic": "M+",
         "bisItems": "Oggetti BiS",

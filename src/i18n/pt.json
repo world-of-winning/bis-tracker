@@ -50,7 +50,15 @@
         "Algeth'ar Academy": "AA",
         "Maisara Caverns": "MC",
         "Halls of Atonement": "HoA",
-        "Priory of the Sacred Flame": "PSF"
+        "Priory of the Sacred Flame": "PSF",
+        "The Blinding Vale": "TBV",
+        "Altar of Fangs": "AoF",
+        "Murder Row": "MR",
+        "Voidscar Arena": "VA",
+        "Kings' Rest": "KR",
+        "Den of Nalorakk": "DoN",
+        "Temple of Sethraliss": "ToS",
+        "Ruby Life Pools": "RLP"
     },
     "sources": {
         "Tier": "Tier",
@@ -64,7 +72,18 @@
         "Vorasius": "Vorasius",
         "Vaelgor & Ezzorak": "Vaelgor & Ezzorak",
         "Imperator Averzian": "Averzian",
-        "The Great Vault": "Grande Cofre"
+        "The Great Vault": "Grande Cofre",
+        "Ula'tek": "Ula'tek",
+        "The Coiled Altar": "Coiled Altar",
+        "The Twin Fangs": "Twin Fangs",
+        "The Lost Explorers": "Lost Explorers",
+        "Entombed Sentinels": "Entombed Sentinels",
+        "Nymrissa Wavecaller": "Nymrissa",
+        "Nek'zali the Soulcoiler": "Nek'zali",
+        "Vashnik the Malignant": "Vashnik",
+        "Sszorak": "Sszorak",
+        "Catalyst": "Catalyst",
+        "Rotmire": "Rotmire"
     },
     "dungeonsFull": {
         "Pit of Saron": "Poço de Saron",
@@ -76,7 +95,15 @@
         "Algeth'ar Academy": "Academia Algeth'ar",
         "Maisara Caverns": "Cavernas Maisara",
         "Halls of Atonement": "Salões da Expiação",
-        "Priory of the Sacred Flame": "Priorado da Chama Sagrada"
+        "Priory of the Sacred Flame": "Priorado da Chama Sagrada",
+        "The Blinding Vale": "O Vale Ofuscante",
+        "Altar of Fangs": "Altar das Presas",
+        "Murder Row": "Travessa do Assassino",
+        "Voidscar Arena": "Arena da Chaga do Caos",
+        "Kings' Rest": "Repouso do Rei",
+        "Den of Nalorakk": "Covil de Nalorakk",
+        "Temple of Sethraliss": "Templo de Sethraliss",
+        "Ruby Life Pools": "Poços da Vida Rubi"
     },
     "classes": {
         "deathknight": "Cavaleiro da Morte",
@@ -153,7 +180,6 @@
         "compare": "Comparar",
         "equipped": "Equipado",
         "mythicBisDone": "BiS de M+ ✓",
-
         "viewBis": "BiS",
         "viewMythic": "M+",
         "bisItems": "Itens BiS",

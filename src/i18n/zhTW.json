@@ -50,7 +50,15 @@
         "Algeth'ar Academy": "AA",
         "Maisara Caverns": "MC",
         "Halls of Atonement": "HoA",
-        "Priory of the Sacred Flame": "PSF"
+        "Priory of the Sacred Flame": "PSF",
+        "The Blinding Vale": "TBV",
+        "Altar of Fangs": "AoF",
+        "Murder Row": "MR",
+        "Voidscar Arena": "VA",
+        "Kings' Rest": "KR",
+        "Den of Nalorakk": "DoN",
+        "Temple of Sethraliss": "ToS",
+        "Ruby Life Pools": "RLP"
     },
     "sources": {
         "Tier": "套裝",
@@ -64,7 +72,18 @@
         "Vorasius": "乘騎休斯",
         "Vaelgor & Ezzorak": "維爾戈與伊佐拉克",
         "Imperator Averzian": "統帥亞弗辛安",
-        "The Great Vault": "乘騎寶庫"
+        "The Great Vault": "乘騎寶庫",
+        "Ula'tek": "Ula'tek",
+        "The Coiled Altar": "Coiled Altar",
+        "The Twin Fangs": "Twin Fangs",
+        "The Lost Explorers": "Lost Explorers",
+        "Entombed Sentinels": "Entombed Sentinels",
+        "Nymrissa Wavecaller": "Nymrissa",
+        "Nek'zali the Soulcoiler": "Nek'zali",
+        "Vashnik the Malignant": "Vashnik",
+        "Sszorak": "Sszorak",
+        "Catalyst": "Catalyst",
+        "Rotmire": "Rotmire"
     },
     "dungeonsFull": {
         "Pit of Saron": "乘騎坑",
@@ -76,7 +95,15 @@
         "Algeth'ar Academy": "阿爾乘騎學院",
         "Maisara Caverns": "乘騎拉洞窟",
         "Halls of Atonement": "贖罪之廳",
-        "Priory of the Sacred Flame": "聖焰修道院"
+        "Priory of the Sacred Flame": "聖焰修道院",
+        "The Blinding Vale": "盲目谷地",
+        "Altar of Fangs": "毒牙祭壇",
+        "Murder Row": "兇殺路",
+        "Voidscar Arena": "虛痕競技場",
+        "Kings' Rest": "諸王之眠",
+        "Den of Nalorakk": "納羅拉克之穴",
+        "Temple of Sethraliss": "瑟沙利斯神廟",
+        "Ruby Life Pools": "晶紅生命之池"
     },
     "classes": {
         "deathknight": "死亡騎士",
@@ -153,7 +180,6 @@
         "compare": "比較",
         "equipped": "已裝備",
         "mythicBisDone": "M+ BiS ✓",
-
         "viewBis": "BiS",
         "viewMythic": "M+",
         "bisItems": "BiS 物品",

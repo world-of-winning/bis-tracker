@@ -50,7 +50,15 @@
         "Algeth'ar Academy": "대학",
         "Maisara Caverns": "마이사라",
         "Halls of Atonement": "속죄",
-        "Priory of the Sacred Flame": "수도원"
+        "Priory of the Sacred Flame": "수도원",
+        "The Blinding Vale": "골짜기",
+        "Altar of Fangs": "송곳니",
+        "Murder Row": "골목",
+        "Voidscar Arena": "투기장",
+        "Kings' Rest": "안식처",
+        "Den of Nalorakk": "소굴",
+        "Temple of Sethraliss": "사원",
+        "Ruby Life Pools": "웅덩이"
     },
     "sources": {
         "Tier": "티어",
@@ -65,7 +73,17 @@
         "Vaelgor & Ezzorak": "바엘고어와 에조라크",
         "Imperator Averzian": "전제군주 아베르시안",
         "The Great Vault": "위대한 금고",
-        "Rotmire": "부식수렁"
+        "Rotmire": "부식수렁",
+        "Ula'tek": "Ula'tek",
+        "The Coiled Altar": "Coiled Altar",
+        "The Twin Fangs": "Twin Fangs",
+        "The Lost Explorers": "Lost Explorers",
+        "Entombed Sentinels": "Entombed Sentinels",
+        "Nymrissa Wavecaller": "Nymrissa",
+        "Nek'zali the Soulcoiler": "Nek'zali",
+        "Vashnik the Malignant": "Vashnik",
+        "Sszorak": "Sszorak",
+        "Catalyst": "촉매"
     },
     "dungeonsFull": {
         "Pit of Saron": "사론의 구덩이",
@@ -77,7 +95,15 @@
         "Algeth'ar Academy": "알게타르 대학교",
         "Maisara Caverns": "마이사라 동굴",
         "Halls of Atonement": "속죄의 전당",
-        "Priory of the Sacred Flame": "신성한 불꽃의 수도원"
+        "Priory of the Sacred Flame": "신성한 불꽃의 수도원",
+        "The Blinding Vale": "눈부신 골짜기",
+        "Altar of Fangs": "송곳니의 제단",
+        "Murder Row": "죽음의 골목",
+        "Voidscar Arena": "공허흉터 투기장",
+        "Kings' Rest": "왕들의 안식처",
+        "Den of Nalorakk": "날로라크의 소굴",
+        "Temple of Sethraliss": "세스랄리스 사원",
+        "Ruby Life Pools": "루비 생명의 웅덩이"
     },
     "classes": {
         "deathknight": "죽음의 기사",
@@ -154,7 +180,6 @@
         "compare": "비교",
         "equipped": "장착",
         "mythicBisDone": "M+ BiS ✓",
-
         "viewBis": "BiS",
         "viewMythic": "쐐기",
         "bisItems": "BiS 아이템",

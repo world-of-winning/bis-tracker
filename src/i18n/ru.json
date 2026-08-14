@@ -50,7 +50,15 @@
         "Algeth'ar Academy": "AA",
         "Maisara Caverns": "MC",
         "Halls of Atonement": "HoA",
-        "Priory of the Sacred Flame": "PSF"
+        "Priory of the Sacred Flame": "PSF",
+        "The Blinding Vale": "TBV",
+        "Altar of Fangs": "AoF",
+        "Murder Row": "MR",
+        "Voidscar Arena": "VA",
+        "Kings' Rest": "KR",
+        "Den of Nalorakk": "DoN",
+        "Temple of Sethraliss": "ToS",
+        "Ruby Life Pools": "RLP"
     },
     "sources": {
         "Tier": "Тир",
@@ -64,7 +72,18 @@
         "Vorasius": "Воразиус",
         "Vaelgor & Ezzorak": "Вэлгор и Эззорак",
         "Imperator Averzian": "Аверзиан",
-        "The Great Vault": "Великое хранилище"
+        "The Great Vault": "Великое хранилище",
+        "Ula'tek": "Ula'tek",
+        "The Coiled Altar": "Coiled Altar",
+        "The Twin Fangs": "Twin Fangs",
+        "The Lost Explorers": "Lost Explorers",
+        "Entombed Sentinels": "Entombed Sentinels",
+        "Nymrissa Wavecaller": "Nymrissa",
+        "Nek'zali the Soulcoiler": "Nek'zali",
+        "Vashnik the Malignant": "Vashnik",
+        "Sszorak": "Sszorak",
+        "Catalyst": "Catalyst",
+        "Rotmire": "Rotmire"
     },
     "dungeonsFull": {
         "Pit of Saron": "Яма Сарона",
@@ -76,7 +95,15 @@
         "Algeth'ar Academy": "Академия Алгет'ар",
         "Maisara Caverns": "Пещеры Майсары",
         "Halls of Atonement": "Чертоги Покаяния",
-        "Priory of the Sacred Flame": "Обитель Священного Пламени"
+        "Priory of the Sacred Flame": "Обитель Священного Пламени",
+        "The Blinding Vale": "Слепящая долина",
+        "Altar of Fangs": "Алтарь Клыков",
+        "Murder Row": "Закоулок душегубов",
+        "Voidscar Arena": "Арена Шрама Бездны",
+        "Kings' Rest": "Гробница королей",
+        "Den of Nalorakk": "Берлога Налоракка",
+        "Temple of Sethraliss": "Храм Сетралисс",
+        "Ruby Life Pools": "Рубиновые Омуты Жизни"
     },
     "classes": {
         "deathknight": "Рыцарь смерти",
@@ -153,7 +180,6 @@
         "compare": "Сравнить",
         "equipped": "Надето",
         "mythicBisDone": "M+ BiS ✓",
-
         "viewBis": "BiS",
         "viewMythic": "M+",
         "bisItems": "BiS предметы",
