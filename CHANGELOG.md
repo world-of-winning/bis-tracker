@@ -1,5 +1,66 @@
 # Changelog
 
+## v2.0.0-rc.1
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.12.4...v2.0.0-rc.1)
+
+### 🚀 Enhancements
+
+- **data:** Grade gear on Midnight Season 2 upgrade tracks ([38195a1](https://github.com/world-of-winning/bis-tracker/commit/38195a1))
+- **scripts:** Crawl Maxroll for the Midnight Season 2 pool ([bda0f9a](https://github.com/world-of-winning/bis-tracker/commit/bda0f9a))
+- **data:** Regenerate all 40 specs for Midnight Season 2 ([3aa0fee](https://github.com/world-of-winning/bis-tracker/commit/3aa0fee))
+- **i18n:** Translate Season 2 dungeon and source names in ten locales ([56655c9](https://github.com/world-of-winning/bis-tracker/commit/56655c9))
+- **i18n:** Localize dungeon and boss names from client DB2 ([fce7339](https://github.com/world-of-winning/bis-tracker/commit/fce7339))
+- **ui:** Announce Midnight Season 2 and refresh site metadata ([bc5a22d](https://github.com/world-of-winning/bis-tracker/commit/bc5a22d))
+
+### 🩹 Fixes
+
+- **data:** File The Coiled Altar as a raid boss, not a dungeon ([d0c677e](https://github.com/world-of-winning/bis-tracker/commit/d0c677e))
+- **scripts:** Recover trinket and dual-wield rows from Season 2 tables ([4cd62d5](https://github.com/world-of-winning/bis-tracker/commit/4cd62d5))
+
+### 📖 Documentation
+
+- Describe the Season 2 grade system and season-swap procedure ([a1433ab](https://github.com/world-of-winning/bis-tracker/commit/a1433ab))
+
+### 🏡 Chore
+
+- Remove rtk-instructions block, add Agent skills section ([3f3dbe3](https://github.com/world-of-winning/bis-tracker/commit/3f3dbe3))
+- **dev:** Pin dev server ports above the WSL2 ephemeral range ([c1a4aa6](https://github.com/world-of-winning/bis-tracker/commit/c1a4aa6))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
+## v1.12.4
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.12.3...v1.12.4)
+
+### 🩹 Fixes
+
+- Verify Tier-set items via set-bonus marker instead of text guessing ([2397ffd](https://github.com/world-of-winning/bis-tracker/commit/2397ffd))
+
+### 🏡 Chore
+
+- Update BiS data from Maxroll (2026-07-04) ([b86f214](https://github.com/world-of-winning/bis-tracker/commit/b86f214))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
+## v1.12.3
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.12.2...v1.12.3)
+
+### 🏡 Chore
+
+- Update prot-paladin BiS data from Maxroll (2026-06-21) ([f0f4a23](https://github.com/world-of-winning/bis-tracker/commit/f0f4a23))
+- Update BiS data from Maxroll (2026-06-21) ([26bda46](https://github.com/world-of-winning/bis-tracker/commit/26bda46))
+- Add bis-data-sync skill for Maxroll data updates ([fce82b8](https://github.com/world-of-winning/bis-tracker/commit/fce82b8))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v1.12.2
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.12.1...v1.12.2)
