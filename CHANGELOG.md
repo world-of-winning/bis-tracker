@@ -1,8 +1,8 @@
 # Changelog
 
-## v2.0.0-rc.1
+## v2.0.0
 
-[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.12.4...v2.0.0-rc.1)
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.12.4...v2.0.0)
 
 ### 🚀 Enhancements
 
@@ -12,6 +12,8 @@
 - **i18n:** Translate Season 2 dungeon and source names in ten locales ([56655c9](https://github.com/world-of-winning/bis-tracker/commit/56655c9))
 - **i18n:** Localize dungeon and boss names from client DB2 ([fce7339](https://github.com/world-of-winning/bis-tracker/commit/fce7339))
 - **ui:** Announce Midnight Season 2 and refresh site metadata ([bc5a22d](https://github.com/world-of-winning/bis-tracker/commit/bc5a22d))
+- **i18n:** Derive short source labels from the client's own names ([d731b08](https://github.com/world-of-winning/bis-tracker/commit/d731b08))
+- **i18n:** Trim the boss labels the rules could not shorten ([dd5ee0d](https://github.com/world-of-winning/bis-tracker/commit/dd5ee0d))
 
 ### 🩹 Fixes
 
