@@ -16,10 +16,24 @@ function StatPills({ stats: itemStats }) {
 // need a new key for every combination that ever shows up.
 // t() returns the key itself on a miss, so an untranslated source would
 // otherwise render as the literal text "sources.Kings' Rest & Crafted".
+// A badge showing one source has room for the client's full name, which is
+// what the reader recognises; a joined source doubles the width, so both
+// halves drop to the short label the filter row uses. Keys with no full form
+// (Tier, Crafted, Catalyst, The Great Vault are UI concepts, not DB entries)
+// fall back to the short one — t() hands back the key itself on a miss.
 function localizeSource(source, t) {
-  return source
-    .split(" & ")
-    .map(function(part) { return DUNGEONS[part] ? t("dungeons." + part) : t("sources." + part); })
+  var parts = source.split(" & ");
+  var solo = parts.length === 1;
+  return parts
+    .map(function(part) {
+      var block = DUNGEONS[part] ? "dungeons" : "sources";
+      if (solo) {
+        var fullKey = block + "Full." + part;
+        var full = t(fullKey);
+        if (full !== fullKey) return full;
+      }
+      return t(block + "." + part);
+    })
     .join(" & ");
 }
 

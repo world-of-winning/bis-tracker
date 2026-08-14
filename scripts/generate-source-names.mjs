@@ -1,32 +1,45 @@
 #!/usr/bin/env node
 /**
- * Generate localized dungeon and boss names from Blizzard's client DB2 tables.
+ * Generate localized dungeon and boss names from Blizzard's client DB2 tables,
+ * then derive the short labels the filter row needs.
  *
- * Every name the tracker shows as an item source — the dungeon a piece drops
- * in, the boss that holds it, the raid it belongs to — already exists in the
- * game client in all ten locales. wago.tools exposes those tables as CSV, one
- * request per table per locale, so the translations do not have to be written
- * by hand. The hand-written ones in this repo were both incomplete (most
- * locales still carried the English boss names) and occasionally wrong (zhCN
- * rendered "Chimaerus" as 奇美拉, the generic chimera, instead of the game's
- * 奇美鲁斯).
+ * Stage 1 — full names. Every name the tracker shows as an item source already
+ * exists in the game client in all ten locales. wago.tools exposes those tables
+ * as CSV, one request per table per locale, so the translations do not have to
+ * be written by hand. The hand-written ones were both incomplete (most locales
+ * still carried the English boss names) and occasionally wrong (zhCN rendered
+ * "Chimaerus" as 奇美拉, the generic chimera, instead of the game's 奇美鲁斯).
+ * Rows join across locales by DB2 row ID, never by name, so a translated row
+ * can never be matched to the wrong English one.
  *
- * Rows are joined across locales by DB2 row ID, never by name, so a translated
- * row can never be matched to the wrong English one.
+ * Stage 2 — short labels, derived from stage 1's output. Two blocks:
  *
- * What this script does NOT touch:
- *   - `dungeons` — the short filter-button labels (PoS, NPX, PSF). The client
- *     carries no localized abbreviation: MapChallengeMode has a Name_lang and
- *     no ShortName_lang. Those stay hand-written.
- *   - Source keys with no DB2 row (Tier, Crafted, Catalyst, The Great Vault,
- *     Midnight Falls). They are UI concepts or project-local labels; the
- *     script reports them as unresolved and leaves the existing text alone.
+ *   `dungeons`  Filter-button labels. Only ko/zhCN/zhTW are generated: those
+ *               readerships do not use the English M+ acronyms, and their full
+ *               names are short enough to stand on their own. The Latin and
+ *               Cyrillic locales keep the hand-written acronyms, which is what
+ *               the tooling those players already use ships them — the Raider.IO
+ *               addon hands `POS`/`SR` to every client regardless of locale.
+ *               A name wider than SHORT_MAX columns needs an entry in
+ *               scripts/dungeon-short.json; without one the script exits.
+ *
+ *   `sources`   Boss and raid labels, trimmed from `sourcesFull` by rule (see
+ *               shortenSource) with exceptions in scripts/source-short.json.
+ *               `en.sources` is hand-written and never generated.
+ *
+ * Block ownership, not file ownership: `en.dungeonsFull` and `en.sourcesFull`
+ * are the client's own strings and are generated like any other locale, while
+ * `en.dungeons` and `en.sources` stay hand-written.
+ *
+ * Source keys with no DB2 row (Tier, Crafted, Catalyst, The Great Vault) are UI
+ * concepts, reported as unresolved and left alone.
  *
  * Usage:
  *   node scripts/generate-source-names.mjs                 # print the diff only
  *   node scripts/generate-source-names.mjs --write         # apply to src/i18n/*.json
  *   node scripts/generate-source-names.mjs --section sources
  *   node scripts/generate-source-names.mjs --locale de,fr
+ *   node scripts/generate-source-names.mjs --resolve       # candidate rows for unmapped keys
  *   node scripts/generate-source-names.mjs --refresh       # bypass the CSV cache
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
@@ -36,6 +49,8 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const I18N_DIR = resolve(__dirname, "../src/i18n");
 const CACHE_DIR = resolve(__dirname, ".wago-cache");
+const DUNGEON_SHORT_FILE = resolve(__dirname, "dungeon-short.json");
+const SOURCE_SHORT_FILE = resolve(__dirname, "source-short.json");
 
 const WAGO_BASE = "https://wago.tools/db2";
 
@@ -52,6 +67,25 @@ const LOCALES = {
     zhCN: "zhCN",
     zhTW: "zhTW",
 };
+
+// Locales whose `dungeons` labels are generated rather than hand-written.
+const SHORT_DUNGEON_LOCALES = new Set(["ko", "zhCN", "zhTW"]);
+
+// Display columns a filter-button label may occupy before it needs shortening.
+// 18 is the widest full name the generated locales currently produce
+// (ko "루비 생명의 웅덩이"), so this season only the legacy ko entry for Priory
+// of the Sacred Flame crosses it. The filter row already wraps, so a label a
+// little over the old acronym width costs one wrapped row, not a broken layout.
+const SHORT_MAX = 18;
+
+// Blocks nobody generates. `en.dungeons` holds the English M+ acronyms and
+// `en.sources` the trimmed badge labels the UI was laid out around; both are
+// deliberate hand-written choices, unlike the *Full blocks beside them.
+function isGenerated(block, loc) {
+    if (block === "dungeons") return SHORT_DUNGEON_LOCALES.has(loc);
+    if (block === "sources") return loc !== "en";
+    return true;
+}
 
 // dungeonsFull key -> MapChallengeMode.ID.
 // Every dungeon in the pool has a challenge-mode row, including the legacy
@@ -110,13 +144,6 @@ const SOURCE_IDS = {
 // this up" apart from "looked it up and the row is gone".
 const NO_DB_ROW = new Set(["Tier", "Crafted", "Catalyst", "The Great Vault"]);
 
-// en.json is not a translation — its values are the deliberately trimmed badge
-// labels the UI was laid out around ("Salhadaar", not "Fallen-King Salhadaar"),
-// and they double as the yardstick the length warning measures against.
-// Overwriting them with the client's full names would undo that choice
-// silently. Pass `--locale en` to write it anyway.
-const CURATED_LOCALES = new Set(["en"]);
-
 // Rows where the shipped client string is not a translation of the encounter.
 // esES JournalEncounter 2740 reads "L'ura" — an unrelated Argus entity — while
 // every other locale carries a rendering of "Midnight Falls". Writing it would
@@ -126,6 +153,28 @@ const BAD_ROWS = { es: new Set(["Midnight Falls"]) };
 
 // Dropped from the --resolve needle: too common to narrow anything down.
 const STOPWORDS = new Set(["the", "and", "of", "great", "lost"]);
+
+// Determiners that introduce an epithet clause after a boss's name:
+// "Vashnik der Bösartige", "Nek'zali la Volutadora de Almas". Only counted
+// past the first token, so "Die Zwillingsfänge" keeps its leading article.
+const DETERMINERS = {
+    de: ["der", "die", "das", "den", "dem"],
+    fr: ["le", "la", "les"],
+    es: ["el", "la", "los", "las"],
+    it: ["il", "lo", "la", "i", "gli", "le"],
+    pt: ["o", "a", "os", "as"],
+};
+
+// A determiner right after a preposition belongs to that phrase, not to an
+// epithet: cutting "Vanguardia Cegada por la Luz" at "la" leaves the dangling
+// "Vanguardia Cegada por".
+const PREPOSITIONS = {
+    de: ["von", "vom", "zu", "zur", "zum", "in", "im", "an", "am", "auf", "aus", "bei", "mit", "nach", "über", "unter", "vor"],
+    fr: ["de", "du", "des", "à", "au", "aux", "en", "par", "pour", "sur", "sous", "avec"],
+    es: ["de", "del", "por", "para", "en", "con", "sin", "sobre", "a", "al"],
+    it: ["di", "del", "della", "da", "dal", "in", "nel", "per", "con", "su", "a", "al"],
+    pt: ["de", "do", "da", "dos", "das", "por", "para", "em", "no", "na", "com", "a", "ao"],
+};
 
 // ─── args ───────────────────────────────────────────────────
 const argv = process.argv.slice(2);
@@ -147,13 +196,21 @@ if (!["all", "dungeons", "sources"].includes(section)) {
 const localeFilter = argValue("--locale");
 const targetLocales = localeFilter
     ? localeFilter.split(",").map((s) => s.trim()).filter(Boolean)
-    : Object.keys(LOCALES).filter((l) => !CURATED_LOCALES.has(l));
+    : Object.keys(LOCALES);
 for (const loc of targetLocales) {
     if (!LOCALES[loc]) {
         console.error(`Unknown locale ${loc} (expected one of ${Object.keys(LOCALES).join(", ")})`);
         process.exit(1);
     }
 }
+
+function readJsonOr(file, fallback) {
+    if (!existsSync(file)) return fallback;
+    return JSON.parse(readFileSync(file, "utf8"));
+}
+
+const DUNGEON_SHORT = readJsonOr(DUNGEON_SHORT_FILE, {});
+const SOURCE_SHORT = readJsonOr(SOURCE_SHORT_FILE, {});
 
 // ─── CSV ────────────────────────────────────────────────────
 /**
@@ -269,16 +326,65 @@ async function resolveMode() {
     }
 }
 
+// ─── shortening ─────────────────────────────────────────────
+/** Visual width proxy: CJK glyphs occupy roughly two Latin columns. */
+function displayWidth(s) {
+    let w = 0;
+    for (const ch of s) w += /[ᄀ-ᅟ⺀-꓏가-힣豈-﫿︰-﹯＀-｠￠-￦]/.test(ch) ? 2 : 1;
+    return w;
+}
+
+/**
+ * Trim a boss's epithet off the client's full name. Three shapes cover most of
+ * what Blizzard ships; anything they miss belongs in source-short.json rather
+ * than in a fourth rule, because past this point the patterns stop being
+ * mechanical (ko puts the epithet in front, ru inflects it).
+ */
+function shortenSource(full, loc) {
+    let s = full;
+    // Leading bracketed epithet: zhTW 『夢境之神』奇美魯斯
+    s = s.replace(/^[『「《][^』」》]*[』」》]\s*/, "");
+    // Appositive clause: de "Chimaerus, der ungeträumte Gott"
+    const comma = s.indexOf(",");
+    if (comma > 0) s = s.slice(0, comma);
+    // Trailing determiner clause: es "Nek'zali la Volutadora de Almas"
+    const dets = DETERMINERS[loc];
+    if (dets) {
+        const preps = PREPOSITIONS[loc] || [];
+        const parts = s.split(/\s+/);
+        const cut = parts.findIndex((w, i) =>
+            i > 0 && dets.includes(w.toLowerCase()) && !preps.includes(parts[i - 1].toLowerCase()));
+        if (cut > 0) s = parts.slice(0, cut).join(" ");
+    }
+    return s.trim() || full;
+}
+
+/**
+ * Candidates offered when a dungeon name is too wide and has no override yet.
+ * Deliberately not auto-picked: the shortest unique token lands on words like
+ * "Vida" or "Омуты", and the leading noun lands on adjectives in de and ru.
+ */
+function shortCandidates(full) {
+    const words = full.split(/\s+/).filter(Boolean);
+    if (words.length < 2) return [full.slice(0, 4)];
+    return [...new Set([words[0], words[words.length - 1], words.slice(1).join(" ")])];
+}
+
 // ─── generate ───────────────────────────────────────────────
 function readLocale(loc) {
     return JSON.parse(readFileSync(resolve(I18N_DIR, `${loc}.json`), "utf8"));
 }
 
-/** Visual width proxy: CJK glyphs occupy roughly two Latin columns. */
-function displayWidth(s) {
-    let w = 0;
-    for (const ch of s) w += /[ᄀ-ᅟ⺀-꓏가-힣豈-﫿︰-﹯＀-｠￠-￦]/.test(ch) ? 2 : 1;
-    return w;
+/** Keep `sourcesFull` next to `sources` instead of appended after everything. */
+function orderBlocks(data) {
+    const out = {};
+    for (const k of Object.keys(data)) {
+        if (k === "sourcesFull") continue;
+        out[k] = data[k];
+        if (k === "sources" && data.sourcesFull) out.sourcesFull = data.sourcesFull;
+    }
+    if (data.sourcesFull && !out.sourcesFull) out.sourcesFull = data.sourcesFull;
+    return out;
 }
 
 async function generate() {
@@ -287,8 +393,6 @@ async function generate() {
     if (section !== "sources") tables.add("MapChallengeMode");
     if (section !== "dungeons") for (const s of Object.values(SOURCE_IDS)) tables.add(s.table);
 
-    const skipped = [...CURATED_LOCALES].filter((l) => !targetLocales.includes(l));
-    if (skipped.length) console.log(`Skipping curated locale(s): ${skipped.join(", ")}`);
     console.log(`Loading ${tables.size} table(s) x ${wagoLocales.length} locale(s)`);
     const indices = {}; // table -> wagoLocale -> Map
     for (const t of tables) {
@@ -297,14 +401,11 @@ async function generate() {
     }
 
     const en = readLocale("en");
-    const enWidths = {};
-    for (const [k, v] of Object.entries({ ...(en.dungeonsFull || {}), ...(en.sources || {}) })) {
-        enWidths[k] = displayWidth(v);
-    }
-
     const missingRows = new Set();
     const skippedBadRows = [];
-    const longer = [];
+    const needOverride = [];
+    const collisions = [];
+    const wideSources = [];
     let changed = 0;
 
     for (const loc of targetLocales) {
@@ -314,6 +415,7 @@ async function generate() {
 
         const apply = (block, key, next) => {
             if (next == null || next === "") return;
+            if (!isGenerated(block, loc)) return;
             if (BAD_ROWS[loc]?.has(key)) {
                 skippedBadRows.push(`${loc}  ${key}: client says "${next}"`);
                 return;
@@ -323,14 +425,9 @@ async function generate() {
             data[block] = data[block] || {};
             data[block][key] = next;
             edits.push({ block, key, prev, next });
-            // Only worth flagging where the English label is a trimmed nickname
-            // ("Salhadaar" for "Fallen-King Salhadaar") and the localized row is
-            // the untrimmed one. Those need a human to pick the short form.
-            if (enWidths[key] && displayWidth(next) > enWidths[key] * 1.5 + 4) {
-                longer.push(`${loc}  ${key}: "${next}" (en "${(en[block] || {})[key]}")`);
-            }
         };
 
+        // Stage 1 — full names straight from the client.
         if (section !== "sources") {
             for (const [name, id] of Object.entries(DUNGEON_IDS)) {
                 const found = indices.MapChallengeMode[wl].get(id);
@@ -342,7 +439,46 @@ async function generate() {
             for (const [key, ref] of Object.entries(SOURCE_IDS)) {
                 const found = indices[ref.table][wl].get(ref.id);
                 if (found == null) missingRows.add(`${ref.table} ${ref.id} (${key})`);
-                apply("sources", key, found);
+                apply("sourcesFull", key, found);
+            }
+        }
+
+        // Stage 2 — short labels, derived from what stage 1 just wrote.
+        if (section !== "sources" && isGenerated("dungeons", loc)) {
+            const picked = new Map();
+            for (const name of Object.keys(DUNGEON_IDS)) {
+                const full = (data.dungeonsFull || {})[name];
+                if (!full) continue;
+                const override = (DUNGEON_SHORT[loc] || {})[name];
+                let short = override || full;
+                if (!override && displayWidth(full) > SHORT_MAX) {
+                    needOverride.push(
+                        `${loc}  ${name}: "${full}" is ${displayWidth(full)} columns` +
+                        `\n        candidates: ${shortCandidates(full).map((c) => `"${c}"`).join(", ")}`
+                    );
+                    continue;
+                }
+                if (picked.has(short)) {
+                    collisions.push(`${loc}  "${short}" claimed by both ${picked.get(short)} and ${name}`);
+                    continue;
+                }
+                picked.set(short, name);
+                apply("dungeons", name, short);
+            }
+        }
+        if (section !== "dungeons" && isGenerated("sources", loc)) {
+            for (const key of Object.keys(SOURCE_IDS)) {
+                const full = (data.sourcesFull || {})[key];
+                if (!full) continue;
+                const override = (SOURCE_SHORT[loc] || {})[key];
+                const short = override || shortenSource(full, loc);
+                apply("sources", key, short);
+                // Not fatal the way an unlabelled dungeon is — a long boss
+                // label makes its filter button wide, it does not make two
+                // buttons indistinguishable.
+                if (!override && displayWidth(short) > SHORT_MAX) {
+                    wideSources.push(`${loc}  ${key}: "${short}" is ${displayWidth(short)} columns`);
+                }
             }
         }
 
@@ -355,7 +491,7 @@ async function generate() {
         }
 
         if (doWrite && edits.length) {
-            writeFileSync(resolve(I18N_DIR, `${loc}.json`), JSON.stringify(data, null, 4) + "\n", "utf8");
+            writeFileSync(resolve(I18N_DIR, `${loc}.json`), JSON.stringify(orderBlocks(data), null, 4) + "\n", "utf8");
         }
     }
 
@@ -374,12 +510,27 @@ async function generate() {
         console.log(`\nSkipped — client string is not a translation of this encounter:`);
         for (const s of skippedBadRows) console.log(`  ${s}`);
     }
-    if (longer.length) {
-        console.log(`\nLonger than the English label — trim by hand if the UI wraps:`);
-        for (const l of longer) console.log(`  ${l}`);
+
+    if (wideSources.length) {
+        console.log(`\nWider than ${SHORT_MAX} columns — add to scripts/source-short.json if the filter row bothers you:`);
+        for (const w of wideSources) console.log(`  ${w}`);
     }
 
     console.log(`\n${changed} change(s) across ${targetLocales.length} locale(s).`);
+
+    // A filter button with no label, or two dungeons sharing one, is worse than
+    // a failed run: both ship silently and the user cannot tell them apart.
+    if (needOverride.length || collisions.length) {
+        if (needOverride.length) {
+            console.error(`\nToo wide for a filter button and no entry in scripts/dungeon-short.json:`);
+            for (const n of needOverride) console.error(`  ${n}`);
+        }
+        if (collisions.length) {
+            console.error(`\nTwo dungeons resolved to the same label:`);
+            for (const c of collisions) console.error(`  ${c}`);
+        }
+        process.exit(1);
+    }
     if (!doWrite && changed) console.log("Re-run with --write to apply.");
 }
 
