@@ -47,17 +47,22 @@ src/
 - **tier 4 ✓:** Done
 - Within same tier: worst stat equipped → first, larger deficit → first
 
-### Item Grade System (Midnight Season 1)
-Items have grade tiers with ilvl caps. Items can be upgraded within their grade but **cannot cross grade boundaries** — a Champion item maxed at 263 must be re-acquired at Hero grade to reach 276.
+### Item Grade System (Midnight Season 2)
+Items have grade tiers with ilvl caps. Items can be upgraded within their grade but **cannot cross grade boundaries** — a Champion item maxed at 308 must be re-acquired at Hero grade to reach 321.
 
-| Grade | Key | Max ilvl | TIERS bonus |
-|---|---|---|---|
-| Veteran (노련가) | veteran | 250 | 12782 |
-| Champion (챔피언) | champion | 263 | 12790 |
-| Hero (영웅) | hero | 276 | 12798 |
-| Myth (신화) | myth | 289 | 12806 |
+| Grade | Key | ilvl range | bonus_id range | TIERS bonus |
+|---|---|---|---|---|
+| Adventurer (모험가) | adventurer | 266–282 | 12817–12824 | 12822 |
+| Veteran (노련가) | veteran | 279–295 | 12825–12832 | 12830 |
+| Champion (챔피언) | champion | 292–308 | 12833–12840 | 12838 |
+| Hero (영웅) | hero | 305–321 | 12841–12848 | 12846 |
+| Myth (신화) | myth | 318–334 | 12849–12856 | 12854 |
 
 Defined in `src/data/shared.js` as `TIERS[]`. The target grade filter determines `targetIlvl`. If an equipped/bag item's grade max < targetIlvl, it shows "재획득 필요" (re-acquire needed) because upgrading alone cannot reach the target.
+
+**Adventurer is `hidden: true`** — it gets no target button, but it must stay in `TIERS`. Drop it and its bonus_ids match nothing, the ilvl fallback grades a 282-capped Adventurer item as Veteran, and the tracker tells the user to upgrade an item that cannot be upgraded. Anything reading `TIERS` for the UI filters on `!hidden`; anything grading an item does not.
+
+Regenerate the table with `node scripts/generate-tiers.mjs --write`, which derives it from Raidbots' bonus data (`--season N` to pin a season, print-only without `--write`). The Season 1 table was written by hand and sat a step out of alignment with the real bonus_id blocks.
 
 ### Game Mechanics (Domain Logic)
 
@@ -65,23 +70,25 @@ Defined in `src/data/shared.js` as `TIERS[]`. The target grade filter determines
 
 #### 1. bonus_id vs ilvl — Not Interchangeable
 - **bonus_id**: Encoded grade indicator from SimC (`####/####` slash-separated → stored as `####:####` colon-separated). Each TIERS entry has a `bonusMin..bonusMax` range.
-- **ilvl**: Item power level (e.g., 250, 263, 276, 289). Represents upgrade progress *within* a grade.
-- `itemTierIdx(bonus, ilvl)` in BisTracker.jsx: checks bonus_id ranges **first** → falls back to ilvl **only** if no bonus_id match.
+- **ilvl**: Item power level (e.g., 295, 308, 321, 334). Represents upgrade progress *within* a grade.
+- Grade ilvl bands **overlap** — 305 is both Champion 5/6 and Hero 1/6 — so the ilvl fallback picks the *highest* grade containing the ilvl. Guessing low would claim an item must be re-farmed when it only needs upgrading; guessing high merely withholds a warning.
+- `itemTierIdx(bonus, ilvl)` in `src/logic/priority.js`: checks bonus_id ranges **first** → falls back to ilvl **only** if no bonus_id match.
 ```
 WRONG: Treating bonus_id and ilvl as equivalent for grade detection
 RIGHT: bonus_id determines grade; ilvl is fallback only when bonus_id is absent
 ```
 
 #### 2. Grade Boundaries Cannot Be Crossed by Upgrade
-This is the single most misunderstood mechanic. A Veteran item at max ilvl 250 **cannot** be upgraded to Hero 276 — it must be **re-acquired** (re-farmed) at Hero grade.
+This is the single most misunderstood mechanic. A Veteran item at max ilvl 295 **cannot** be upgraded to Hero 321 — it must be **re-acquired** (re-farmed) at Hero grade. Grade beats ilvl: a Champion 6/6 at 308 still reads "re-acquire" against a Hero target, even though 308 is above Hero's floor of 305.
 
 Two distinct upgrade statuses (`upgradeStatus` field):
 - **`"tierUp"`** → "재획득 필요" (re-acquire needed): item's grade < target grade. Must re-farm the item.
 - **`"enhance"`** → "강화 필요" (upgrade needed): item's grade >= target grade but ilvl < target ilvl. Can upgrade in place.
 ```
-WRONG: "ilvl 250, target 276 → upgrade needed"
-RIGHT: "Veteran grade (max 250), target Hero (276) → RE-ACQUIRE needed (tierUp)"
-       "Hero grade at ilvl 270, target Hero 276 → UPGRADE needed (enhance)"
+WRONG: "ilvl 295, target 321 → upgrade needed"
+RIGHT: "Veteran grade (max 295), target Hero (321) → RE-ACQUIRE needed (tierUp)"
+       "Hero grade at ilvl 311, target Hero 321 → UPGRADE needed (enhance)"
+       "Champion grade at ilvl 308, target Hero 321 → RE-ACQUIRE needed (tierUp)"
 ```
 
 #### 3. Priority Tier Calculation (in `calcPriority`)
@@ -132,11 +139,14 @@ RIGHT: Apply visualTier overrides — enhance shows green, tierUp shows orange, 
 
 #### 7. Data Pipeline Rules
 - **`priority-stats.json`** is manually curated — **never auto-purge or regenerate**. Manual entries take precedence over Maxroll auto-fetch.
-- **`find-alts.mjs`** runs once across ALL specs (cross-referencing BiS lists) — not per-spec. Existing weapon ALTS from `generate-spec-data` are preserved.
+- **`find-alts.mjs`** runs once across ALL specs (cross-referencing BiS lists) — not per-spec. It preserves existing **weapon** ALTS from `generate-spec-data`, and only while their source still exists this season. Preserving anything else would make ALTS append-only: nothing else ever deletes an entry, so a retired season's items would live in the files forever.
+- **Stale upstream guides**: Maxroll updates guides one at a time, so at a season boundary some still carry last season's dungeons. `find-alts` keeps those out of the cross-spec index — by spec (no current dungeon anywhere in its data) and by row (a MYTHIC entry whose source is not a current dungeon) — so one lagging guide does not hand every other spec alts it cannot farm. The lagging spec keeps its own stale data; re-run the pipeline once Maxroll updates.
+- **Wrong slots upstream**: an item whose Wowhead tooltip contradicts the slot Maxroll filed it under is warned about during generation and kept out of the alt index, but left in its own spec's data. Do not invent a replacement.
 - **`--fix`**: Read-only cache, normalize data only, no network calls. Safe to run anytime.
 - **`--regenerate`**: Purges Wowhead cache for target specs, full re-fetch. Slow and should be used sparingly.
 - **Duplicate item IDs**: When same ID appears in multiple slots, prefer existing file's version for stability.
 - **Item source/dungeon names**: Do NOT arbitrarily replace when source doesn't match expectations — verify with Wowhead first.
+- **Season swap**: update `VALID_DUNGEONS` (`generate-spec-data.mjs`), `DUNGEONS` (`shared.js`) and `TIERS` (via `generate-tiers.mjs`) **before** running the pipeline, and rebuild `PART_FIXES` from scratch. Stale entries are worse than none: Season 1 mapped "Murder Row" and "Den of Nalorakk" onto Magisters' Terrace, and both are standalone dungeons in Season 2. Confirm the dungeon pool against **two or more** specs — a single spec takes nothing from some dungeons.
 i
 
 ## Bug Fix Approach

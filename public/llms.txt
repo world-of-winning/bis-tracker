@@ -18,5 +18,5 @@
 
 ## Supported content
 - All 13 WoW classes, all 40 specializations
-- Midnight Season 1 dungeon and raid BiS lists
+- Midnight Season 2 dungeon and raid BiS lists
 - Item grade system: Veteran / Champion / Hero / Myth

@@ -72,7 +72,7 @@ spec 파일이 변경된 경우에만 실행한다.
 # 전 스펙 교차 ALTS 재탐색 (같은 슬롯+스탯 조합 아이템 갱신)
 node scripts/find-alts.mjs
 
-# 새 아이템 ID에 대한 다국어 아이템명 보완 (--missing 플래그 미지원, 전체 실행)
+# 새 아이템 ID에 대한 다국어 아이템명 보완 (인수는 로케일 목록으로 해석된다 — 플래그 금지)
 node scripts/generate-item-names.mjs
 ```
 
@@ -121,9 +121,23 @@ chore: update BiS data from Maxroll (YYYY-MM-DD)
 | ALTS 파일 갱신 안 됨 | `find-alts.mjs` 미실행 | Step 4 재실행 |
 | Wowhead cache 오류 | `.wowhead-cache.json` 손상 | `node scripts/generate-spec-data.mjs {spec} --regenerate` |
 
+## 시즌이 바뀐 경우
+
+던전 풀이 통째로 교체되면 파이프라인을 그냥 돌려선 안 된다. 시즌1 던전명이 하드코딩된 세 곳을 **먼저** 고친다.
+
+1. `node scripts/generate-tiers.mjs --write` — Raidbots 자료에서 `TIERS` 갱신
+2. `scripts/generate-spec-data.mjs`의 `VALID_DUNGEONS` — 새 M+ 던전 8종
+3. `src/data/shared.js`의 `DUNGEONS` — 같은 8종, 키 순서가 UI 필터 버튼 순서
+4. `scripts/generate-spec-data.mjs`의 `PART_FIXES` — **비우고 다시 채운다**
+
+4번이 함정이다. 남겨두면 새 시즌 소스가 옛 던전으로 잘못 접힌다 — 시즌1은 `Murder Row`와 `Den of Nalorakk`를 Magisters' Terrace로 매핑했는데 시즌2에선 둘 다 독립 던전이다. Maxroll 표기 흔들림은 전체 실행 후 로그를 보고 채운다.
+
+던전 풀은 **스펙 두 개 이상**의 farmable 테이블을 교차 확인해서 정한다. 스펙 하나만 보면 그 스펙이 아이템을 안 가져가는 던전이 빠진다. BiS 테이블에만 나오고 farmable에 없는 이름은 던전이 아니라 레이드 보스다.
+
 ## 주의사항
 
 - `priority-stats.json`은 수동 관리 파일 — 절대 자동 덮어쓰기 금지
 - 아이템 소스/던전명 불일치 시 임의 교체 금지 — Wowhead에서 먼저 확인
 - `--regenerate` 플래그는 Wowhead 캐시를 삭제함 — 느리고 API 부하 큼, 꼭 필요할 때만 사용
-- 기존 ALTS의 무기 항목은 보존됨 (find-alts가 덮어쓰지 않음)
+- 기존 ALTS의 무기 항목은 보존됨 (find-alts가 덮어쓰지 않음). 단 소스가 현재 시즌에 남아 있는 경우만 — 그렇지 않으면 ALTS가 추가 전용이 되어 지난 시즌 아이템이 영원히 남는다
+- Maxroll이 아직 갱신 안 한 가이드는 그대로 둔다. find-alts가 인덱스에서 제외하므로 다른 스펙으로 번지지 않는다. 갱신되면 그 스펙만 다시 돌리면 된다
