@@ -54,25 +54,36 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "feet", id: 268261, source: "The Twin Fangs", stats: ["crit","haste"] },
+  { forSlot: "feet", id: 159327, source: "Temple of Sethraliss", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "hands", id: 159312, source: "Kings' Rest", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "legs", id: 159329, source: "Temple of Sethraliss", stats: ["mastery","vers"], fit: "equivalent" },
+  { forSlot: "legs", id: 251130, source: "Murder Row", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "legs", id: 251198, source: "The Blinding Vale", stats: ["mastery","vers"], fit: "equivalent" },
   { forSlot: "neck", id: 268251, source: "The Twin Fangs", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 268266, source: "Nymrissa Wavecaller", stats: ["haste","vers"] },
+  { forSlot: "ring", id: 251194, source: "The Blinding Vale", stats: ["mastery","vers"], fit: "equivalent" },
+  { forSlot: "trinket", id: 270168, source: "Ula'tek", stats: ["mastery"], fit: "equivalent" },
+  { forSlot: "trinket", id: 270174, source: "Sszorak", stats: ["mastery"], fit: "equivalent" },
   { forSlot: "waist", id: 159317, source: "Temple of Sethraliss", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 273778, source: "Altar of Fangs", stats: ["haste","mastery"] },
+  { forSlot: "wrist", id: 251183, source: "The Blinding Vale", stats: ["crit","mastery"], fit: "equivalent" },
 ];
 
-export var PRIORITY_STATS = ["haste","mastery","vers","crit"];
+export var PRIORITY_STATS = [["haste","mastery"],["vers"],["crit"]];
 
 export var STAT_CACHE_KEY = "resto-druid-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  159313:["haste","vers"],159317:["haste","mastery"],159459:["haste","vers"],159636:["haste","mastery"],
-  240949:[],244569:[],244576:[],245769:[],
-  250214:[],251124:["crit","haste"],251135:["crit","haste"],251140:["haste","mastery"],
+  159312:["crit","mastery"],159313:["haste","vers"],159317:["haste","mastery"],159327:["crit","mastery"],
+  159329:["mastery","vers"],159459:["haste","vers"],159636:["haste","mastery"],240949:[],
+  244569:[],244576:[],245769:[],250214:[],
+  251124:["crit","haste"],251130:["crit","mastery"],251135:["crit","haste"],251140:["haste","mastery"],
   251142:["haste","mastery"],251153:["crit","haste"],251159:["haste","mastery"],251166:["haste","vers"],
-  251190:["haste","mastery"],251191:["haste","mastery"],251223:["crit","haste"],252258:["haste","mastery"],
-  268235:["haste","mastery"],268251:["haste","mastery"],268253:["haste","mastery"],268256:["haste","mastery"],
-  268261:["crit","haste"],268266:["haste","vers"],270164:[],270167:["haste"],
-  271092:["haste"],271526:["crit","mastery"],271527:["crit","haste"],271875:["haste"],
-  273649:[],273778:["haste","mastery"],
+  251183:["crit","mastery"],251190:["haste","mastery"],251191:["haste","mastery"],251194:["mastery","vers"],
+  251198:["mastery","vers"],251223:["crit","haste"],252258:["haste","mastery"],268235:["haste","mastery"],
+  268251:["haste","mastery"],268253:["haste","mastery"],268256:["haste","mastery"],268261:["crit","haste"],
+  268266:["haste","vers"],270164:[],270167:["haste"],270168:["mastery"],
+  270174:["mastery"],271092:["haste"],271526:["crit","mastery"],271527:["crit","haste"],
+  271875:["haste"],273649:[],273778:["haste","mastery"],
 };
 

@@ -65,7 +65,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 251200, source: "The Blinding Vale", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["crit","haste","mastery","vers"];
+export var PRIORITY_STATS = [["crit"],["haste"],["mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "dev-evoker-stat-cache-v1";
 

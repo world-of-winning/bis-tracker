@@ -55,30 +55,48 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "back", id: 251190, source: "The Blinding Vale", stats: ["haste","mastery"] },
+  { forSlot: "back", id: 193763, source: "Ruby Life Pools", stats: ["crit","haste"], fit: "equivalent" },
   { forSlot: "chest", id: 193753, source: "Ruby Life Pools", stats: ["haste","mastery"] },
   { forSlot: "chest", id: 268222, source: "The Coiled Altar", stats: ["haste","mastery"] },
+  { forSlot: "hands", id: 251214, source: "Den of Nalorakk", stats: ["crit","haste"], fit: "equivalent" },
+  { forSlot: "neck", id: 251173, source: "Den of Nalorakk", stats: ["crit","haste"], fit: "equivalent" },
+  { forSlot: "neck", id: 273781, source: "Altar of Fangs", stats: ["crit","haste"], fit: "equivalent" },
   { forSlot: "ring", id: 251513, source: "Crafted", stats: ["crit","mastery"] },
+  { forSlot: "ring", id: 268252, source: "Sszorak", stats: ["crit","haste"], fit: "equivalent" },
+  { forSlot: "ring", id: 273792, source: "Altar of Fangs", stats: ["crit","haste"], fit: "equivalent" },
+  { forSlot: "shoulder", id: 239037, source: "Temple of Sethraliss", stats: ["crit","haste"], fit: "equivalent" },
+  { forSlot: "trinket", id: 270168, source: "Ula'tek", stats: ["mastery"], fit: "equivalent" },
+  { forSlot: "trinket", id: 270174, source: "Sszorak", stats: ["mastery"], fit: "equivalent" },
+  { forSlot: "waist", id: 271462, source: "Catalyst", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 249294, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251224, source: "Den of Nalorakk", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 268209, source: "Ula'tek", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 273780, source: "Altar of Fangs", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 158373, source: "Temple of Sethraliss", stats: ["crit","haste"], fit: "equivalent" },
+  { forSlot: "weapon", id: 193767, source: "Ruby Life Pools", stats: ["crit","haste"], fit: "equivalent" },
+  { forSlot: "weapon", id: 251195, source: "The Blinding Vale", stats: ["crit","haste"], fit: "equivalent" },
   { forSlot: "wrist", id: 251133, source: "Murder Row", stats: ["crit","haste"] },
+  { forSlot: "wrist", id: 268239, source: "The Lost Explorers", stats: ["crit","mastery"], fit: "equivalent" },
 ];
 
-export var PRIORITY_STATS = ["mastery","haste","vers","crit"];
+export var PRIORITY_STATS = [["haste","mastery"],["crit"],["vers"]];
 
 export var STAT_CACHE_KEY = "holy-paladin-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  158366:["crit","mastery"],159409:["crit","haste"],159412:["crit","vers"],159413:["crit","mastery"],
-  159418:["haste","mastery"],160216:["crit","mastery"],193753:["haste","mastery"],237828:[],
-  237834:[],249294:["haste","mastery"],250214:[],251126:["crit","mastery"],
+  158366:["crit","mastery"],158373:["crit","haste"],159409:["crit","haste"],159412:["crit","vers"],
+  159413:["crit","mastery"],159418:["haste","mastery"],160216:["crit","mastery"],193753:["haste","mastery"],
+  193763:["crit","haste"],193767:["crit","haste"],237828:[],237834:[],
+  239037:["crit","haste"],249294:["haste","mastery"],250214:[],251126:["crit","mastery"],
   251132:["crit","mastery"],251133:["crit","haste"],251136:["crit","mastery"],251138:["haste","mastery"],
-  251150:["haste","mastery"],251151:["crit","mastery"],251190:["haste","mastery"],251224:["haste","mastery"],
-  251234:["crit","mastery"],251513:["crit","mastery"],268209:["haste","mastery"],268211:["haste","mastery"],
-  268222:["haste","mastery"],268249:["crit","mastery"],268253:["haste","mastery"],268259:["crit","mastery"],
-  268262:["haste","mastery"],268265:["crit"],270164:[],270167:["haste"],
+  251150:["haste","mastery"],251151:["crit","mastery"],251173:["crit","haste"],251190:["haste","mastery"],
+  251195:["crit","haste"],251214:["crit","haste"],251224:["haste","mastery"],251234:["crit","mastery"],
+  251513:["crit","mastery"],268209:["haste","mastery"],268211:["haste","mastery"],268222:["haste","mastery"],
+  268239:["crit","mastery"],268249:["crit","mastery"],268252:["crit","haste"],268253:["haste","mastery"],
+  268259:["crit","mastery"],268262:["haste","mastery"],268265:["crit"],270164:[],
+  270167:["haste"],270168:["mastery"],270174:["mastery"],271462:["haste","mastery"],
   271463:["crit","mastery"],271465:["crit","mastery"],271466:["crit","mastery"],271468:["haste","mastery"],
   271878:["mastery"],273649:[],273776:["crit","haste"],273780:["crit","mastery"],
+  273781:["crit","haste"],273792:["crit","haste"],
 };
 

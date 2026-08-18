@@ -62,7 +62,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 273782, source: "Altar of Fangs", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["haste","vers","crit","mastery"];
+export var PRIORITY_STATS = [["haste"],["mastery"],["crit"],["vers"]];
 
 export var STAT_CACHE_KEY = "guardian-druid-stat-cache-v1";
 

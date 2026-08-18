@@ -58,9 +58,10 @@ export var ALTS = [
   { forSlot: "ring", id: 158366, source: "Temple of Sethraliss", stats: ["crit","mastery"] },
   { forSlot: "ring", id: 268249, source: "Vashnik the Malignant", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 273774, source: "Altar of Fangs", stats: ["crit","vers"] },
+  { forSlot: "trinket", id: 270168, source: "Ula'tek", stats: ["mastery"] },
 ];
 
-export var PRIORITY_STATS = ["vers","crit","mastery","haste"];
+export var PRIORITY_STATS = [["crit"],["mastery"],["vers"],["haste"]];
 
 export var STAT_CACHE_KEY = "brew-monk-stat-cache-v1";
 
@@ -71,7 +72,8 @@ export var KNOWN_STATS = {
   251148:["crit","vers"],251159:["haste","mastery"],251189:["crit","vers"],251192:["crit","vers"],
   251198:["mastery","vers"],251226:["crit","vers"],251234:["crit","mastery"],251513:["crit","mastery"],
   268215:["mastery"],268235:["haste","mastery"],268248:["crit","vers"],268249:["crit","mastery"],
-  268265:["crit"],270174:["mastery"],270175:["crit"],271518:["crit","vers"],
-  271519:["crit","mastery"],271520:["haste","vers"],271522:["haste","mastery"],273774:["crit","vers"],
+  268265:["crit"],270168:["mastery"],270174:["mastery"],270175:["crit"],
+  271518:["crit","vers"],271519:["crit","mastery"],271520:["haste","vers"],271522:["haste","mastery"],
+  273774:["crit","vers"],
 };
 

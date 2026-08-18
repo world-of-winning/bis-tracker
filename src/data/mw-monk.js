@@ -67,7 +67,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 273778, source: "Altar of Fangs", stats: ["haste","mastery"] },
 ];
 
-export var PRIORITY_STATS = ["haste","crit","vers","mastery"];
+export var PRIORITY_STATS = [["haste"],["crit"],["vers"],["mastery"]];
 
 export var STAT_CACHE_KEY = "mw-monk-stat-cache-v1";
 

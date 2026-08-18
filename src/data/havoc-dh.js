@@ -66,7 +66,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 275070, source: "Altar of Fangs", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["crit","mastery","haste","vers"];
+export var PRIORITY_STATS = [["mastery"],["crit"],["haste"],["vers"]];
 
 export var STAT_CACHE_KEY = "havoc-dh-stat-cache-v1";
 
@@ -79,8 +79,7 @@ export var KNOWN_STATS = {
   251231:["crit","haste"],251234:["crit","mastery"],251513:["crit","mastery"],268209:["haste","mastery"],
   268211:["haste","mastery"],268249:["crit","mastery"],268253:["haste","mastery"],268256:["haste","mastery"],
   268265:["crit"],270173:[],270175:["crit"],271535:["crit","vers"],
-  271536:["crit","mastery"],271537:["crit","mastery"],271538:["crit","mastery"],271540:["haste","vers"],
-  271875:["haste"],273774:["crit","vers"],273778:["haste","mastery"],273780:["crit","mastery"],
-  275070:["crit","haste"],
+  271536:["crit","mastery"],271538:["crit","mastery"],271540:["haste","vers"],271875:["haste"],
+  273774:["crit","vers"],273778:["haste","mastery"],273780:["crit","mastery"],275070:["crit","haste"],
 };
 

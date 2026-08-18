@@ -59,7 +59,7 @@ export var ALTS = [
   { forSlot: "ring", id: 268266, source: "Nymrissa Wavecaller", stats: ["haste","vers"] },
 ];
 
-export var PRIORITY_STATS = ["vers","crit","mastery","haste"];
+export var PRIORITY_STATS = [["mastery"],["crit"],["haste"],["vers"]];
 
 export var STAT_CACHE_KEY = "blood-dk-stat-cache-v1";
 

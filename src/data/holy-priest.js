@@ -63,7 +63,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 251225, source: "Voidscar Arena", stats: ["mastery","vers"] },
 ];
 
-export var PRIORITY_STATS = ["crit","vers","mastery","haste"];
+export var PRIORITY_STATS = [["haste"],["mastery"],["crit"],["vers"]];
 
 export var STAT_CACHE_KEY = "holy-priest-stat-cache-v1";
 

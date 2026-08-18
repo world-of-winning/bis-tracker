@@ -52,25 +52,40 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
-  { forSlot: "feet", id: 268258, source: "The Lost Explorers", stats: ["crit","mastery"] },
+  { forSlot: "back", id: 251132, source: "Murder Row", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "feet", id: 268258, source: "The Lost Explorers", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "hands", id: 193752, source: "Ruby Life Pools", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "hands", id: 251165, source: "The Blinding Vale", stats: ["crit","vers"], fit: "equivalent" },
+  { forSlot: "neck", id: 251142, source: "Murder Row", stats: ["haste","mastery"], fit: "equivalent" },
+  { forSlot: "neck", id: 268251, source: "The Twin Fangs", stats: ["haste","mastery"], fit: "equivalent" },
   { forSlot: "ring", id: 268252, source: "Sszorak", stats: ["crit","haste"] },
+  { forSlot: "ring", id: 158366, source: "Temple of Sethraliss", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "ring", id: 251136, source: "Murder Row", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "ring", id: 251513, source: "Crafted", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "ring", id: 268249, source: "Vashnik the Malignant", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "trinket", id: 270167, source: "Altar of Fangs", stats: ["haste"], fit: "equivalent" },
   { forSlot: "waist", id: 268254, source: "Vashnik the Malignant", stats: ["haste","mastery"] },
+  { forSlot: "waist", id: 251155, source: "Den of Nalorakk", stats: ["crit","mastery"], fit: "equivalent" },
   { forSlot: "weapon", id: 249294, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 275070, source: "Altar of Fangs", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 268213, source: "The Coiled Altar", stats: ["crit","mastery"], fit: "equivalent" },
   { forSlot: "wrist", id: 159380, source: "Temple of Sethraliss", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
+export var PRIORITY_STATS = [["mastery"],["crit","haste"],["vers"]];
 
 export var STAT_CACHE_KEY = "surv-hunter-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  159375:["crit","haste"],159380:["crit","haste"],159388:["crit","mastery"],160213:["haste","mastery"],
-  239049:["crit","haste"],244581:[],244584:[],249294:["haste","mastery"],
-  250228:[],251149:["haste","mastery"],251190:["haste","mastery"],251200:["crit","haste"],
-  251220:["haste","mastery"],251228:["haste","mastery"],251233:["crit","haste"],251234:["crit","mastery"],
-  252258:["haste","mastery"],268215:["mastery"],268233:["haste","mastery"],268252:["crit","haste"],
-  268253:["haste","mastery"],268254:["haste","mastery"],268258:["crit","mastery"],268265:["crit"],
+  158366:["crit","mastery"],159375:["crit","haste"],159380:["crit","haste"],159388:["crit","mastery"],
+  160213:["haste","mastery"],193752:["crit","mastery"],239049:["crit","haste"],244581:[],
+  244584:[],249294:["haste","mastery"],250228:[],251132:["crit","mastery"],
+  251136:["crit","mastery"],251142:["haste","mastery"],251149:["haste","mastery"],251155:["crit","mastery"],
+  251165:["crit","vers"],251190:["haste","mastery"],251200:["crit","haste"],251220:["haste","mastery"],
+  251228:["haste","mastery"],251233:["crit","haste"],251234:["crit","mastery"],251513:["crit","mastery"],
+  252258:["haste","mastery"],268213:["crit","mastery"],268215:["mastery"],268233:["haste","mastery"],
+  268249:["crit","mastery"],268251:["haste","mastery"],268252:["crit","haste"],268253:["haste","mastery"],
+  268254:["haste","mastery"],268258:["crit","mastery"],268265:["crit"],270167:["haste"],
   270173:[],270175:["crit"],271490:["crit","haste"],271491:["haste","mastery"],
   271492:["haste","mastery"],271493:["haste","vers"],271495:["haste","mastery"],273792:["crit","haste"],
   273796:[],275070:["crit","haste"],

@@ -63,7 +63,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 273778, source: "Altar of Fangs", stats: ["haste","mastery"] },
 ];
 
-export var PRIORITY_STATS = ["haste","mastery","crit","vers"];
+export var PRIORITY_STATS = [["haste"],["mastery"],["crit"],["vers"]];
 
 export var STAT_CACHE_KEY = "disc-priest-stat-cache-v1";
 

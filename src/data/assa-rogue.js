@@ -61,12 +61,13 @@ export var ALTS = [
   { forSlot: "neck", id: 251173, source: "Den of Nalorakk", stats: ["crit","haste"] },
   { forSlot: "ring", id: 251136, source: "Murder Row", stats: ["crit","mastery"] },
   { forSlot: "ring", id: 251513, source: "Crafted", stats: ["crit","mastery"] },
+  { forSlot: "trinket", id: 270174, source: "Sszorak", stats: ["mastery"] },
   { forSlot: "weapon", id: 158373, source: "Temple of Sethraliss", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 193767, source: "Ruby Life Pools", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 251195, source: "The Blinding Vale", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["crit","haste","mastery","vers"];
+export var PRIORITY_STATS = [["crit"],["haste"],["mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "assa-rogue-stat-cache-v1";
 
@@ -78,8 +79,9 @@ export var KNOWN_STATS = {
   251173:["crit","haste"],251190:["haste","mastery"],251195:["crit","haste"],251223:["crit","haste"],
   251513:["crit","mastery"],268235:["haste","mastery"],268249:["crit","mastery"],268252:["crit","haste"],
   268253:["haste","mastery"],268256:["haste","mastery"],268261:["crit","haste"],268265:["crit"],
-  270168:["mastery"],270175:["crit"],271093:["crit"],271508:["haste","vers"],
-  271509:["crit","haste"],271511:["crit","mastery"],271513:["haste","vers"],271875:["haste"],
-  273781:["crit","haste"],273791:["crit","haste"],273792:["crit","haste"],275070:["crit","haste"],
+  270168:["mastery"],270174:["mastery"],270175:["crit"],271093:["crit"],
+  271508:["haste","vers"],271509:["crit","haste"],271511:["crit","mastery"],271513:["haste","vers"],
+  271875:["haste"],273781:["crit","haste"],273791:["crit","haste"],273792:["crit","haste"],
+  275070:["crit","haste"],
 };
 

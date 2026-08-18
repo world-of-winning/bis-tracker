@@ -63,7 +63,7 @@ export var ALTS = [
   { forSlot: "waist", id: 251222, source: "Voidscar Arena", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
+export var PRIORITY_STATS = [["haste"],["mastery"],["crit"],["vers"]];
 
 export var STAT_CACHE_KEY = "shadow-priest-stat-cache-v1";
 

@@ -68,7 +68,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 159380, source: "Temple of Sethraliss", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["haste","mastery","crit","vers"];
+export var PRIORITY_STATS = [["mastery"],["crit"],["haste"],["vers"]];
 
 export var STAT_CACHE_KEY = "ele-shaman-stat-cache-v1";
 

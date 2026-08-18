@@ -60,7 +60,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 273778, source: "Altar of Fangs", stats: ["haste","mastery"] },
 ];
 
-export var PRIORITY_STATS = ["mastery","crit","haste","vers"];
+export var PRIORITY_STATS = [["mastery"],["crit"],["haste"],["vers"]];
 
 export var STAT_CACHE_KEY = "frost-mage-stat-cache-v1";
 

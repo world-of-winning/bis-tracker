@@ -56,32 +56,41 @@ export var ALTS = [
   { forSlot: "back", id: 251190, source: "The Blinding Vale", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 251137, source: "Murder Row", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 251219, source: "Voidscar Arena", stats: ["crit","haste"] },
+  { forSlot: "head", id: 251232, source: "Voidscar Arena", stats: ["haste","mastery"], fit: "equivalent" },
+  { forSlot: "legs", id: 159234, source: "Kings' Rest", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "legs", id: 193750, source: "Ruby Life Pools", stats: ["crit","mastery"], fit: "equivalent" },
   { forSlot: "neck", id: 251173, source: "Den of Nalorakk", stats: ["crit","haste"] },
   { forSlot: "ring", id: 251513, source: "Crafted", stats: ["crit","mastery"] },
   { forSlot: "ring", id: 268249, source: "Vashnik the Malignant", stats: ["crit","mastery"] },
+  { forSlot: "ring", id: 252258, source: "Voidscar Arena", stats: ["haste","mastery"], fit: "equivalent" },
   { forSlot: "waist", id: 239664, source: "Crafted", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 158373, source: "Temple of Sethraliss", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 251191, source: "The Blinding Vale", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251195, source: "The Blinding Vale", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 268211, source: "Ula'tek & The Coiled Altar", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 273778, source: "Altar of Fangs", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 275070, source: "Altar of Fangs", stats: ["crit","haste"] },
+  { forSlot: "weapon", id: 268263, source: "Nymrissa Wavecaller", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "weapon", id: 271093, source: "Ula'tek", stats: ["crit"], fit: "equivalent" },
 ];
 
-export var PRIORITY_STATS = ["haste","crit","mastery","vers"];
+export var PRIORITY_STATS = [["crit","haste"],["mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "demo-lock-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  158366:["crit","mastery"],158373:["crit","haste"],159247:["crit","haste"],159259:["crit","haste"],
-  239031:["crit","haste"],239648:[],239649:[],239664:["crit","haste"],
-  251123:["crit","haste"],251127:["crit","haste"],251132:["crit","mastery"],251136:["crit","mastery"],
-  251137:["haste","mastery"],251139:["crit","haste"],251160:["crit","haste"],251173:["crit","haste"],
-  251190:["haste","mastery"],251191:["haste","mastery"],251195:["crit","haste"],251199:["crit","mastery"],
-  251219:["crit","haste"],251222:["crit","haste"],251513:["crit","mastery"],268197:["haste","mastery"],
+  158366:["crit","mastery"],158373:["crit","haste"],159234:["crit","mastery"],159247:["crit","haste"],
+  159259:["crit","haste"],193750:["crit","mastery"],239031:["crit","haste"],239648:[],
+  239649:[],239664:["crit","haste"],251123:["crit","haste"],251127:["crit","haste"],
+  251132:["crit","mastery"],251136:["crit","mastery"],251137:["haste","mastery"],251139:["crit","haste"],
+  251160:["crit","haste"],251173:["crit","haste"],251190:["haste","mastery"],251191:["haste","mastery"],
+  251195:["crit","haste"],251199:["crit","mastery"],251219:["crit","haste"],251222:["crit","haste"],
+  251232:["haste","mastery"],251513:["crit","mastery"],252258:["haste","mastery"],268197:["haste","mastery"],
   268211:["haste","mastery"],268249:["crit","mastery"],268252:["crit","haste"],268253:["haste","mastery"],
-  268255:["haste","mastery"],268265:["crit"],270164:[],271092:["haste"],
-  271544:["haste","vers"],271545:["haste","mastery"],271547:["crit","haste"],271549:["haste","mastery"],
-  271874:["mastery"],273649:[],273781:["crit","haste"],273792:["crit","haste"],
-  273794:[],273796:[],275070:["crit","haste"],
+  268255:["haste","mastery"],268263:["crit","mastery"],268265:["crit"],270164:[],
+  271092:["haste"],271093:["crit"],271544:["haste","vers"],271545:["haste","mastery"],
+  271547:["crit","haste"],271549:["haste","mastery"],271874:["mastery"],273649:[],
+  273778:["haste","mastery"],273781:["crit","haste"],273792:["crit","haste"],273794:[],
+  273796:[],275070:["crit","haste"],
 };
 

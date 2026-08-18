@@ -66,7 +66,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 251195, source: "The Blinding Vale", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
+export var PRIORITY_STATS = [["mastery"],["haste"],["crit"],["vers"]];
 
 export var STAT_CACHE_KEY = "sub-rogue-stat-cache-v1";
 

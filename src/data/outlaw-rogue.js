@@ -66,7 +66,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 275070, source: "Altar of Fangs", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["crit","haste","vers","mastery"];
+export var PRIORITY_STATS = [["crit"],["haste"],["mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "outlaw-rogue-stat-cache-v1";
 

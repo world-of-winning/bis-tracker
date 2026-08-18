@@ -66,10 +66,11 @@ export var ALTS = [
   { forSlot: "weapon", id: 249294, source: "Lightblinded Vanguard", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251191, source: "The Blinding Vale", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 268211, source: "Ula'tek & The Coiled Altar", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 273778, source: "Altar of Fangs", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 275070, source: "Altar of Fangs", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["crit","haste","mastery","vers"];
+export var PRIORITY_STATS = [["haste"],["crit"],["mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "destro-lock-stat-cache-v1";
 
@@ -84,6 +85,7 @@ export var KNOWN_STATS = {
   268249:["crit","mastery"],268252:["crit","haste"],268253:["haste","mastery"],268255:["haste","mastery"],
   268265:["crit"],270164:[],271092:["haste"],271544:["haste","vers"],
   271545:["haste","mastery"],271547:["crit","haste"],271549:["haste","mastery"],271874:["mastery"],
-  273773:["crit","mastery"],273779:["crit","haste"],273792:["crit","haste"],275070:["crit","haste"],
+  273773:["crit","mastery"],273778:["haste","mastery"],273779:["crit","haste"],273792:["crit","haste"],
+  275070:["crit","haste"],
 };
 
