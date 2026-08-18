@@ -317,7 +317,8 @@ async function main() {
     // YYYY-MM-DD.)
     const collected = new Date().toLocaleDateString("sv-SE");
     const next = { ...stored };
-    const changed = [];
+    const reordered = [];
+    const regrouped = [];
     const failed = [];
     const stale = [];
     const grouped = [];
@@ -348,10 +349,20 @@ async function main() {
             continue;
         }
 
-        const flat = flattenGroups(groups);
-        const before = priorityList(stored[key]);
-        if (before && before.join(",") !== flat.join(",")) {
-            changed.push({ key, before, after: flat });
+        // Two different changes, reported apart. A spec can keep its order and
+        // still change what the matcher does — merging mastery with crit turns
+        // every crit item in that slot from a re-farm order into a finished
+        // slot, and splitting them turns it back. Comparing flattened orders
+        // sees neither, and the loudest change in a run would pass silently.
+        const beforeGroups = priorityGroups(stored[key]);
+        if (beforeGroups) {
+            const flat = flattenGroups(groups);
+            const beforeFlat = flattenGroups(beforeGroups);
+            if (beforeFlat.join(",") !== flat.join(",")) {
+                reordered.push({ key, before: beforeFlat, after: flat });
+            } else if (fmtGroups(beforeGroups) !== fmtGroups(groups)) {
+                regrouped.push({ key, before: beforeGroups, after: groups });
+            }
         }
         if (groups.some((g) => g.length > 1)) grouped.push(key);
 
@@ -373,11 +384,17 @@ async function main() {
 
     console.log(`\n${grouped.length} spec(s) with a multi-stat group: ${grouped.join(", ") || "none"}`);
 
-    console.log(`\n${changed.length} spec(s) changed order:`);
-    for (const c of changed) {
+    console.log(`\n${reordered.length} spec(s) changed order:`);
+    for (const c of reordered) {
         console.log(`  ${c.key.padEnd(16)} ${c.before.join(",")}  ->  ${c.after.join(",")}`);
     }
-    if (!changed.length) console.log("  none");
+    if (!reordered.length) console.log("  none");
+
+    console.log(`\n${regrouped.length} spec(s) kept their order and moved a group boundary:`);
+    for (const c of regrouped) {
+        console.log(`  ${c.key.padEnd(16)} ${fmtGroups(c.before)}  ->  ${fmtGroups(c.after)}`);
+    }
+    if (!regrouped.length) console.log("  none");
 
     if (stale.length) {
         console.log(
