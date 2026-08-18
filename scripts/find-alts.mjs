@@ -9,11 +9,11 @@
  */
 
 import { readFileSync, writeFileSync, readdirSync } from 'fs';
-import { resolve, dirname } from 'path';
+import { resolve, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
 import { fetchTooltip, saveCache } from './wowhead-cache.mjs';
 import { DUNGEONS } from '../src/data/shared.js';
-import { fitKind } from '../src/logic/matching.js';
+import { fitKind, fitRank } from '../src/logic/matching.js';
 
 // ─── Wowhead class restriction check ────────────────────────
 const CLASS_NAME_MAP = {
@@ -144,14 +144,21 @@ function normalizeSlot(simcSlot) {
 // The spec's equivalence groups, which decide whether a candidate's stats can
 // stand in for the BiS item's. A flat array of four is the older shape and
 // reads as four groups of one.
-function parsePriorityStats(content) {
+function parsePriorityStats(content, specKey) {
+  // Returning null here degrades fitKind to exact-only, which is the pipeline
+  // and the app disagreeing about what fits — the one thing this shared rule
+  // exists to prevent. Never let it happen quietly.
+  const warn = (why) => {
+    console.warn(`  ! ${specKey}: ${why} — alt candidates will be exact stat matches only`);
+    return null;
+  };
   const m = content.match(/export var PRIORITY_STATS = (\[[^;]*\]);/);
-  if (!m) return null;
+  if (!m) return warn('no PRIORITY_STATS');
   try {
     const parsed = JSON.parse(m[1]);
-    return parsed.length ? parsed : null;
-  } catch {
-    return null;
+    return parsed.length ? parsed : warn('PRIORITY_STATS is empty');
+  } catch (err) {
+    return warn(`PRIORITY_STATS does not parse (${err.message})`);
   }
 }
 
@@ -193,7 +200,7 @@ function parseSpecFile(filePath) {
 
   return {
     simcClass, armorType: ARMOR_TYPE[simcClass], bisItems, isDual, content,
-    priorityStats: parsePriorityStats(content),
+    priorityStats: parsePriorityStats(content, basename(filePath, '.js')),
   };
 }
 
@@ -269,13 +276,10 @@ function buildItemIndex() {
   return { slotItems, itemSlotArmor, itemClasses };
 }
 
-// Exact fits ahead of equivalent ones within a slot: a player with nothing
-// else left can still chase the exact item at the end of a season.
-const FIT_ORDER = { exact: 0, equivalent: 1 };
 function sortAlts(alts) {
   alts.sort((a, b) =>
     a.forSlot.localeCompare(b.forSlot) ||
-    (FIT_ORDER[a.fit] ?? 0) - (FIT_ORDER[b.fit] ?? 0) ||
+    fitRank(a.fit) - fitRank(b.fit) ||
     a.id - b.id);
 }
 

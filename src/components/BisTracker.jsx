@@ -3,7 +3,7 @@ import { load, save as persist } from '../storage.js';
 import { DUNGEONS, TIERS, DEFAULT_TIER, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS, SPEC_PRIMARY_STAT } from '../data/shared.js';
 import { findSpecBySimC } from '../data/specs.js';
 import { useLocale } from '../i18n/index.jsx';
-import { matchBiS } from '../logic/matching.js';
+import { matchBiS, fitRank } from '../logic/matching.js';
 import { getSource, calcPriority, calcAltPriority, autoSelectTier, sortByPriority, calcDungeonScore, calcSourceFarmCount } from '../logic/priority.js';
 import ItemCard from './ItemCard.jsx';
 import FilterButton from './FilterButton.jsx';
@@ -341,9 +341,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       var pb = calcAltPriority(b, sr, allStats, PRIORITY_STATS, targetInfo.max, acq);
       if (pa.tier !== pb.tier) return pa.tier - pb.tier;
       if ((pb.deficit || 0) !== (pa.deficit || 0)) return (pb.deficit || 0) - (pa.deficit || 0);
-      // Exact fits ahead of equivalent ones: a player who has run out of other
-      // things to do can still chase the exact item at the end of a season.
-      return (a.fit === "equivalent" ? 1 : 0) - (b.fit === "equivalent" ? 1 : 0);
+      return fitRank(a.fit) - fitRank(b.fit);
     });
   }, [filter, mergedAlts, sr, acq, allStats, PRIORITY_STATS, targetInfo.max]);
   var nonDungeonSources = useMemo(function() {

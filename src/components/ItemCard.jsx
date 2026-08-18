@@ -57,6 +57,10 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
   var displayEq = isAlt ? altEq : (hasDiff ? eq : null);
   var eqForTooltip = hasDiff ? eq : (isAlt && altEq ? altEq : null);
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
+  // An equivalent fit is a fit — the slot is done — but it is not the exact
+  // item, and chasing that late in a season is legitimate. Say which it is
+  // rather than leaving the two states looking identical.
+  var isEquivalentFit = isAlt ? item.fit === "equivalent" : isSimcAlt === "equivalent";
   // Detect wrong armor type on the equipped item
   var eqToCheck = eq || altEq;
   var eqSlotName = isAlt ? item.forSlot : item.slot;
@@ -95,6 +99,7 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
             <span style={{ fontSize: 10, fontWeight: 700, color: isAlt ? "#e8a84c" : theme.accent, background: isAlt ? "#2a1f10" : theme.accentBg, padding: "2px 7px", borderRadius: 3, border: "1px solid " + (isAlt ? "#5a4020" : theme.accentBorder) }}>{isAlt ? "ALT \u00B7 " + t("slots." + item.forSlot) : t("slots." + item.slot)}</span>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: c.g, color: c.t, border: "1px solid " + c.b + "44" }}>{localizeSource(itemSource, t)}</span>
             <StatPills stats={item.stats} />
+            {isEquivalentFit && <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: "#14201a", color: "#7fb08a", border: "1px solid #2c4634" }}>{"\u2248 " + t("ui.equivalentFit")}</span>}
           </div>
           <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + whSpec + (!hasDiff && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(eqForTooltip ? {"data-eq-id": eqForTooltip.id, "data-eq-bonus": eqForTooltip.bonus || "", "data-eq-ilvl": eqForTooltip.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: isDoneState ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: isDoneState ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
           {wrongArmor && (

@@ -24,12 +24,11 @@
  *   node scripts/generate-priority-stats.mjs --max-age 30   # days before an entry goes stale
  *   node scripts/generate-priority-stats.mjs --spec prot-paladin
  */
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import {
     SECONDARY_STATS,
-    UPSTREAM_STAT_NAMES,
     deriveGroups,
     flattenGroups,
     priorityGroups,

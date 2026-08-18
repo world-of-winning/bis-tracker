@@ -124,6 +124,13 @@ describe("an equivalent fit, end to end", () => {
         expect(sr.altItems[100]).toBe("equivalent");
     });
 
+    it("records fitKind's own words, so the marker needs no translating", () => {
+        const exact = { head: { id: 400, ilvl: 321, bonus: "12846" } };
+        const s2 = { ...stats, 400: ["mastery", "haste"] };
+        const r = matchBiS(BIS, exact, [], s2, new Set(), PROT_PALADIN);
+        expect(r.altItems[100]).toBe("exact");
+    });
+
     it("grades the slot done once the item is at the target", () => {
         expect(calcPriority(BIS[0], sr, 321, stats, PROT_PALADIN).tier).toBe(4);
     });

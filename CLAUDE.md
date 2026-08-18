@@ -101,7 +101,11 @@ RIGHT: "Veteran grade (max 295), target Hero (321) → RE-ACQUIRE needed (tierUp
 | 1 ▲ | Red | No fit (`fitKind` returned null) OR below target grade | `"tierUp"` |
 
 An **equivalent fit** grades exactly like an exact one — 4 or 3, green. It is a fit; the
-slot is done. Only the label on the alt row distinguishes the two.
+slot is done. What distinguishes the two is a label: `matchBiS` records `fitKind`'s own
+answer in `altItems` (`"exact"` / `"equivalent"` / `"mythic"`), generated ALTS rows carry
+`fit: "equivalent"`, and `ItemCard` renders `ui.equivalentFit` off either. Keep the three
+in the same vocabulary — remapping one to a different word is how a reader loses the
+thread.
 
 **visualTier** (for UI display) differs from actual priority tier:
 - `wrongArmor` OR `wrongPrimary` → visualTier **always 1** (red warning)
@@ -190,8 +194,9 @@ export var STAT_CACHE_KEY = "{key}-stat-cache-v1";
 export var THEME = { accent, accentLight, accentBg, accentBorder, shimmer, btnBg };
 export var PRIORITY_STATS = [["mastery"],["haste","crit"],["vers"]];  // equivalence groups
 export var KNOWN_STATS = { itemId: ["crit","haste"], ... };  // BiS+Alt only
-export var BIS = [ { slot, simcSlot, en, ko, id, dungeon, stats }, ... ];
-export var ALTS = [ { forSlot, id, en, ko, dungeon, stats, fit? }, ... ];  // fit: "equivalent" when not an exact stat match
+export var BIS = [ { slot, simcSlot?, id, source, stats }, ... ];
+export var ALTS = [ { forSlot, id, source, stats, fit? }, ... ];  // fit: "equivalent" when not an exact stat match
+// Item names are not in these files — they come from src/i18n/items/*.json.
 export var DUNGEONS = [ ... ];  // Midnight first, legacy dungeons after
 ```
 

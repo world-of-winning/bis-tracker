@@ -62,6 +62,19 @@ export function fitKind(itemStats, bisStats, priorityStats) {
   return "equivalent";
 }
 
+/**
+ * Exact fits ahead of equivalent ones. A player who has run out of other
+ * things to do can still chase the exact item at the end of a season, so the
+ * two are ordered rather than merged — in the alt list the app renders and in
+ * the alt list the pipeline generates, which is why the rank lives here beside
+ * fitKind rather than in either caller.
+ */
+export var FIT_RANK = { exact: 0, equivalent: 1 };
+
+export function fitRank(fit) {
+  return FIT_RANK[fit] != null ? FIT_RANK[fit] : 0;
+}
+
 export function matchBiS(BIS, gear, bag, stats, knownBisIds, priorityStats) {
   var BIS_IDS = new Set(BIS.map(function(i) { return i.id; }));
   // Detect weapon type mismatch (e.g. 1H+shield source vs 2H target or vice versa)
@@ -106,9 +119,10 @@ export function matchBiS(BIS, gear, bag, stats, knownBisIds, priorityStats) {
       if (knownBisIds && knownBisIds.has(eq.id)) altItems[bi.id] = "mythic";
       return;
     }
+    // altItems carries fitKind's own words, so a reader does not have to
+    // translate between two vocabularies for one concept.
     var fit = fitKind(stats[eq.id], bi.stats, priorityStats);
-    if (fit === "exact") { altItems[bi.id] = "stats"; return; }
-    if (fit === "equivalent") { altItems[bi.id] = "equivalent"; return; }
+    if (fit) { altItems[bi.id] = fit; return; }
     // fallback: M+ BiS (stats 불일치인 경우만)
     if (knownBisIds && knownBisIds.has(eq.id)) altItems[bi.id] = "mythic";
   });
