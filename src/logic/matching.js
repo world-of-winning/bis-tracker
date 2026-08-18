@@ -5,6 +5,76 @@ export function sameStats(a, b) {
   return x.every(function(v, i) { return v === y[i]; });
 }
 
+/**
+ * A spec's stat priority as a list of equivalence groups.
+ *
+ * Two stats sit in one group when the spec values them closely enough that
+ * swapping one for the other is not worth a re-farm. A flat array of four
+ * stats is the older shape and means four groups of one, so both read.
+ */
+export function statGroups(priorityStats) {
+  if (!priorityStats || !priorityStats.length) return null;
+  if (Array.isArray(priorityStats[0])) return priorityStats;
+  return priorityStats.map(function(s) { return [s]; });
+}
+
+/** Index of the group holding a stat, or -1. Stats outside the priority sort last. */
+export function groupIndex(groups, stat) {
+  if (!groups) return -1;
+  for (var i = 0; i < groups.length; i++) {
+    if (groups[i].indexOf(stat) >= 0) return i;
+  }
+  return -1;
+}
+
+/**
+ * How well an item's secondary stats stand in for the BiS item's.
+ *
+ *   "exact"      — the same set of stats
+ *   "equivalent" — a different set, but every stat maps onto the BiS item's
+ *                  group-for-group
+ *   null         — neither
+ *
+ * Equivalent fit is a real fit: the slot is done and the player may stop
+ * farming it. It stays distinguishable from an exact fit because chasing the
+ * exact item late in a season is a legitimate thing to want to do.
+ *
+ * Equal cardinality falls out of comparing multisets, so a one-stat item can
+ * only stand in for a one-stat BiS item — a piece missing a whole stat is
+ * never sold as equivalent.
+ *
+ * This is the only definition of the rule. The app and the alt-candidate
+ * pipeline both call it: a looser rule in the pipeline would put items in the
+ * alt list the app then refuses to recognise, and a stricter one would leave
+ * the app accepting items the player is never told to farm.
+ */
+export function fitKind(itemStats, bisStats, priorityStats) {
+  if (!itemStats || !bisStats || !itemStats.length || !bisStats.length) return null;
+  if (sameStats(itemStats, bisStats)) return "exact";
+  var groups = statGroups(priorityStats);
+  if (!groups) return null;
+  if (itemStats.length !== bisStats.length) return null;
+  var a = itemStats.map(function(s) { return groupIndex(groups, s); }).sort();
+  var b = bisStats.map(function(s) { return groupIndex(groups, s); }).sort();
+  // A stat outside the priority has no group and cannot stand in for anything.
+  if (a.indexOf(-1) >= 0 || b.indexOf(-1) >= 0) return null;
+  for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return null;
+  return "equivalent";
+}
+
+/**
+ * Exact fits ahead of equivalent ones. A player who has run out of other
+ * things to do can still chase the exact item at the end of a season, so the
+ * two are ordered rather than merged — in the alt list the app renders and in
+ * the alt list the pipeline generates, which is why the rank lives here beside
+ * fitKind rather than in either caller.
+ */
+export var FIT_RANK = { exact: 0, equivalent: 1 };
+
+export function fitRank(fit) {
+  return FIT_RANK[fit] != null ? FIT_RANK[fit] : 0;
+}
+
 export function matchBiS(BIS, gear, bag, stats, knownBisIds, priorityStats) {
   var BIS_IDS = new Set(BIS.map(function(i) { return i.id; }));
   // Detect weapon type mismatch (e.g. 1H+shield source vs 2H target or vice versa)
@@ -41,8 +111,6 @@ export function matchBiS(BIS, gear, bag, stats, knownBisIds, priorityStats) {
     if (gear[alt]) eqSlot[bi.id] = gear[alt];
   });
   bag.forEach(function(b) { if (BIS_IDS.has(b.id) && !matched[b.id]) bisInBag[b.id] = b; });
-  // Top 2 priority stats set for priority-match detection
-  var top2 = (priorityStats && priorityStats.length >= 2) ? priorityStats.slice(0, 2) : null;
   BIS.forEach(function(bi) {
     if (matched[bi.id]) return;
     var eq = eqSlot[bi.id]; if (!eq || eq.id === bi.id) return;
@@ -51,14 +119,10 @@ export function matchBiS(BIS, gear, bag, stats, knownBisIds, priorityStats) {
       if (knownBisIds && knownBisIds.has(eq.id)) altItems[bi.id] = "mythic";
       return;
     }
-    var es = stats[eq.id];
-    if (es && sameStats(bi.stats, es)) { altItems[bi.id] = "stats"; return; }
-    // Priority match: equipped item has exactly top 2 priority stats
-    if (top2 && es && es.length) {
-      if (top2.every(function(s) { return es.indexOf(s) >= 0; }) && es.filter(function(s) { return top2.indexOf(s) >= 0; }).length === es.length) {
-        altItems[bi.id] = "stats"; return;
-      }
-    }
+    // altItems carries fitKind's own words, so a reader does not have to
+    // translate between two vocabularies for one concept.
+    var fit = fitKind(stats[eq.id], bi.stats, priorityStats);
+    if (fit) { altItems[bi.id] = fit; return; }
     // fallback: M+ BiS (stats 불일치인 경우만)
     if (knownBisIds && knownBisIds.has(eq.id)) altItems[bi.id] = "mythic";
   });

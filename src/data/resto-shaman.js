@@ -54,32 +54,42 @@ export var MYTHIC = [
 ];
 
 export var ALTS = [
+  { forSlot: "back", id: 193763, source: "Ruby Life Pools", stats: ["crit","haste"], fit: "equivalent" },
+  { forSlot: "back", id: 268248, source: "Nek'zali the Soulcoiler", stats: ["crit","vers"], fit: "equivalent" },
   { forSlot: "feet", id: 159388, source: "Temple of Sethraliss", stats: ["crit","mastery"] },
   { forSlot: "hands", id: 193752, source: "Ruby Life Pools", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 158366, source: "Temple of Sethraliss", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 251513, source: "Crafted", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 268249, source: "Vashnik the Malignant", stats: ["crit","mastery"] },
+  { forSlot: "neck", id: 251173, source: "Den of Nalorakk", stats: ["crit","haste"], fit: "equivalent" },
+  { forSlot: "neck", id: 273781, source: "Altar of Fangs", stats: ["crit","haste"], fit: "equivalent" },
   { forSlot: "ring", id: 273792, source: "Altar of Fangs", stats: ["crit","haste"] },
+  { forSlot: "ring", id: 158366, source: "Temple of Sethraliss", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "ring", id: 251513, source: "Crafted", stats: ["crit","mastery"], fit: "equivalent" },
+  { forSlot: "ring", id: 268249, source: "Vashnik the Malignant", stats: ["crit","mastery"], fit: "equivalent" },
   { forSlot: "shoulder", id: 268231, source: "The Coiled Altar", stats: ["crit","mastery"] },
+  { forSlot: "shoulder", id: 239049, source: "Kings' Rest", stats: ["crit","haste"], fit: "equivalent" },
   { forSlot: "weapon", id: 159664, source: "Temple of Sethraliss", stats: ["crit","vers"] },
   { forSlot: "weapon", id: 251186, source: "The Blinding Vale & Voidscar Arena", stats: ["crit","mastery"] },
+  { forSlot: "weapon", id: 193767, source: "Ruby Life Pools", stats: ["crit","haste"], fit: "equivalent" },
+  { forSlot: "weapon", id: 268196, source: "The Lost Explorers", stats: ["crit","haste"], fit: "equivalent" },
+  { forSlot: "weapon", id: 275070, source: "Altar of Fangs", stats: ["crit","haste"], fit: "equivalent" },
   { forSlot: "wrist", id: 251200, source: "The Blinding Vale", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["crit","vers","mastery","haste"];
+export var PRIORITY_STATS = [["crit"],["vers","haste","mastery"]];
 
 export var STAT_CACHE_KEY = "resto-shaman-stat-cache-v1";
 
 export var KNOWN_STATS = {
   158355:[],158366:["crit","mastery"],159374:[],159375:["crit","haste"],
   159380:["crit","haste"],159388:["crit","mastery"],159664:["crit","vers"],193752:["crit","mastery"],
-  239656:[],244584:[],249303:["crit","vers"],250214:[],
-  250215:[],251125:["crit","vers"],251131:["crit","vers"],251132:["crit","mastery"],
-  251136:["crit","mastery"],251148:["crit","vers"],251155:["crit","mastery"],251165:["crit","vers"],
+  193763:["crit","haste"],193767:["crit","haste"],239049:["crit","haste"],239656:[],
+  244584:[],249303:["crit","vers"],250214:[],250215:[],
+  251125:["crit","vers"],251131:["crit","vers"],251132:["crit","mastery"],251136:["crit","mastery"],
+  251148:["crit","vers"],251155:["crit","mastery"],251165:["crit","vers"],251173:["crit","haste"],
   251186:["crit","mastery"],251196:["crit","vers"],251200:["crit","haste"],251234:["crit","mastery"],
-  251513:["crit","mastery"],268231:["crit","mastery"],268249:["crit","mastery"],268252:["crit","haste"],
-  268258:["crit","mastery"],268265:["crit"],270162:[],270164:[],
-  271092:["haste"],271481:["crit","mastery"],271482:["haste","vers"],271483:["crit","haste"],
-  271484:["crit","mastery"],271876:["crit"],273780:["crit","mastery"],273792:["crit","haste"],
+  251513:["crit","mastery"],268196:["crit","haste"],268231:["crit","mastery"],268248:["crit","vers"],
+  268249:["crit","mastery"],268252:["crit","haste"],268258:["crit","mastery"],268265:["crit"],
+  270162:[],270164:[],271092:["haste"],271481:["crit","mastery"],
+  271482:["haste","vers"],271483:["crit","haste"],271484:["crit","mastery"],271876:["crit"],
+  273780:["crit","mastery"],273781:["crit","haste"],273792:["crit","haste"],275070:["crit","haste"],
 };
 

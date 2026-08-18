@@ -64,7 +64,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 251149, source: "Den of Nalorakk", stats: ["haste","mastery"] },
 ];
 
-export var PRIORITY_STATS = ["crit","mastery","haste","vers"];
+export var PRIORITY_STATS = [["mastery"],["haste"],["crit"],["vers"]];
 
 export var STAT_CACHE_KEY = "feral-druid-stat-cache-v1";
 

@@ -63,7 +63,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 268197, source: "Entombed Sentinels", stats: ["haste","mastery"] },
 ];
 
-export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
+export var PRIORITY_STATS = [["mastery"],["haste"],["crit"],["vers"]];
 
 export var STAT_CACHE_KEY = "balance-druid-stat-cache-v1";
 

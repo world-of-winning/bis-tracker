@@ -73,7 +73,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 159409, source: "Kings' Rest", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["haste","mastery","crit","vers"];
+export var PRIORITY_STATS = [["haste"],["crit"],["mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "prot-warrior-stat-cache-v1";
 

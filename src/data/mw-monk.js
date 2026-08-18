@@ -67,7 +67,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 273778, source: "Altar of Fangs", stats: ["haste","mastery"] },
 ];
 
-export var PRIORITY_STATS = ["haste","crit","vers","mastery"];
+export var PRIORITY_STATS = [["haste"],["crit"],["vers"],["mastery"]];
 
 export var STAT_CACHE_KEY = "mw-monk-stat-cache-v1";
 
@@ -81,7 +81,7 @@ export var KNOWN_STATS = {
   268256:["haste","mastery"],268261:["crit","haste"],268265:["crit"],268266:["haste","vers"],
   270164:[],270167:["haste"],271092:["haste"],271517:["haste","mastery"],
   271518:["crit","vers"],271520:["haste","vers"],271522:["haste","mastery"],271875:["haste"],
-  273649:[],273774:["crit","vers"],273778:["haste","mastery"],273779:["crit","haste"],
-  273781:["crit","haste"],273791:["crit","haste"],273792:["crit","haste"],
+  273649:[],273774:["crit","vers"],273778:["haste","mastery"],273781:["crit","haste"],
+  273791:["crit","haste"],273792:["crit","haste"],
 };
 

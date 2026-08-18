@@ -17,3 +17,7 @@ scripts/.wowhead-cache.json
 
 # db2 CSV exports from wago.tools
 scripts/.wago-cache/
+
+# murlok.io roster cache for generate-priority-stats — responses as fetched,
+# plus the index that expires them
+scripts/.murlok-cache/

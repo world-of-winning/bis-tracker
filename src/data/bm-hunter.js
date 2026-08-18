@@ -63,7 +63,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 251200, source: "The Blinding Vale", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
+export var PRIORITY_STATS = [["mastery"],["crit"],["haste"],["vers"]];
 
 export var STAT_CACHE_KEY = "bm-hunter-stat-cache-v1";
 

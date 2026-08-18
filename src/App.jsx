@@ -5,6 +5,7 @@ import { getSampleChars, SAMPLE_CHARS } from './data/sample.js';
 import { load, save as persist, remove } from './storage.js';
 import { parseSimC } from './data/shared.js';
 import { autoSelectTier } from './logic/priority.js';
+import { matchBiS } from './logic/matching.js';
 import { useLocale, LOCALE_META, LOCALE_KEYS } from './i18n/index.jsx';
 import BisTracker from './components/BisTracker.jsx';
 import TutorialOverlay from './components/TutorialOverlay.jsx';
@@ -400,25 +401,16 @@ export default function App() {
     samples.slice(1).forEach(function(s) {
       var key = s.spec.STORAGE_KEY + ":" + s.name;
       if (!load(key)) {
-        // Parse and store directly
+        // Parse and store directly. matchBiS rather than a stripped-down copy
+        // of it: the demo is the first thing a new user sees, and a second
+        // encoding of the matching rule here means they see a different answer
+        // from the one their own import gives them.
         var parsed = parseSimC(s.simcText);
         var gear = parsed.gear, ci = parsed.ci;
-        // Match BIS
-        var BIS_IDS = new Set(s.spec.BIS.map(function(b) { return b.id; }));
-        var matched = {}, eqSlot = {};
-        s.spec.BIS.forEach(function(bi) {
-          var d = gear[bi.slot];
-          if (d && d.id === bi.id) { matched[bi.id] = true; eqSlot[bi.id] = d; return; }
-          if (d) eqSlot[bi.id] = d;
-        });
-        var altItems = {};
-        s.spec.BIS.forEach(function(bi) {
-          if (matched[bi.id] || !bi.stats.length) return;
-          var eq = eqSlot[bi.id]; if (!eq || eq.id === bi.id) return;
-          var es = s.spec.KNOWN_STATS[eq.id];
-          if (es && bi.stats.slice().sort().join() === es.slice().sort().join()) altItems[bi.id] = true;
-        });
-        persist(key, { acq: {}, sr: { ci: ci, eqSlot: eqSlot, bisInBag: {}, altItems: altItems, matched: matched }, targetTier: autoSelectTier(ci.avgIlvl) });
+        var knownBisIds = new Set(s.spec.BIS.map(function(b) { return b.id; }));
+        if (s.spec.MYTHIC) s.spec.MYTHIC.forEach(function(m) { knownBisIds.add(m.id); });
+        var result = matchBiS(s.spec.BIS, gear, parsed.bag || [], s.spec.KNOWN_STATS, knownBisIds, s.spec.PRIORITY_STATS);
+        persist(key, { acq: {}, sr: { ci: ci, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched, weaponMismatch: result.weaponMismatch }, targetTier: autoSelectTier(ci.avgIlvl) });
       }
     });
     setSampleMode(true);

@@ -63,7 +63,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 268211, source: "The Coiled Altar", stats: ["haste","mastery"] },
 ];
 
-export var PRIORITY_STATS = ["mastery","haste","crit","vers"];
+export var PRIORITY_STATS = [["mastery"],["haste"],["crit"],["vers"]];
 
 export var STAT_CACHE_KEY = "arcane-mage-stat-cache-v1";
 

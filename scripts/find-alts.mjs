@@ -9,10 +9,11 @@
  */
 
 import { readFileSync, writeFileSync, readdirSync } from 'fs';
-import { resolve, dirname } from 'path';
+import { resolve, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
 import { fetchTooltip, saveCache } from './wowhead-cache.mjs';
 import { DUNGEONS } from '../src/data/shared.js';
+import { fitKind, fitRank } from '../src/logic/matching.js';
 
 // ─── Wowhead class restriction check ────────────────────────
 const CLASS_NAME_MAP = {
@@ -140,8 +141,25 @@ function normalizeSlot(simcSlot) {
   return simcSlot;
 }
 
-function statsKey(stats) {
-  return [...stats].sort().join('+');
+// The spec's equivalence groups, which decide whether a candidate's stats can
+// stand in for the BiS item's. A flat array of four is the older shape and
+// reads as four groups of one.
+function parsePriorityStats(content, specKey) {
+  // Returning null here degrades fitKind to exact-only, which is the pipeline
+  // and the app disagreeing about what fits — the one thing this shared rule
+  // exists to prevent. Never let it happen quietly.
+  const warn = (why) => {
+    console.warn(`  ! ${specKey}: ${why} — alt candidates will be exact stat matches only`);
+    return null;
+  };
+  const m = content.match(/export var PRIORITY_STATS = (\[[^;]*\]);/);
+  if (!m) return warn('no PRIORITY_STATS');
+  try {
+    const parsed = JSON.parse(m[1]);
+    return parsed.length ? parsed : warn('PRIORITY_STATS is empty');
+  } catch (err) {
+    return warn(`PRIORITY_STATS does not parse (${err.message})`);
+  }
 }
 
 // ─── Parse all spec files ────────────────────────────────────
@@ -180,7 +198,10 @@ function parseSpecFile(filePath) {
   const hasOffHand = bisItems.some(b => b.simcSlot === 'off_hand');
   const isDual = hasOffHand;
 
-  return { simcClass, armorType: ARMOR_TYPE[simcClass], bisItems, isDual, content };
+  return {
+    simcClass, armorType: ARMOR_TYPE[simcClass], bisItems, isDual, content,
+    priorityStats: parsePriorityStats(content, basename(filePath, '.js')),
+  };
 }
 
 // A spec whose items name no dungeon from the current pool is running on an
@@ -255,10 +276,17 @@ function buildItemIndex() {
   return { slotItems, itemSlotArmor, itemClasses };
 }
 
+function sortAlts(alts) {
+  alts.sort((a, b) =>
+    a.forSlot.localeCompare(b.forSlot) ||
+    fitRank(a.fit) - fitRank(b.fit) ||
+    a.id - b.id);
+}
+
 // ─── Find alts for a spec ────────────────────────────────────
 async function findAltsForSpec(specKey, index) {
   const filePath = resolve(DATA_DIR, `${specKey}.js`);
-  const { simcClass, armorType, bisItems, isDual } = parseSpecFile(filePath);
+  const { simcClass, armorType, bisItems, isDual, priorityStats } = parseSpecFile(filePath);
   const { slotItems, itemSlotArmor, itemClasses } = index;
   const className = CLASS_NAME_MAP[simcClass];
 
@@ -267,11 +295,11 @@ async function findAltsForSpec(specKey, index) {
   const addedKeys = new Set();
 
   for (const bis of bisItems) {
-    // Skip items without stats (trinkets typically)
-    if (bis.stats.length < 2) continue;
+    // Stat-less items (trinkets typically) match by ID alone, so there is
+    // nothing here to find them an alternative for.
+    if (!bis.stats.length) continue;
 
     const normSlot = normalizeSlot(bis.simcSlot);
-    const bisStats = statsKey(bis.stats);
     const forSlot = getForSlot(bis.simcSlot);
 
     const candidates = slotItems.get(normSlot);
@@ -279,8 +307,11 @@ async function findAltsForSpec(specKey, index) {
 
     for (const [id, item] of candidates) {
       if (bisIds.has(id)) continue;
-      if (item.stats.length < 2) continue;
-      if (statsKey(item.stats) !== bisStats) continue;
+      // Same rule the app matches with — see fitKind in src/logic/matching.js.
+      // The two drifting apart would put items in the alt list the app then
+      // refuses to recognise.
+      const fit = fitKind(item.stats, bis.stats, priorityStats);
+      if (!fit) continue;
 
       const altKey = `${forSlot}-${id}`;
       if (addedKeys.has(altKey)) continue;
@@ -334,11 +365,12 @@ async function findAltsForSpec(specKey, index) {
         id: item.id,
         source: item.source,
         stats: item.stats,
+        fit,
       });
     }
   }
 
-  alts.sort((a, b) => a.forSlot.localeCompare(b.forSlot) || a.id - b.id);
+  sortAlts(alts);
   return alts;
 }
 
@@ -357,7 +389,7 @@ function updateSpecFile(specKey, alts) {
   const existingAltsMatch = content.match(/export var ALTS = \[([^]*?)\];/);
   if (existingAltsMatch) {
     const altIds = new Set(alts.map(a => a.id));
-    const existingRe = /\{\s*forSlot:\s*"([^"]+)",\s*id:\s*(\d+),\s*source:\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])\s*\}/g;
+    const existingRe = /\{\s*forSlot:\s*"([^"]+)",\s*id:\s*(\d+),\s*source:\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])(?:\s*,\s*fit:\s*"([^"]+)")?\s*,?\s*\}/g;
     let m;
     while ((m = existingRe.exec(existingAltsMatch[1]))) {
       const id = parseInt(m[2]);
@@ -368,16 +400,20 @@ function updateSpecFile(specKey, alts) {
         alts.push({
           forSlot: m[1], id,
           source: m[3], stats: JSON.parse(m[4]),
+          // A weapon generate-spec-data picked for this spec. It was chosen on
+          // the spec's own stats, so it is an exact fit unless it says so.
+          fit: m[5] || 'exact',
         });
         altIds.add(id);
       }
     }
-    alts.sort((a, b) => a.forSlot.localeCompare(b.forSlot) || a.id - b.id);
+    sortAlts(alts);
   }
 
   let altsStr = 'export var ALTS = [\n';
   for (const alt of alts) {
-    altsStr += `  { forSlot: ${JSON.stringify(alt.forSlot)}, id: ${alt.id}, source: ${JSON.stringify(alt.source)}, stats: ${JSON.stringify(alt.stats)} },\n`;
+    const fit = alt.fit === 'equivalent' ? `, fit: "equivalent"` : '';
+    altsStr += `  { forSlot: ${JSON.stringify(alt.forSlot)}, id: ${alt.id}, source: ${JSON.stringify(alt.source)}, stats: ${JSON.stringify(alt.stats)}${fit} },\n`;
   }
   altsStr += '];';
 

@@ -66,7 +66,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 268211, source: "The Coiled Altar", stats: ["haste","mastery"] },
 ];
 
-export var PRIORITY_STATS = ["haste","mastery","vers","crit"];
+export var PRIORITY_STATS = [["haste"],["mastery"],["crit"],["vers"]];
 
 export var STAT_CACHE_KEY = "fire-mage-stat-cache-v1";
 

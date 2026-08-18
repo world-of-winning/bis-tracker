@@ -70,7 +70,7 @@ export var ALTS = [
   { forSlot: "weapon", id: 273778, source: "Altar of Fangs", stats: ["haste","mastery"] },
 ];
 
-export var PRIORITY_STATS = ["haste","vers","crit","mastery"];
+export var PRIORITY_STATS = [["haste"],["crit"],["mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "veng-dh-stat-cache-v1";
 
