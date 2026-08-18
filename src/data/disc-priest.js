@@ -72,10 +72,10 @@ export var KNOWN_STATS = {
   239031:["crit","haste"],239648:[],245769:[],250214:[],
   250215:[],251127:["crit","haste"],251137:["haste","mastery"],251139:["crit","haste"],
   251160:["crit","haste"],251173:["crit","haste"],251185:["haste","mastery"],251190:["haste","mastery"],
-  251191:["haste","mastery"],251219:["crit","haste"],251232:["haste","mastery"],252258:["haste","mastery"],
-  268252:["crit","haste"],268253:["haste","mastery"],268255:["haste","mastery"],268257:["haste","mastery"],
-  268265:["crit"],270164:[],270167:["haste"],271092:["haste"],
-  271553:["crit","haste"],271556:["crit","mastery"],271874:["mastery"],273773:["crit","mastery"],
-  273778:["haste","mastery"],273781:["crit","haste"],273792:["crit","haste"],
+  251219:["crit","haste"],251232:["haste","mastery"],252258:["haste","mastery"],268252:["crit","haste"],
+  268253:["haste","mastery"],268255:["haste","mastery"],268257:["haste","mastery"],268265:["crit"],
+  270164:[],270167:["haste"],271092:["haste"],271553:["crit","haste"],
+  271556:["crit","mastery"],271874:["mastery"],273773:["crit","mastery"],273778:["haste","mastery"],
+  273781:["crit","haste"],273792:["crit","haste"],
 };
 

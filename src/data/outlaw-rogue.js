@@ -72,8 +72,8 @@ export var STAT_CACHE_KEY = "outlaw-rogue-stat-cache-v1";
 
 export var KNOWN_STATS = {
   158373:["crit","haste"],159312:["crit","mastery"],159313:["haste","vers"],159317:["haste","mastery"],
-  159617:[],193763:["crit","haste"],193767:["crit","haste"],237837:[],
-  244576:[],249294:["haste","mastery"],250259:[],251124:["crit","haste"],
+  159617:[],193763:["crit","haste"],193767:["crit","haste"],244576:[],
+  249294:["haste","mastery"],249920:["haste"],250259:[],251124:["crit","haste"],
   251135:["crit","haste"],251148:["crit","vers"],251153:["crit","haste"],251173:["crit","haste"],
   251189:["crit","vers"],251195:["crit","haste"],251223:["crit","haste"],251224:["haste","mastery"],
   251226:["crit","vers"],268209:["haste","mastery"],268211:["haste","mastery"],268248:["crit","vers"],

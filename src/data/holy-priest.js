@@ -76,7 +76,7 @@ export var KNOWN_STATS = {
   251227:["mastery","vers"],251234:["crit","mastery"],251513:["crit","mastery"],268249:["crit","mastery"],
   268253:["haste","mastery"],268255:["haste","mastery"],268265:["crit"],270162:[],
   270164:[],271092:["haste"],271552:["crit","mastery"],271553:["crit","haste"],
-  271554:["haste","vers"],271556:["crit","mastery"],271558:["crit","mastery"],271681:["crit","mastery"],
-  271874:["mastery"],273773:["crit","mastery"],
+  271554:["haste","vers"],271556:["crit","mastery"],271558:["crit","mastery"],271874:["mastery"],
+  273773:["crit","mastery"],
 };
 

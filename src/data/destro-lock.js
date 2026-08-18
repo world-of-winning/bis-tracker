@@ -76,16 +76,15 @@ export var STAT_CACHE_KEY = "destro-lock-stat-cache-v1";
 
 export var KNOWN_STATS = {
   158366:["crit","mastery"],159234:["crit","mastery"],159247:["crit","haste"],159257:[],
-  159259:["crit","haste"],160216:["crit","mastery"],193750:["crit","mastery"],193761:["crit","mastery"],
-  193763:["crit","haste"],239031:["crit","haste"],239648:[],239649:[],
-  239664:["crit","haste"],249294:["haste","mastery"],250214:[],250215:[],
-  251136:["crit","mastery"],251137:["haste","mastery"],251154:["crit","mastery"],251190:["haste","mastery"],
-  251191:["haste","mastery"],251199:["crit","mastery"],251219:["crit","haste"],251222:["crit","haste"],
-  251234:["crit","mastery"],251513:["crit","mastery"],268197:["haste","mastery"],268211:["haste","mastery"],
-  268249:["crit","mastery"],268252:["crit","haste"],268253:["haste","mastery"],268255:["haste","mastery"],
-  268265:["crit"],270164:[],271092:["haste"],271544:["haste","vers"],
-  271545:["haste","mastery"],271547:["crit","haste"],271549:["haste","mastery"],271874:["mastery"],
-  273773:["crit","mastery"],273778:["haste","mastery"],273779:["crit","haste"],273792:["crit","haste"],
-  275070:["crit","haste"],
+  159259:["crit","haste"],160216:["crit","mastery"],193750:["crit","mastery"],193763:["crit","haste"],
+  239031:["crit","haste"],239648:[],239649:[],239664:["crit","haste"],
+  249294:["haste","mastery"],250214:[],250215:[],251136:["crit","mastery"],
+  251137:["haste","mastery"],251154:["crit","mastery"],251190:["haste","mastery"],251191:["haste","mastery"],
+  251199:["crit","mastery"],251219:["crit","haste"],251222:["crit","haste"],251234:["crit","mastery"],
+  251513:["crit","mastery"],268197:["haste","mastery"],268211:["haste","mastery"],268249:["crit","mastery"],
+  268252:["crit","haste"],268253:["haste","mastery"],268255:["haste","mastery"],268265:["crit"],
+  270164:[],271092:["haste"],271544:["haste","vers"],271545:["haste","mastery"],
+  271547:["crit","haste"],271549:["haste","mastery"],271874:["mastery"],273773:["crit","mastery"],
+  273778:["haste","mastery"],273779:["crit","haste"],273792:["crit","haste"],275070:["crit","haste"],
 };
 
