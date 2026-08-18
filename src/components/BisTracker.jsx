@@ -340,7 +340,10 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       var pa = calcAltPriority(a, sr, allStats, PRIORITY_STATS, targetInfo.max, acq);
       var pb = calcAltPriority(b, sr, allStats, PRIORITY_STATS, targetInfo.max, acq);
       if (pa.tier !== pb.tier) return pa.tier - pb.tier;
-      return (pb.deficit || 0) - (pa.deficit || 0);
+      if ((pb.deficit || 0) !== (pa.deficit || 0)) return (pb.deficit || 0) - (pa.deficit || 0);
+      // Exact fits ahead of equivalent ones: a player who has run out of other
+      // things to do can still chase the exact item at the end of a season.
+      return (a.fit === "equivalent" ? 1 : 0) - (b.fit === "equivalent" ? 1 : 0);
     });
   }, [filter, mergedAlts, sr, acq, allStats, PRIORITY_STATS, targetInfo.max]);
   var nonDungeonSources = useMemo(function() {

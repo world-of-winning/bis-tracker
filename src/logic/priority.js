@@ -1,15 +1,20 @@
 import { TIERS, resolveSlots } from '../data/shared.js';
-import { sameStats } from './matching.js';
+import { fitKind, groupIndex, statGroups } from './matching.js';
 
 export function getSource(item) { return item.source; }
 
+// Higher score = better stats = lower farming priority. Reads group position,
+// not position in a flat list: two stats the spec values the same score the
+// same, so they stop breaking ties against each other and the sort falls
+// through to something that means anything.
 export function statScore(eqId, stats, priorityStats) {
-  if (!priorityStats || !priorityStats.length) return 0;
+  var groups = statGroups(priorityStats);
+  if (!groups) return 0;
   var es = stats[eqId];
   if (!es || !es.length) return 0;
-  var n = priorityStats.length;
+  var n = groups.length;
   var score = 0;
-  es.forEach(function(s) { var idx = priorityStats.indexOf(s); if (idx >= 0) score += (n - idx); });
+  es.forEach(function(s) { var idx = groupIndex(groups, s); if (idx >= 0) score += (n - idx); });
   return score;
 }
 
@@ -85,7 +90,6 @@ export function calcPriority(bisItem, sr, targetIlvl, stats, priorityStats) {
 export function calcAltPriority(alt, sr, allStats, priorityStats, targetIlvl, acq) {
   if (acq && acq[alt.id]) return { tier: 4, deficit: 0, ilvl: 0, labelKey: "done", color: "#4dca6b" };
   if (!sr || !sr.gear) return { tier: 1, deficit: targetIlvl || 0, ilvl: 0, label: "\u2014", color: "#ff6b6b" };
-  var top2 = (priorityStats && priorityStats.length >= 2) ? priorityStats.slice(0, 2) : null;
   var slots = resolveSlots(alt.forSlot);
   var bestEq = null, bestIlvl = -1;
   slots.forEach(function(slot) {
@@ -96,12 +100,7 @@ export function calcAltPriority(alt, sr, allStats, priorityStats, targetIlvl, ac
       if (ilvl > bestIlvl) { bestIlvl = ilvl; bestEq = g; }
       return;
     }
-    var es = allStats[g.id];
-    var statsMatch = alt.stats && alt.stats.length && es && es.length && (
-      sameStats(alt.stats, es) ||
-      (top2 && top2.every(function(s) { return es.indexOf(s) >= 0; }) && es.filter(function(s) { return top2.indexOf(s) >= 0; }).length === es.length)
-    );
-    if (!statsMatch) return;
+    if (!fitKind(allStats[g.id], alt.stats, priorityStats)) return;
     if (ilvl > bestIlvl) { bestIlvl = ilvl; bestEq = g; }
   });
   if (!bestEq) return { tier: 1, deficit: targetIlvl || 0, ilvl: 0, label: "\u2014", color: "#ff6b6b" };
