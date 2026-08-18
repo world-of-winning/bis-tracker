@@ -133,6 +133,11 @@ RIGHT: Apply visualTier overrides — enhance shows green, tierUp shows orange, 
 WRONG: taking the top two stats of the priority and demanding an item carry exactly those
 RIGHT: fitKind over equivalence groups — and a one-stat item never satisfies a two-stat BiS
 ```
+The top-two rule is gone rather than kept alongside. It was guessing at equivalence with no
+number behind it and guessing wrong — Blood Death Knight's top two sit at 0.88, well outside
+the 0.95 that makes a re-farm pointless. A spec whose stats are genuinely close now says so
+in its groups. **Do not reintroduce a positional shortcut**: any "top N" rule is a claim about
+distance that only the measured means can make.
 
 #### 5. Slot Matching & Weapons
 - **Rings**: finger1 ↔ finger2 interchangeable. If BiS finger1 matches equipped finger2, auto-redirects.

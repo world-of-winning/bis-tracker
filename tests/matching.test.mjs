@@ -157,6 +157,13 @@ describe("an equivalent fit, end to end", () => {
     });
 
     it("keeps a strict order strict for a spec with no equivalence", () => {
+        // Deliberately narrower than the old matcher, which had a second
+        // clause accepting any item carrying exactly the spec's two best
+        // stats. That heuristic was guessing at equivalence without a number
+        // behind it, and it guessed wrong: on Blood Death Knight the top two
+        // sit at 0.88, far outside the 0.95 that makes a re-farm pointless.
+        // Where two stats really are close the groups now say so, and where
+        // they are not the tracker no longer pretends otherwise.
         const r = matchBiS(BIS, gear, [], stats, new Set(), FLAT);
         expect(r.altItems[100]).toBeUndefined();
     });
