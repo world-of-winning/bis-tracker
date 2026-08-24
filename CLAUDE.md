@@ -158,6 +158,9 @@ distance that only the measured means can make.
 - Wrong armor type or wrong primary stat → **visualTier forced to 1** regardless of actual match
 
 #### 7. Data Pipeline Rules
+
+> Execution order and the dependency graph — which script has to have run first, and what breaks when it hasn't — are in `docs/agents/pipeline.md`. The rules below are what each script enforces once it runs.
+
 - **`priority-stats.json`** is **generated**, from observed gear rather than from a guide. See `docs/adr/0001-observed-stat-priority.md`. Entries are lists of **equivalence groups**, not a flat order: two stats sit in one group when a spec values them closely enough that swapping one for the other is not worth a re-farm. A flat four-stat array still reads correctly — it means four groups of one.
   - Source is murlok.io's public JSON: `https://murlok.io/api/guides/{class}/{spec}/m+`. It returns the roster (up to fifty characters with full equipment and per-item stat ratings), **not** a ranking — the aggregation and the grouping are ours.
   - Group boundaries are cut where the ratio between neighbouring mean ratings drops below **0.95**, or **0.90** when the spec's sample is under thirty characters. Thin samples lean toward merging because a false split orders a re-farm over a rounding difference, while a false merge only withholds a warning.
@@ -246,6 +249,10 @@ Issues live as GitHub issues on `world-of-winning/bis-tracker`, via the `gh` CLI
 ### Domain docs
 
 Single-context layout — `CONTEXT.md` + `docs/adr/` at repo root. See `docs/agents/domain.md`.
+
+### Data pipeline
+
+The generators under `scripts/` run in a fixed order and share three caches. See `docs/agents/pipeline.md`.
 
 ## Branching
 
