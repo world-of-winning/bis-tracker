@@ -117,12 +117,17 @@ only warn.
 
 File mtime is never expiry: anything that touches a file rewrites it.
 
-The 14-day default on the roster cache was chosen for stat priority, which moves
-slowly. Early in a season the rosters churn much faster than that — see #9, where
-the same cache becomes the source of alt candidates. Until that lands, refresh by
-hand (`--refresh`) when a season is young and the priorities look behind what
-players are actually wearing, and budget for it: the upstream allows roughly three
-requests a minute, so a full forty-spec pass is a long, interruptible job.
+The 14-day default on the roster cache was chosen for stat priority, which is the
+only thing the rosters are used for and which moves slowly. Early in a season they
+churn faster than that, so refresh by hand (`--refresh`) when a season is young and
+the priorities look behind what players are actually wearing. Budget for it: the
+upstream allows roughly three requests a minute, so a full forty-spec pass is a
+long, interruptible job.
+
+Do not reach for the rosters as a source of *farmable items* — that was measured on
+ #9 and rejected. An equipment snapshot shows what players have not replaced yet, so
+61% of the candidates it produced were last season's. #12 takes that job to the
+client's own drop tables instead.
 
 ## Recipes
 
