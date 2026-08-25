@@ -209,7 +209,6 @@
         "raidSource": "Raid",
         "craftSource": "Fabrication",
         "catalystSource": "Catalyseur",
-        "altSameStats": "Alt — Mêmes stats secondaires",
         "tierStatMismatch": "Stats inadaptées",
         "tierAltEquipped": "Alt équipé",
         "tierBisUpgrade": "Amélioration BiS↑",
@@ -253,7 +252,8 @@
         "wrongPrimaryStat": "Ce n'est pas un objet {expected} !",
         "browsing": "Parcourir",
         "selectClass": "Sélectionner une classe",
-        "selectSpec": "Sélectionner une spécialisation"
+        "selectSpec": "Sélectionner une spécialisation",
+        "altOptions": "Alt — Autres options pour cet emplacement"
     },
     "primaryStats": {
         "str": "Force",

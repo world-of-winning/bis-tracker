@@ -209,7 +209,6 @@
         "raidSource": "团本",
         "craftSource": "制造",
         "catalystSource": "催化",
-        "altSameStats": "替代 — 相同副属性",
         "tierStatMismatch": "属性不匹配",
         "tierAltEquipped": "替代装备中",
         "tierBisUpgrade": "BiS 升级↑",
@@ -253,7 +252,8 @@
         "wrongPrimaryStat": "不是{expected}装备!",
         "browsing": "浏览",
         "selectClass": "选择职业",
-        "selectSpec": "选择专精"
+        "selectSpec": "选择专精",
+        "altOptions": "Alt — 该部位的其他选择"
     },
     "primaryStats": {
         "str": "力量",

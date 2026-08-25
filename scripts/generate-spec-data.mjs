@@ -25,7 +25,7 @@ import {
     cacheDelete,
 } from "./wowhead-cache.mjs";
 import {
-    buildItemIndex,
+    buildSeasonPool,
     findAltsForSpec,
     updateSpecFile,
 } from "./find-alts.mjs";
@@ -1993,10 +1993,10 @@ if (args.includes("--regenerate")) {
         console.log(
             `\n=== Running find-alts for ${writtenKeys.length} specs ===`,
         );
-        const index = buildItemIndex();
+        const pool = await buildSeasonPool();
         for (const key of writtenKeys) {
             try {
-                const alts = await findAltsForSpec(key, index);
+                const alts = await findAltsForSpec(key, pool);
                 if (alts.length > 0) updateSpecFile(key, alts);
                 console.log(`  ${key}: ${alts.length} alts`);
             } catch (err) {
@@ -2122,12 +2122,11 @@ const allNeedAlts = [...new Set([...targets.map((s) => s.key), ...needsAlts])];
 
 if (allNeedAlts.length > 0) {
     console.log(`\n=== Running find-alts for ${allNeedAlts.length} specs ===`);
-    console.log("Building global item index...");
-    const index = buildItemIndex();
+    const pool = await buildSeasonPool();
     let totalAlts = 0;
     for (const key of allNeedAlts) {
         try {
-            const alts = await findAltsForSpec(key, index);
+            const alts = await findAltsForSpec(key, pool);
             if (alts.length > 0) {
                 updateSpecFile(key, alts);
             }

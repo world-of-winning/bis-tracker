@@ -59,8 +59,10 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
   // An equivalent fit is a fit — the slot is done — but it is not the exact
   // item, and chasing that late in a season is legitimate. Say which it is
-  // rather than leaving the two states looking identical.
-  var isEquivalentFit = isAlt ? item.fit === "equivalent" : isSimcAlt === "equivalent";
+  // rather than leaving the two states looking identical. This is about the
+  // equipped item only; alt rows carry no fit, being options rather than
+  // verdicts.
+  var isEquivalentFit = !isAlt && isSimcAlt === "equivalent";
   // Detect wrong armor type on the equipped item
   var eqToCheck = eq || altEq;
   var eqSlotName = isAlt ? item.forSlot : item.slot;

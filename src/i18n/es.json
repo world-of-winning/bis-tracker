@@ -208,7 +208,6 @@
         "raidSource": "Banda",
         "craftSource": "Fabricación",
         "catalystSource": "Catalizador",
-        "altSameStats": "Alt — Mismas estadísticas secundarias",
         "tierStatMismatch": "Estadísticas incorrectas",
         "tierAltEquipped": "Alt equipado",
         "tierBisUpgrade": "Mejora BiS↑",
@@ -252,7 +251,8 @@
         "wrongPrimaryStat": "¡No es un objeto de {expected}!",
         "browsing": "Explorar",
         "selectClass": "Selecciona una clase",
-        "selectSpec": "Selecciona una especialización"
+        "selectSpec": "Selecciona una especialización",
+        "altOptions": "Alt — Otras opciones para esta ranura"
     },
     "primaryStats": {
         "str": "Fuerza",

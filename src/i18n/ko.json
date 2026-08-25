@@ -209,7 +209,6 @@
         "raidSource": "레이드",
         "craftSource": "제작",
         "catalystSource": "촉매",
-        "altSameStats": "Alt — 동일 보조 능력치",
         "tierStatMismatch": "능력치 불일치",
         "tierAltEquipped": "Alt 장착",
         "tierBisUpgrade": "BiS 등급↑",
@@ -253,7 +252,8 @@
         "wrongPrimaryStat": "{expected} 장비가 아닙니다!",
         "browsing": "열람",
         "selectClass": "직업 선택",
-        "selectSpec": "전문화 선택"
+        "selectSpec": "전문화 선택",
+        "altOptions": "Alt — 이 부위의 다른 선택지"
     },
     "primaryStats": {
         "str": "힘",

@@ -209,7 +209,6 @@
         "raidSource": "Raid",
         "craftSource": "Crafting",
         "catalystSource": "Catalyst",
-        "altSameStats": "Alt — Same Secondary Stats",
         "tierStatMismatch": "Stat Mismatch",
         "tierAltEquipped": "Alt Equipped",
         "tierBisUpgrade": "BiS Upgrade↑",
@@ -253,7 +252,8 @@
         "wrongPrimaryStat": "Not a {expected} item!",
         "browsing": "Browse",
         "selectClass": "Select a Class",
-        "selectSpec": "Select a Specialization"
+        "selectSpec": "Select a Specialization",
+        "altOptions": "Alt — Other Options for This Slot"
     },
     "primaryStats": {
         "str": "Strength",

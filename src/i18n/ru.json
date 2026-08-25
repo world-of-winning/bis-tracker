@@ -209,7 +209,6 @@
         "raidSource": "Рейд",
         "craftSource": "Крафт",
         "catalystSource": "Катализатор",
-        "altSameStats": "Альт — те же вторичные характеристики",
         "tierStatMismatch": "Несовпадение характеристик",
         "tierAltEquipped": "Альт надет",
         "tierBisUpgrade": "Улучшение BiS↑",
@@ -253,7 +252,8 @@
         "wrongPrimaryStat": "Это не предмет на {expected}!",
         "browsing": "Просмотр",
         "selectClass": "Выберите класс",
-        "selectSpec": "Выберите специализацию"
+        "selectSpec": "Выберите специализацию",
+        "altOptions": "Alt — Другие варианты для этого слота"
     },
     "primaryStats": {
         "str": "Сила",

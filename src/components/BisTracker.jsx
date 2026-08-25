@@ -3,7 +3,7 @@ import { load, save as persist } from '../storage.js';
 import { DUNGEONS, TIERS, DEFAULT_TIER, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS, SPEC_PRIMARY_STAT } from '../data/shared.js';
 import { findSpecBySimC } from '../data/specs.js';
 import { useLocale } from '../i18n/index.jsx';
-import { matchBiS, fitRank } from '../logic/matching.js';
+import { matchBiS } from '../logic/matching.js';
 import { getSource, calcPriority, calcAltPriority, autoSelectTier, sortByPriority, calcDungeonScore, calcSourceFarmCount } from '../logic/priority.js';
 import ItemCard from './ItemCard.jsx';
 import FilterButton from './FilterButton.jsx';
@@ -121,7 +121,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     activeItems.forEach(function(i) { seen[getSource(i)] = true; });
     mergedAlts.forEach(function(a) { seen[getSource(a)] = true; });
     Object.keys(seen).forEach(function(s) {
-      c[s] = calcSourceFarmCount(s, activeItems, mergedAlts, sr, targetInfo.max, allStats, PRIORITY_STATS, acq);
+      c[s] = calcSourceFarmCount(s, activeItems, sr, targetInfo.max, allStats, PRIORITY_STATS, acq);
     });
     return c;
   }, [activeItems, mergedAlts, sr, targetInfo.max, allStats, PRIORITY_STATS, acq]);
@@ -336,12 +336,13 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     if (filter === "all") return [];
     var items = mergedAlts.filter(function(a) { return getSource(a) === filter; });
     if (!sr) return items;
+    // ALTS arrives ordered by how well each item suits the spec, best first.
+    // Re-sorting on a grade would undo that, so the only thing moved is what
+    // the player already has: done rows sink, the rest keep the file's order.
     return items.slice().sort(function(a, b) {
-      var pa = calcAltPriority(a, sr, allStats, PRIORITY_STATS, targetInfo.max, acq);
-      var pb = calcAltPriority(b, sr, allStats, PRIORITY_STATS, targetInfo.max, acq);
-      if (pa.tier !== pb.tier) return pa.tier - pb.tier;
-      if ((pb.deficit || 0) !== (pa.deficit || 0)) return (pb.deficit || 0) - (pa.deficit || 0);
-      return fitRank(a.fit) - fitRank(b.fit);
+      var da = calcAltPriority(a, sr, targetInfo.max, acq).tier === 4;
+      var db = calcAltPriority(b, sr, targetInfo.max, acq).tier === 4;
+      return (da ? 1 : 0) - (db ? 1 : 0);
     });
   }, [filter, mergedAlts, sr, acq, allStats, PRIORITY_STATS, targetInfo.max]);
   var nonDungeonSources = useMemo(function() {
@@ -475,11 +476,11 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         {displayAlts.length > 0 && (
           <div>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#e8a84c", marginTop: 20, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase", display: "flex", alignItems: "center", gap: 8 }}>
-              <span>{t("ui.altSameStats")}</span><span style={{ height: 1, flex: 1, background: "#3a3020" }} />
+              <span>{t("ui.altOptions")}</span><span style={{ height: 1, flex: 1, background: "#3a3020" }} />
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
               {displayAlts.map(function(item, idx) {
-                var altP = sr ? calcAltPriority(item, sr, allStats, PRIORITY_STATS, targetInfo.max, acq) : null;
+                var altP = sr ? calcAltPriority(item, sr, targetInfo.max, acq) : null;
                 if (acq[item.id] && (!altP || altP.tier !== 4)) altP = { tier: 4, deficit: 0, ilvl: 0, labelKey: "done", color: "#4dca6b" };
                 return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} knownBisIds={knownBisIds} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} />;
               })}

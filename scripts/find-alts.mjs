@@ -12,8 +12,9 @@ import { readFileSync, writeFileSync, readdirSync } from 'fs';
 import { resolve, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
 import { fetchTooltip, saveCache } from './wowhead-cache.mjs';
-import { DUNGEONS } from '../src/data/shared.js';
-import { fitKind, fitRank } from '../src/logic/matching.js';
+import { dropTable } from './wago-db2.mjs';
+import { scoreStats } from '../src/logic/matching.js';
+import { DUNGEONS, CURRENT_RAID } from '../src/data/shared.js';
 
 // ─── Wowhead class restriction check ────────────────────────
 const CLASS_NAME_MAP = {
@@ -45,32 +46,78 @@ const CLASS_WEAPONS = {
   evoker:      new Set(['dagger','1h_fist','1h_sword','1h_axe','1h_mace','staff','offhand']),
 };
 
+/**
+ * Everything the season pool needs to know about one item, from its tooltip.
+ *
+ * The drop table says where an item comes from and nothing else, so slot,
+ * armour class, primary stat and weapon type all have to be read here. Primary
+ * stat arrives as a bracketed choice — "+141 [Strength or Intellect]" — which
+ * is the item offering itself to more than one class, not three separate stats.
+ */
 async function fetchTooltipInfo(itemId) {
   try {
     const data = await fetchTooltip(itemId, 0);
     const tooltip = data.tooltip || '';
+    const text = tooltip.replace(/<[^>]*>/g, ' ');
 
     const classMatch = tooltip.match(/Classes:\s*<a[^>]*>([^<]+)<\/a>/);
     const classRestriction = classMatch ? classMatch[1] : null;
 
     let weaponType = null;
     const weapMatch = tooltip.match(/<td>(One-Hand|Two-Hand|Main Hand|Off Hand|Ranged|Held In Off-hand)<\/td>(?:<th><!--[^>]*--><span[^>]*>([^<]+)<\/span>)?/i);
+    const hand = weapMatch ? weapMatch[1] : null;
     if (weapMatch) {
-      const invType = weapMatch[1].toLowerCase();
-      const subName = (weapMatch[2] || '').toLowerCase();
-      weaponType = normalizeWeaponType(invType, subName);
+      weaponType = normalizeWeaponType(weapMatch[1].toLowerCase(), (weapMatch[2] || '').toLowerCase());
     }
-    if (!weaponType && tooltip.includes('>Shield<')) {
-      weaponType = 'shield';
-    }
+    if (!weaponType && tooltip.includes('>Shield<')) weaponType = 'shield';
 
     const slotMatch = tooltip.match(/<td>(Head|Neck|Shoulder|Back|Chest|Wrist|Hands|Waist|Legs|Feet|Finger|Trinket)<\/td>/);
     const invSlot = slotMatch ? slotMatch[1] : null;
 
-    return { classRestriction, weaponType, invSlot };
+    const armorMatch = tooltip.match(/>(Plate|Mail|Leather|Cloth)</);
+    const armorClass = armorMatch ? armorMatch[1].toLowerCase() : null;
+
+    // "+141 [Strength or Intellect]" on anything a second class could wear;
+    // a bare "+124 Strength" when only one can. Accessories carry neither,
+    // which is why an empty list means "no restriction", not "unusable".
+    const primary = [];
+    const bracket = text.match(/\+[\d,]+ \[([^\]]+)\]/);
+    if (bracket) {
+      for (const word of bracket[1].split(/\s+or\s+/)) {
+        const key = PRIMARY_NAMES[word.trim().toLowerCase()];
+        if (key) primary.push(key);
+      }
+    } else {
+      for (const [word, key] of Object.entries(PRIMARY_NAMES)) {
+        if (new RegExp(`\\+[\\d,]+ ${word}`, 'i').test(text)) primary.push(key);
+      }
+    }
+
+    // Only ever one encounter line, and only on things that drop.
+    const dropMatch = text.match(/Dropped by:\s*(.+?)\s*(?:Sell Price|$)/);
+
+    return {
+      name: data.name || null,
+      classRestriction, weaponType, invSlot, armorClass, hand,
+      primary,
+      stats: parseSecondaryStats(tooltip),
+      droppedBy: dropMatch ? dropMatch[1].trim() : null,
+    };
   } catch {
-    return { classRestriction: null, weaponType: null, invSlot: null };
+    return { name: null, classRestriction: null, weaponType: null, invSlot: null, armorClass: null, hand: null, primary: [], stats: [], droppedBy: null };
   }
+}
+
+const PRIMARY_NAMES = { strength: 'str', agility: 'agi', intellect: 'int' };
+
+/** The four secondary stats, read off the tooltip's rating markers. */
+function parseSecondaryStats(tooltip) {
+  const stats = [];
+  if (tooltip.includes('<!--rtg32-->')) stats.push('crit');
+  if (tooltip.includes('<!--rtg36-->')) stats.push('haste');
+  if (tooltip.includes('<!--rtg49-->')) stats.push('mastery');
+  if (tooltip.includes('<!--rtg40-->')) stats.push('vers');
+  return stats;
 }
 
 function normalizeWeaponType(invType, subName) {
@@ -111,18 +158,6 @@ const UNIVERSAL_SLOTS = new Set(['neck', 'back', 'finger1', 'finger2', 'trinket1
 // Weapon slots (complex compatibility, skip for now)
 const WEAPON_SLOTS = new Set(['main_hand', 'off_hand']);
 
-// What inventory slot an item must actually occupy to be offered for a gear
-// slot. Maxroll occasionally files an item under the wrong one — a tier helm
-// listed in a Neck row — and cross-referencing would then offer that helm as a
-// neck alt to every spec sharing the stats. The guide's own spec keeps the bad
-// row; other specs should not inherit it.
-const SLOT_INV_EXPECT = {
-  head: 'Head', neck: 'Neck', shoulder: 'Shoulder', back: 'Back',
-  chest: 'Chest', wrist: 'Wrist', hands: 'Hands', waist: 'Waist',
-  legs: 'Legs', feet: 'Feet',
-  finger1: 'Finger', finger2: 'Finger',
-  trinket1: 'Trinket', trinket2: 'Trinket',
-};
 
 // Slot groups for forSlot naming
 function getForSlot(simcSlot) {
@@ -138,8 +173,18 @@ function getForSlot(simcSlot) {
 function normalizeSlot(simcSlot) {
   if (simcSlot.startsWith('finger')) return 'finger';
   if (simcSlot.startsWith('trinket')) return 'trinket';
+  if (WEAPON_SLOTS.has(simcSlot)) return 'weapon';
   return simcSlot;
 }
+
+// Primary stat per class. Armour class implies it for the eight armour slots,
+// so this only decides weapons and trinkets — the slots where a plate class and
+// a cloth one can be offered the same item.
+const CLASS_PRIMARY = {
+  warrior: 'str', paladin: 'str', deathknight: 'str',
+  hunter: 'agi', shaman: 'agi', druid: 'agi', rogue: 'agi', monk: 'agi', demonhunter: 'agi',
+  evoker: 'int', mage: 'int', warlock: 'int', priest: 'int',
+};
 
 // The spec's equivalence groups, which decide whether a candidate's stats can
 // stand in for the BiS item's. A flat array of four is the older shape and
@@ -204,173 +249,183 @@ function parseSpecFile(filePath) {
   };
 }
 
-// A spec whose items name no dungeon from the current pool is running on an
-// outdated Maxroll guide. Raid-only sources are fine — MYTHIC always carries
-// dungeon drops, so a current spec always matches at least one.
-function isStaleSeason(items) {
-  return items.length > 0 && !items.some(i => DUNGEONS[i.source]);
-}
+/**
+ * Every item a player can farm this season, from the client's own loot table.
+ *
+ * The pool used to be built by cross-referencing what the other 39 specs had
+ * been recommended, which is a list of opinions rather than an inventory: it
+ * collapsed to 283 items, most unusable by any given spec, and left Blood DK
+ * with no weapon alternatives at all. JournalEncounterItem knows what actually
+ * drops. Filtering it to the season's dungeons and raid is the whole season
+ * gate — a retired dungeon is simply not in DUNGEONS, so its loot cannot enter.
+ *
+ * Returns Map(normalizedSlot -> item[]), each item carrying what
+ * findAltsForSpec needs to decide whether this spec can wear it.
+ */
+async function buildSeasonPool() {
+  const { byInstance } = await dropTable();
+  const instances = [...Object.keys(DUNGEONS), CURRENT_RAID];
 
-// MYTHIC is dungeon drops by definition, so a source outside the current pool
-// is a retired dungeon — a guide Maxroll has updated only in part. Indexing it
-// would offer every other spec an alt it can no longer farm.
-function isRetiredDungeonDrop(item) {
-  return item.from === 'MYTHIC' && !DUNGEONS[item.source];
-}
-
-// Every source the current crawl produced — dungeons, raid bosses, Tier,
-// Crafted. Filled while the index is built and used to decide whether a
-// preserved weapon alt still belongs to this season.
-const CURRENT_SOURCES = new Set();
-
-// ─── Build global item index ─────────────────────────────────
-function buildItemIndex() {
-  const SKIP_FILES = new Set(['shared.js', 'specs.js', 'sample.js', 'tutorial.js', 'changelog.js']);
-  const files = readdirSync(DATA_DIR).filter(f =>
-    f.endsWith('.js') && !SKIP_FILES.has(f)
-  );
-
-  // Map: normalizedSlot → Map(itemId → itemInfo)
-  const slotItems = new Map();
-  // Track which armor types use each item in each slot
-  const itemSlotArmor = new Map(); // `${id}-${normalizedSlot}` → Set<armorType>
-  // Track which classes use each item
-  const itemClasses = new Map(); // itemId → Set<simcClass>
-
-  for (const file of files) {
-    const { simcClass, armorType, bisItems } = parseSpecFile(resolve(DATA_DIR, file));
-
-    // Maxroll updates guides one at a time, so at a season boundary a few are
-    // still on last season's dungeons. Indexing those would hand every other
-    // spec alts pointing at dungeons that are no longer in rotation, which is
-    // worse than the stale spec simply being stale on its own.
-    if (isStaleSeason(bisItems)) {
-      console.log(`  skip ${file}: no current-season dungeon in its data (Maxroll guide not updated yet)`);
-      continue;
+  for (const name of instances) {
+    if (!byInstance.has(name)) {
+      console.warn(`  ! ${name} is not in the client's loot table — check the name against JournalInstance`);
     }
+  }
+  warnIfRaidLooksWrong(byInstance);
 
-    for (const item of bisItems) {
-      if (isRetiredDungeonDrop(item)) continue;
-      for (const part of item.source.split(' & ')) CURRENT_SOURCES.add(part.trim());
-      const normSlot = normalizeSlot(item.simcSlot);
-
-      if (!slotItems.has(normSlot)) slotItems.set(normSlot, new Map());
-      const slotMap = slotItems.get(normSlot);
-
-      if (!slotMap.has(item.id)) {
-        slotMap.set(item.id, {
-          id: item.id,
-          source: item.source, stats: item.stats,
-        });
-      }
-
-      const key = `${item.id}-${normSlot}`;
-      if (!itemSlotArmor.has(key)) itemSlotArmor.set(key, new Set());
-      itemSlotArmor.get(key).add(armorType);
-
-      if (!itemClasses.has(item.id)) itemClasses.set(item.id, new Set());
-      itemClasses.get(item.id).add(simcClass);
+  const drops = new Map();
+  for (const name of instances) {
+    for (const [itemId, drop] of byInstance.get(name) || []) {
+      if (!drops.has(itemId)) drops.set(itemId, drop);
     }
   }
 
-  return { slotItems, itemSlotArmor, itemClasses };
+  const bySlot = new Map();
+  let skipped = 0;
+  for (const [itemId, drop] of drops) {
+    const info = await fetchTooltipInfo(itemId);
+    const slot = poolSlot(info);
+    // Recipes, consumables and furnishings drop alongside gear and have no
+    // inventory slot. Nothing else needs excluding here.
+    if (!slot) { skipped++; continue; }
+    if (!bySlot.has(slot)) bySlot.set(slot, []);
+    // The dungeon, not the boss. DUNGEONS keys the badge colour and the filter
+    // row, and a player queues for an instance rather than an encounter. The
+    // boss is kept beside it for anything that wants it.
+    bySlot.get(slot).push({ id: itemId, source: drop.instance, encounter: drop.encounter, ...info });
+  }
+
+  for (const [slot, items] of bySlot) bySlot.set(slot, dropReissuedOriginals(items));
+  console.log(`  season pool: ${drops.size - skipped} items across ${bySlot.size} slots (${skipped} non-gear drops ignored)`);
+  return bySlot;
 }
 
-function sortAlts(alts) {
+/**
+ * The legacy dungeons in the pool carry both the original item and the Midnight
+ * re-issue of it, under one name — Kings' Rest and Temple of Sethraliss account
+ * for all fourteen. Both drop from the same encounter, so the join returns both
+ * and the alt list showed each helm twice.
+ *
+ * The re-issue is the one that rolls secondary stats; the original has none, its
+ * budget having been spent when the item level meant something else. That is the
+ * whole test. Item id order would give the same answer today, but only because
+ * Blizzard happened to assign the new ids later, which is not a rule.
+ *
+ * Genuinely stat-less gear exists — proc weapons, most trinkets — and is kept:
+ * this only ever discards the loser of a same-name pair.
+ */
+function dropReissuedOriginals(items) {
+  const byName = new Map();
+  for (const item of items) {
+    if (!item.name) continue;
+    const key = `${item.source}|${item.name}`;
+    if (!byName.has(key)) byName.set(key, []);
+    byName.get(key).push(item);
+  }
+  const discard = new Set();
+  for (const [key, group] of byName) {
+    if (group.length < 2) continue;
+    const withStats = group.filter((i) => i.stats.length);
+    if (withStats.length !== 1) {
+      console.warn(`  ! ${key}: ${group.length} items share a name and ${withStats.length} carry stats — keeping all`);
+      continue;
+    }
+    for (const item of group) if (item !== withStats[0]) discard.add(item.id);
+  }
+  return items.filter((i) => !discard.has(i.id));
+}
+
+/**
+ * CURRENT_RAID is maintained by hand because the loot table marks no season.
+ * The instance holding the highest ItemID is the right answer today, so it is
+ * worth cross-checking — but it assumes Blizzard never adds an item to an older
+ * raid, which is too weak a thing to decide on.
+ */
+function warnIfRaidLooksWrong(byInstance) {
+  let newest = null, newestId = -1;
+  for (const [name, items] of byInstance) {
+    for (const id of items.keys()) if (id > newestId) { newestId = id; newest = name; }
+  }
+  if (newest && newest !== CURRENT_RAID) {
+    console.warn(`  ! CURRENT_RAID is ${CURRENT_RAID}, but ${newest} holds the highest item id (${newestId}). Check shared.js against the season.`);
+  }
+}
+
+/** Which of our slots a pool item belongs to, or null if it is not gear. */
+function poolSlot(info) {
+  if (info.invSlot) return INV_SLOT_TO_SLOT[info.invSlot] || null;
+  if (info.weaponType || info.hand) return 'weapon';
+  return null;
+}
+
+const INV_SLOT_TO_SLOT = {
+  Head: 'head', Neck: 'neck', Shoulder: 'shoulder', Back: 'back', Chest: 'chest',
+  Wrist: 'wrist', Hands: 'hands', Waist: 'waist', Legs: 'legs', Feet: 'feet',
+  Finger: 'finger', Trinket: 'trinket',
+};
+
+/**
+ * Alt rows carry no grade — which one to chase is the player's call, and
+ * secondary stats get tuned with rings, neck, gems and enchants rather than by
+ * re-farming a tier chest. But no spec is indifferent between its secondaries,
+ * so the list is ordered by how well each item suits this one. Best first.
+ */
+function sortAlts(alts, priorityStats) {
   alts.sort((a, b) =>
     a.forSlot.localeCompare(b.forSlot) ||
-    fitRank(a.fit) - fitRank(b.fit) ||
+    scoreStats(b.stats, priorityStats) - scoreStats(a.stats, priorityStats) ||
+    a.source.localeCompare(b.source) ||
     a.id - b.id);
 }
 
 // ─── Find alts for a spec ────────────────────────────────────
-async function findAltsForSpec(specKey, index) {
+/**
+ * Every item in the season pool this spec can wear, in the slots it uses.
+ *
+ * There is no secondary-stat gate. An alt is a slot's other options, and a
+ * player picks among them on more than stats — a tier piece is worn for its set
+ * bonus whatever it rolls, and secondaries get tuned with rings, neck, gems and
+ * enchants. The rosters say so plainly: 42 of 50 Blood DKs wear a haste/mastery
+ * helm although the spec's pair is crit/mastery. Gating on stats hid every one
+ * of those from the list.
+ *
+ * What does gate is whether the item can go in the slot at all: armour class,
+ * primary stat, class lock, weapon type and hand count.
+ */
+async function findAltsForSpec(specKey, pool) {
   const filePath = resolve(DATA_DIR, `${specKey}.js`);
   const { simcClass, armorType, bisItems, isDual, priorityStats } = parseSpecFile(filePath);
-  const { slotItems, itemSlotArmor, itemClasses } = index;
   const className = CLASS_NAME_MAP[simcClass];
+  const primary = CLASS_PRIMARY[simcClass];
+  const allowedWeapons = CLASS_WEAPONS[simcClass];
 
   const bisIds = new Set(bisItems.map(b => b.id));
+  const slots = new Set(bisItems.map(b => normalizeSlot(b.simcSlot)));
   const alts = [];
-  const addedKeys = new Set();
 
-  for (const bis of bisItems) {
-    // Stat-less items (trinkets typically) match by ID alone, so there is
-    // nothing here to find them an alternative for.
-    if (!bis.stats.length) continue;
+  for (const slot of slots) {
+    const forSlot = getForSlot(slot === 'finger' ? 'finger1' : slot === 'trinket' ? 'trinket1' : slot);
+    for (const item of pool.get(slot) || []) {
+      if (bisIds.has(item.id)) continue;
+      if (item.classRestriction && item.classRestriction !== className) continue;
 
-    const normSlot = normalizeSlot(bis.simcSlot);
-    const forSlot = getForSlot(bis.simcSlot);
+      // An accessory carries no primary stat, so an empty list is "anyone",
+      // not "no one". Armour slots are decided by armour class instead, which
+      // already implies the primary — every plate class is Strength.
+      if (item.primary.length && !item.primary.includes(primary)) continue;
+      if (ARMOR_SLOTS.has(slot) && item.armorClass && item.armorClass !== armorType) continue;
 
-    const candidates = slotItems.get(normSlot);
-    if (!candidates) continue;
-
-    for (const [id, item] of candidates) {
-      if (bisIds.has(id)) continue;
-      // Same rule the app matches with — see fitKind in src/logic/matching.js.
-      // The two drifting apart would put items in the alt list the app then
-      // refuses to recognise.
-      const fit = fitKind(item.stats, bis.stats, priorityStats);
-      if (!fit) continue;
-
-      const altKey = `${forSlot}-${id}`;
-      if (addedKeys.has(altKey)) continue;
-
-      // Check armor compatibility for armor slots
-      if (ARMOR_SLOTS.has(bis.simcSlot)) {
-        const armKey = `${id}-${normSlot}`;
-        const armorTypes = itemSlotArmor.get(armKey);
-        if (!armorTypes || !armorTypes.has(armorType)) continue;
-      }
-      const wantInv = SLOT_INV_EXPECT[bis.simcSlot];
-      if (wantInv) {
-        const { invSlot } = await fetchTooltipInfo(id);
-        if (invSlot && invSlot !== wantInv) {
-          console.log(`  skip ${id}: ${invSlot} item offered for ${bis.simcSlot}`);
-          continue;
-        }
+      if (slot === 'weapon') {
+        if (!item.weaponType || !allowedWeapons || !allowedWeapons.has(item.weaponType)) continue;
+        if (isDual && TWO_HAND_TYPES.has(item.weaponType)) continue;
+        if (!isDual && ONE_HAND_TYPES.has(item.weaponType)) continue;
       }
 
-      // Check class restriction and weapon type via Wowhead tooltip
-      const classes = itemClasses.get(id);
-      const needsCheck = (classes && !classes.has(simcClass)) || WEAPON_SLOTS.has(bis.simcSlot);
-
-      if (needsCheck) {
-        const info = await fetchTooltipInfo(id);
-        if (info.classRestriction && info.classRestriction !== className) {
-          console.log(`  skip ${item.id} (${id}): class-locked to ${info.classRestriction}`);
-          continue;
-        }
-        if (WEAPON_SLOTS.has(bis.simcSlot) && info.weaponType) {
-          const allowed = CLASS_WEAPONS[simcClass];
-          if (allowed && !allowed.has(info.weaponType)) {
-            console.log(`  skip ${item.id} (${id}): weapon type ${info.weaponType} not usable by ${simcClass}`);
-            continue;
-          }
-          // Filter by weapon style: dual wield specs need 1h, 2h specs need 2h
-          if (isDual && TWO_HAND_TYPES.has(info.weaponType)) {
-            console.log(`  skip ${item.id} (${id}): 2h weapon not usable in dual wield build`);
-            continue;
-          }
-          if (!isDual && ONE_HAND_TYPES.has(info.weaponType)) {
-            console.log(`  skip ${item.id} (${id}): 1h weapon not usable in 2h build`);
-            continue;
-          }
-        }
-      }
-
-      addedKeys.add(altKey);
-      alts.push({
-        forSlot,
-        id: item.id,
-        source: item.source,
-        stats: item.stats,
-        fit,
-      });
+      alts.push({ forSlot, id: item.id, source: item.source, stats: item.stats });
     }
   }
 
-  sortAlts(alts);
+  sortAlts(alts, priorityStats);
   return alts;
 }
 
@@ -379,41 +434,14 @@ function updateSpecFile(specKey, alts) {
   const filePath = resolve(DATA_DIR, `${specKey}.js`);
   let content = readFileSync(filePath, 'utf8');
 
-  // Preserve existing weapon alts added by generate-spec-data (skipped 2H/1H
-  // options), which this script cannot derive from the index.
-  //
-  // Weapon alts ONLY, and only ones still sourced from somewhere in the current
-  // season. Carrying over every unrecognised id would make ALTS append-only:
-  // a retired season's items would never leave the file, because nothing else
-  // ever deletes them.
-  const existingAltsMatch = content.match(/export var ALTS = \[([^]*?)\];/);
-  if (existingAltsMatch) {
-    const altIds = new Set(alts.map(a => a.id));
-    const existingRe = /\{\s*forSlot:\s*"([^"]+)",\s*id:\s*(\d+),\s*source:\s*"([^"]+)",\s*stats:\s*(\[[^\]]*\])(?:\s*,\s*fit:\s*"([^"]+)")?\s*,?\s*\}/g;
-    let m;
-    while ((m = existingRe.exec(existingAltsMatch[1]))) {
-      const id = parseInt(m[2]);
-      const stillCurrent = m[3]
-        .split(' & ')
-        .every(part => CURRENT_SOURCES.has(part.trim()));
-      if (m[1] === 'weapon' && stillCurrent && !altIds.has(id)) {
-        alts.push({
-          forSlot: m[1], id,
-          source: m[3], stats: JSON.parse(m[4]),
-          // A weapon generate-spec-data picked for this spec. It was chosen on
-          // the spec's own stats, so it is an exact fit unless it says so.
-          fit: m[5] || 'exact',
-        });
-        altIds.add(id);
-      }
-    }
-    sortAlts(alts);
-  }
+  // Nothing is preserved from the previous run. Weapons used to be, because
+  // the cross-referenced index could not derive them; the drop table can, so
+  // carrying rows over would only keep a retired season's items alive — nothing
+  // else ever deletes them.
 
   let altsStr = 'export var ALTS = [\n';
   for (const alt of alts) {
-    const fit = alt.fit === 'equivalent' ? `, fit: "equivalent"` : '';
-    altsStr += `  { forSlot: ${JSON.stringify(alt.forSlot)}, id: ${alt.id}, source: ${JSON.stringify(alt.source)}, stats: ${JSON.stringify(alt.stats)}${fit} },\n`;
+    altsStr += `  { forSlot: ${JSON.stringify(alt.forSlot)}, id: ${alt.id}, source: ${JSON.stringify(alt.source)}, stats: ${JSON.stringify(alt.stats)} },\n`;
   }
   altsStr += '];';
 
@@ -450,8 +478,8 @@ async function main() {
   const args = process.argv.slice(2);
   const targetKey = args[0];
 
-  console.log('Building global item index...');
-  const index = buildItemIndex();
+  console.log('Building the season pool from the client loot table...');
+  const pool = await buildSeasonPool();
 
   const SKIP_FILES_MAIN = new Set(['shared.js', 'specs.js', 'sample.js', 'tutorial.js', 'changelog.js']);
   const specFiles = readdirSync(DATA_DIR)
@@ -462,7 +490,7 @@ async function main() {
   let total = 0;
 
   for (const specKey of targets) {
-    const alts = await findAltsForSpec(specKey, index);
+    const alts = await findAltsForSpec(specKey, pool);
     if (alts.length > 0) {
       updateSpecFile(specKey, alts);
       console.log(`${specKey}: ${alts.length} alts`);
@@ -475,7 +503,7 @@ async function main() {
   saveCache();
 }
 
-export { buildItemIndex, findAltsForSpec, updateSpecFile };
+export { buildSeasonPool, findAltsForSpec, updateSpecFile };
 
 // Run as CLI
 const isMain = process.argv[1] && resolve(process.argv[1]) === resolve(__dirname, 'find-alts.mjs');
