@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.1.0
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v2.0.0...v2.1.0)
+
 ## v2.0.0
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v1.12.4...v2.0.0)
