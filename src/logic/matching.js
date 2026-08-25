@@ -48,6 +48,22 @@ export function groupIndex(groups, stat) {
  * alt list the app then refuses to recognise, and a stricter one would leave
  * the app accepting items the player is never told to farm.
  */
+// How well a set of stats suits a spec. Higher = better. Reads group position,
+// not position in a flat list: two stats the spec values the same score the
+// same, so they stop breaking ties against each other.
+//
+// Every spec has some order — none is indifferent between its secondaries — so
+// this ranks the alt list even though nothing gates on it. It answers "which of
+// these should I look at first", not "may I stop farming", which is fitKind.
+export function scoreStats(itemStats, priorityStats) {
+  var groups = statGroups(priorityStats);
+  if (!groups || !itemStats || !itemStats.length) return 0;
+  var n = groups.length;
+  var score = 0;
+  itemStats.forEach(function(s) { var idx = groupIndex(groups, s); if (idx >= 0) score += (n - idx); });
+  return score;
+}
+
 export function fitKind(itemStats, bisStats, priorityStats) {
   if (!itemStats || !bisStats || !itemStats.length || !bisStats.length) return null;
   if (sameStats(itemStats, bisStats)) return "exact";
@@ -62,18 +78,6 @@ export function fitKind(itemStats, bisStats, priorityStats) {
   return "equivalent";
 }
 
-/**
- * Exact fits ahead of equivalent ones. A player who has run out of other
- * things to do can still chase the exact item at the end of a season, so the
- * two are ordered rather than merged — in the alt list the app renders and in
- * the alt list the pipeline generates, which is why the rank lives here beside
- * fitKind rather than in either caller.
- */
-export var FIT_RANK = { exact: 0, equivalent: 1 };
-
-export function fitRank(fit) {
-  return FIT_RANK[fit] != null ? FIT_RANK[fit] : 0;
-}
 
 export function matchBiS(BIS, gear, bag, stats, knownBisIds, priorityStats) {
   var BIS_IDS = new Set(BIS.map(function(i) { return i.id; }));

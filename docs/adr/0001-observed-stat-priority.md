@@ -4,7 +4,14 @@ Date: 2026-08-19
 
 ## Status
 
-Accepted
+Superseded by [ADR 0003](0003-stat-priority-from-the-published-chart.md).
+
+The decision to derive priority from observed gear stands, and so does the
+reason for equivalence groups rather than a ranking. What does not stand is the
+claim below that the aggregation is ours to do: the roster this ADR reads
+carries no enchants and no gems, and it carries whatever retired-season gear a
+player has not replaced. Both errors are quantified in 0003. The ratings are now
+read from the figure murlok publishes; the grouping is still ours.
 
 ## Context
 

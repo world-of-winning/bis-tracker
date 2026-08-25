@@ -209,7 +209,6 @@
         "raidSource": "團隊副本",
         "craftSource": "製造",
         "catalystSource": "催化石",
-        "altSameStats": "替代 — 相同副屬性",
         "tierStatMismatch": "屬性不符",
         "tierAltEquipped": "已裝備替代品",
         "tierBisUpgrade": "BiS 升級↑",
@@ -253,7 +252,8 @@
         "wrongPrimaryStat": "不是{expected}物品！",
         "browsing": "瀏覽",
         "selectClass": "選擇職業",
-        "selectSpec": "選擇專精"
+        "selectSpec": "選擇專精",
+        "altOptions": "Alt — 該部位的其他選擇"
     },
     "primaryStats": {
         "str": "力量",

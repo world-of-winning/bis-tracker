@@ -1,5 +1,5 @@
 import { TIERS, resolveSlots } from '../data/shared.js';
-import { fitKind, groupIndex, statGroups } from './matching.js';
+import { scoreStats } from './matching.js';
 
 export function getSource(item) { return item.source; }
 
@@ -8,14 +8,7 @@ export function getSource(item) { return item.source; }
 // same, so they stop breaking ties against each other and the sort falls
 // through to something that means anything.
 export function statScore(eqId, stats, priorityStats) {
-  var groups = statGroups(priorityStats);
-  if (!groups) return 0;
-  var es = stats[eqId];
-  if (!es || !es.length) return 0;
-  var n = groups.length;
-  var score = 0;
-  es.forEach(function(s) { var idx = groupIndex(groups, s); if (idx >= 0) score += (n - idx); });
-  return score;
+  return scoreStats(stats[eqId], priorityStats);
 }
 
 // Determine item grade tier index from bonus_id string, fallback to ilvl.
@@ -87,30 +80,28 @@ export function calcPriority(bisItem, sr, targetIlvl, stats, priorityStats) {
   return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl > 0 ? eqIlvl + "" : "\u2014", color: "#ff6b6b", score: score, upgradeStatus: fallbackUpgrade };
 }
 
-export function calcAltPriority(alt, sr, allStats, priorityStats, targetIlvl, acq) {
+// An alt is one of a slot's other options, not a target. It carries no grade:
+// which of eighty to chase is the player's call, and a tier piece gets worn for
+// its set bonus whatever it rolls. So this answers one question — do I have
+// this item — and leaves the rest of the list uncoloured.
+//
+// Only this item. Nothing is inferred from what else sits in the slot: an
+// equipped item whose stats resemble the row's is still not the row's item, and
+// treating it as one used to tick off every alt in a slot at once. The player's
+// own checkbox is the other way a row goes green, and that one is a statement
+// rather than a guess.
+export function calcAltPriority(alt, sr, targetIlvl, acq) {
   if (acq && acq[alt.id]) return { tier: 4, deficit: 0, ilvl: 0, labelKey: "done", color: "#4dca6b" };
-  if (!sr || !sr.gear) return { tier: 1, deficit: targetIlvl || 0, ilvl: 0, label: "\u2014", color: "#ff6b6b" };
-  var slots = resolveSlots(alt.forSlot);
-  var bestEq = null, bestIlvl = -1;
-  slots.forEach(function(slot) {
-    var g = sr.gear[slot]; if (!g) return;
-    var ilvl = g.ilvl || 0;
-    // BiS item in this slot covers the alt requirement unconditionally
-    if (sr.matched && sr.matched[g.id]) {
-      if (ilvl > bestIlvl) { bestIlvl = ilvl; bestEq = g; }
-      return;
-    }
-    if (!fitKind(allStats[g.id], alt.stats, priorityStats)) return;
-    if (ilvl > bestIlvl) { bestIlvl = ilvl; bestEq = g; }
+  if (!sr || !sr.gear) return { tier: 0, deficit: 0, ilvl: 0, label: "\u2014" };
+  var bestIlvl = -1;
+  resolveSlots(alt.forSlot).forEach(function(slot) {
+    var g = sr.gear[slot];
+    if (!g || g.id !== alt.id) return;
+    if ((g.ilvl || 0) > bestIlvl) bestIlvl = g.ilvl || 0;
   });
-  if (!bestEq) return { tier: 1, deficit: targetIlvl || 0, ilvl: 0, label: "\u2014", color: "#ff6b6b" };
-  var eqIlvl = bestEq.ilvl || 0;
-  var deficit = Math.max(0, targetIlvl - eqIlvl);
-  if (deficit <= 0) return { tier: 4, deficit: 0, ilvl: eqIlvl, labelKey: "done", color: "#4dca6b" };
-  var targetTierIdx = -1; for (var k = 0; k < TIERS.length; k++) { if (targetIlvl <= TIERS[k].max) { targetTierIdx = k; break; } }
-  var eqTierIdx = itemTierIdx(bestEq.bonus, eqIlvl);
-  if (eqTierIdx >= targetTierIdx) return { tier: 3, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#4dca6b", upgradeStatus: "enhance" };
-  return { tier: 1, deficit: deficit, ilvl: eqIlvl, label: eqIlvl + "", color: "#ff6b6b", upgradeStatus: "tierUp" };
+  if (bestIlvl < 0) return { tier: 0, deficit: 0, ilvl: 0, label: "\u2014" };
+  if (bestIlvl >= targetIlvl) return { tier: 4, deficit: 0, ilvl: bestIlvl, labelKey: "done", color: "#4dca6b" };
+  return { tier: 0, deficit: Math.max(0, targetIlvl - bestIlvl), ilvl: bestIlvl, label: bestIlvl + "" };
 }
 
 // Pick the next target tier based on average equipped ilvl.
@@ -147,20 +138,19 @@ export function calcDungeonScore(dungeon, fc, BIS, sr, targetIlvl, stats, priori
     if (p.tier === 4) return;
     priorityScore += Math.round((4 - p.tier) * 10) + (p.deficit || 0);
   });
-  // 1순위: 파밍 필요 BiS 개수, 2순위: 파밍 필요 Alt 개수, 3순위: 우선순위 점수
-  return fc.bis * 10000 + fc.alt * 100 + priorityScore;
+  // BiS still to farm first, then how badly the ones here are lagging.
+  return fc.bis * 10000 + priorityScore;
 }
 
 // Count items that need farming (tier 1 / red) per source
-export function calcSourceFarmCount(source, BIS, ALTS, sr, targetIlvl, stats, priorityStats, acq) {
+// Items still worth a run, per source. BiS only: alts are options rather than
+// targets, and with eighty rows a spec an alt count would never reach zero, so
+// the filter row's "done" would never light up.
+export function calcSourceFarmCount(source, BIS, sr, targetIlvl, stats, priorityStats, acq) {
   var bisItems = BIS.filter(function(i) { return getSource(i) === source; });
   var bisNeed = sr ? bisItems.filter(function(i) {
     if (acq[i.id]) return false;
     return calcPriority(i, sr, targetIlvl, stats, priorityStats).tier === 1;
   }).length : bisItems.length;
-  var altItems = ALTS.filter(function(a) { return getSource(a) === source; });
-  var altNeed = sr ? altItems.filter(function(a) {
-    return calcAltPriority(a, sr, stats, priorityStats, targetIlvl, acq).tier === 1;
-  }).length : altItems.length;
-  return { bis: bisNeed, alt: altNeed };
+  return { bis: bisNeed, alt: 0 };
 }

@@ -209,7 +209,6 @@
         "raidSource": "Incursione",
         "craftSource": "Creazione",
         "catalystSource": "Catalizzatore",
-        "altSameStats": "Alternativo — Stesse statistiche secondarie",
         "tierStatMismatch": "Statistiche non corrispondenti",
         "tierAltEquipped": "Alternativo equipaggiato",
         "tierBisUpgrade": "Potenziamento BiS↑",
@@ -253,7 +252,8 @@
         "wrongPrimaryStat": "Non è un oggetto {expected}!",
         "browsing": "Sfoglia",
         "selectClass": "Seleziona una classe",
-        "selectSpec": "Seleziona una specializzazione"
+        "selectSpec": "Seleziona una specializzazione",
+        "altOptions": "Alt — Altre opzioni per questo slot"
     },
     "primaryStats": {
         "str": "Forza",

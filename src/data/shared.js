@@ -13,6 +13,19 @@ export var DUNGEONS = {
   "Ruby Life Pools": { b: "#aa6d9b", t: "#dda0cc", g: "#280f22" },
 };
 
+// The raid whose loot is farmable this season, named exactly as JournalInstance
+// names it. Dungeons get the hand-maintained DUNGEONS list above; the raid needs
+// the same treatment, because the client's loot table has every raid ever shipped
+// in it and nothing in the data marks which one is current — DisplaySeasonID is 0
+// on 23,902 of its 23,978 rows.
+//
+// Deriving it instead (the instance holding the highest ItemID) happens to be
+// right today, but it assumes Blizzard never adds an item to an older raid. The
+// pipeline uses that only to cross-check this constant and warn on a mismatch.
+//
+// Season swap: update this alongside DUNGEONS, before running the pipeline.
+export var CURRENT_RAID = "The Venomous Abyss";
+
 // hidden: graded like any other track, but never offered as a target.
 export var TIERS = [
   { key: "adventurer", min: 266, max: 282, color: "#8a8a8a", bonusMin: 12817, bonusMax: 12824, tooltipBonus: 12822, hidden: true },

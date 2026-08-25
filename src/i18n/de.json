@@ -209,7 +209,6 @@
         "raidSource": "Schlachtzug",
         "craftSource": "Herstellung",
         "catalystSource": "Katalysator",
-        "altSameStats": "Alt — Gleiche Sekundärwerte",
         "tierStatMismatch": "Werteabweichung",
         "tierAltEquipped": "Alt angelegt",
         "tierBisUpgrade": "BiS Aufwertung↑",
@@ -253,7 +252,8 @@
         "wrongPrimaryStat": "Kein {expected}-Gegenstand!",
         "browsing": "Durchsuchen",
         "selectClass": "Klasse wählen",
-        "selectSpec": "Spezialisierung wählen"
+        "selectSpec": "Spezialisierung wählen",
+        "altOptions": "Alt — Weitere Optionen für diesen Platz"
     },
     "primaryStats": {
         "str": "Stärke",
