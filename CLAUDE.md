@@ -102,10 +102,16 @@ RIGHT: "Veteran grade (max 295), target Hero (321) → RE-ACQUIRE needed (tierUp
 
 An **equivalent fit** grades exactly like an exact one — 4 or 3, green. It is a fit; the
 slot is done. What distinguishes the two is a label: `matchBiS` records `fitKind`'s own
-answer in `altItems` (`"exact"` / `"equivalent"` / `"mythic"`), generated ALTS rows carry
-`fit: "equivalent"`, and `ItemCard` renders `ui.equivalentFit` off either. Keep the three
-in the same vocabulary — remapping one to a different word is how a reader loses the
-thread.
+answer in `altItems` (`"exact"` / `"equivalent"` / `"mythic"`), and `ItemCard` renders
+`ui.equivalentFit` off it. Keep the two in the same vocabulary — remapping one to a
+different word is how a reader loses the thread.
+
+**Alt rows are not graded.** The table above is about the item the player has equipped
+against the slot's BiS. An ALTS row is one of the slot's other options, and there are
+around eighty a spec: `calcAltPriority` asks only whether the player already has that
+item (acquired, or equipped at target ilvl) and leaves every other row uncoloured. Alts
+also stay out of `calcSourceFarmCount` and `calcDungeonScore` — with eighty rows an alt
+count never reaches zero, so a dungeon's "done" would never light up.
 
 **visualTier** (for UI display) differs from actual priority tier:
 - `wrongArmor` OR `wrongPrimary` → visualTier **always 1** (red warning)
@@ -125,8 +131,9 @@ RIGHT: Apply visualTier overrides — enhance shows green, tierUp shows orange, 
   - **exact** — the same set of stats.
   - **equivalent** — replacing each stat with the index of its group yields the same multiset. Equal size falls out of that, so a one-stat item stands in only for a one-stat BiS item.
   - **null** — neither. Sharing a group is not enough: crit+mastery against a haste+mastery BiS is `null`, because the multisets differ.
-- An equivalent fit **is a fit** — the slot is done, green, no re-farm. It stays labelled so exact fits can sort ahead of it in the alt list.
-- **One definition, three callers**: `matchBiS`, `calcAltPriority`, and `find-alts.mjs`. They must not drift — a looser rule in the pipeline puts items in the alt list the app refuses to recognise, a stricter one leaves the app accepting items the player is never told to farm.
+- An equivalent fit **is a fit** — the slot is done, green, no re-farm.
+- **`fitKind` grades; it does not select.** Its one caller is `matchBiS`, asking whether the equipped item stands in for the slot's BiS. It used to gate the alt list too, and that was wrong: the rosters show 42 of 50 Blood DKs wearing a haste/mastery helm although the spec's pair is crit/mastery, because a tier piece is worn for its set bonus whatever it rolls and secondaries get tuned with rings, neck, gems and enchants. Gating the list on stats hid every such item. See `docs/adr/0002-alt-candidates-from-drop-tables.md`.
+- **`scoreStats(itemStats, priorityStats)`**, beside it, answers the other question — which of a slot's options to look at first. It sums `n - groupIndex(stat)`, so higher is better and stats sharing a group score alike. `find-alts.mjs` orders ALTS with it and `statScore` in `priority.js` delegates to it. Two questions, one definition each; do not let either grow into the other.
 - **Stat-less items** (some trinkets with empty `stats` array): `fitKind` declines to answer; the caller matches by item ID only.
 - **statScore formula**: `sum of (n - groupIndex(stat))` where n = number of groups. Higher score = better stats; lower score farms first. Reading **group** position rather than list position is the point — stats in one group score the same and stop breaking ties against each other.
 ```
@@ -158,6 +165,9 @@ distance that only the measured means can make.
 - Wrong armor type or wrong primary stat → **visualTier forced to 1** regardless of actual match
 
 #### 7. Data Pipeline Rules
+
+> Execution order and the dependency graph — which script has to have run first, and what breaks when it hasn't — are in `docs/agents/pipeline.md`. The rules below are what each script enforces once it runs.
+
 - **`priority-stats.json`** is **generated**, from observed gear rather than from a guide. See `docs/adr/0001-observed-stat-priority.md`. Entries are lists of **equivalence groups**, not a flat order: two stats sit in one group when a spec values them closely enough that swapping one for the other is not worth a re-farm. A flat four-stat array still reads correctly — it means four groups of one.
   - Source is murlok.io's public JSON: `https://murlok.io/api/guides/{class}/{spec}/m+`. It returns the roster (up to fifty characters with full equipment and per-item stat ratings), **not** a ranking — the aggregation and the grouping are ours.
   - Group boundaries are cut where the ratio between neighbouring mean ratings drops below **0.95**, or **0.90** when the spec's sample is under thirty characters. Thin samples lean toward merging because a false split orders a re-farm over a rounding difference, while a false merge only withholds a warning.
@@ -168,8 +178,9 @@ distance that only the measured means can make.
   - The roster cache in `scripts/.murlok-cache/` holds each **response as it arrived**, not a trimmed copy, with `index.json` carrying the fetch times that decide expiry. Trimming happens on the way out, so widening what the derivation reads does not mean refetching forty specs through the rate limit. Do not use file mtime for expiry — anything that touches a file rewrites it — and do not use the upstream's own `UpdatedAt`, which says when murlok rebuilt the roster, not when we last read it. Both are recorded; only `fetchedAt` expires an entry.
   - Test fixtures come out of that cache via `node scripts/make-fixture.mjs <key>`. Never commit a raw response.
   - `PRIORITY_STATS` in each spec data file carries the same groups. Everything that reads it goes through `statGroups()` in `src/logic/matching.js`, which lifts a flat array of four into four groups of one, so a spec the observed generator never reached still works.
-- **`find-alts.mjs`** runs once across ALL specs (cross-referencing BiS lists) — not per-spec. It preserves existing **weapon** ALTS from `generate-spec-data`, and only while their source still exists this season. Preserving anything else would make ALTS append-only: nothing else ever deletes an entry, so a retired season's items would live in the files forever.
-- **Stale upstream guides**: Maxroll updates guides one at a time, so at a season boundary some still carry last season's dungeons. `find-alts` keeps those out of the cross-spec index — by spec (no current dungeon anywhere in its data) and by row (a MYTHIC entry whose source is not a current dungeon) — so one lagging guide does not hand every other spec alts it cannot farm. The lagging spec keeps its own stale data; re-run the pipeline once Maxroll updates.
+- **`find-alts.mjs`** builds the season pool once — `buildSeasonPool()` joins the client's `JournalEncounterItem` through `JournalEncounter` to `JournalInstance` (via `scripts/wago-db2.mjs`) and keeps the instances named in `DUNGEONS` plus `CURRENT_RAID`. Non-gear drops (recipes, consumables, furnishings) have no inventory slot and fall out on their own. Then, per spec, every pool item the spec can *wear* becomes an alt: armour class, primary stat, class lock, weapon type and hand count are the gate. **Secondary stats are not a gate**, only the sort order. Nothing is preserved between runs — the pool is regenerated whole, which is what stops ALTS becoming append-only.
+- **The season gate is the pool, not a filter.** A retired dungeon is not in `DUNGEONS`, so its loot never enters. This replaced a cross-referenced index that needed stale-guide detection by spec and by row; none of that is needed now, because a lagging Maxroll guide can no longer contribute items to anyone else.
+- **`CURRENT_RAID`** (in `shared.js`) is maintained by hand beside `DUNGEONS`. The loot table carries every raid ever shipped and marks no season — `DisplaySeasonID` is 0 on 23,902 of its 23,978 rows. `buildSeasonPool` cross-checks it against the instance holding the highest item id and warns on a mismatch, but that heuristic assumes Blizzard never adds an item to an older raid, so it does not get to decide.
 - **Wrong slots upstream**: an item whose Wowhead tooltip contradicts the slot Maxroll filed it under is warned about during generation and kept out of the alt index, but left in its own spec's data. Do not invent a replacement.
 - **`--fix`**: Read-only cache, normalize data only, no network calls. Safe to run anytime.
 - **`--regenerate`**: Purges Wowhead cache for target specs, full re-fetch. Slow and should be used sparingly.
@@ -200,7 +211,7 @@ export var THEME = { accent, accentLight, accentBg, accentBorder, shimmer, btnBg
 export var PRIORITY_STATS = [["mastery"],["haste","crit"],["vers"]];  // equivalence groups
 export var KNOWN_STATS = { itemId: ["crit","haste"], ... };  // BiS+Alt only
 export var BIS = [ { slot, simcSlot?, id, source, stats }, ... ];
-export var ALTS = [ { forSlot, id, source, stats, fit? }, ... ];  // fit: "equivalent" when not an exact stat match
+export var ALTS = [ { forSlot, id, source, stats }, ... ];  // every pool item the spec can wear, best stats first
 // Item names are not in these files — they come from src/i18n/items/*.json.
 export var DUNGEONS = [ ... ];  // Midnight first, legacy dungeons after
 ```
@@ -246,6 +257,10 @@ Issues live as GitHub issues on `world-of-winning/bis-tracker`, via the `gh` CLI
 ### Domain docs
 
 Single-context layout — `CONTEXT.md` + `docs/adr/` at repo root. See `docs/agents/domain.md`.
+
+### Data pipeline
+
+The generators under `scripts/` run in a fixed order and share three caches. See `docs/agents/pipeline.md`.
 
 ## Branching
 
