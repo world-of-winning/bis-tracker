@@ -475,6 +475,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           <span><span style={{ color: "#e8a84c" }}>{"\u25C6"}</span>{" " + t("ui.tierAltEquipped")}</span>
           <span><span style={{ color: "#e8a84c" }}>{"\u2191"}</span>{" " + t("ui.tierBisUpgrade")}</span>
           <span><span style={{ color: "#4dca6b" }}>{"\u2713"}</span>{" " + t("ui.tierDone")}</span>
+          <span><span style={{ color: "#ffd479" }}>{"\u2605"}</span>{" " + t("ui.bestExpected")}</span>
+          <span><span style={{ color: "#a06a6a" }}>{"\u2193"}</span>{" " + t("ui.statsDowngrade")}</span>
           <span style={{ color: "#445555" }}>{t("ui.deficitInfo", { max: targetInfo.max })}</span>
         </div>
       ) : (
