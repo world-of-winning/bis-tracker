@@ -42,17 +42,15 @@
  *   node scripts/generate-source-names.mjs --resolve       # candidate rows for unmapped keys
  *   node scripts/generate-source-names.mjs --refresh       # bypass the CSV cache
  */
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
+import { fetchTable as fetchDb2Table, nameIndex as db2NameIndex } from "./wago-db2.mjs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const I18N_DIR = resolve(__dirname, "../src/i18n");
-const CACHE_DIR = resolve(__dirname, ".wago-cache");
 const DUNGEON_SHORT_FILE = resolve(__dirname, "dungeon-short.json");
 const SOURCE_SHORT_FILE = resolve(__dirname, "source-short.json");
-
-const WAGO_BASE = "https://wago.tools/db2";
 
 // Project locale key -> Blizzard locale code used by wago.tools.
 const LOCALES = {
@@ -204,6 +202,13 @@ for (const loc of targetLocales) {
     }
 }
 
+// The DB2 tables live in wago-db2.mjs, shared with find-alts. These two carry
+// this script's --refresh flag and User-Agent into it.
+const fetchTable = (table, wagoLocale) =>
+    fetchDb2Table(table, wagoLocale, { refresh: doRefresh, agent: "bis-tracker/generate-source-names" });
+const nameIndex = (table, wagoLocale) =>
+    db2NameIndex(table, wagoLocale, { refresh: doRefresh, agent: "bis-tracker/generate-source-names" });
+
 function readJsonOr(file, fallback) {
     if (!existsSync(file)) return fallback;
     return JSON.parse(readFileSync(file, "utf8"));
@@ -211,83 +216,6 @@ function readJsonOr(file, fallback) {
 
 const DUNGEON_SHORT = readJsonOr(DUNGEON_SHORT_FILE, {});
 const SOURCE_SHORT = readJsonOr(SOURCE_SHORT_FILE, {});
-
-// ─── CSV ────────────────────────────────────────────────────
-/**
- * RFC 4180 parser. Description_lang carries commas, doubled quotes and the
- * occasional embedded newline, so splitting on delimiters would desync the
- * columns and hand back a boss description as a name.
- */
-function parseCsv(text) {
-    const rows = [];
-    let row = [];
-    let field = "";
-    let quoted = false;
-    let dirty = false;
-
-    for (let i = 0; i < text.length; i++) {
-        const c = text[i];
-        if (quoted) {
-            if (c !== '"') { field += c; continue; }
-            if (text[i + 1] === '"') { field += '"'; i++; continue; }
-            quoted = false;
-        } else if (c === '"') {
-            quoted = true;
-            dirty = true;
-        } else if (c === ",") {
-            row.push(field);
-            field = "";
-            dirty = false;
-        } else if (c === "\n") {
-            row.push(field);
-            rows.push(row);
-            row = [];
-            field = "";
-            dirty = false;
-        } else if (c !== "\r") {
-            field += c;
-            dirty = true;
-        }
-    }
-    if (dirty || field || row.length) {
-        row.push(field);
-        rows.push(row);
-    }
-    return rows;
-}
-
-async function fetchTable(table, wagoLocale) {
-    const cacheFile = resolve(CACHE_DIR, `${table}.${wagoLocale}.csv`);
-    if (!doRefresh && existsSync(cacheFile)) return readFileSync(cacheFile, "utf8");
-
-    const url = `${WAGO_BASE}/${table}/csv?locale=${wagoLocale}`;
-    process.stdout.write(`  fetch ${table} ${wagoLocale} ... `);
-    const res = await fetch(url, { headers: { "User-Agent": "bis-tracker/generate-source-names" } });
-    if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
-    const text = await res.text();
-    mkdirSync(CACHE_DIR, { recursive: true });
-    writeFileSync(cacheFile, text, "utf8");
-    console.log(`${(text.length / 1024).toFixed(0)} KB`);
-    return text;
-}
-
-/** id -> Name_lang, for one table in one locale. */
-async function nameIndex(table, wagoLocale) {
-    const rows = parseCsv(await fetchTable(table, wagoLocale));
-    const header = rows[0];
-    const idCol = header.indexOf("ID");
-    const nameCol = header.indexOf("Name_lang");
-    if (idCol < 0 || nameCol < 0) {
-        throw new Error(`${table} has no ID/Name_lang column (got ${header.join(", ")})`);
-    }
-    const index = new Map();
-    for (let i = 1; i < rows.length; i++) {
-        const r = rows[i];
-        if (r.length <= Math.max(idCol, nameCol)) continue;
-        index.set(Number(r[idCol]), r[nameCol]);
-    }
-    return index;
-}
 
 // ─── resolve mode ───────────────────────────────────────────
 /**
