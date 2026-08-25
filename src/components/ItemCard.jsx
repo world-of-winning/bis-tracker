@@ -1,6 +1,7 @@
 import { useLocale, LOCALE_META } from '../i18n/index.jsx';
-import { DUNGEONS, resolveSlots, ARMOR_SLOTS } from '../data/shared.js';
+import { DUNGEONS, ARMOR_SLOTS } from '../data/shared.js';
 import { getSource } from '../logic/priority.js';
+import { assessGain, replacedItem } from '../logic/expectation.js';
 import EqTooltipObserver from './EqTooltipObserver.jsx';
 
 var STAT_COLORS = { crit: { bg: "#2a1a1a", fg: "#e88", bd: "#4a2222" }, haste: { bg: "#1a2a1a", fg: "#8e8", bd: "#224a22" }, mastery: { bg: "#1a1a2a", fg: "#88e", bd: "#22224a" }, vers: { bg: "#2a2a1a", fg: "#ee8", bd: "#4a4a22" } };
@@ -37,26 +38,51 @@ function localizeSource(source, t) {
     .join(" & ");
 }
 
-export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, knownBisIds, whSpecId, armorTypes, expectedArmor, simcSpec, primaryStats, expectedPrimary }) {
-  var { t, itemName, locale } = useLocale();
+export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, whSpecId, armorTypes, expectedArmor, simcSpec, primaryStats, expectedPrimary, gainCtx, simcNames }) {
+  var { t, knownItemName, locale } = useLocale();
   var itemSource = getSource(item);
   var isDungeon = !!DUNGEONS[itemSource];
   var c = DUNGEONS[itemSource] || { b: "#8866aa", t: "#c4aadd", g: "#1a1028" };
   var eq = !isAlt && sr && sr.eqSlot ? sr.eqSlot[item.id] : null;
-  var altEq = isAlt && sr && sr.gear ? (function() {
-    var slots = resolveSlots(item.forSlot);
-    for (var i = 0; i < slots.length; i++) { if (sr.gear[slots[i]] && sr.gear[slots[i]].id === item.id) return sr.gear[slots[i]]; }
-    if (slots.length > 1 && knownBisIds) {
-      var candidates = slots.map(function(s) { return sr.gear[s]; }).filter(Boolean);
-      var replaceable = candidates.filter(function(g) { return !knownBisIds.has(g.id); });
-      if (replaceable.length > 0) return replaceable.sort(function(a, b) { return (a.ilvl || 0) - (b.ilvl || 0); })[0];
-    }
-    return sr.gear[slots[0]] || sr.gear[slots[1]];
-  })() : null;
+  // The same call the dungeon ordering makes, so the card names the item the
+  // score was computed against rather than a second guess at it.
+  var altEq = isAlt && gainCtx ? replacedItem(item, sr, gainCtx.settled) : null;
   var hasDiff = eq && eq.id !== item.id;
   var displayEq = isAlt ? altEq : (hasDiff ? eq : null);
+  var chipEq = (isAlt && displayEq && displayEq.id === item.id) ? null : displayEq;
+  // One rule for every item name on this card: ours if we have it, otherwise the
+  // one the player's own client printed, and the bare id only when neither
+  // exists. The title used to stop at the id and the chip started from SimC's
+  // name, so the two halves of a card could disagree about both language and
+  // whether a name was shown at all.
+  var nameOf = function(id, given) {
+    return knownItemName(id) || (simcNames && simcNames[id]) || given || String(id);
+  };
+  var chipName = chipEq ? nameOf(chipEq.id, chipEq.name) : null;
   var eqForTooltip = hasDiff ? eq : (isAlt && altEq ? altEq : null);
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
+  // An alt row is an option, not a verdict, so it carries no grade — but the
+  // player still needs to know what it would replace and by how much. Item
+  // levels are the only number here; a trade down in secondaries is a marker,
+  // because nothing in this project can say how many item levels it costs.
+  var gainInfo = (isAlt && gainCtx && gainCtx.sr) ? assessGain(item, gainCtx) : null;
+  var altGain = gainInfo ? gainInfo.gain : 0;
+  var altStatsDown = !!(gainInfo && gainInfo.statsRegress);
+  // Every row worth nothing says why. The step-back case is left to the arrow,
+  // which already carries that sentence; the other two would otherwise sit at
+  // the bottom of the list with nothing to explain how they got there.
+  var altNoGain = (gainInfo && gainInfo.gain === 0 && gainInfo.reason && gainInfo.reason !== "statsDown") ? gainInfo.reason : null;
+  // Wearing the row's own item is not replacing anything. `replacedItem` answers
+  // with the player's own copy on purpose — the arithmetic below it is right,
+  // "yours is 26 short" — but calling that a replacement would be nonsense.
+  var altIsWorn = !!(displayEq && displayEq.id === item.id);
+  // The word beside the pill, in the place a BiS card puts "강화 필요": why this
+  // row is worth what it is worth. Exactly one of these, always.
+  var altStatus = !gainInfo ? null
+    : altNoGain ? t("ui.gain" + altNoGain.charAt(0).toUpperCase() + altNoGain.slice(1))
+    : altStatsDown ? "\u2193 " + t("ui.statsDowngrade")
+    : altIsWorn ? t("ui.altEquipped")
+    : t(displayEq ? "ui.altReplaces" : "ui.altEmptySlot");
   // An equivalent fit is a fit — the slot is done — but it is not the exact
   // item, and chasing that late in a season is legitimate. Say which it is
   // rather than leaving the two states looking identical. This is about the
@@ -100,10 +126,12 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
           <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6, flexWrap: "wrap" }}>
             <span style={{ fontSize: 10, fontWeight: 700, color: isAlt ? "#e8a84c" : theme.accent, background: isAlt ? "#2a1f10" : theme.accentBg, padding: "2px 7px", borderRadius: 3, border: "1px solid " + (isAlt ? "#5a4020" : theme.accentBorder) }}>{isAlt ? "ALT \u00B7 " + t("slots." + item.forSlot) : t("slots." + item.slot)}</span>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: c.g, color: c.t, border: "1px solid " + c.b + "44" }}>{localizeSource(itemSource, t)}</span>
-            <StatPills stats={item.stats} />
             {isEquivalentFit && <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: "#14201a", color: "#7fb08a", border: "1px solid #2c4634" }}>{"\u2248 " + t("ui.equivalentFit")}</span>}
           </div>
-          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + whSpec + (!hasDiff && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(eqForTooltip ? {"data-eq-id": eqForTooltip.id, "data-eq-bonus": eqForTooltip.bonus || "", "data-eq-ilvl": eqForTooltip.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: isDoneState ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: isDoneState ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 2 }}>
+            <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + whSpec + (!hasDiff && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(eqForTooltip ? {"data-eq-id": eqForTooltip.id, "data-eq-bonus": eqForTooltip.bonus || "", "data-eq-ilvl": eqForTooltip.ilvl || ""} : {})} style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.3, color: isDoneState ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: isDoneState ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{nameOf(item.id)}</a>
+            <StatPills stats={item.stats} />
+          </div>
           {wrongArmor && (
             <div className="wrong-armor-badge" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 5, fontSize: 12, fontWeight: 800, background: "linear-gradient(135deg,#3a0a0a,#2a0505)", border: "2px solid #ff2020", color: "#ff4444", marginBottom: 6, letterSpacing: .5 }}>
               <span style={{ fontSize: 16 }}>{"\u26A0"}</span>
@@ -126,12 +154,19 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
               {p.weaponMismatch && <span style={{ fontSize: 9, color: "#cc8844" }}>{t("ui.weaponMismatch", { spec: t("specs." + simcSpec), slot: t("slots." + item.slot) })}</span>}
             </div>
           )}
-          {displayEq && (
-            <a href={"https://www.wowhead.com" + whLocale + "/item=" + displayEq.id + whSpec + (displayEq.bonus ? "&bonus=" + displayEq.bonus : "") + (displayEq.ilvl ? "&ilvl=" + displayEq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: (isAlt || isSimcAlt) ? "#1a1508" : "#1a1520", border: "1px solid " + ((isAlt || isSimcAlt) ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: (isAlt || isSimcAlt) ? "#c9a040" : "#aa7799", whiteSpace: "nowrap", marginTop: 2 }}>
-              <span>{displayEq.name}{isAlt && displayEq.ilvl ? " (" + displayEq.ilvl + ")" : ""}</span>
-              {allStats[displayEq.id] && allStats[displayEq.id].length > 0 && allStats[displayEq.id].map(function(s) {
-                return (<span key={s} style={{ fontSize: 9, color: "#776655" }}>{"\u00B7"}{t("stats." + s)}</span>);
-              })}
+          {altStatus && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: "linear-gradient(135deg,#2a1f10,#1a1508)", border: "1px solid #6a5020", color: "#c9a040" }}>
+                {displayEq && displayEq.ilvl ? <span>{displayEq.ilvl}</span> : null}
+                {altGain > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + altGain + "\uFF09"}</span>}
+              </div>
+              <span style={{ fontSize: 9, color: altStatsDown ? "#a06a6a" : altNoGain ? "#5a5a66" : "#cc8844" }}>{altStatus}</span>
+            </div>
+          )}
+          {chipEq && (
+            <a href={"https://www.wowhead.com" + whLocale + "/item=" + chipEq.id + whSpec + (chipEq.bonus ? "&bonus=" + chipEq.bonus : "") + (chipEq.ilvl ? "&ilvl=" + chipEq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: (isAlt || isSimcAlt) ? "#1a1508" : "#1a1520", border: "1px solid " + ((isAlt || isSimcAlt) ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: (isAlt || isSimcAlt) ? "#c9a040" : "#aa7799", whiteSpace: "nowrap", marginTop: 2 }}>
+              <span>{chipName}</span>
+              <StatPills stats={allStats[chipEq.id]} />
             </a>
           )}
         </div>

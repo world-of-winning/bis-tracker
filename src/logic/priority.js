@@ -128,20 +128,6 @@ export function sortByPriority(items, sr, targetIlvl, stats, priorityStats) {
   });
 }
 
-export function calcDungeonScore(dungeon, fc, BIS, sr, targetIlvl, stats, priorityStats, acq) {
-  if (!sr || !fc) return 0;
-  var priorityScore = 0;
-  BIS.forEach(function(bi) {
-    if (getSource(bi) !== dungeon) return;
-    var p = calcPriority(bi, sr, targetIlvl, stats, priorityStats);
-    if (acq[bi.id] && p.tier !== 4) p = { tier: 4 };
-    if (p.tier === 4) return;
-    priorityScore += Math.round((4 - p.tier) * 10) + (p.deficit || 0);
-  });
-  // BiS still to farm first, then how badly the ones here are lagging.
-  return fc.bis * 10000 + priorityScore;
-}
-
 // Count items that need farming (tier 1 / red) per source
 // Items still worth a run, per source. BiS only: alts are options rather than
 // targets, and with eighty rows a spec an alt count would never reach zero, so

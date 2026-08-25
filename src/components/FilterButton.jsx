@@ -1,4 +1,4 @@
-export default function FilterButton({ source, label, active, done, farmCount, hasSr, colors, pulse, onToggle }) {
+export default function FilterButton({ source, label, active, done, farmCount, hasSr, colors, pulse, onToggle, best }) {
   var fc = farmCount || { bis: 0, alt: 0 };
   return (
     <button className={"fbtn" + (active ? " active" : "")}
@@ -6,6 +6,7 @@ export default function FilterButton({ source, label, active, done, farmCount, h
       style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 6, background: active ? colors.activeBg : (done ? "#0d1a0d" : colors.bg), border: "1px solid " + (active ? colors.activeBorder : (done ? "#1a3a1a" : colors.border)), fontSize: 12, fontWeight: 600, color: active ? colors.activeText : (done ? "#4dca6b" : colors.text) }}>
       <span style={{ width: 6, height: 6, borderRadius: "50%", background: done ? "#4dca6b" : colors.dot, display: "inline-block", animation: done ? "none" : (pulse ? "pulse 2s infinite" : "none") }} />
       <span>{label}</span>
+      {best && <span title={best} style={{ fontSize: 10, color: "#ffd479" }}>{"\u2605"}</span>}
       {done
         ? <span style={{ color: "#2a5a2a", fontSize: 11 }}>{"\u2713"}</span>
         : hasSr

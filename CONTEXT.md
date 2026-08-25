@@ -60,3 +60,26 @@ alongside the numbers rather than left implicit.
 the index of its equivalence group. The item is an equivalent fit when that multiset
 equals the BiS item's. Equal size is therefore required, and a one-stat item can only
 stand in for a one-stat BiS item.
+
+## Expected gain
+
+**Slot gain (슬롯 이득)** — how many item levels a candidate item would add over the
+one it displaces, at the player's target grade. Item levels are the unit because they
+are the only cardinal number in this domain; secondary stats are ordinal and gate the
+gain rather than adding to it. A slot that needs only an upgrade has no gain: upgrade
+currency is not a dungeon run.
+
+**Eligible pool (착용 가능 풀)** — every item a source can drop that this spec can
+wear. Personal loot filters a chest to exactly this set, so it is the population an
+expectation is taken over. Items with no gain still belong to it: they drop, and each
+one is a chest that was not the item the player wanted.
+
+**Replaced item (교체 대상)** — the equipped item a candidate would displace. For a
+paired slot (rings, trinkets) it is the half the player has not already finished
+chasing — neither a BiS item nor an equivalent fit — taking the lower item level when
+both are open.
+
+**Expected gain (기대 이득)** — the mean slot gain over a source's eligible pool: what
+one run is worth. A mean rather than a total, because a run yields well under one item
+and the per-run item count is the same everywhere, so a total would only measure how
+large a loot table is.

@@ -148,13 +148,13 @@ export function LocaleProvider({ children }) {
     return val;
   }, [strings]);
 
-  var itemName = useCallback(function(item) {
-    return itemNamesMap[item.id] || enItems[item.id] || String(item.id);
+  var knownItemName = useCallback(function(id) {
+    return itemNamesMap[id] || enItems[id] || null;
   }, [itemNamesMap]);
 
   var value = useMemo(function() {
-    return { locale: locale, setLocale: setLocale, t: t, itemName: itemName };
-  }, [locale, setLocale, t, itemName]);
+    return { locale: locale, setLocale: setLocale, t: t, knownItemName: knownItemName };
+  }, [locale, setLocale, t, knownItemName]);
 
   return (
     <LocaleContext.Provider value={value}>
