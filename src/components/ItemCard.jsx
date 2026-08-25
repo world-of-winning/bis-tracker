@@ -1,8 +1,7 @@
 import { useLocale, LOCALE_META } from '../i18n/index.jsx';
 import { DUNGEONS, ARMOR_SLOTS } from '../data/shared.js';
 import { getSource } from '../logic/priority.js';
-import { replacedItem, slotGain } from '../logic/expectation.js';
-import { scoreStats } from '../logic/matching.js';
+import { assessGain, replacedItem } from '../logic/expectation.js';
 import EqTooltipObserver from './EqTooltipObserver.jsx';
 
 var STAT_COLORS = { crit: { bg: "#2a1a1a", fg: "#e88", bd: "#4a2222" }, haste: { bg: "#1a2a1a", fg: "#8e8", bd: "#224a22" }, mastery: { bg: "#1a1a2a", fg: "#88e", bd: "#22224a" }, vers: { bg: "#2a2a1a", fg: "#ee8", bd: "#4a4a22" } };
@@ -56,9 +55,13 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
   // player still needs to know what it would replace and by how much. Item
   // levels are the only number here; a trade down in secondaries is a marker,
   // because nothing in this project can say how many item levels it costs.
-  var altGain = (isAlt && gainCtx && altEq) ? slotGain(item, gainCtx) : 0;
-  var altStatsDown = !!(isAlt && altEq && allStats[altEq.id] && item.stats && item.stats.length
-    && scoreStats(item.stats, gainCtx && gainCtx.priorityStats) < scoreStats(allStats[altEq.id], gainCtx && gainCtx.priorityStats));
+  var alt = (isAlt && gainCtx && altEq) ? assessGain(item, gainCtx) : null;
+  var altGain = alt ? alt.gain : 0;
+  var altStatsDown = !!(alt && alt.statsRegress);
+  // Every row worth nothing says why. The step-back case is left to the arrow,
+  // which already carries that sentence; the other two would otherwise sit at
+  // the bottom of the list with nothing to explain how they got there.
+  var altNoGain = (alt && alt.gain === 0 && alt.reason && alt.reason !== "statsDown") ? alt.reason : null;
   // An equivalent fit is a fit — the slot is done — but it is not the exact
   // item, and chasing that late in a season is legitimate. Say which it is
   // rather than leaving the two states looking identical. This is about the
@@ -136,6 +139,7 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
               })}
               {altGain > 0 && <span style={{ fontSize: 10, fontWeight: 700, color: "#7fb08a" }}>{"\u2192 +" + altGain}</span>}
               {altStatsDown && <span style={{ fontSize: 10, fontWeight: 700, color: "#a06a6a" }} title={t("ui.statsDowngrade")}>{"\u2193"}</span>}
+              {altNoGain && <span style={{ fontSize: 9, color: "#5a5a66" }}>{t("ui.gain" + altNoGain.charAt(0).toUpperCase() + altNoGain.slice(1))}</span>}
             </a>
           )}
         </div>

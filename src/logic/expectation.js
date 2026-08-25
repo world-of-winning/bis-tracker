@@ -126,32 +126,46 @@ export function gainContext(opts) {
  *     no reason to go. A slot that needs re-acquiring (`tierUp`) scores in full,
  *     because a run is exactly what fixes it
  *   - the candidate is a step backwards
+ *
+ * `assessGain` is the whole answer — the number, which of those reasons drove a
+ * zero, and whether the secondaries regressed. A row sitting at the bottom of an
+ * alt list with nothing to say for itself is a row the player cannot act on, so
+ * the reason travels with the number rather than being re-derived by the caller.
  */
-export function slotGain(item, ctx) {
+export function assessGain(item, ctx) {
   var T = ctx.targetIlvl;
   var slotName = slotNameOf(item);
   var eq = replacedItem(item, ctx.sr, ctx.settled);
   var replaceable = !!eq && !wrongEquipped(eq, slotName, ctx);
-  var base;
-  if (!replaceable) {
-    base = T;
-  } else {
-    base = Math.max(0, T - (eq.ilvl || 0));
-    if (base > 0 && itemTierIdx(eq.bonus, eq.ilvl || 0) >= ctx.targetTierIdx) base = 0;
+  // Whether the candidate's secondaries are a step back is a fact about the
+  // item, true or false regardless of what the slot then does with it. A weapon
+  // reports it and still scores; the marker is the honest half of "item level
+  // is what a weapon is worth".
+  var regress = !!(replaceable && item.stats && item.stats.length && ctx.stats[eq.id]
+    && scoreStats(item.stats, ctx.priorityStats) < scoreStats(ctx.stats[eq.id], ctx.priorityStats));
+  var out = function(gain, reason) { return { gain: gain, reason: reason, statsRegress: regress }; };
+
+  if (replaceable) {
+    if (T - (eq.ilvl || 0) <= 0) return out(0, "atTarget");
+    if (itemTierIdx(eq.bonus, eq.ilvl || 0) >= ctx.targetTierIdx) return out(0, "enhance");
   }
-  if (base === 0) return 0;
+  var base = replaceable ? T - (eq.ilvl || 0) : T;
   // A weapon's value is its item level; its secondaries are a rounding error
   // beside the weapon damage the item level sets. Never disqualified on stats.
-  if (WEAPON_SLOTS[slotName]) return base;
+  if (WEAPON_SLOTS[slotName]) return out(base, null);
   // A trinket's value is the effect it procs, which nothing here can read. Only
   // the ones a guide already picked out score. The rest stay in the denominator
   // — they really do drop, and every one of them is a chest that was not the
   // item the player wanted.
-  if (TRINKET_SLOTS[slotName]) return (ctx.knownBisIds && ctx.knownBisIds.has(item.id)) ? base : 0;
-  if (!replaceable) return base;
-  if (scoreStats(item.stats, ctx.priorityStats) < scoreStats(ctx.stats[eq.id], ctx.priorityStats)) return 0;
-  return base;
+  if (TRINKET_SLOTS[slotName]) {
+    if (ctx.knownBisIds && ctx.knownBisIds.has(item.id)) return out(base, null);
+    return out(0, "trinketUnrated");
+  }
+  if (regress) return out(0, "statsDown");
+  return out(base, null);
 }
+
+export function slotGain(item, ctx) { return assessGain(item, ctx).gain; }
 
 /**
  * What one run of this source is worth: the mean gain over what it can drop.

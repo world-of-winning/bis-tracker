@@ -57,6 +57,21 @@ and the item levels it would add.
 
 ## Consequences
 
+**A zero says which zero it is.** `assessGain` returns the reason beside the
+number — `atTarget`, `enhance`, `trinketUnrated`, `statsDown` — because three of
+those land at the bottom of the same alt list and a player can act on only one of
+them. A row worth nothing with nothing to say for itself reads as a bug in the
+sort.
+
+**A weapon can score and regress at once.** Secondaries never disqualify a
+weapon, so a higher-item-level drop with worse secondaries shows both its gain
+and the step-back marker. That is not a contradiction, it is the honest form of
+"a weapon is worth its item level": the item level is the reason to take it and
+the secondaries are the price. `statsRegress` is therefore a fact about the item,
+reported whatever the slot rule then does with it, rather than a synonym for
+disqualification.
+
+
 **The mean, not the sum.** A single run yields well under one item, so gains
 stay additive across the table and the per-run item count `k` cancels between
 dungeons: ranking by `k · mean(gain)` is ranking by `mean(gain)`. Summing would

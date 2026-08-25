@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dungeonExpectation, gainContext, replacedItem, settledIds, slotGain } from "../src/logic/expectation.js";
+import { assessGain, dungeonExpectation, gainContext, replacedItem, settledIds, slotGain } from "../src/logic/expectation.js";
 
 // Protection Paladin's groups: haste alone, then mastery and crit together.
 const PRIORITY = [["haste"], ["mastery", "crit"], ["vers"]];
@@ -94,6 +94,52 @@ describe("slotGain", () => {
 
         const known = ctxFor(gear, { knownBisIds: new Set([1]) });
         expect(slotGain({ forSlot: "trinket", id: 1, stats: ["crit"] }, known)).toBe(13);
+    });
+});
+
+describe("assessGain reasons", () => {
+    // A row worth nothing has to say which nothing it is. Three of these end at
+    // the bottom of the same alt list, and a player can act on only one of them.
+    it("names a slot already at target", () => {
+        const ctx = ctxFor({ head: { id: 9, ilvl: 321, bonus: HERO } });
+        expect(assessGain({ forSlot: "head", id: 1, stats: ["haste"] }, ctx).reason).toBe("atTarget");
+    });
+
+    it("names a slot that upgrade currency fixes", () => {
+        const ctx = ctxFor({ head: { id: 9, ilvl: 311, bonus: HERO } });
+        expect(assessGain({ forSlot: "head", id: 1, stats: ["haste"] }, ctx).reason).toBe("enhance");
+    });
+
+    it("names a trinket no guide picked", () => {
+        const ctx = ctxFor({ trinket1: { id: 9, ilvl: 308, bonus: CHAMPION }, trinket2: { id: 8, ilvl: 308, bonus: CHAMPION } });
+        expect(assessGain({ forSlot: "trinket", id: 1, stats: ["crit"] }, ctx).reason).toBe("trinketUnrated");
+    });
+
+    it("names a step back in secondaries", () => {
+        const ctx = ctxFor({ head: { id: 9, ilvl: 308, bonus: CHAMPION } }, { stats: { 9: ["haste", "mastery"] } });
+        const a = assessGain({ forSlot: "head", id: 1, stats: ["mastery", "vers"] }, ctx);
+        expect(a.reason).toBe("statsDown");
+        expect(a.statsRegress).toBe(true);
+    });
+
+    it("gives a scoring row no reason at all", () => {
+        const ctx = ctxFor({ head: { id: 9, ilvl: 308, bonus: CHAMPION } }, { stats: { 9: ["haste", "mastery"] } });
+        expect(assessGain({ forSlot: "head", id: 1, stats: ["haste", "crit"] }, ctx).reason).toBeNull();
+    });
+
+    it("reports a weapon's step back while still scoring it", () => {
+        // The honest half of "a weapon is worth its item level": the drop is an
+        // upgrade and its secondaries are worse, and the card says both.
+        const ctx = ctxFor({ main_hand: { id: 9, ilvl: 308, bonus: CHAMPION } }, { stats: { 9: ["haste", "mastery"] } });
+        const a = assessGain({ forSlot: "weapon", id: 1, stats: ["vers"] }, ctx);
+        expect(a.gain).toBe(13);
+        expect(a.reason).toBeNull();
+        expect(a.statsRegress).toBe(true);
+    });
+
+    it("claims no regression when the slot is empty", () => {
+        // Nothing to be worse than.
+        expect(assessGain({ forSlot: "head", id: 1, stats: ["vers"] }, ctxFor({})).statsRegress).toBe(false);
     });
 });
 
