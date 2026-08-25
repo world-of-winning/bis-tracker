@@ -137,7 +137,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 159425, source: "Temple of Sethraliss", stats: ["haste","vers"] },
 ];
 
-export var PRIORITY_STATS = [["haste","mastery"],["crit"],["vers"]];
+export var PRIORITY_STATS = [["haste"],["mastery"],["crit"],["vers"]];
 
 export var STAT_CACHE_KEY = "holy-paladin-stat-cache-v1";
 

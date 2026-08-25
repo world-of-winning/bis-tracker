@@ -135,7 +135,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 159263, source: "Temple of Sethraliss", stats: ["crit","vers"] },
 ];
 
-export var PRIORITY_STATS = [["haste"],["crit"],["mastery"],["vers"]];
+export var PRIORITY_STATS = [["haste","crit","mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "destro-lock-stat-cache-v1";
 

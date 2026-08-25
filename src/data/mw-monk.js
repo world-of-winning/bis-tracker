@@ -137,7 +137,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 251183, source: "The Blinding Vale", stats: ["crit","mastery"] },
 ];
 
-export var PRIORITY_STATS = [["haste"],["crit"],["vers"],["mastery"]];
+export var PRIORITY_STATS = [["haste"],["crit"],["mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "mw-monk-stat-cache-v1";
 

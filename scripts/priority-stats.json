@@ -1,242 +1,202 @@
 {
   "blood-dk": {
-    "groups": [["mastery"], ["crit"], ["haste"], ["vers"]],
-    "means": { "crit": 662.3, "haste": 582.2, "mastery": 905.6, "vers": 233 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["haste"], ["crit","mastery"], ["vers"]],
+    "ratings": { "crit": 668, "haste": 918, "mastery": 663, "vers": 494 },
+    "collected": "2026-08-25"
   },
   "frost-dk": {
-    "groups": [["mastery"], ["crit"], ["haste"], ["vers"]],
-    "means": { "crit": 829.9, "haste": 414.4, "mastery": 1042.6, "vers": 86.4 },
-    "n": 28,
-    "collected": "2026-08-19"
+    "groups": [["crit"], ["mastery"], ["haste"], ["vers"]],
+    "ratings": { "crit": 1073, "haste": 530, "mastery": 946, "vers": 154 },
+    "collected": "2026-08-25"
   },
   "unholy-dk": {
-    "groups": [["mastery"], ["crit"], ["haste"], ["vers"]],
-    "means": { "crit": 898.5, "haste": 356.6, "mastery": 1123.3, "vers": 16.8 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["crit"], ["mastery"], ["haste"], ["vers"]],
+    "ratings": { "crit": 1121, "haste": 435, "mastery": 1027, "vers": 136 },
+    "collected": "2026-08-25"
   },
   "havoc-dh": {
-    "groups": [["mastery"], ["crit"], ["haste"], ["vers"]],
-    "means": { "crit": 878.7, "haste": 382.5, "mastery": 1044.4, "vers": 52.5 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["crit"], ["mastery"], ["haste"], ["vers"]],
+    "ratings": { "crit": 1220, "haste": 293, "mastery": 1002, "vers": 166 },
+    "collected": "2026-08-25"
   },
   "devourer-dh": {
-    "groups": [["mastery"], ["haste"], ["crit"], ["vers"]],
-    "means": { "crit": 412.4, "haste": 953.5, "mastery": 1023.7, "vers": 15.4 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["mastery","haste"], ["crit"], ["vers"]],
+    "ratings": { "crit": 779, "haste": 893, "mastery": 928, "vers": 110 },
+    "collected": "2026-08-25"
   },
   "veng-dh": {
     "groups": [["haste"], ["crit"], ["mastery"], ["vers"]],
-    "means": { "crit": 650, "haste": 853, "mastery": 557.7, "vers": 283.2 },
-    "n": 33,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 848, "haste": 991, "mastery": 462, "vers": 386 },
+    "collected": "2026-08-25"
   },
   "balance-druid": {
     "groups": [["mastery"], ["haste"], ["crit"], ["vers"]],
-    "means": { "crit": 574.3, "haste": 767.2, "mastery": 962.3, "vers": 86.6 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 771, "haste": 818, "mastery": 909, "vers": 193 },
+    "collected": "2026-08-25"
   },
   "feral-druid": {
     "groups": [["mastery"], ["haste"], ["crit"], ["vers"]],
-    "means": { "crit": 494.8, "haste": 763.7, "mastery": 972.9, "vers": 129.4 },
-    "n": 42,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 587, "haste": 859, "mastery": 992, "vers": 196 },
+    "collected": "2026-08-25"
   },
   "guardian-druid": {
-    "groups": [["haste"], ["mastery"], ["crit"], ["vers"]],
-    "means": { "crit": 398.3, "haste": 988.2, "mastery": 666.1, "vers": 362.4 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["haste"], ["crit"], ["mastery"], ["vers"]],
+    "ratings": { "crit": 716, "haste": 955, "mastery": 530, "vers": 499 },
+    "collected": "2026-08-25"
   },
   "resto-druid": {
-    "groups": [["haste","mastery"], ["vers"], ["crit"]],
-    "means": { "crit": 189.4, "haste": 956, "mastery": 920, "vers": 250.3 },
-    "n": 20,
-    "collected": "2026-08-19"
+    "groups": [["haste"], ["mastery"], ["crit"], ["vers"]],
+    "ratings": { "crit": 420, "haste": 1076, "mastery": 1015, "vers": 248 },
+    "collected": "2026-08-25"
   },
   "dev-evoker": {
     "groups": [["crit"], ["haste"], ["mastery"], ["vers"]],
-    "means": { "crit": 926.8, "haste": 839.7, "mastery": 517.7, "vers": 58.8 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 1023, "haste": 744, "mastery": 677, "vers": 217 },
+    "collected": "2026-08-25"
   },
   "pres-evoker": {
-    "groups": [["haste","crit"], ["mastery"], ["vers"]],
-    "means": { "crit": 767.9, "haste": 825.8, "mastery": 647.9, "vers": 96.2 },
-    "n": 26,
-    "collected": "2026-08-19"
+    "groups": [["crit"], ["haste","mastery"], ["vers"]],
+    "ratings": { "crit": 885, "haste": 804, "mastery": 781, "vers": 257 },
+    "collected": "2026-08-25"
   },
   "aug-evoker": {
-    "groups": [["crit","haste"], ["mastery"], ["vers"]],
-    "means": { "crit": 987.1, "haste": 924.7, "mastery": 302.2, "vers": 75.6 },
-    "n": 25,
-    "collected": "2026-08-19"
+    "groups": [["mastery"], ["crit"], ["haste"], ["vers"]],
+    "ratings": { "crit": 863, "haste": 656, "mastery": 932, "vers": 161 },
+    "collected": "2026-08-25"
   },
   "bm-hunter": {
-    "groups": [["mastery"], ["crit"], ["haste"], ["vers"]],
-    "means": { "crit": 823.6, "haste": 588.8, "mastery": 907.5, "vers": 47.8 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["mastery","crit"], ["haste"], ["vers"]],
+    "ratings": { "crit": 994, "haste": 496, "mastery": 1021, "vers": 210 },
+    "collected": "2026-08-25"
   },
   "mm-hunter": {
     "groups": [["crit"], ["mastery"], ["haste"], ["vers"]],
-    "means": { "crit": 968.6, "haste": 434.1, "mastery": 773.5, "vers": 125.2 },
-    "n": 33,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 1308, "haste": 400, "mastery": 851, "vers": 233 },
+    "collected": "2026-08-25"
   },
   "surv-hunter": {
     "groups": [["mastery"], ["crit","haste"], ["vers"]],
-    "means": { "crit": 704.5, "haste": 690.6, "mastery": 910.6, "vers": 75 },
-    "n": 41,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 814, "haste": 774, "mastery": 1014, "vers": 171 },
+    "collected": "2026-08-25"
   },
   "arcane-mage": {
-    "groups": [["mastery"], ["haste"], ["crit"], ["vers"]],
-    "means": { "crit": 632.4, "haste": 792.4, "mastery": 849.6, "vers": 100.8 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["haste"], ["crit"], ["mastery"], ["vers"]],
+    "ratings": { "crit": 776, "haste": 980, "mastery": 498, "vers": 416 },
+    "collected": "2026-08-25"
   },
   "fire-mage": {
     "groups": [["haste"], ["mastery"], ["crit"], ["vers"]],
-    "means": { "crit": 260.5, "haste": 1100.5, "mastery": 879.1, "vers": 94.3 },
-    "n": 16,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 256, "haste": 1202, "mastery": 881, "vers": 238 },
+    "collected": "2026-08-25"
   },
   "frost-mage": {
     "groups": [["mastery"], ["crit"], ["haste"], ["vers"]],
-    "means": { "crit": 795.9, "haste": 669.1, "mastery": 862.9, "vers": 49.6 },
-    "n": 39,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 847, "haste": 758, "mastery": 897, "vers": 187 },
+    "collected": "2026-08-25"
   },
   "brew-monk": {
     "groups": [["crit"], ["mastery"], ["vers"], ["haste"]],
-    "means": { "crit": 944.2, "haste": 320.2, "mastery": 609.6, "vers": 492.8 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 1069, "haste": 302, "mastery": 689, "vers": 612 },
+    "collected": "2026-08-25"
   },
   "ww-monk": {
-    "groups": [["haste"], ["crit","mastery"], ["vers"]],
-    "means": { "crit": 730, "haste": 809.1, "mastery": 696.4, "vers": 135.7 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["haste","crit","mastery"], ["vers"]],
+    "ratings": { "crit": 827, "haste": 852, "mastery": 808, "vers": 184 },
+    "collected": "2026-08-25"
   },
   "mw-monk": {
-    "groups": [["haste"], ["crit"], ["vers"], ["mastery"]],
-    "means": { "crit": 770.5, "haste": 963.2, "mastery": 271.7, "vers": 332.4 },
-    "n": 48,
-    "collected": "2026-08-19"
+    "groups": [["haste"], ["crit"], ["mastery"], ["vers"]],
+    "ratings": { "crit": 785, "haste": 1114, "mastery": 488, "vers": 320 },
+    "collected": "2026-08-25"
   },
   "holy-paladin": {
-    "groups": [["haste","mastery"], ["crit"], ["vers"]],
-    "means": { "crit": 428.6, "haste": 898.1, "mastery": 871.8, "vers": 188.2 },
-    "n": 38,
-    "collected": "2026-08-19"
+    "groups": [["haste"], ["mastery"], ["crit"], ["vers"]],
+    "ratings": { "crit": 666, "haste": 944, "mastery": 759, "vers": 368 },
+    "collected": "2026-08-25"
   },
   "prot-paladin": {
-    "groups": [["haste"], ["mastery","crit"], ["vers"]],
-    "means": { "crit": 658.3, "haste": 858.9, "mastery": 663.6, "vers": 178.4 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["haste"], ["crit"], ["mastery"], ["vers"]],
+    "ratings": { "crit": 908, "haste": 959, "mastery": 488, "vers": 344 },
+    "collected": "2026-08-25"
   },
   "ret-paladin": {
-    "groups": [["mastery"], ["crit","haste"], ["vers"]],
-    "means": { "crit": 691.1, "haste": 682.5, "mastery": 950.7, "vers": 60.2 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["crit"], ["mastery"], ["haste"], ["vers"]],
+    "ratings": { "crit": 951, "haste": 690, "mastery": 899, "vers": 177 },
+    "collected": "2026-08-25"
   },
   "disc-priest": {
     "groups": [["haste"], ["mastery"], ["crit"], ["vers"]],
-    "means": { "crit": 608.5, "haste": 922.6, "mastery": 746.9, "vers": 97.5 },
-    "n": 42,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 611, "haste": 1184, "mastery": 735, "vers": 167 },
+    "collected": "2026-08-25"
   },
   "holy-priest": {
-    "groups": [["haste"], ["mastery"], ["crit"], ["vers"]],
-    "means": { "crit": 609.2, "haste": 768.5, "mastery": 679.1, "vers": 262.9 },
-    "n": 14,
-    "collected": "2026-08-19"
+    "groups": [["crit"], ["haste"], ["mastery"], ["vers"]],
+    "ratings": { "crit": 874, "haste": 791, "mastery": 705, "vers": 329 },
+    "collected": "2026-08-25"
   },
   "shadow-priest": {
-    "groups": [["haste"], ["mastery"], ["crit"], ["vers"]],
-    "means": { "crit": 475.4, "haste": 969, "mastery": 892.1, "vers": 61.1 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["haste","mastery"], ["crit"], ["vers"]],
+    "ratings": { "crit": 739, "haste": 951, "mastery": 934, "vers": 81 },
+    "collected": "2026-08-25"
   },
   "assa-rogue": {
     "groups": [["crit"], ["haste"], ["mastery"], ["vers"]],
-    "means": { "crit": 881.7, "haste": 729, "mastery": 619.1, "vers": 139.8 },
-    "n": 24,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 1005, "haste": 902, "mastery": 578, "vers": 207 },
+    "collected": "2026-08-25"
   },
   "outlaw-rogue": {
-    "groups": [["crit"], ["haste"], ["mastery"], ["vers"]],
-    "means": { "crit": 980.8, "haste": 835.9, "mastery": 353.4, "vers": 202 },
-    "n": 31,
-    "collected": "2026-08-19"
+    "groups": [["crit"], ["haste"], ["vers"], ["mastery"]],
+    "ratings": { "crit": 1067, "haste": 952, "mastery": 311, "vers": 373 },
+    "collected": "2026-08-25"
   },
   "sub-rogue": {
     "groups": [["mastery"], ["haste"], ["crit"], ["vers"]],
-    "means": { "crit": 635.2, "haste": 721.7, "mastery": 941.6, "vers": 96.3 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 657, "haste": 738, "mastery": 1012, "vers": 297 },
+    "collected": "2026-08-25"
   },
   "ele-shaman": {
-    "groups": [["mastery"], ["crit"], ["haste"], ["vers"]],
-    "means": { "crit": 664.3, "haste": 594.2, "mastery": 904, "vers": 184.1 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["mastery","crit"], ["haste"], ["vers"]],
+    "ratings": { "crit": 829, "haste": 767, "mastery": 869, "vers": 179 },
+    "collected": "2026-08-25"
   },
   "enh-shaman": {
     "groups": [["mastery"], ["haste"], ["crit"], ["vers"]],
-    "means": { "crit": 411.9, "haste": 861.5, "mastery": 1022.5, "vers": 65.7 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 604, "haste": 878, "mastery": 981, "vers": 175 },
+    "collected": "2026-08-25"
   },
   "resto-shaman": {
-    "groups": [["crit"], ["vers","haste","mastery"]],
-    "means": { "crit": 817.4, "haste": 501.2, "mastery": 488.3, "vers": 509.1 },
-    "n": 47,
-    "collected": "2026-08-19"
+    "groups": [["crit"], ["haste"], ["vers"], ["mastery"]],
+    "ratings": { "crit": 1008, "haste": 710, "mastery": 422, "vers": 502 },
+    "collected": "2026-08-25"
   },
   "aff-lock": {
     "groups": [["haste"], ["crit"], ["mastery"], ["vers"]],
-    "means": { "crit": 806.4, "haste": 920, "mastery": 579.1, "vers": 60.8 },
-    "n": 33,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 850, "haste": 1041, "mastery": 583, "vers": 168 },
+    "collected": "2026-08-25"
   },
   "demo-lock": {
     "groups": [["crit","haste"], ["mastery"], ["vers"]],
-    "means": { "crit": 828.3, "haste": 795, "mastery": 723, "vers": 38.8 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 888, "haste": 878, "mastery": 732, "vers": 153 },
+    "collected": "2026-08-25"
   },
   "destro-lock": {
-    "groups": [["haste"], ["crit"], ["mastery"], ["vers"]],
-    "means": { "crit": 769.3, "haste": 875.9, "mastery": 668.2, "vers": 53.7 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["haste","crit","mastery"], ["vers"]],
+    "ratings": { "crit": 823, "haste": 865, "mastery": 817, "vers": 155 },
+    "collected": "2026-08-25"
   },
   "arms-warrior": {
-    "groups": [["haste"], ["crit"], ["mastery"], ["vers"]],
-    "means": { "crit": 854.3, "haste": 1001, "mastery": 476.1, "vers": 50.2 },
-    "n": 50,
-    "collected": "2026-08-19"
+    "groups": [["crit"], ["haste"], ["mastery"], ["vers"]],
+    "ratings": { "crit": 1060, "haste": 978, "mastery": 502, "vers": 187 },
+    "collected": "2026-08-25"
   },
   "fury-warrior": {
     "groups": [["haste"], ["mastery"], ["crit"], ["vers"]],
-    "means": { "crit": 506.5, "haste": 1012.3, "mastery": 895.6, "vers": 112.4 },
-    "n": 48,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 619, "haste": 1066, "mastery": 991, "vers": 228 },
+    "collected": "2026-08-25"
   },
   "prot-warrior": {
     "groups": [["haste"], ["crit"], ["mastery"], ["vers"]],
-    "means": { "crit": 596, "haste": 938, "mastery": 540.2, "vers": 272.4 },
-    "n": 41,
-    "collected": "2026-08-19"
+    "ratings": { "crit": 824, "haste": 1047, "mastery": 486, "vers": 330 },
+    "collected": "2026-08-25"
   }
 }

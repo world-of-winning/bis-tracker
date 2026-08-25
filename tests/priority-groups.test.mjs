@@ -6,112 +6,100 @@ import {
     deriveGroups,
     flattenGroups,
     groupsFromMeans,
+    parseStatChart,
     priorityGroups,
     priorityList,
     renderPriorityFile,
-    trimRoster,
 } from "../scripts/priority-groups.mjs";
 
 const FIXTURES = resolve(dirname(fileURLToPath(import.meta.url)), "fixtures");
 
-function roster(name) {
-    return JSON.parse(readFileSync(resolve(FIXTURES, `${name}.json`), "utf8"));
+/** The stat charts from a spec's guide page, as the page rendered them. */
+function page(name) {
+    return readFileSync(resolve(FIXTURES, `${name}.html`), "utf8");
 }
 
-/** One character wearing one item that carries the given ratings. */
-function character(ratings) {
-    const NAMES = { crit: "critical-strike", haste: "haste", mastery: "mastery", vers: "versatility" };
-    return {
-        Equipment: {
-            Items: [
-                {
-                    Stats: Object.entries(ratings).map(([stat, Value]) => ({
-                        Name: NAMES[stat],
-                        Value,
-                    })),
-                },
-            ],
-        },
-    };
+/** A chart the page could have drawn, for cases no fixture happens to contain. */
+function chart(totals) {
+    const LABELS = { crit: "Critical Strike", haste: "Haste", mastery: "Mastery", vers: "Versatility" };
+    const max = Math.max(...Object.values(totals));
+    const bars = Object.entries(totals).map(([stat, total]) =>
+        `<li class="guide-stats-chart-item epic">` +
+        `<span>0% ${LABELS[stat]}</span>` +
+        `<span class="h3">+${total}</span>` +
+        `<span style="height:${((total / max) * 100).toFixed(3)}%"></span>` +
+        `</li>`,
+    );
+    return `<ul class="guide-stats-size-4">${bars.join("")}</ul>`;
 }
+
+describe("parseStatChart", () => {
+    it("reads the secondary chart and not the tertiary one", () => {
+        // Both charts are in the fixture, and the tertiary chart's own tallest
+        // bar is also 100%. Read positionally, leech would outrank haste.
+        const { shares, totals } = parseStatChart(page("blood-dk"));
+        expect(totals).toEqual({ crit: 668, haste: 918, mastery: 663, vers: 494 });
+        expect(shares.haste).toBe(100);
+        expect(shares.crit).toBeCloseTo(72.805, 3);
+    });
+
+    it("declines a chart that is missing a stat", () => {
+        // A page that changed shape. Guessing at it would silently reorder a
+        // spec, so the caller keeps what it had.
+        const partial = chart({ crit: 668, haste: 918, mastery: 663 });
+        expect(parseStatChart(partial)).toBeNull();
+    });
+
+    it("declines markup with no chart at all", () => {
+        expect(parseStatChart("<p>nothing here</p>")).toBeNull();
+    });
+});
 
 describe("deriveGroups", () => {
     it("puts stats within a percent of each other in one group", () => {
-        // Protection Paladin: haste 859, mastery 664, crit 658, vers 178.
-        // Mastery and crit are nine tenths of one percent apart, which is the
-        // gap that used to send a player back to a dungeon for nothing.
-        const { groups, means, n } = deriveGroups(roster("prot-paladin"));
-        expect(n).toBe(50);
-        expect(groups).toEqual([["haste"], ["mastery", "crit"], ["vers"]]);
-        expect(Math.round(means.haste)).toBe(859);
-        expect(Math.round(means.mastery)).toBe(664);
-        expect(Math.round(means.crit)).toBe(658);
-        expect(Math.round(means.vers)).toBe(178);
+        // Blood Death Knight: haste 918, crit 668, mastery 663, vers 494.
+        // Crit and mastery are eight tenths of one percent apart, which is the
+        // gap that used to send a player back to a dungeon for nothing — and
+        // which the order murlok prints beside the chart flattens away.
+        const { groups, chart: c } = deriveGroups(parseStatChart(page("blood-dk")));
+        expect(groups).toEqual([["haste"], ["crit", "mastery"], ["vers"]]);
+        expect(c.totals.haste).toBe(918);
     });
 
     it("leaves a spec with no near pairs as four groups of one", () => {
-        // Unholy Death Knight: mastery 1123, crit 899, haste 357, vers 17.
-        // Every neighbouring ratio is far below the threshold, so nothing merges
-        // and the spec keeps a strict preference the tracker should enforce.
-        const { groups } = deriveGroups(roster("unholy-dk"));
-        expect(groups).toEqual([["mastery"], ["crit"], ["haste"], ["vers"]]);
+        // Unholy Death Knight: every neighbouring ratio is far below the
+        // threshold, so nothing merges and a real preference stays enforced.
+        const { groups } = deriveGroups(parseStatChart(page("unholy-dk")));
+        expect(groups.every((g) => g.length === 1)).toBe(true);
     });
 
-    it("merges a thin sample's borderline pair that a full sample would split", () => {
-        // Augmentation Evoker's borderline pair sits at 0.937 — below 0.95 and
-        // above 0.90. Its sample is under thirty characters, so the threshold
-        // drops and the pair merges. A false merge only withholds a warning; a
-        // false split orders a re-farm over a rounding difference.
-        const chars = roster("aug-evoker");
-        expect(chars.length).toBeLessThan(30);
-
-        const auto = deriveGroups(chars);
-        expect(auto.threshold).toBe(0.9);
-
-        const strict = deriveGroups(chars, { threshold: 0.95 });
-        expect(strict.groups.length).toBeGreaterThan(auto.groups.length);
+    it("uses one threshold, whatever the spec", () => {
+        // The thin-sample variant is gone: the page does not publish a sample
+        // size, so there is nothing to condition on.
+        const a = deriveGroups(parseStatChart(page("blood-dk")));
+        const b = deriveGroups(parseStatChart(page("unholy-dk")));
+        expect(a.threshold).toBe(0.95);
+        expect(b.threshold).toBe(0.95);
     });
 
     it("does not chain a group across members that are not equivalent", () => {
-        // Demonology Warlock: at 0.90 crit chains to haste and haste to mastery,
-        // making one group whose ends sit at 0.873 — members that are not
-        // equivalent to each other. 0.95 cuts it. This is why the full-sample
-        // threshold is not 0.90.
-        const chars = roster("demo-lock");
-        const loose = deriveGroups(chars, { threshold: 0.9 });
+        // At 0.90 crit chains to haste and haste to mastery, making one group
+        // whose ends sit below 0.90 — members not equivalent to each other.
+        // 0.95 cuts it. This is why the threshold is not looser.
+        const c = parseStatChart(chart({ crit: 1000, haste: 910, mastery: 828, vers: 100 }));
+        const loose = deriveGroups(c, { threshold: 0.9 });
         const chained = loose.groups.find((g) => g.length >= 3);
         expect(chained).toBeDefined();
+        expect(c.shares[chained.at(-1)] / c.shares[chained[0]]).toBeLessThan(0.9);
 
-        const { means } = loose;
-        expect(means[chained.at(-1)] / means[chained[0]]).toBeLessThan(0.9);
-
-        const cut = deriveGroups(chars, { threshold: 0.95 });
+        const cut = deriveGroups(c, { threshold: 0.95 });
         expect(cut.groups.every((g) => g.length < 3)).toBe(true);
     });
 
-    it("derives from a roster of one character", () => {
-        const { groups, means, n, threshold } = deriveGroups([
-            character({ haste: 900, mastery: 660, crit: 655, vers: 100 }),
-        ]);
-        expect(n).toBe(1);
-        expect(threshold).toBe(0.9);
-        expect(means).toEqual({ crit: 655, haste: 900, mastery: 660, vers: 100 });
-        expect(groups).toEqual([["haste"], ["mastery", "crit"], ["vers"]]);
-    });
-
-    it("derives nothing from an empty roster", () => {
-        // Nothing to derive. The caller keeps whatever it already had rather
-        // than blanking the spec.
-        const { groups, n } = deriveGroups([]);
+    it("derives nothing from a chart it could not read", () => {
+        // The caller keeps whatever it already had rather than blanking the spec.
+        const { groups } = deriveGroups(null);
         expect(groups).toBeNull();
-        expect(n).toBe(0);
-    });
-
-    it("sums a character's items rather than reading one of them", () => {
-        const split = character({ haste: 300 });
-        split.Equipment.Items.push(character({ haste: 300 }).Equipment.Items[0]);
-        const { means } = deriveGroups([split]);
-        expect(means.haste).toBe(600);
     });
 });
 
@@ -138,7 +126,7 @@ describe("priority file shapes", () => {
     });
 
     it("reads a generated record as its groups", () => {
-        const entry = { groups: [["haste"], ["mastery", "crit"], ["vers"]], n: 50 };
+        const entry = { groups: [["haste"], ["mastery", "crit"], ["vers"]] };
         expect(priorityGroups(entry)).toEqual(entry.groups);
         expect(priorityList(entry)).toEqual(["haste", "mastery", "crit", "vers"]);
     });
@@ -164,9 +152,8 @@ describe("renderPriorityFile", () => {
     const data = {
         "prot-paladin": {
             groups: [["haste"], ["mastery", "crit"], ["vers"]],
-            means: { crit: 658.3, haste: 858.9, mastery: 663.6, vers: 178.4 },
-            n: 50,
-            collected: "2026-08-19",
+            ratings: { crit: 668, haste: 918, mastery: 663, vers: 494 },
+            collected: "2026-08-25",
         },
         "backfilled-spec": ["haste", "crit", "mastery", "vers"],
     };
@@ -179,55 +166,5 @@ describe("renderPriorityFile", () => {
         const out = renderPriorityFile(data);
         expect(out.split("\n").filter((l) => l.includes("groups"))).toHaveLength(1);
         expect(out.endsWith("\n")).toBe(true);
-    });
-});
-
-describe("trimRoster", () => {
-    // What separates a fixture from the 1.1MB response it came out of. It runs
-    // on the way out of the cache, so getting it wrong silently changes every
-    // derived number.
-    it("keeps secondary stat ratings and drops everything else", () => {
-        const payload = {
-            Season: "mid-1",
-            Characters: [
-                {
-                    Slug: "someone",
-                    AvatarURL: "https://example.invalid/a.png",
-                    Equipment: {
-                        Items: [
-                            {
-                                ItemID: 249961,
-                                Name: "Some Helm",
-                                Stats: [
-                                    { Value: 244, Name: "armor" },
-                                    { Value: 2326, Name: "stamina" },
-                                    { Value: 112, Name: "haste" },
-                                    { Value: 53, Name: "mastery" },
-                                ],
-                            },
-                        ],
-                    },
-                },
-            ],
-        };
-        expect(trimRoster(payload)).toEqual([
-            {
-                Equipment: {
-                    Items: [
-                        {
-                            Stats: [
-                                { Name: "haste", Value: 112 },
-                                { Name: "mastery", Value: 53 },
-                            ],
-                        },
-                    ],
-                },
-            },
-        ]);
-    });
-
-    it("survives a character with no equipment and a payload with no characters", () => {
-        expect(trimRoster({ Characters: [{}] })).toEqual([{ Equipment: { Items: [] } }]);
-        expect(trimRoster({})).toEqual([]);
     });
 });

@@ -132,7 +132,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 268239, source: "The Venomous Abyss", stats: ["crit","mastery"] },
 ];
 
-export var PRIORITY_STATS = [["haste"],["mastery","crit"],["vers"]];
+export var PRIORITY_STATS = [["haste"],["crit"],["mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "prot-paladin-stat-cache-v1";
 

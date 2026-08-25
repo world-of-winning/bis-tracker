@@ -146,7 +146,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 273775, source: "Altar of Fangs", stats: ["mastery","vers"] },
 ];
 
-export var PRIORITY_STATS = [["crit"],["vers","haste","mastery"]];
+export var PRIORITY_STATS = [["crit"],["haste"],["vers"],["mastery"]];
 
 export var STAT_CACHE_KEY = "resto-shaman-stat-cache-v1";
 

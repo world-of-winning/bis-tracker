@@ -131,7 +131,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 159300, source: "Kings' Rest", stats: ["crit","vers"] },
 ];
 
-export var PRIORITY_STATS = [["haste"],["mastery"],["crit"],["vers"]];
+export var PRIORITY_STATS = [["haste"],["crit"],["mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "guardian-druid-stat-cache-v1";
 

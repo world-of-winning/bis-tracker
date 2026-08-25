@@ -144,7 +144,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 159300, source: "Kings' Rest", stats: ["crit","vers"] },
 ];
 
-export var PRIORITY_STATS = [["mastery"],["crit"],["haste"],["vers"]];
+export var PRIORITY_STATS = [["crit"],["mastery"],["haste"],["vers"]];
 
 export var STAT_CACHE_KEY = "havoc-dh-stat-cache-v1";
 

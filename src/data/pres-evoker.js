@@ -140,7 +140,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 273775, source: "Altar of Fangs", stats: ["mastery","vers"] },
 ];
 
-export var PRIORITY_STATS = [["haste","crit"],["mastery"],["vers"]];
+export var PRIORITY_STATS = [["crit"],["haste","mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "pres-evoker-stat-cache-v1";
 

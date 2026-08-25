@@ -132,7 +132,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 159425, source: "Temple of Sethraliss", stats: ["haste","vers"] },
 ];
 
-export var PRIORITY_STATS = [["mastery"],["crit","haste"],["vers"]];
+export var PRIORITY_STATS = [["crit"],["mastery"],["haste"],["vers"]];
 
 export var STAT_CACHE_KEY = "ret-paladin-stat-cache-v1";
 

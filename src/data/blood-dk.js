@@ -130,7 +130,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 251133, source: "Murder Row", stats: ["crit","haste"] },
 ];
 
-export var PRIORITY_STATS = [["mastery"],["crit"],["haste"],["vers"]];
+export var PRIORITY_STATS = [["haste"],["crit","mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "blood-dk-stat-cache-v1";
 

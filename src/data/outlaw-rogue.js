@@ -142,7 +142,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 159300, source: "Kings' Rest", stats: ["crit","vers"] },
 ];
 
-export var PRIORITY_STATS = [["crit"],["haste"],["mastery"],["vers"]];
+export var PRIORITY_STATS = [["crit"],["haste"],["vers"],["mastery"]];
 
 export var STAT_CACHE_KEY = "outlaw-rogue-stat-cache-v1";
 

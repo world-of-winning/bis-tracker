@@ -11,7 +11,7 @@ have run first, and what breaks when it hasn't.
 |---|---|
 | `wowhead-cache.mjs` | Wowhead tooltip fetch with a persistent cache. Exports `fetchTooltip`, `saveCache`, `cacheGet/Set/Delete`. |
 | `wago-db2.mjs` | The client's DB2 tables as CSV from wago.tools: an RFC 4180 parser, a cached fetch, a name index, and `dropTable()` — the `JournalEncounterItem` → `JournalEncounter` → `JournalInstance` join that says what drops where. |
-| `priority-groups.mjs` | The observed-priority derivation: roster → equivalence groups. No network, no disk, so it is testable against fixtures. |
+| `priority-groups.mjs` | The stat-priority derivation: murlok's published chart → equivalence groups. No network, no disk, so it is testable against fixtures. |
 | `src/logic/matching.js` | `fitKind`, `fitRank`, `statGroups`. **The scripts import the app's logic**, not a copy of it — that is what keeps the pipeline and the tracker agreeing on what counts as a fit. |
 
 `wowhead-cache` is used by `generate-spec-data`, `find-alts`, `generate-item-names`.
@@ -56,7 +56,7 @@ directly, so a priority-only change needs nothing downstream.
 <days>` sets cache expiry (default 14), `--refresh` is `--max-age 0`.
 
 Upstream rate-limits at roughly three requests a minute and escalates once
-tripped, so a cold forty-spec pass expects to be interrupted; the roster cache in
+tripped, so a cold forty-spec pass expects to be interrupted; the page cache in
 `scripts/.murlok-cache/` is what lets a run finish. A failed fetch never blanks a
 spec — the worst case keeps the priority already on disk.
 
@@ -120,7 +120,7 @@ only warn.
 
 ## Off the pipeline
 
-- `make-fixture.mjs <spec-key>` — trims a cached roster into `tests/fixtures/`. Only when adding a priority test. Never commit a raw response.
+- `make-fixture.mjs <spec-key>` — cuts the stat charts out of a cached guide page into `tests/fixtures/`. Only when adding a priority test. Never commit a whole page.
 - `check-secrets.sh` — the husky `pre-commit` hook calls it. Nothing to run by hand.
 
 ## The three caches
@@ -133,17 +133,19 @@ only warn.
 
 File mtime is never expiry: anything that touches a file rewrites it.
 
-The 14-day default on the roster cache was chosen for stat priority, which is the
-only thing the rosters are used for and which moves slowly. Early in a season they
-churn faster than that, so refresh by hand (`--refresh`) when a season is young and
-the priorities look behind what players are actually wearing. Budget for it: the
-upstream allows roughly three requests a minute, so a full forty-spec pass is a
-long, interruptible job.
+The 14-day default on the page cache suits a figure that moves slowly — murlok
+restamps a spec every day or so, and the gear behind a group boundary shifts over
+weeks. Early in a season it moves faster, so refresh by hand (`--refresh`) when a
+season is young and the priorities look behind what players are actually wearing.
+Budget for it: the upstream allows roughly three requests a minute, so a full
+forty-spec pass is a long, interruptible job.
 
-Do not reach for the rosters as a source of *farmable items* — that was measured and
-rejected. An equipment snapshot shows what players have not replaced yet, so 61% of
-the candidates it produced were last season's. That job belongs to the client's own
-drop tables; see `docs/adr/0002-alt-candidates-from-drop-tables.md`.
+The cache holds the **guide page**, not the roster JSON. The ratings are read off
+the page's own chart rather than summed from equipment — see
+`docs/adr/0003-stat-priority-from-the-published-chart.md` for why summing cannot
+work. The roster endpoint still exists and still carries per-item, per-character
+detail this pipeline no longer fetches; anything needing that (which stats a spec
+picks for a crafted item, say) has to fetch it for itself.
 
 ## Recipes
 

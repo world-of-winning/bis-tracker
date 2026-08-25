@@ -134,7 +134,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 268239, source: "The Venomous Abyss", stats: ["crit","mastery"] },
 ];
 
-export var PRIORITY_STATS = [["haste"],["crit"],["mastery"],["vers"]];
+export var PRIORITY_STATS = [["crit"],["haste"],["mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "arms-warrior-stat-cache-v1";
 

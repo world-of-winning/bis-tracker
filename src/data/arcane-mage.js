@@ -136,7 +136,7 @@ export var ALTS = [
   { forSlot: "wrist", id: 159263, source: "Temple of Sethraliss", stats: ["crit","vers"] },
 ];
 
-export var PRIORITY_STATS = [["mastery"],["haste"],["crit"],["vers"]];
+export var PRIORITY_STATS = [["haste"],["crit"],["mastery"],["vers"]];
 
 export var STAT_CACHE_KEY = "arcane-mage-stat-cache-v1";
 
