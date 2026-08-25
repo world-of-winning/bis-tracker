@@ -39,7 +39,7 @@ function localizeSource(source, t) {
 }
 
 export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, whSpecId, armorTypes, expectedArmor, simcSpec, primaryStats, expectedPrimary, gainCtx }) {
-  var { t, itemName, locale } = useLocale();
+  var { t, itemName, knownItemName, locale } = useLocale();
   var itemSource = getSource(item);
   var isDungeon = !!DUNGEONS[itemSource];
   var c = DUNGEONS[itemSource] || { b: "#8866aa", t: "#c4aadd", g: "#1a1028" };
@@ -50,6 +50,7 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
   var hasDiff = eq && eq.id !== item.id;
   var displayEq = isAlt ? altEq : (hasDiff ? eq : null);
   var chipEq = (isAlt && displayEq && displayEq.id === item.id) ? null : displayEq;
+  var chipName = chipEq ? (knownItemName(chipEq) || chipEq.name) : null;
   var eqForTooltip = hasDiff ? eq : (isAlt && altEq ? altEq : null);
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
   // An alt row is an option, not a verdict, so it carries no grade — but the
@@ -154,10 +155,8 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
           )}
           {chipEq && (
             <a href={"https://www.wowhead.com" + whLocale + "/item=" + chipEq.id + whSpec + (chipEq.bonus ? "&bonus=" + chipEq.bonus : "") + (chipEq.ilvl ? "&ilvl=" + chipEq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: (isAlt || isSimcAlt) ? "#1a1508" : "#1a1520", border: "1px solid " + ((isAlt || isSimcAlt) ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: (isAlt || isSimcAlt) ? "#c9a040" : "#aa7799", whiteSpace: "nowrap", marginTop: 2 }}>
-              <span>{chipEq.name}</span>
-              {allStats[chipEq.id] && allStats[chipEq.id].length > 0 && allStats[chipEq.id].map(function(s) {
-                return (<span key={s} style={{ fontSize: 9, color: "#776655" }}>{"\u00B7"}{t("stats." + s)}</span>);
-              })}
+              <span>{chipName}</span>
+              <StatPills stats={allStats[chipEq.id]} />
             </a>
           )}
         </div>
