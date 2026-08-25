@@ -134,10 +134,10 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
           {displayEq && (
             <a href={"https://www.wowhead.com" + whLocale + "/item=" + displayEq.id + whSpec + (displayEq.bonus ? "&bonus=" + displayEq.bonus : "") + (displayEq.ilvl ? "&ilvl=" + displayEq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: (isAlt || isSimcAlt) ? "#1a1508" : "#1a1520", border: "1px solid " + ((isAlt || isSimcAlt) ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: (isAlt || isSimcAlt) ? "#c9a040" : "#aa7799", whiteSpace: "nowrap", marginTop: 2 }}>
               <span>{displayEq.name}{isAlt && displayEq.ilvl ? " (" + displayEq.ilvl + ")" : ""}</span>
+              {altGain > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + altGain + "\uFF09"}</span>}
               {allStats[displayEq.id] && allStats[displayEq.id].length > 0 && allStats[displayEq.id].map(function(s) {
                 return (<span key={s} style={{ fontSize: 9, color: "#776655" }}>{"\u00B7"}{t("stats." + s)}</span>);
               })}
-              {altGain > 0 && <span style={{ fontSize: 10, fontWeight: 700, color: "#7fb08a" }}>{"\u2192 +" + altGain}</span>}
               {altStatsDown && <span style={{ fontSize: 10, fontWeight: 700, color: "#a06a6a" }} title={t("ui.statsDowngrade")}>{"\u2193"}</span>}
               {altNoGain && <span style={{ fontSize: 9, color: "#5a5a66" }}>{t("ui.gain" + altNoGain.charAt(0).toUpperCase() + altNoGain.slice(1))}</span>}
             </a>
