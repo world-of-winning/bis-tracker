@@ -205,6 +205,7 @@
         "bestExpected": "기대 이득 1위",
         "statsDowngrade": "능력치 하락",
         "altReplaces": "교체 대상",
+        "altEquipped": "착용 중",
         "altEmptySlot": "빈 부위",
         "gainAtTarget": "슬롯 완료",
         "gainEnhance": "강화로 해결",

@@ -205,6 +205,7 @@
         "bestExpected": "Лучшая ожидаемая выгода",
         "statsDowngrade": "Характеристики хуже",
         "altReplaces": "заменит",
+        "altEquipped": "надето",
         "altEmptySlot": "пустой слот",
         "gainAtTarget": "слот готов",
         "gainEnhance": "улучшение, не дроп",

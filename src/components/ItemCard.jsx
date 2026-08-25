@@ -49,19 +49,31 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
   var altEq = isAlt && gainCtx ? replacedItem(item, sr, gainCtx.settled) : null;
   var hasDiff = eq && eq.id !== item.id;
   var displayEq = isAlt ? altEq : (hasDiff ? eq : null);
+  var chipEq = (isAlt && displayEq && displayEq.id === item.id) ? null : displayEq;
   var eqForTooltip = hasDiff ? eq : (isAlt && altEq ? altEq : null);
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
   // An alt row is an option, not a verdict, so it carries no grade — but the
   // player still needs to know what it would replace and by how much. Item
   // levels are the only number here; a trade down in secondaries is a marker,
   // because nothing in this project can say how many item levels it costs.
-  var alt = (isAlt && gainCtx && gainCtx.sr) ? assessGain(item, gainCtx) : null;
-  var altGain = alt ? alt.gain : 0;
-  var altStatsDown = !!(alt && alt.statsRegress);
+  var gainInfo = (isAlt && gainCtx && gainCtx.sr) ? assessGain(item, gainCtx) : null;
+  var altGain = gainInfo ? gainInfo.gain : 0;
+  var altStatsDown = !!(gainInfo && gainInfo.statsRegress);
   // Every row worth nothing says why. The step-back case is left to the arrow,
   // which already carries that sentence; the other two would otherwise sit at
   // the bottom of the list with nothing to explain how they got there.
-  var altNoGain = (alt && alt.gain === 0 && alt.reason && alt.reason !== "statsDown") ? alt.reason : null;
+  var altNoGain = (gainInfo && gainInfo.gain === 0 && gainInfo.reason && gainInfo.reason !== "statsDown") ? gainInfo.reason : null;
+  // Wearing the row's own item is not replacing anything. `replacedItem` answers
+  // with the player's own copy on purpose — the arithmetic below it is right,
+  // "yours is 26 short" — but calling that a replacement would be nonsense.
+  var altIsWorn = !!(displayEq && displayEq.id === item.id);
+  // The word beside the pill, in the place a BiS card puts "강화 필요": why this
+  // row is worth what it is worth. Exactly one of these, always.
+  var altStatus = !gainInfo ? null
+    : altNoGain ? t("ui.gain" + altNoGain.charAt(0).toUpperCase() + altNoGain.slice(1))
+    : altStatsDown ? "\u2193 " + t("ui.statsDowngrade")
+    : altIsWorn ? t("ui.altEquipped")
+    : t(displayEq ? "ui.altReplaces" : "ui.altEmptySlot");
   // An equivalent fit is a fit — the slot is done — but it is not the exact
   // item, and chasing that late in a season is legitimate. Say which it is
   // rather than leaving the two states looking identical. This is about the
@@ -131,23 +143,19 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
               {p.weaponMismatch && <span style={{ fontSize: 9, color: "#cc8844" }}>{t("ui.weaponMismatch", { spec: t("specs." + simcSpec), slot: t("slots." + item.slot) })}</span>}
             </div>
           )}
-          {isAlt && (altGain > 0 || altNoGain || altStatsDown) && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center", marginBottom: 2 }}>
-              {altGain > 0 && (
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: "linear-gradient(135deg,#2a1f10,#1a1508)", border: "1px solid #6a5020", color: "#c9a040" }}>
-                  <span style={{ fontSize: 9, fontWeight: 600, opacity: .75 }}>{t(displayEq ? "ui.altReplaces" : "ui.altEmptySlot")}</span>
-                  {displayEq && displayEq.ilvl ? <span>{displayEq.ilvl}</span> : null}
-                  <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + altGain + "\uFF09"}</span>
-                </div>
-              )}
-              {altStatsDown && <span style={{ fontSize: 9, color: "#a06a6a" }} title={t("ui.statsDowngrade")}>{"\u2193 " + t("ui.statsDowngrade")}</span>}
-              {altNoGain && <span style={{ fontSize: 9, color: "#5a5a66" }}>{t("ui.gain" + altNoGain.charAt(0).toUpperCase() + altNoGain.slice(1))}</span>}
+          {altStatus && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center" }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: "linear-gradient(135deg,#2a1f10,#1a1508)", border: "1px solid #6a5020", color: "#c9a040" }}>
+                {displayEq && displayEq.ilvl ? <span>{displayEq.ilvl}</span> : null}
+                {altGain > 0 && <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + altGain + "\uFF09"}</span>}
+              </div>
+              <span style={{ fontSize: 9, color: altStatsDown ? "#a06a6a" : altNoGain ? "#5a5a66" : "#cc8844" }}>{altStatus}</span>
             </div>
           )}
-          {displayEq && (
-            <a href={"https://www.wowhead.com" + whLocale + "/item=" + displayEq.id + whSpec + (displayEq.bonus ? "&bonus=" + displayEq.bonus : "") + (displayEq.ilvl ? "&ilvl=" + displayEq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: (isAlt || isSimcAlt) ? "#1a1508" : "#1a1520", border: "1px solid " + ((isAlt || isSimcAlt) ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: (isAlt || isSimcAlt) ? "#c9a040" : "#aa7799", whiteSpace: "nowrap", marginTop: 2 }}>
-              <span>{displayEq.name}{isAlt && displayEq.ilvl && !(altGain > 0) ? " (" + displayEq.ilvl + ")" : ""}</span>
-              {allStats[displayEq.id] && allStats[displayEq.id].length > 0 && allStats[displayEq.id].map(function(s) {
+          {chipEq && (
+            <a href={"https://www.wowhead.com" + whLocale + "/item=" + chipEq.id + whSpec + (chipEq.bonus ? "&bonus=" + chipEq.bonus : "") + (chipEq.ilvl ? "&ilvl=" + chipEq.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "2px 6px", borderRadius: 3, background: (isAlt || isSimcAlt) ? "#1a1508" : "#1a1520", border: "1px solid " + ((isAlt || isSimcAlt) ? "#3a2a10" : "#3a2030"), textDecoration: "none", fontSize: 10, fontWeight: 600, color: (isAlt || isSimcAlt) ? "#c9a040" : "#aa7799", whiteSpace: "nowrap", marginTop: 2 }}>
+              <span>{chipEq.name}</span>
+              {allStats[chipEq.id] && allStats[chipEq.id].length > 0 && allStats[chipEq.id].map(function(s) {
                 return (<span key={s} style={{ fontSize: 9, color: "#776655" }}>{"\u00B7"}{t("stats." + s)}</span>);
               })}
             </a>
