@@ -202,6 +202,8 @@
         "equipped": "Надето",
         "mythicBisDone": "M+ BiS ✓",
         "equivalentFit": "Эквивалент",
+        "bestExpected": "Наибольшая ожидаемая выгода за забег",
+        "statsDowngrade": "Вторичные характеристики хуже",
         "viewBis": "BiS",
         "viewMythic": "M+",
         "bisItems": "BiS предметы",

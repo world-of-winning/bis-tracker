@@ -202,6 +202,8 @@
         "equipped": "Equipado",
         "mythicBisDone": "BiS de M+ ✓",
         "equivalentFit": "Equivalente",
+        "bestExpected": "Maior ganho esperado por corrida",
+        "statsDowngrade": "Os atributos secundários pioram",
         "viewBis": "BiS",
         "viewMythic": "M+",
         "bisItems": "Itens BiS",

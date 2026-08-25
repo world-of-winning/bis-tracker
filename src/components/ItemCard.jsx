@@ -1,6 +1,8 @@
 import { useLocale, LOCALE_META } from '../i18n/index.jsx';
-import { DUNGEONS, resolveSlots, ARMOR_SLOTS } from '../data/shared.js';
+import { DUNGEONS, ARMOR_SLOTS } from '../data/shared.js';
 import { getSource } from '../logic/priority.js';
+import { replacedItem, slotGain } from '../logic/expectation.js';
+import { scoreStats } from '../logic/matching.js';
 import EqTooltipObserver from './EqTooltipObserver.jsx';
 
 var STAT_COLORS = { crit: { bg: "#2a1a1a", fg: "#e88", bd: "#4a2222" }, haste: { bg: "#1a2a1a", fg: "#8e8", bd: "#224a22" }, mastery: { bg: "#1a1a2a", fg: "#88e", bd: "#22224a" }, vers: { bg: "#2a2a1a", fg: "#ee8", bd: "#4a4a22" } };
@@ -37,26 +39,26 @@ function localizeSource(source, t) {
     .join(" & ");
 }
 
-export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, knownBisIds, whSpecId, armorTypes, expectedArmor, simcSpec, primaryStats, expectedPrimary }) {
+export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, whSpecId, armorTypes, expectedArmor, simcSpec, primaryStats, expectedPrimary, gainCtx }) {
   var { t, itemName, locale } = useLocale();
   var itemSource = getSource(item);
   var isDungeon = !!DUNGEONS[itemSource];
   var c = DUNGEONS[itemSource] || { b: "#8866aa", t: "#c4aadd", g: "#1a1028" };
   var eq = !isAlt && sr && sr.eqSlot ? sr.eqSlot[item.id] : null;
-  var altEq = isAlt && sr && sr.gear ? (function() {
-    var slots = resolveSlots(item.forSlot);
-    for (var i = 0; i < slots.length; i++) { if (sr.gear[slots[i]] && sr.gear[slots[i]].id === item.id) return sr.gear[slots[i]]; }
-    if (slots.length > 1 && knownBisIds) {
-      var candidates = slots.map(function(s) { return sr.gear[s]; }).filter(Boolean);
-      var replaceable = candidates.filter(function(g) { return !knownBisIds.has(g.id); });
-      if (replaceable.length > 0) return replaceable.sort(function(a, b) { return (a.ilvl || 0) - (b.ilvl || 0); })[0];
-    }
-    return sr.gear[slots[0]] || sr.gear[slots[1]];
-  })() : null;
+  // The same call the dungeon ordering makes, so the card names the item the
+  // score was computed against rather than a second guess at it.
+  var altEq = isAlt && gainCtx ? replacedItem(item, sr, gainCtx.settled) : null;
   var hasDiff = eq && eq.id !== item.id;
   var displayEq = isAlt ? altEq : (hasDiff ? eq : null);
   var eqForTooltip = hasDiff ? eq : (isAlt && altEq ? altEq : null);
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
+  // An alt row is an option, not a verdict, so it carries no grade — but the
+  // player still needs to know what it would replace and by how much. Item
+  // levels are the only number here; a trade down in secondaries is a marker,
+  // because nothing in this project can say how many item levels it costs.
+  var altGain = (isAlt && gainCtx && altEq) ? slotGain(item, gainCtx) : 0;
+  var altStatsDown = !!(isAlt && altEq && allStats[altEq.id] && item.stats && item.stats.length
+    && scoreStats(item.stats, gainCtx && gainCtx.priorityStats) < scoreStats(allStats[altEq.id], gainCtx && gainCtx.priorityStats));
   // An equivalent fit is a fit — the slot is done — but it is not the exact
   // item, and chasing that late in a season is legitimate. Say which it is
   // rather than leaving the two states looking identical. This is about the
@@ -132,6 +134,8 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
               {allStats[displayEq.id] && allStats[displayEq.id].length > 0 && allStats[displayEq.id].map(function(s) {
                 return (<span key={s} style={{ fontSize: 9, color: "#776655" }}>{"\u00B7"}{t("stats." + s)}</span>);
               })}
+              {altGain > 0 && <span style={{ fontSize: 10, fontWeight: 700, color: "#7fb08a" }}>{"\u2192 +" + altGain}</span>}
+              {altStatsDown && <span style={{ fontSize: 10, fontWeight: 700, color: "#a06a6a" }} title={t("ui.statsDowngrade")}>{"\u2193"}</span>}
             </a>
           )}
         </div>

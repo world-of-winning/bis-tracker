@@ -202,6 +202,8 @@
         "equipped": "Angelegt",
         "mythicBisDone": "M+ BiS ✓",
         "equivalentFit": "Gleichwertig",
+        "bestExpected": "Bester erwarteter Gewinn pro Lauf",
+        "statsDowngrade": "Sekundärwerte sind ein Rückschritt",
         "viewBis": "BiS",
         "viewMythic": "M+",
         "bisItems": "BiS-Gegenstände",

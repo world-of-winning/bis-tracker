@@ -4,7 +4,8 @@ import { DUNGEONS, TIERS, DEFAULT_TIER, GEAR_SLOTS, fetchItemStats, resolveSlots
 import { findSpecBySimC } from '../data/specs.js';
 import { useLocale } from '../i18n/index.jsx';
 import { matchBiS } from '../logic/matching.js';
-import { getSource, calcPriority, calcAltPriority, autoSelectTier, sortByPriority, calcDungeonScore, calcSourceFarmCount } from '../logic/priority.js';
+import { getSource, calcPriority, calcAltPriority, autoSelectTier, sortByPriority, calcSourceFarmCount } from '../logic/priority.js';
+import { dungeonExpectation, gainContext, slotGain } from '../logic/expectation.js';
 import ItemCard from './ItemCard.jsx';
 import FilterButton from './FilterButton.jsx';
 
@@ -115,6 +116,19 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var allStats = useMemo(function() { return Object.assign({}, KNOWN_STATS, runtimeStats); }, [KNOWN_STATS, runtimeStats]);
   // Attach primary stat info to sr for calcPriority to use in weapon mismatch checks
   if (sr) { sr._expectedPrimary = expectedPrimary; sr._primaryStats = runtimePrimaryStats; }
+  // Everything the expected-gain model needs, resolved once. Both the dungeon
+  // ordering and the per-alt comparison read it, so the two can never disagree
+  // about which equipped item a drop would replace.
+  var gainCtx = useMemo(function() {
+    return gainContext({
+      sr: sr, targetIlvl: targetInfo.max, stats: allStats, priorityStats: PRIORITY_STATS,
+      knownBisIds: knownBisIds, armorTypes: runtimeArmorTypes, expectedArmor: expectedArmor,
+      primaryStats: runtimePrimaryStats, expectedPrimary: expectedPrimary, acq: acq,
+    });
+  }, [sr, targetInfo.max, allStats, PRIORITY_STATS, knownBisIds, runtimeArmorTypes, expectedArmor, runtimePrimaryStats, expectedPrimary, acq]);
+  // What a source can drop, both lists at once — a BiS item is a drop like any
+  // other, and the mean is over the whole chest.
+  var dropPool = useMemo(function() { return activeItems.concat(mergedAlts); }, [activeItems, mergedAlts]);
   var farmCounts = useMemo(function() {
     var c = {};
     var seen = {};
@@ -336,15 +350,37 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     if (filter === "all") return [];
     var items = mergedAlts.filter(function(a) { return getSource(a) === filter; });
     if (!sr) return items;
-    // ALTS arrives ordered by how well each item suits the spec, best first.
-    // Re-sorting on a grade would undo that, so the only thing moved is what
-    // the player already has: done rows sink, the rest keep the file's order.
-    return items.slice().sort(function(a, b) {
-      var da = calcAltPriority(a, sr, targetInfo.max, acq).tier === 4;
-      var db = calcAltPriority(b, sr, targetInfo.max, acq).tier === 4;
-      return (da ? 1 : 0) - (db ? 1 : 0);
+    // Ordered by what the player stands to gain, because that is the question
+    // they opened the dungeon to ask. The file's own order — how well an item
+    // suits the spec — breaks the ties, and a slot's candidates all carry the
+    // same gain, so within a slot it is the only thing sorting them.
+    // Items already owned sink: nothing to expect from a drop that happened.
+    var ranked = items.map(function(a, i) {
+      return {
+        item: a, order: i,
+        owned: calcAltPriority(a, sr, targetInfo.max, acq).tier === 4,
+        gain: slotGain(a, gainCtx),
+      };
     });
-  }, [filter, mergedAlts, sr, acq, allStats, PRIORITY_STATS, targetInfo.max]);
+    ranked.sort(function(a, b) {
+      if (a.owned !== b.owned) return a.owned ? 1 : -1;
+      if (a.gain !== b.gain) return b.gain - a.gain;
+      return a.order - b.order;
+    });
+    return ranked.map(function(r) { return r.item; });
+  }, [filter, mergedAlts, sr, acq, gainCtx, targetInfo.max]);
+  // Dungeons only. The raid runs on a weekly lockout and a per-boss table, and
+  // tier/crafted/vault are not drops, so their per-run value is not on this
+  // scale — they keep their place in the row.
+  var orderedDungeons = useMemo(function() {
+    var scored = specDungeons.filter(function(d) { return !!farmCounts[d]; }).map(function(d) {
+      return { source: d, score: sr ? dungeonExpectation(d, dropPool, gainCtx) : 0 };
+    });
+    return scored.sort(function(a, b) {
+      if (b.score !== a.score) return b.score - a.score;
+      return specDungeons.indexOf(a.source) - specDungeons.indexOf(b.source);
+    });
+  }, [specDungeons, farmCounts, sr, dropPool, gainCtx]);
   var nonDungeonSources = useMemo(function() {
     var sources = {};
     activeItems.forEach(function(item) { var s = getSource(item); if (!DUNGEONS[s]) sources[s] = (sources[s] || 0) + 1; });
@@ -419,15 +455,12 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           return <FilterButton key={ns.source} source={ns.source} label={t("sources." + ns.source) || ns.source} active={filter === ns.source} done={!!sr && rem === 0} farmCount={fc} hasSr={!!sr} colors={PREP_COLORS} onToggle={changeFilter} />;
         })}
         {(nonDungeonSources.prep.length > 0) && <span style={{ width: 1, height: 20, background: "#2a2a3a", alignSelf: "center" }} />}
-        {specDungeons.map(function(d) {
-          if (!farmCounts[d]) return null;
-          return { source: d, score: sr ? calcDungeonScore(d, farmCounts[d], activeItems, sr, targetInfo.max, allStats, PRIORITY_STATS, acq) : 0 };
-        }).filter(Boolean).sort(function(a, b) { return b.score - a.score; }).map(function(item) {
+        {orderedDungeons.map(function(item, di) {
           var d = item.source;
           var c = DUNGEONS[d] || { g: "#333", b: "#555", t: "#aaa" };
           var fc = farmCounts[d] || { bis: 0, alt: 0 };
           var rem = fc.bis + fc.alt;
-          return <FilterButton key={d} source={d} label={t("dungeons." + d)} active={filter === d} done={!!sr && rem === 0} farmCount={fc} hasSr={!!sr} colors={getDungeonFilterColors(c)} pulse={!!sr} onToggle={changeFilter} />;
+          return <FilterButton key={d} source={d} label={t("dungeons." + d)} active={filter === d} done={!!sr && rem === 0} farmCount={fc} hasSr={!!sr} colors={getDungeonFilterColors(c)} pulse={!!sr} onToggle={changeFilter} best={di === 0 && item.score > 0 ? t("ui.bestExpected") : null} />;
         })}
         {nonDungeonSources.raid.length > 0 && <span style={{ width: 1, height: 20, background: "#2a2a3a", alignSelf: "center" }} />}
         {nonDungeonSources.raid.map(function(ns) {
@@ -470,7 +503,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           {displayBis.map(function(item, idx) {
             var p = sr ? calcPriority(item, sr, targetInfo.max, allStats, PRIORITY_STATS) : null;
             if (acq[item.id]) { if (!p || p.tier !== 4) p = { tier: 4, deficit: 0, ilvl: p ? p.ilvl : 0, labelKey: "done", color: "#4dca6b", worst: false }; }
-            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} />;
+            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} gainCtx={gainCtx} />;
           })}
         </div>
         {displayAlts.length > 0 && (
@@ -482,7 +515,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
               {displayAlts.map(function(item, idx) {
                 var altP = sr ? calcAltPriority(item, sr, targetInfo.max, acq) : null;
                 if (acq[item.id] && (!altP || altP.tier !== 4)) altP = { tier: 4, deficit: 0, ilvl: 0, labelKey: "done", color: "#4dca6b" };
-                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} knownBisIds={knownBisIds} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} />;
+                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} gainCtx={gainCtx} />;
               })}
             </div>
           </div>

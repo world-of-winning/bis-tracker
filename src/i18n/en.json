@@ -202,6 +202,8 @@
         "equipped": "Equipped",
         "mythicBisDone": "M+ BiS ✓",
         "equivalentFit": "Equivalent",
+        "bestExpected": "Best expected gain from one run",
+        "statsDowngrade": "Secondary stats are a step back",
         "viewBis": "BiS",
         "viewMythic": "M+",
         "bisItems": "BiS Items",

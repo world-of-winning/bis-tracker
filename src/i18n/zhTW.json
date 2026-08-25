@@ -202,6 +202,8 @@
         "equipped": "已裝備",
         "mythicBisDone": "M+ BiS ✓",
         "equivalentFit": "等效",
+        "bestExpected": "單次通關期望收益最高",
+        "statsDowngrade": "副屬性不如目前裝備",
         "viewBis": "BiS",
         "viewMythic": "M+",
         "bisItems": "BiS 物品",
