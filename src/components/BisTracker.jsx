@@ -129,6 +129,13 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   // What a source can drop, both lists at once — a BiS item is a drop like any
   // other, and the mean is over the whole chest.
   var dropPool = useMemo(function() { return activeItems.concat(mergedAlts); }, [activeItems, mergedAlts]);
+  var simcNames = useMemo(function() {
+    var names = {};
+    if (!sr) return names;
+    if (sr.gear) Object.keys(sr.gear).forEach(function(slot) { var g = sr.gear[slot]; if (g && g.name) names[g.id] = g.name; });
+    if (sr.bag) sr.bag.forEach(function(b) { if (b && b.name) names[b.id] = b.name; });
+    return names;
+  }, [sr]);
   var farmCounts = useMemo(function() {
     var c = {};
     var seen = {};
@@ -505,7 +512,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           {displayBis.map(function(item, idx) {
             var p = sr ? calcPriority(item, sr, targetInfo.max, allStats, PRIORITY_STATS) : null;
             if (acq[item.id]) { if (!p || p.tier !== 4) p = { tier: 4, deficit: 0, ilvl: p ? p.ilvl : 0, labelKey: "done", color: "#4dca6b", worst: false }; }
-            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} gainCtx={gainCtx} />;
+            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} gainCtx={gainCtx} simcNames={simcNames} />;
           })}
         </div>
         {displayAlts.length > 0 && (
@@ -517,7 +524,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
               {displayAlts.map(function(item, idx) {
                 var altP = sr ? calcAltPriority(item, sr, targetInfo.max, acq) : null;
                 if (acq[item.id] && (!altP || altP.tier !== 4)) altP = { tier: 4, deficit: 0, ilvl: 0, labelKey: "done", color: "#4dca6b" };
-                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} gainCtx={gainCtx} />;
+                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} gainCtx={gainCtx} simcNames={simcNames} />;
               })}
             </div>
           </div>

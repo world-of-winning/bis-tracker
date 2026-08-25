@@ -38,8 +38,8 @@ function localizeSource(source, t) {
     .join(" & ");
 }
 
-export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, whSpecId, armorTypes, expectedArmor, simcSpec, primaryStats, expectedPrimary, gainCtx }) {
-  var { t, itemName, knownItemName, locale } = useLocale();
+export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, theme, allStats, targetBonus, targetIlvl, whSpecId, armorTypes, expectedArmor, simcSpec, primaryStats, expectedPrimary, gainCtx, simcNames }) {
+  var { t, knownItemName, locale } = useLocale();
   var itemSource = getSource(item);
   var isDungeon = !!DUNGEONS[itemSource];
   var c = DUNGEONS[itemSource] || { b: "#8866aa", t: "#c4aadd", g: "#1a1028" };
@@ -50,7 +50,15 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
   var hasDiff = eq && eq.id !== item.id;
   var displayEq = isAlt ? altEq : (hasDiff ? eq : null);
   var chipEq = (isAlt && displayEq && displayEq.id === item.id) ? null : displayEq;
-  var chipName = chipEq ? (knownItemName(chipEq) || chipEq.name) : null;
+  // One rule for every item name on this card: ours if we have it, otherwise the
+  // one the player's own client printed, and the bare id only when neither
+  // exists. The title used to stop at the id and the chip started from SimC's
+  // name, so the two halves of a card could disagree about both language and
+  // whether a name was shown at all.
+  var nameOf = function(id, given) {
+    return knownItemName(id) || (simcNames && simcNames[id]) || given || String(id);
+  };
+  var chipName = chipEq ? nameOf(chipEq.id, chipEq.name) : null;
   var eqForTooltip = hasDiff ? eq : (isAlt && altEq ? altEq : null);
   var isSimcAlt = !isAlt && sr && sr.altItems ? sr.altItems[item.id] : false;
   // An alt row is an option, not a verdict, so it carries no grade — but the
@@ -121,7 +129,7 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
             <StatPills stats={item.stats} />
             {isEquivalentFit && <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: "#14201a", color: "#7fb08a", border: "1px solid #2c4634" }}>{"\u2248 " + t("ui.equivalentFit")}</span>}
           </div>
-          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + whSpec + (!hasDiff && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(eqForTooltip ? {"data-eq-id": eqForTooltip.id, "data-eq-bonus": eqForTooltip.bonus || "", "data-eq-ilvl": eqForTooltip.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: isDoneState ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: isDoneState ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{itemName(item)}</a>
+          <a href={"https://www.wowhead.com" + whLocale + "/item=" + item.id + whSpec + (!hasDiff && eq ? (eq.bonus ? "&bonus=" + eq.bonus : "") + (eq.ilvl ? "&ilvl=" + eq.ilvl : "") : (targetBonus ? "&bonus=" + targetBonus : ""))} target="_blank" rel="noopener noreferrer" data-wh-icon-size="small" {...(eqForTooltip ? {"data-eq-id": eqForTooltip.id, "data-eq-bonus": eqForTooltip.bonus || "", "data-eq-ilvl": eqForTooltip.ilvl || ""} : {})} style={{ display: "block", fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 2, color: isDoneState ? "#556644" : (isAlt ? "#d4b87a" : "#e8dcc0"), textDecoration: isDoneState ? "line-through" : "none", textDecorationColor: "#3a5a2a" }}>{nameOf(item.id)}</a>
           {wrongArmor && (
             <div className="wrong-armor-badge" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 5, fontSize: 12, fontWeight: 800, background: "linear-gradient(135deg,#3a0a0a,#2a0505)", border: "2px solid #ff2020", color: "#ff4444", marginBottom: 6, letterSpacing: .5 }}>
               <span style={{ fontSize: 16 }}>{"\u26A0"}</span>
