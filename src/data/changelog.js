@@ -2,6 +2,20 @@
 // { date: "YYYY-MM-DD", text: { ko, en } }
 export var CHANGELOG = [
     {
+        date: "2026-08-25",
+        text: {
+            ko: "던전 추천 순서를 내 장비 기준 기대 이득으로 교체 — 한 번 돌 때 얻을 아이템 레벨의 평균으로 정렬하고, 강화만 하면 되는 부위는 세지 않는다. Alt 목록도 교체 대상과 그 차이를 다시 표시",
+            en: "Dungeon order now follows the expected gain from your own gear — the average item levels one run is worth, counting nothing for a slot that upgrade currency already fixes. Alt rows say again what they would replace and by how much",
+        },
+    },
+    {
+        date: "2026-08-22",
+        text: {
+            ko: "Alt 목록을 게임 클라이언트의 드랍 테이블에서 생성 — 스펙당 최소 76개로 늘고, 부가 능력치가 아니라 착용 가능 여부로 선별한다. 스탯 우선순위는 murlok이 게시한 차트를 직접 읽어 재산출",
+            en: "Alt lists rebuilt from the game client's own drop table — at least 76 per spec, selected on what the spec can wear rather than on secondary stats. Stat priorities re-derived by reading murlok's published chart",
+        },
+    },
+    {
         date: "2026-08-15",
         text: {
             ko: "미드나잇 시즌 2 지원 — 시즌 2 던전 8곳 기준으로 전 40개 스펙 BiS 재생성, 등급 체계를 노련가~신화로 교체, 던전·보스 이름 10개 언어 현지화",
