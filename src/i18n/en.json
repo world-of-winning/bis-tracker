@@ -204,6 +204,8 @@
         "equivalentFit": "Equivalent",
         "bestExpected": "Best expected gain",
         "statsDowngrade": "Stat downgrade",
+        "altReplaces": "replaces",
+        "altEmptySlot": "empty slot",
         "gainAtTarget": "slot at target",
         "gainEnhance": "upgrade, not a drop",
         "gainTrinketUnrated": "effect not rated",

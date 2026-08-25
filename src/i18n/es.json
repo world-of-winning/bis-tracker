@@ -203,6 +203,8 @@
         "equivalentFit": "Equivalente",
         "bestExpected": "Mayor ganancia esperada",
         "statsDowngrade": "Peores estadísticas",
+        "altReplaces": "sustituye",
+        "altEmptySlot": "ranura vacía",
         "gainAtTarget": "ranura completa",
         "gainEnhance": "mejora, no botín",
         "gainTrinketUnrated": "efecto sin evaluar",

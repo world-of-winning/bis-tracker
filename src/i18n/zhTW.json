@@ -204,6 +204,8 @@
         "equivalentFit": "等效",
         "bestExpected": "期望收益最高",
         "statsDowngrade": "副屬性下降",
+        "altReplaces": "替換",
+        "altEmptySlot": "空缺部位",
         "gainAtTarget": "該部位已達標",
         "gainEnhance": "強化即可，無需掉落",
         "gainTrinketUnrated": "效果未評估",

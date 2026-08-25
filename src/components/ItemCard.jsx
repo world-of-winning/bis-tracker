@@ -55,7 +55,7 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
   // player still needs to know what it would replace and by how much. Item
   // levels are the only number here; a trade down in secondaries is a marker,
   // because nothing in this project can say how many item levels it costs.
-  var alt = (isAlt && gainCtx && altEq) ? assessGain(item, gainCtx) : null;
+  var alt = (isAlt && gainCtx && gainCtx.sr) ? assessGain(item, gainCtx) : null;
   var altGain = alt ? alt.gain : 0;
   var altStatsDown = !!(alt && alt.statsRegress);
   // Every row worth nothing says why. The step-back case is left to the arrow,
@@ -135,6 +135,7 @@ export default function ItemCard({ item, isAlt, priority: p, sr, onToggle, idx, 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, alignItems: "center", marginBottom: 2 }}>
               {altGain > 0 && (
                 <div style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 5, fontSize: 11, fontWeight: 700, background: "linear-gradient(135deg,#2a1f10,#1a1508)", border: "1px solid #6a5020", color: "#c9a040" }}>
+                  <span style={{ fontSize: 9, fontWeight: 600, opacity: .75 }}>{t(displayEq ? "ui.altReplaces" : "ui.altEmptySlot")}</span>
                   {displayEq && displayEq.ilvl ? <span>{displayEq.ilvl}</span> : null}
                   <span style={{ opacity: .7, fontSize: 10 }}>{"\uFF08\u2212" + altGain + "\uFF09"}</span>
                 </div>

@@ -204,6 +204,8 @@
         "equivalentFit": "Gleichwertig",
         "bestExpected": "Bester erwarteter Gewinn",
         "statsDowngrade": "Werte schlechter",
+        "altReplaces": "ersetzt",
+        "altEmptySlot": "leerer Platz",
         "gainAtTarget": "Platz am Ziel",
         "gainEnhance": "Aufwertung, kein Drop",
         "gainTrinketUnrated": "Effekt nicht bewertet",

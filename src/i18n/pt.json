@@ -204,6 +204,8 @@
         "equivalentFit": "Equivalente",
         "bestExpected": "Maior ganho esperado",
         "statsDowngrade": "Atributos piores",
+        "altReplaces": "substitui",
+        "altEmptySlot": "espaço vazio",
         "gainAtTarget": "espaço no alvo",
         "gainEnhance": "melhoria, não drop",
         "gainTrinketUnrated": "efeito não avaliado",

@@ -204,6 +204,8 @@
         "equivalentFit": "Эквивалент",
         "bestExpected": "Лучшая ожидаемая выгода",
         "statsDowngrade": "Характеристики хуже",
+        "altReplaces": "заменит",
+        "altEmptySlot": "пустой слот",
         "gainAtTarget": "слот готов",
         "gainEnhance": "улучшение, не дроп",
         "gainTrinketUnrated": "эффект не оценён",
