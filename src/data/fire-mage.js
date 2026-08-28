@@ -141,9 +141,8 @@ export var PRIORITY_STATS = [["haste"],["mastery"],["crit"],["vers"]];
 export var STAT_CACHE_KEY = "fire-mage-stat-cache-v1";
 
 export var KNOWN_STATS = {
-  158344:[],158366:["crit","mastery"],158368:[],159137:["haste","vers"],
-  159234:["crit","mastery"],159236:[],159243:["haste","vers"],159247:["crit","haste"],
-  159254:[],159255:["mastery","vers"],159257:[],159259:["crit","haste"],
+  158366:["crit","mastery"],158368:[],159137:["haste","vers"],159234:["crit","mastery"],
+  159243:["haste","vers"],159247:["crit","haste"],159255:["mastery","vers"],159259:["crit","haste"],
   159263:["crit","vers"],159288:["mastery","vers"],159459:["haste","vers"],159667:["haste","vers"],
   160216:["crit","mastery"],162544:["mastery","vers"],193691:["haste","mastery"],193748:["crit"],
   193750:["crit","mastery"],193757:[],193762:["haste"],193763:["crit","haste"],
@@ -161,14 +160,14 @@ export var KNOWN_STATS = {
   268218:["crit","mastery"],268228:["crit","mastery"],268236:["mastery","vers"],268241:["haste","vers"],
   268242:["crit","haste"],268243:["crit","haste"],268248:["crit","vers"],268249:["crit","mastery"],
   268250:["crit","haste"],268251:["haste","mastery"],268252:["crit","haste"],268253:["haste","mastery"],
-  268255:["haste","mastery"],268257:["haste","mastery"],268265:["crit"],268266:["haste","vers"],
-  270161:[],270162:[],270164:[],270167:["haste"],
-  270168:["mastery"],270169:["haste"],270170:[],270171:["crit"],
-  270174:["mastery"],270175:["crit"],271092:["haste"],271561:["mastery","vers"],
-  271562:["crit","haste"],271563:["crit","vers"],271565:["haste","mastery"],271567:["crit","haste"],
-  271681:["crit","mastery"],271874:["mastery"],273649:[],273773:["crit","mastery"],
-  273778:["haste","mastery"],273779:["crit","haste"],273781:["crit","haste"],273785:["haste","mastery"],
-  273786:["crit","haste"],273792:["crit","haste"],273794:[],273796:[],
-  275937:[],275938:[],281227:[],
+  268255:["haste","mastery"],268257:["haste","mastery"],268265:["crit"],270161:[],
+  270162:[],270164:[],270167:["haste"],270168:["mastery"],
+  270169:["haste"],270170:[],270171:["crit"],270174:["mastery"],
+  270175:["crit"],271092:["haste"],271561:["mastery","vers"],271562:["crit","haste"],
+  271563:["crit","vers"],271565:["haste","mastery"],271567:["crit","haste"],271681:["crit","mastery"],
+  271874:["mastery"],273649:[],273773:["crit","mastery"],273778:["haste","mastery"],
+  273779:["crit","haste"],273781:["crit","haste"],273785:["haste","mastery"],273786:["crit","haste"],
+  273792:["crit","haste"],273794:[],273796:[],275937:[],
+  275938:[],281227:[],
 };
 
