@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.1.1
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v2.1.0...v2.1.1)
+
+### 🏡 Chore
+
+- **data:** Regenerate ALTS and KNOWN_STATS from the current pipeline ([#16](https://github.com/world-of-winning/bis-tracker/pull/16))
+
+### ❤️ Contributors
+
+- World Of Winning <wow-qol@proton.me>
+
 ## v2.1.0
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v2.0.0...v2.1.0)
