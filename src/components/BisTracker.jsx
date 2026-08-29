@@ -154,10 +154,12 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   // The week's vault verdict. Deliberately outside every priority
   // computation — three choices are offered and at most one is taken, so
   // counting them as owned would call a slot finished on an item the player
-  // is about to decline. A vault a week old, or one the player never opened
-  // before running /simc, gives nothing to show and asks for a fresh export.
+  // is about to decline. A vault read before the region's last weekly reset,
+  // or one the player never opened before running /simc, gives nothing to
+  // show and asks for a fresh export.
   var vault = useMemo(function() {
-    if (!sr || !sr.vault || !sr.vault.length || isVaultStale(sr.importedAt)) return null;
+    if (!sr || !sr.vault || !sr.vault.length) return null;
+    if (isVaultStale(sr.importedAt, Date.now(), sr.ci && sr.ci.region)) return null;
     return vaultVerdict(sr.vault, BIS, sr.gear, sr.bag || []);
   }, [sr, BIS]);
 

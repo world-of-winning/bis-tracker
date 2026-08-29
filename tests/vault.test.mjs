@@ -86,3 +86,76 @@ describe("isVaultStale", () => {
         expect(isVaultStale(NOW - 8 * DAY, NOW)).toBe(true);
     });
 });
+
+describe("lastVaultReset", () => {
+    it("holds each region's boundary at the same UTC instant all year", async () => {
+        const { lastVaultReset } = await import("../src/logic/vault.js");
+        // Blizzard pins the reset in UTC, so the winter and summer boundaries
+        // sit at the same hour however the local clocks have moved.
+        expect(new Date(lastVaultReset(Date.UTC(2026, 0, 15, 12), "us")).toISOString())
+            .toBe("2026-01-13T15:00:00.000Z");
+        expect(new Date(lastVaultReset(Date.UTC(2026, 6, 15, 12), "us")).toISOString())
+            .toBe("2026-07-14T15:00:00.000Z");
+        expect(new Date(lastVaultReset(Date.UTC(2026, 0, 15, 12), "eu")).toISOString())
+            .toBe("2026-01-14T04:00:00.000Z");
+        expect(new Date(lastVaultReset(Date.UTC(2026, 6, 15, 12), "eu")).toISOString())
+            .toBe("2026-07-15T04:00:00.000Z");
+    });
+
+    // Wednesday 23:00 UTC is Thursday 08:00 in Seoul, which is the reset a
+    // Korean player actually sees.
+    it("puts KR, TW and CN on Wednesday 23:00 UTC", async () => {
+        const { lastVaultReset } = await import("../src/logic/vault.js");
+        const now = Date.UTC(2026, 6, 16, 12);
+        ["kr", "tw", "cn"].forEach((r) => {
+            expect(new Date(lastVaultReset(now, r)).toISOString()).toBe("2026-07-15T23:00:00.000Z");
+        });
+    });
+
+    // Asked on the reset weekday but before the hour, the week that is running
+    // began at the previous one.
+    it("looks back a full week when the reset is still ahead today", async () => {
+        const { lastVaultReset } = await import("../src/logic/vault.js");
+        expect(new Date(lastVaultReset(Date.UTC(2026, 6, 15, 12), "kr")).toISOString())
+            .toBe("2026-07-08T23:00:00.000Z");
+        expect(new Date(lastVaultReset(Date.UTC(2026, 6, 15, 23, 1), "kr")).toISOString())
+            .toBe("2026-07-15T23:00:00.000Z");
+    });
+
+    it("reads the region case-insensitively and declines an unknown one", async () => {
+        const { lastVaultReset } = await import("../src/logic/vault.js");
+        const now = Date.UTC(2026, 6, 15, 12);
+        expect(lastVaultReset(now, "KR")).toBe(lastVaultReset(now, "kr"));
+        expect(lastVaultReset(now, "xx")).toBe(null);
+        expect(lastVaultReset(now, undefined)).toBe(null);
+    });
+});
+
+describe("isVaultStale by region", () => {
+    const NOW = Date.UTC(2026, 6, 16, 12); // Thursday, after the KR reset
+
+    it("drops an import from before this week's reset", async () => {
+        const { isVaultStale } = await import("../src/logic/vault.js");
+        expect(isVaultStale(Date.UTC(2026, 6, 15, 22), NOW, "kr")).toBe(true);
+    });
+
+    it("keeps an import taken after it, even minutes later", async () => {
+        const { isVaultStale } = await import("../src/logic/vault.js");
+        expect(isVaultStale(Date.UTC(2026, 6, 15, 23, 1), NOW, "kr")).toBe(false);
+    });
+
+    // The same import, the same age, judged opposite ways. This is what
+    // reading the region buys over counting elapsed days.
+    it("splits one import between two regions on their different resets", async () => {
+        const { isVaultStale } = await import("../src/logic/vault.js");
+        const importedAt = Date.UTC(2026, 6, 15, 12);
+        expect(isVaultStale(importedAt, NOW, "us")).toBe(false);
+        expect(isVaultStale(importedAt, NOW, "kr")).toBe(true);
+    });
+
+    it("falls back on elapsed time when the export names no region", async () => {
+        const { isVaultStale } = await import("../src/logic/vault.js");
+        expect(isVaultStale(NOW - 2 * 24 * 60 * 60 * 1000, NOW, null)).toBe(false);
+        expect(isVaultStale(NOW - 8 * 24 * 60 * 60 * 1000, NOW, null)).toBe(true);
+    });
+});

@@ -68,17 +68,56 @@ export function vaultVerdict(vault, bis, gear, bag) {
   return { candidates: candidates, take: take };
 }
 
-// A vault import goes stale when its week ends. The exact instant is knowable
-// — the SimC export carries `region=`, and each region resets on a fixed
-// weekday and local hour — but the hour moves with daylight saving in US and
-// EU, and the published tables disagree on KR/TW/CN. Seven days is exact where
-// it matters: whatever the region, an import a week old is from a vault that
-// has since been replaced. The cost of the coarser rule is that last week's
-// choices linger for at most a few hours past the reset, in a block whose
-// whole purpose is a decision the player makes once a week.
+// A vault import goes stale the moment its week ends, and the week ends at a
+// reset Blizzard holds at a fixed UTC instant per region — the local clock
+// moves under it across daylight saving, the UTC one does not. The SimC
+// export names the region (`region=kr`), so the boundary is computable rather
+// than approximable, and computing it needs nothing but arithmetic.
+//
+// `day` is a UTC weekday as Date.getUTCDay() reports it, `hour` a UTC hour.
+// Korea, Taiwan and China share one reset; Wednesday 23:00 UTC is Thursday
+// 08:00 in Seoul.
+var RESET = {
+  us: { day: 2, hour: 15 },
+  eu: { day: 3, hour: 4 },
+  kr: { day: 3, hour: 23 },
+  tw: { day: 3, hour: 23 },
+  cn: { day: 3, hour: 23 },
+};
+
+// Exports from before the region was read, and any region not in the table,
+// fall back to this. Seven days is coarse but never wrong in the other
+// direction: whatever the region, an import a week old is from a vault that
+// has since been replaced.
 export var VAULT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
-export function isVaultStale(importedAt, now) {
+/**
+ * The instant the current vault week began for a region, or null when the
+ * region is unknown and the caller has to fall back on elapsed time.
+ */
+export function lastVaultReset(now, region) {
+  var r = RESET[String(region || "").toLowerCase()];
+  if (!r) return null;
+  var d = new Date(now);
+  var back = (d.getUTCDay() - r.day + 7) % 7;
+  var boundary = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - back, r.hour);
+  // Same weekday but earlier in the day: the reset is still ahead, so the
+  // week that is running began seven days before it.
+  if (boundary > now) boundary -= 7 * 24 * 60 * 60 * 1000;
+  return boundary;
+}
+
+/**
+ * Whether a stored vault belongs to a week that has already turned over.
+ *
+ * @param {number} importedAt  when the SimC text was read, in epoch ms
+ * @param {number} [now]       the instant to judge against
+ * @param {string} [region]    the export's `region=` value
+ */
+export function isVaultStale(importedAt, now, region) {
   if (!importedAt) return true;
-  return (now || Date.now()) - importedAt > VAULT_MAX_AGE_MS;
+  var at = now || Date.now();
+  var reset = lastVaultReset(at, region);
+  if (reset === null) return at - importedAt > VAULT_MAX_AGE_MS;
+  return importedAt < reset;
 }
