@@ -274,7 +274,8 @@
         "vaultTitle": "La Gran Cámara de esta semana",
         "vaultVerdictVoidcore": "Ningún BiS que te falte — la tirada extra vale más",
         "vaultOwned": "ya lo tienes a {ilvl}",
-        "vaultReminder": "Abre la Gran Cámara en el juego y vuelve a copiar tu exportación de SimC para ver las opciones de esta semana."
+        "vaultReminder": "Abre la Gran Cámara en el juego y vuelve a copiar tu exportación de SimC para ver las opciones de esta semana.",
+        "vaultDismiss": "Ocultar hasta el próximo reinicio"
     },
     "primaryStats": {
         "str": "Fuerza",

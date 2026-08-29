@@ -275,7 +275,8 @@
         "vaultTitle": "This Week's Great Vault",
         "vaultVerdictVoidcore": "No BiS you still need this week — the bonus roll is the better use",
         "vaultOwned": "already owned at {ilvl}",
-        "vaultReminder": "Open the Great Vault in-game, then copy your SimC export again to see this week's choices."
+        "vaultReminder": "Open the Great Vault in-game, then copy your SimC export again to see this week's choices.",
+        "vaultDismiss": "Hide until the next reset"
     },
     "primaryStats": {
         "str": "Strength",

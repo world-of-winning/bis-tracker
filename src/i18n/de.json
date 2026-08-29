@@ -275,7 +275,8 @@
         "vaultTitle": "Die Große Schatzkammer dieser Woche",
         "vaultVerdictVoidcore": "Kein BiS, das dir noch fehlt — der Bonuswurf ist die bessere Wahl",
         "vaultOwned": "bereits auf {ilvl} vorhanden",
-        "vaultReminder": "Öffne im Spiel die Große Schatzkammer und kopiere danach deinen SimC-Export erneut, um die Auswahl dieser Woche zu sehen."
+        "vaultReminder": "Öffne im Spiel die Große Schatzkammer und kopiere danach deinen SimC-Export erneut, um die Auswahl dieser Woche zu sehen.",
+        "vaultDismiss": "Bis zum nächsten Reset ausblenden"
     },
     "primaryStats": {
         "str": "Stärke",
