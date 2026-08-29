@@ -30,7 +30,11 @@
  * @param {Object} [acquired]  the tracker's ✓ marks, id → true
  * @returns {{ candidates: Array, take: Object|null }}
  *   candidates carry `isBis`, `bisSlot`, `ownedIlvl`, `acquired` and `gain`;
- *   `take` is the one to pick, or null when the Voidcore wins.
+ *   `take` is the strongest of them, or null when the Voidcore wins. Every
+ *   candidate worth putting forward carries its own `take` — the screen
+ *   marks them all, and stops there. Which of two BiS items is worth more
+ *   this week turns on sims, tier bonuses and what the player farms next,
+ *   and this function is not the place that answer comes from.
  */
 export function vaultVerdict(vault, bis, gear, bag, acquired) {
   var bisSlotById = {};

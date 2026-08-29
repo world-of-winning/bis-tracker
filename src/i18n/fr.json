@@ -273,8 +273,8 @@
         "selectSpec": "Sélectionner une spécialisation",
         "altOptions": "Alt — Autres options pour cet emplacement",
         "vaultTitle": "Grand coffre de la semaine",
-        "vaultTakeItem": "Prendre celui-ci",
-        "vaultVerdictVoidcore": "Prenez le jet bonus — aucun BiS qui vous manque encore ici",
+        "vaultTakeItem": "Candidat sérieux",
+        "vaultVerdictVoidcore": "Aucun BiS qui vous manque encore — le jet bonus vaut mieux",
         "vaultOwned": "déjà possédé en {ilvl}",
         "vaultReminder": "Ouvrez le Grand coffre en jeu, puis copiez à nouveau votre export SimC pour voir les choix de cette semaine."
     },

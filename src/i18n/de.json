@@ -273,8 +273,8 @@
         "selectSpec": "Spezialisierung wählen",
         "altOptions": "Alt — Weitere Optionen für diesen Platz",
         "vaultTitle": "Die Große Schatzkammer dieser Woche",
-        "vaultTakeItem": "Dieses nehmen",
-        "vaultVerdictVoidcore": "Nimm den Bonuswurf — hier ist kein BiS, das dir noch fehlt",
+        "vaultTakeItem": "Starker Kandidat",
+        "vaultVerdictVoidcore": "Kein BiS, das dir noch fehlt — der Bonuswurf ist die bessere Wahl",
         "vaultOwned": "bereits auf {ilvl} vorhanden",
         "vaultReminder": "Öffne im Spiel die Große Schatzkammer und kopiere danach deinen SimC-Export erneut, um die Auswahl dieser Woche zu sehen."
     },

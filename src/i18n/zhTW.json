@@ -273,8 +273,8 @@
         "selectSpec": "選擇專精",
         "altOptions": "Alt — 該部位的其他選擇",
         "vaultTitle": "本週的巨龍寶庫",
-        "vaultTakeItem": "選這件",
-        "vaultVerdictVoidcore": "選擇獎勵擲骰 — 這裡沒有你還缺的 BiS",
+        "vaultTakeItem": "強力候選",
+        "vaultVerdictVoidcore": "本週沒有你還缺的 BiS — 獎勵擲骰更划算",
         "vaultOwned": "已擁有，{ilvl}",
         "vaultReminder": "在遊戲中打開巨龍寶庫，然後重新複製 SimC 匯出文字，即可看到本週的選項。"
     },
