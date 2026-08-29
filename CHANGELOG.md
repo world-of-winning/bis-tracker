@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.2.0
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v2.1.1...v2.2.0)
+
+### 🚀 Enhancements
+
+- Compare BiS items on Raidbots from the stored SimC export ([#18](https://github.com/world-of-winning/bis-tracker/pull/18))
+
+### ❤️ Contributors
+
+- World Of Winning <wow-qol@proton.me>
+
 ## v2.1.1
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v2.1.0...v2.1.1)
