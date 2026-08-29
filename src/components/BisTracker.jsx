@@ -109,6 +109,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var [feedback, setFeedback] = useState(null);
   var [raidbotsOpen, setRaidbotsOpen] = useState(false);
   var [raidbotsAttn, setRaidbotsAttn] = useState(false);
+  var [vaultDismissedAt, setVaultDismissedAt] = useState(null);
   var [targetTier, setTargetTier] = useState(DEFAULT_TIER);
   var [loaded, setLoaded] = useState(false);
   var [runtimeStats, setRuntimeStats] = useState({});
@@ -166,11 +167,21 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     var id = setInterval(function() { setVaultTick(function(n) { return n + 1; }); }, 10 * 60 * 1000);
     return function() { clearInterval(id); };
   }, []);
+  // Dismissing says "I have dealt with this week's vault" — something only the
+  // player knows, because a claimed vault and an unopened one look the same in
+  // a stored export. It lasts exactly as long as an import does, until the
+  // region's next reset, so the same staleness question answers both.
+  var vaultDismissed = !isVaultStale(vaultDismissedAt, Date.now(), sr && sr.ci ? sr.ci.region : null);
   var vault = useMemo(function() {
     if (!sr || !sr.vault || !sr.vault.length) return null;
     if (isVaultStale(sr.importedAt, Date.now(), sr.ci && sr.ci.region)) return null;
     return vaultVerdict(sr.vault, BIS, sr.gear, sr.bag || [], acq);
   }, [sr, BIS, acq, vaultTick]);
+  var dismissVault = useCallback(function() {
+    var at = Date.now();
+    setVaultDismissedAt(at);
+    sv({ vaultDismissedAt: at });
+  }, [sv]);
 
   useEffect(function() {
     var d = load(STORAGE_KEY);
@@ -201,6 +212,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       if (cachedAT) setRuntimeArmorTypes(cachedAT);
       var cachedPS = load(STAT_CACHE_KEY + "-primary-v4");
       if (cachedPS) setRuntimePrimaryStats(cachedPS);
+      setVaultDismissedAt(d.vaultDismissedAt || null);
       setTargetTier(validTier(d.targetTier));
       setFilter(validFilter(d.filter, itemSources));
     } else {
@@ -249,8 +261,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     return function() { clearTimeout(t); };
   }, [filter, sr, targetTier, STORAGE_KEY]);
   var stateRef = useRef({});
-  stateRef.current = { acq: acq, sr: sr, targetTier: targetTier, filter: filter };
-  var sv = useCallback(function(overrides) { var d = Object.assign({}, stateRef.current, overrides); persist(STORAGE_KEY, { acq: d.acq, sr: d.sr, targetTier: d.targetTier, filter: d.filter }); }, [STORAGE_KEY]);
+  stateRef.current = { acq: acq, sr: sr, targetTier: targetTier, filter: filter, vaultDismissedAt: vaultDismissedAt };
+  var sv = useCallback(function(overrides) { var d = Object.assign({}, stateRef.current, overrides); persist(STORAGE_KEY, { acq: d.acq, sr: d.sr, targetTier: d.targetTier, filter: d.filter, vaultDismissedAt: d.vaultDismissedAt }); }, [STORAGE_KEY]);
   function changeFilter(f) { setFilter(f); sv({ filter: f }); }
   var toggle = useCallback(function(id) { setAcq(function(prev) { var next = Object.assign({}, prev); next[id] = !next[id]; sv({ acq: next }); return next; }); }, [sv]);
   var changeTarget = useCallback(function(key) { setTargetTier(key); sv({ targetTier: key }); }, [sv]);
@@ -404,9 +416,10 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     var cachedPS3 = load(STAT_CACHE_KEY + "-primary-v4"); setRuntimePrimaryStats(cachedPS3 || {});
     if (d) {
       setAcq(d.acq || {}); setSr(d.sr || null); setSimcOpen(!d.sr);
+      setVaultDismissedAt(d.vaultDismissedAt || null);
       setTargetTier(validTier(d.targetTier));
       setFilter(validFilter(d.filter, itemSources));
-    } else { setAcq({}); setSr(null); setTargetTier(DEFAULT_TIER); setSimcOpen(false); setFilter("all"); }
+    } else { setAcq({}); setSr(null); setTargetTier(DEFAULT_TIER); setSimcOpen(false); setFilter("all"); setVaultDismissedAt(null); }
   }, [STORAGE_KEY, STAT_CACHE_KEY, itemSources]);
   var initialImportDone = useRef(false);
   useEffect(function() {
@@ -541,11 +554,12 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           {"ilvl " + sr.ci.avgIlvl}
         </span>}
       </div>
-      {sr && (
+      {sr && !vaultDismissed && (
         <div style={{ marginTop: 10, padding: "10px 14px", borderRadius: 8, background: "#0f0f18", border: "1px solid #1e1e30" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
             <span style={{ fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 700, color: theme.accent }}>{t("ui.vaultTitle")}</span>
             {vault && !vault.take && <span style={{ fontSize: 11, fontWeight: 600, color: "#ffd479" }}>{t("ui.vaultVerdictVoidcore")}</span>}
+            <button onClick={dismissVault} title={t("ui.vaultDismiss")} aria-label={t("ui.vaultDismiss")} style={{ marginLeft: "auto", padding: "1px 8px", borderRadius: 6, background: "transparent", border: "1px solid #26263a", color: "#556666", fontSize: 12, fontWeight: 700, cursor: "pointer", lineHeight: 1.5 }}>{"\u00D7"}</button>
           </div>
           {vault ? (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>

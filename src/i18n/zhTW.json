@@ -275,7 +275,8 @@
         "vaultTitle": "本週的巨龍寶庫",
         "vaultVerdictVoidcore": "本週沒有你還缺的 BiS — 獎勵擲骰更划算",
         "vaultOwned": "已擁有，{ilvl}",
-        "vaultReminder": "在遊戲中打開巨龍寶庫，然後重新複製 SimC 匯出文字，即可看到本週的選項。"
+        "vaultReminder": "在遊戲中打開巨龍寶庫，然後重新複製 SimC 匯出文字，即可看到本週的選項。",
+        "vaultDismiss": "隱藏至下次重置"
     },
     "primaryStats": {
         "str": "力量",

@@ -275,7 +275,8 @@
         "vaultTitle": "이번 주 위대한 금고",
         "vaultVerdictVoidcore": "이번 주 금고에 아직 필요한 BiS가 없습니다 — 주사위 쪽이 낫습니다",
         "vaultOwned": "이미 {ilvl}로 보유",
-        "vaultReminder": "게임에서 위대한 금고를 연 뒤 SimC를 다시 복사하면 이번 주 후보가 보입니다."
+        "vaultReminder": "게임에서 위대한 금고를 연 뒤 SimC를 다시 복사하면 이번 주 후보가 보입니다.",
+        "vaultDismiss": "다음 리셋까지 숨기기"
     },
     "primaryStats": {
         "str": "힘",

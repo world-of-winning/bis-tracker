@@ -275,7 +275,8 @@
         "vaultTitle": "La Grande Cripta di questa settimana",
         "vaultVerdictVoidcore": "Nessun BiS che ti manchi — il tiro bonus rende di più",
         "vaultOwned": "già posseduto a {ilvl}",
-        "vaultReminder": "Apri la Grande Cripta nel gioco, poi copia di nuovo il tuo export SimC per vedere le scelte di questa settimana."
+        "vaultReminder": "Apri la Grande Cripta nel gioco, poi copia di nuovo il tuo export SimC per vedere le scelte di questa settimana.",
+        "vaultDismiss": "Nascondi fino al prossimo reset"
     },
     "primaryStats": {
         "str": "Forza",
