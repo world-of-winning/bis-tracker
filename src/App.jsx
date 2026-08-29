@@ -194,7 +194,7 @@ function VersionBadge({ accent, bg, border, size }) {
 }
 
 // Bumping the key re-shows the banner; the old key stays dismissed forever.
-var SEASON_BANNER_KEY = "bis-banner-midnight-s2";
+var SEASON_BANNER_KEY = "bis-banner-raidbots-compare";
 
 function SeasonBanner({ maxWidth }) {
   var { t } = useLocale();
@@ -205,14 +205,14 @@ function SeasonBanner({ maxWidth }) {
     setDismissed(true);
   }
   return (
-    <div role="status" style={{ width: "100%", maxWidth: maxWidth || 600, margin: "0 auto 20px", display: "flex", alignItems: "flex-start", gap: 12, textAlign: "left", padding: "12px 14px", borderRadius: 10, background: "linear-gradient(135deg,#1a0b33 0%,#0c0c16 70%)", border: "1px solid #7832C855", boxShadow: "0 0 18px #7832C81f" }}>
-      <span style={{ flexShrink: 0, marginTop: 1, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#C88CFF", background: "#7832C822", border: "1px solid #7832C866", borderRadius: 4, padding: "2px 7px" }}>{t("ui.s2BannerTag")}</span>
+    <div role="status" style={{ width: "100%", maxWidth: maxWidth || 600, margin: "0 auto 20px", display: "flex", alignItems: "flex-start", gap: 12, textAlign: "left", padding: "12px 14px", borderRadius: 10, background: "linear-gradient(135deg,#1e1806 0%,#0c0c16 70%)", border: "1px solid #c9a22755", boxShadow: "0 0 18px #c9a2271f" }}>
+      <span style={{ flexShrink: 0, marginTop: 1, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#ffd479", background: "#c9a22722", border: "1px solid #c9a22766", borderRadius: 4, padding: "2px 7px" }}>{t("ui.rbBannerTag")}</span>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: "#DCBEFF", marginBottom: 3 }}>{t("ui.s2BannerTitle")}</div>
-        <div style={{ fontSize: 12, color: "#99887a", lineHeight: 1.6 }}>{t("ui.s2BannerBody")}</div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#e8d9a0", marginBottom: 3 }}>{t("ui.rbBannerTitle")}</div>
+        <div style={{ fontSize: 12, color: "#99887a", lineHeight: 1.6 }}>{t("ui.rbBannerBody")}</div>
       </div>
-      <button onClick={close} aria-label={t("ui.s2BannerDismiss")} title={t("ui.s2BannerDismiss")}
-        style={{ flexShrink: 0, background: "none", border: "none", color: "#66557a", fontSize: 16, lineHeight: 1, cursor: "pointer", padding: "2px 4px" }}>&times;</button>
+      <button onClick={close} aria-label={t("ui.rbBannerDismiss")} title={t("ui.rbBannerDismiss")}
+        style={{ flexShrink: 0, background: "none", border: "none", color: "#7a6a45", fontSize: 16, lineHeight: 1, cursor: "pointer", padding: "2px 4px" }}>&times;</button>
     </div>
   );
 }

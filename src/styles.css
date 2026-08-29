@@ -11,6 +11,8 @@
 @keyframes urgPulse { 0%, 100% { box-shadow: 0 0 4px rgba(255,107,107,0.1); } 50% { box-shadow: 0 0 12px rgba(255,107,107,0.2); } }
 @keyframes wrongArmorPulse { 0%, 100% { box-shadow: 0 0 8px rgba(255,32,32,0.3), inset 0 0 20px rgba(255,0,0,0.05); } 50% { box-shadow: 0 0 20px rgba(255,32,32,0.5), inset 0 0 30px rgba(255,0,0,0.1); } }
 @keyframes altGlow { 0%, 100% { box-shadow: 0 0 4px rgba(232,168,76,0.1); } 50% { box-shadow: 0 0 12px rgba(232,168,76,0.2); } }
+@keyframes rbPulse { 0%, 100% { box-shadow: 0 0 4px var(--rb-glow-lo); } 50% { box-shadow: 0 0 16px var(--rb-glow-hi); } }
+.rb-attn { animation: rbPulse 1.6s ease-in-out infinite; }
 
 .card-enter { animation: fadeIn 0.35s ease-out both; }
 .pfill { background-size: 200% 100%; animation: shimmer 3s ease-in-out infinite; }
