@@ -1,4 +1,4 @@
-export var RAIDBOTS_URL = "https://www.raidbots.com/simbot/gear";
+export var RAIDBOTS_URL = "https://www.raidbots.com/simbot/topgear";
 
 /**
  * Build a Raidbots Top Gear paste: the character's original SimC text with
