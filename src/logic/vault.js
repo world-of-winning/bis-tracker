@@ -18,15 +18,21 @@
  * most one is taken, so counting them as owned would say a slot is finished
  * on the strength of an item the player is about to decline.
  *
+ * The ✓ marks count here, unlike in the Raidbots export. There ✓ means "stop
+ * farming" and a BiS in the bank still deserves a sim line. Here the question
+ * is whether one vault pick is worth spending, and the bank is not in the
+ * addon's bag section — so ✓ is the only signal that the item is already had.
+ *
  * @param {Array}  vault  parseSimC vault list ({ slot, id, ilvl, name })
  * @param {Array}  bis    BIS entries ({ slot, id })
  * @param {Object} gear   parseSimC gear map (slot → { id, ilvl })
  * @param {Array}  bag    parseSimC bag list ({ id, ilvl })
+ * @param {Object} [acquired]  the tracker's ✓ marks, id → true
  * @returns {{ candidates: Array, take: Object|null }}
- *   candidates carry `isBis`, `bisSlot`, `ownedIlvl` and `gain`; `take` is the
- *   one to pick, or null when the Voidcore wins.
+ *   candidates carry `isBis`, `bisSlot`, `ownedIlvl`, `acquired` and `gain`;
+ *   `take` is the one to pick, or null when the Voidcore wins.
  */
-export function vaultVerdict(vault, bis, gear, bag) {
+export function vaultVerdict(vault, bis, gear, bag, acquired) {
   var bisSlotById = {};
   (bis || []).forEach(function(b) { if (!(b.id in bisSlotById)) bisSlotById[b.id] = b.slot; });
 
@@ -42,8 +48,15 @@ export function vaultVerdict(vault, bis, gear, bag) {
 
   var candidates = (vault || []).map(function(v) {
     var isBis = v.id in bisSlotById;
+    var ticked = !!(acquired && acquired[v.id]);
     var ownedIlvl = v.id in heldIlvl ? heldIlvl[v.id] : null;
     var lv = v.ilvl || 0;
+    // The addon writes the "# Name (ilvl)" comment only when it knows both,
+    // so an item the client has not cached arrives with no item level at all.
+    // Ownership decides, not the number: an item never looted is worth taking
+    // whether or not its level parsed, and a copy already held is only beaten
+    // by an offer that reads higher than it.
+    var owned = ticked || ownedIlvl !== null;
     return {
       slot: v.slot,
       id: v.id,
@@ -53,17 +66,21 @@ export function vaultVerdict(vault, bis, gear, bag) {
       isBis: isBis,
       bisSlot: isBis ? bisSlotById[v.id] : null,
       ownedIlvl: ownedIlvl,
-      // Against nothing held, the whole item level is the gain; against a copy
-      // already owned, only what it adds. A copy at or above the offer gains 0
-      // and is not worth a vault pick.
-      gain: isBis ? lv - (ownedIlvl || 0) : 0,
+      acquired: ticked,
+      gain: ownedIlvl !== null ? lv - ownedIlvl : lv,
+      take: isBis && (!owned || (ownedIlvl !== null && lv > ownedIlvl)),
     };
   });
 
+  // An item never looted beats a copy being pushed a few item levels, and
+  // between two of a kind the larger gain wins.
   var take = null;
   candidates.forEach(function(c) {
-    c.take = c.isBis && c.gain > 0;
-    if (c.take && (!take || c.gain > take.gain)) take = c;
+    if (!c.take) return;
+    if (!take) { take = c; return; }
+    if (c.ownedIlvl === null && take.ownedIlvl !== null) { take = c; return; }
+    if (c.ownedIlvl !== null && take.ownedIlvl === null) return;
+    if (c.gain > take.gain) take = c;
   });
   return { candidates: candidates, take: take };
 }

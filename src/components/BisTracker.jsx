@@ -157,11 +157,19 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   // is about to decline. A vault read before the region's last weekly reset,
   // or one the player never opened before running /simc, gives nothing to
   // show and asks for a fresh export.
+  // A farming tracker gets left open for days, and the reset happens while it
+  // is. Without a tick the block would still be showing last week's choices,
+  // "Take this" badge and all, on a page that has not been reloaded since.
+  var [vaultTick, setVaultTick] = useState(0);
+  useEffect(function() {
+    var id = setInterval(function() { setVaultTick(function(n) { return n + 1; }); }, 10 * 60 * 1000);
+    return function() { clearInterval(id); };
+  }, []);
   var vault = useMemo(function() {
     if (!sr || !sr.vault || !sr.vault.length) return null;
     if (isVaultStale(sr.importedAt, Date.now(), sr.ci && sr.ci.region)) return null;
-    return vaultVerdict(sr.vault, BIS, sr.gear, sr.bag || []);
-  }, [sr, BIS]);
+    return vaultVerdict(sr.vault, BIS, sr.gear, sr.bag || [], acq);
+  }, [sr, BIS, acq, vaultTick]);
 
   useEffect(function() {
     var d = load(STORAGE_KEY);
@@ -184,6 +192,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             }).sr;
           }
         }
+        if (restored !== d.sr) persist(STORAGE_KEY, { acq: d.acq || {}, sr: restored, targetTier: d.targetTier, filter: d.filter });
         setSr(restored); setSimcOpen(false);
         if (onCharDetected && restored.ci) onCharDetected(restored.ci.name);
       } else { setSimcOpen(true); }
@@ -330,14 +339,21 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     if (importing) return;
     var d = load(source.storageKey);
     if (!d || !d.sr || !d.sr.gear) return;
-    var sourceGear = d.sr.gear;
-    var sourceBag = d.sr.bag || [];
-    var sourceCi = d.sr.ci;
+    // The source save may predate the section split, with the vault, a
+    // vendor's stock and other people's linked items all in its bag. Its own
+    // spec repairs it when that spec is next opened; this path may get there
+    // first, so it re-reads the text too.
+    var sourceParsed = d.sr.rawSimc ? parseSimC(d.sr.rawSimc) : null;
+    if (sourceParsed && !sourceParsed.cnt) sourceParsed = null;
+    var sourceGear = sourceParsed ? sourceParsed.gear : d.sr.gear;
+    var sourceBag = sourceParsed ? sourceParsed.bag : (d.sr.bag || []);
+    var sourceVault = sourceParsed ? sourceParsed.vault : (d.sr.vault || []);
+    var sourceCi = sourceParsed ? sourceParsed.ci : d.sr.ci;
     var sourceCachedStats = load(source.statCacheKey) || {};
     var currentStats = Object.assign({}, KNOWN_STATS, sourceCachedStats, runtimeStats);
     var unknownIds = collectUnknownIds(sourceGear, sourceBag, currentStats, runtimeArmorTypes);
     function finish(mergedStats) {
-      var imp = buildImportSr(sourceGear, sourceBag, sourceCi, mergedStats, { vault: d.sr.vault || [], importedAt: d.sr.importedAt, crossSpecSource: { specKey: source.specKey, charName: source.charName, simcSpec: source.simcSpec } });
+      var imp = buildImportSr(sourceGear, sourceBag, sourceCi, mergedStats, { vault: sourceVault, importedAt: d.sr.importedAt, crossSpecSource: { specKey: source.specKey, charName: source.charName, simcSpec: source.simcSpec } });
       var importName = sourceCi.name || charName;
       var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
       if (importName === charName || !charName) { setSr(imp.sr); }
@@ -527,14 +543,14 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           </div>
           {vault ? (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
-              {vault.candidates.map(function(c) {
+              {vault.candidates.map(function(c, idx) {
                 var lit = c.take;
                 return (
-                  <a key={c.slot + "-" + c.id} href={"https://www.wowhead.com" + ((LOCALE_META[locale] || LOCALE_META.en).whPath) + "/item=" + c.id + (c.bonus ? "&bonus=" + c.bonus : "") + (c.ilvl ? "&ilvl=" + c.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 6, textDecoration: "none", background: lit ? "#2a2210" : "#14141f", border: "1px solid " + (lit ? "#ffd47966" : "#26263a") }}>
+                  <a key={idx + "-" + c.slot + "-" + c.id} href={"https://www.wowhead.com" + ((LOCALE_META[locale] || LOCALE_META.en).whPath) + "/item=" + c.id + (c.bonus ? "&bonus=" + c.bonus : "") + (c.ilvl ? "&ilvl=" + c.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 6, textDecoration: "none", background: lit ? "#2a2210" : "#14141f", border: "1px solid " + (lit ? "#ffd47966" : "#26263a") }}>
                     <span style={{ fontSize: 12, fontWeight: 700, color: lit ? "#ffd479" : "#8899aa" }}>{knownItemName(c.id) || c.name}</span>
                     {c.ilvl && <span style={{ fontSize: 10, color: "#556666" }}>{c.ilvl}</span>}
                     {lit && <span style={{ fontSize: 10, fontWeight: 700, color: "#ffd479" }}>{t("ui.vaultTakeItem")}</span>}
-                    {!lit && c.isBis && c.ownedIlvl != null && <span style={{ fontSize: 10, color: "#556644" }}>{t("ui.vaultOwned", { ilvl: c.ownedIlvl })}</span>}
+                    {!lit && c.isBis && c.ownedIlvl > 0 && <span style={{ fontSize: 10, color: "#556644" }}>{t("ui.vaultOwned", { ilvl: c.ownedIlvl })}</span>}
                   </a>
                 );
               })}

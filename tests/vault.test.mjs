@@ -159,3 +159,54 @@ describe("isVaultStale by region", () => {
         expect(isVaultStale(NOW - 8 * 24 * 60 * 60 * 1000, NOW, null)).toBe(true);
     });
 });
+
+describe("vaultVerdict edge cases the addon produces", () => {
+    const BIS2 = [{ slot: "chest", id: 120 }, { slot: "hands", id: 121 }];
+
+    // The addon writes the "# Name (ilvl)" comment only when it knows both, so
+    // an item the client has not cached arrives with no item level at all.
+    // Reading that as a zero gain hid a BiS the player had never looted.
+    it("takes an unowned BiS whose item level the addon could not name", async () => {
+        const { vaultVerdict } = await import("../src/logic/vault.js");
+        const { take } = vaultVerdict([{ slot: "chest", id: 120, ilvl: null }], BIS2, {}, []);
+        expect(take.id).toBe(120);
+    });
+
+    it("treats a ✓ mark as owning the item", async () => {
+        const { vaultVerdict } = await import("../src/logic/vault.js");
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: 334 }], BIS2, {}, [], { 120: true });
+        expect(take).toBe(null);
+    });
+
+    // ✓ means "stop farming", not "at the ceiling". A copy known to sit lower
+    // than the offer is still worth the pick.
+    it("still takes a ✓ item the player only holds below the offer", async () => {
+        const { vaultVerdict } = await import("../src/logic/vault.js");
+        const gear = { chest: { id: 120, ilvl: 321 } };
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: 334 }], BIS2, gear, [], { 120: true });
+        expect(take.id).toBe(120);
+    });
+
+    it("prefers an item never looted over one being pushed a few levels", async () => {
+        const { vaultVerdict } = await import("../src/logic/vault.js");
+        const gear = { hands: { id: 121, ilvl: 305 } };
+        const { take } = vaultVerdict([
+            { slot: "hands", id: 121, ilvl: 334 },
+            { slot: "chest", id: 120, ilvl: 318 },
+        ], BIS2, gear, []);
+        expect(take.id).toBe(120);
+    });
+
+    // The vault presents up to nine rows across three tracks and can offer one
+    // item on more than one of them.
+    it("keeps every row when the same item is offered twice", async () => {
+        const { vaultVerdict } = await import("../src/logic/vault.js");
+        const { candidates } = vaultVerdict([
+            { slot: "chest", id: 120, ilvl: 321 },
+            { slot: "chest", id: 120, ilvl: 334 },
+        ], BIS2, {}, []);
+        expect(candidates).toHaveLength(2);
+    });
+});
