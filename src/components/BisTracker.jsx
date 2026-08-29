@@ -553,6 +553,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
                 var lit = c.take;
                 return (
                   <a key={idx + "-" + c.slot + "-" + c.id} href={"https://www.wowhead.com" + ((LOCALE_META[locale] || LOCALE_META.en).whPath) + "/item=" + c.id + (c.bonus ? "&bonus=" + c.bonus : "") + (c.ilvl ? "&ilvl=" + c.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 6, textDecoration: "none", background: lit ? "#2a2210" : "#14141f", border: "1px solid " + (lit ? "#ffd47966" : "#26263a") }}>
+                    {lit && <span style={{ fontSize: 11, color: "#ffd479" }}>{"\u2605"}</span>}
                     <span style={{ fontSize: 12, fontWeight: 700, color: lit ? "#ffd479" : "#8899aa" }}>{knownItemName(c.id) || c.name}</span>
                     {c.ilvl && <span style={{ fontSize: 10, color: "#556666" }}>{c.ilvl}</span>}
                     {!lit && c.isBis && c.ownedIlvl > 0 && <span style={{ fontSize: 10, color: "#556644" }}>{t("ui.vaultOwned", { ilvl: c.ownedIlvl })}</span>}
