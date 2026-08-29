@@ -8,6 +8,7 @@ import { getSource, calcPriority, calcAltPriority, autoSelectTier, sortByPriorit
 import { dungeonExpectation, gainContext, slotGain } from '../logic/expectation.js';
 import { buildRaidbotsExport, RAIDBOTS_URL } from '../logic/raidbots.js';
 import { vaultVerdict, isVaultStale } from '../logic/vault.js';
+import { pasteAction } from '../logic/simc-paste.js';
 import ItemCard from './ItemCard.jsx';
 import FilterButton from './FilterButton.jsx';
 
@@ -370,15 +371,14 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     } else { finish(currentStats); }
   }, [importing, BIS, KNOWN_STATS, PRIORITY_STATS, runtimeStats, runtimeArmorTypes, runtimePrimaryStats, knownBisIds, STAT_CACHE_KEY, BASE_STORAGE_KEY, STORAGE_KEY, charName, t, onCharDetected]);
   var handlePaste = useCallback(function(e) {
-    var text = e.clipboardData.getData('text');
-    if (!text || !text.trim()) return;
-    var parsed = parseSimC(text);
+    var el = e.target;
+    var act = pasteAction(el.value, el.selectionStart, el.selectionEnd, e.clipboardData.getData('text'));
+    // Only a paste that replaces the whole box is an import. Everything else
+    // is an edit and belongs to the browser, which is what a textarea is for.
+    if (act.action === "edit") return;
+    if (act.action === "warn") { setFeedback({ ok: false, msg: t("ui.noGearData") }); return; }
+    var text = act.next, parsed = act.parsed;
     e.preventDefault();
-    if (parsed.cnt === 0) {
-      setSimcText(text);
-      setFeedback({ ok: false, msg: t("ui.noGearData") });
-      return;
-    }
     if (parsed.ci.className && parsed.ci.spec) {
       var detected = findSpecBySimC(parsed.ci.className, parsed.ci.spec);
       if (!detected) {
@@ -395,7 +395,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     }
     setSimcText(text);
     doImport(text);
-  }, [doImport, spec.SPEC_KEY, onSpecSwitch]);
+  }, [doImport, spec.SPEC_KEY, onSpecSwitch, t]);
   useEffect(function() {
     setSimcText(""); setFeedback(null); setImporting(false);
     var d = load(STORAGE_KEY);
