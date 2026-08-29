@@ -246,7 +246,7 @@
         "raidbotsGuideStep1": "下方按钮会复制附加了 BiS 候选的 SimC 文本，并在新标签页打开 Raidbots Top Gear。",
         "raidbotsGuideStep2": "粘贴到 Top Gear 输入框——BiS 候选会按部位显示，就像背包或宝库中的装备。",
         "raidbotsGuideStep3": "在每个部位自行勾选要对比的装备。",
-        "raidbotsGuideStep4": "确认附魔和宝石选项后点击 Run——结果就是与当前装备的 DPS 差距。",
+        "raidbotsGuideStep4": "确认附魔和宝石选项后点击 Find Top Gear——结果就是与当前装备的 DPS 差距。",
         "raidbotsGuideGo": "复制并打开 Raidbots",
         "bisAttribution": "BiS 数据来源",
         "feedback": "反馈",
