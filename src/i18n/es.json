@@ -270,7 +270,12 @@
         "browsing": "Explorar",
         "selectClass": "Selecciona una clase",
         "selectSpec": "Selecciona una especialización",
-        "altOptions": "Alt — Otras opciones para esta ranura"
+        "altOptions": "Alt — Otras opciones para esta ranura",
+        "vaultTitle": "La Gran Cámara de esta semana",
+        "vaultTakeItem": "Coge este",
+        "vaultVerdictVoidcore": "Coge la tirada extra — aquí no hay ningún BiS que te falte",
+        "vaultOwned": "ya lo tienes a {ilvl}",
+        "vaultReminder": "Abre la Gran Cámara en el juego y vuelve a copiar tu exportación de SimC para ver las opciones de esta semana."
     },
     "primaryStats": {
         "str": "Fuerza",

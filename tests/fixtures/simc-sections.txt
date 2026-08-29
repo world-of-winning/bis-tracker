@@ -1,0 +1,54 @@
+# Protection Paladin
+# SimC Addon (12.1.0)
+paladin="Uther"
+level=80
+race=human
+region=kr
+server=azshara
+role=tank
+spec=protection
+
+# Helm of the Silent Vale (321)
+head=,id=100,bonus_id=12841/1234,gem_id=213743
+# Choker of Fangs (321)
+neck=,id=101,bonus_id=12841
+# Sabatons of the Long Watch (308)
+feet=,id=102,bonus_id=12833
+
+### Gear from Bags
+
+#
+# Spare Pauldrons (308)
+# shoulder=,id=110,bonus_id=12833
+#
+# Backup Bracers (295)
+# wrist=,id=111,bonus_id=12825
+
+### Weekly Reward Choices
+
+#
+# Breastplate of the Void Choir (334)
+# chest=,id=120,bonus_id=12849
+#
+# Gauntlets of the Silent Vale (321)
+# hands=,id=121,bonus_id=12841
+#
+# Girdle of Nalorakk (321)
+# waist=,id=122,bonus_id=12841
+### End of Weekly Reward Choices
+
+### Merchant items
+
+#
+# Vendor's Plate Belt (295)
+# waist=,id=130,bonus_id=12825
+
+### Linked gear
+
+#
+# Someone Else's Boots (334)
+# feet=,id=131,bonus_id=12849
+
+### Additional Character Info
+
+# Talents: ...

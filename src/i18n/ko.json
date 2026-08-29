@@ -271,7 +271,12 @@
         "browsing": "열람",
         "selectClass": "직업 선택",
         "selectSpec": "전문화 선택",
-        "altOptions": "Alt — 이 부위의 다른 선택지"
+        "altOptions": "Alt — 이 부위의 다른 선택지",
+        "vaultTitle": "이번 주 위대한 금고",
+        "vaultTakeItem": "이걸 받으세요",
+        "vaultVerdictVoidcore": "주사위를 받으세요 — 아직 필요한 BiS가 없습니다",
+        "vaultOwned": "이미 {ilvl}로 보유",
+        "vaultReminder": "게임에서 위대한 금고를 연 뒤 SimC를 다시 복사하면 이번 주 후보가 보입니다."
     },
     "primaryStats": {
         "str": "힘",

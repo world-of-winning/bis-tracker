@@ -76,14 +76,20 @@ describe("buildRaidbotsExport", () => {
         expect(out).toBe(RAW);
     });
 
-    it("round-trips: its own output still parses as candidates by our reader", async () => {
+    it("writes candidate lines in the addon's bag grammar", () => {
+        const out = buildRaidbotsExport(RAW, BIS, {}, [], MYTH, (id) => "Thing " + id);
+        expect(out).toContain("# Thing 300 (334)\n# chest=,id=300,bonus_id=12854,ilevel=334");
+    });
+
+    // The candidates are items the player does not have. Pasting this text back
+    // into the tracker must not mark those slots owned, so they sit under a
+    // header of our own that parseSimC deliberately does not recognise.
+    it("does not read back as owned gear if pasted into the tracker", async () => {
         const { parseSimC } = await import("../src/data/shared.js");
         const out = buildRaidbotsExport(RAW, BIS, {}, [], MYTH, (id) => "Thing " + id);
         const parsed = parseSimC(out);
-        const bagIds = parsed.bag.map((b) => b.id).sort();
-        expect(bagIds).toEqual([100, 200, 300, 400]);
-        const chest = parsed.bag.find((b) => b.id === 300);
-        expect(chest.name).toBe("Thing 300");
-        expect(chest.ilvl).toBe(334);
+        expect(parsed.bag).toEqual([]);
+        expect(parsed.vault).toEqual([]);
+        expect(parsed.gear.head.id).toBe(100);
     });
 });

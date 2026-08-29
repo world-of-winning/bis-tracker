@@ -163,6 +163,42 @@ function generateSampleSimC(spec, charName, tierKey) {
     lines.push(b.slot + "=,id=" + itemId + ",bonus_id=13577/" + tierBonus);
   });
 
+  // The addon's Great Vault section, so the demo shows the week's verdict
+  // rather than asking a sample character to go open a vault. A character
+  // still on Champion gear is offered a BiS they have not got — the week the
+  // vault beats a bonus roll — while one already in Hero gear is offered
+  // three items that do nothing for them, which is the ordinary week.
+  var vaultOffer = [];
+  if (doneTier.key === "champion") {
+    for (var vi = 0; vi < BIS.length && vaultOffer.length < 1; vi++) {
+      if (assignments[vi] !== "bis-done" && !SKIP_SLOTS.has(BIS[vi].slot)) {
+        vaultOffer.push({ slot: BIS[vi].slot, id: BIS[vi].id });
+      }
+    }
+  }
+  Object.keys(wrongBySlot).forEach(function(slot) {
+    if (vaultOffer.length >= 3) return;
+    var pool = wrongBySlot[slot];
+    for (var wi = 0; wi < pool.length; wi++) {
+      if (!usedIds.has(pool[wi].id) && !vaultOffer.some(function(v) { return v.id === pool[wi].id; })) {
+        vaultOffer.push({ slot: slot, id: pool[wi].id });
+        return;
+      }
+    }
+  });
+  if (vaultOffer.length > 0) {
+    var vaultTier = TIERS[TIERS.length - 1];
+    lines.push("");
+    lines.push("### Weekly Reward Choices");
+    lines.push("");
+    vaultOffer.forEach(function(v) {
+      lines.push("#");
+      lines.push("# " + (enItems[v.id] || String(v.id)) + " (" + vaultTier.max + ")");
+      lines.push("# " + v.slot + "=,id=" + v.id + ",bonus_id=13577/" + vaultTier.tooltipBonus);
+    });
+    lines.push("### End of Weekly Reward Choices");
+  }
+
   return lines.join("\n");
 }
 
