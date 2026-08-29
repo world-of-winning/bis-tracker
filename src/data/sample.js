@@ -187,7 +187,11 @@ function generateSampleSimC(spec, charName, tierKey) {
     }
   });
   if (vaultOffer.length > 0) {
-    var vaultTier = TIERS[TIERS.length - 1];
+    // The vault's Mythic+ row hands out the bottom of the Myth track, not the
+    // top of it — only a Mythic raid kill fills that row at the ceiling. A
+    // demo offering 6/6 gear would be showing a drop the game cannot make.
+    var mythTier = TIERS[TIERS.length - 1];
+    var vaultTier = { max: mythTier.min, tooltipBonus: mythTier.tooltipBonus };
     lines.push("");
     lines.push("### Weekly Reward Choices");
     lines.push("");
