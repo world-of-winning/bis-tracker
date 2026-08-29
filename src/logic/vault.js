@@ -1,3 +1,11 @@
+import { TIERS } from '../data/shared.js';
+import { itemTierIdx } from './priority.js';
+
+// Only the top grade is worth a vault pick. A grade boundary cannot be crossed
+// by upgrading, so anything below it is a re-farm already scheduled — and the
+// roll the pick would be spent instead of lands at vault item level regardless.
+var TOP_GRADE = TIERS.length - 1;
+
 /**
  * What to take out of the Great Vault this week.
  *
@@ -9,10 +17,17 @@
  * guide states the rule as "take it only if it is BiS on the Mythic+ tab":
  * the tab is a stand-in for a check the reader cannot make. We can make it.
  *
- * A candidate is worth taking when it is a BiS item the player does not
- * already hold at that item level or better. An equivalent-stat fit, an ALTS
- * entry and a BiS already owned at the offered level all lose to the Voidcore
- * — the roll can reach items none of them improve on.
+ * A candidate is worth taking when it is a BiS item at the top grade that the
+ * player does not already hold at that item level or better. An equivalent-
+ * stat fit, an ALTS entry and a BiS already owned at the offered level all
+ * lose to the Voidcore — the roll can reach items none of them improve on.
+ *
+ * So does a BiS below the top grade, which is the one exclusion that reads
+ * oddly against the tracker's own target filter: a player aiming at Hero is
+ * told a Hero item on offer is not worth the pick. It is not, and the target
+ * has no say in it. Grades cannot be crossed by upgrading, so that item is a
+ * re-farm already scheduled, and the roll it would be spent instead of lands
+ * at vault item level whatever the player is aiming for.
  *
  * Nothing here feeds the priority tiers. Three candidates are offered and at
  * most one is taken, so counting them as owned would say a slot is finished
@@ -61,6 +76,11 @@ export function vaultVerdict(vault, bis, gear, bag, acquired) {
     // whether or not its level parsed, and a copy already held is only beaten
     // by an offer that reads higher than it.
     var owned = ticked || ownedIlvl !== null;
+    // Nothing to read the grade from is not evidence the grade is low, so only
+    // a grade we can see falling short excludes the item — the same call the
+    // missing item level gets.
+    var gradeIdx = itemTierIdx(v.bonus, v.ilvl);
+    var belowTopGrade = gradeIdx >= 0 && gradeIdx < TOP_GRADE;
     return {
       slot: v.slot,
       id: v.id,
@@ -72,7 +92,7 @@ export function vaultVerdict(vault, bis, gear, bag, acquired) {
       ownedIlvl: ownedIlvl,
       acquired: ticked,
       gain: ownedIlvl !== null ? lv - ownedIlvl : lv,
-      take: isBis && (!owned || (ownedIlvl !== null && lv > ownedIlvl)),
+      take: isBis && !belowTopGrade && (!owned || (ownedIlvl !== null && lv > ownedIlvl)),
     };
   });
 

@@ -210,3 +210,46 @@ describe("vaultVerdict edge cases the addon produces", () => {
         expect(candidates).toHaveLength(2);
     });
 });
+
+describe("vaultVerdict grade floor", () => {
+    const BIS3 = [{ slot: "chest", id: 120 }];
+    const MYTH_BONUS = "12849";   // Myth track
+    const HERO_BONUS = "12841";   // Hero track
+
+    // A grade boundary cannot be crossed by upgrading, so a Hero item is a
+    // re-farm waiting to happen — and the roll it would be spent instead of
+    // lands at vault item level anyway.
+    it("does not put a Hero-grade BiS forward", async () => {
+        const { vaultVerdict } = await import("../src/logic/vault.js");
+        const { candidates, take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: 305, bonus: HERO_BONUS }], BIS3, {}, []);
+        expect(take).toBe(null);
+        expect(candidates[0].isBis).toBe(true);
+        expect(candidates[0].take).toBe(false);
+    });
+
+    it("puts a Myth-grade BiS forward at the bottom of the track", async () => {
+        const { vaultVerdict } = await import("../src/logic/vault.js");
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: 318, bonus: MYTH_BONUS }], BIS3, {}, []);
+        expect(take.id).toBe(120);
+    });
+
+    // Grade beats item level: a Hero 6/6 at 321 reads above a Myth 1/6 at 318
+    // on the number alone, and is still the one that has to be re-farmed.
+    it("reads the grade, not the item level, when the two disagree", async () => {
+        const { vaultVerdict } = await import("../src/logic/vault.js");
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: 321, bonus: HERO_BONUS }], BIS3, {}, []);
+        expect(take).toBe(null);
+    });
+
+    // Nothing to read the grade from is not evidence the grade is low. The
+    // same call as the missing item level: only a known shortfall excludes.
+    it("still puts a BiS forward when the grade cannot be read at all", async () => {
+        const { vaultVerdict } = await import("../src/logic/vault.js");
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: null, bonus: null }], BIS3, {}, []);
+        expect(take.id).toBe(120);
+    });
+});
