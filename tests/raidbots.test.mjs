@@ -76,14 +76,41 @@ describe("buildRaidbotsExport", () => {
         expect(out).toBe(RAW);
     });
 
-    it("round-trips: its own output still parses as candidates by our reader", async () => {
+    it("writes candidate lines in the addon's bag grammar", () => {
+        const out = buildRaidbotsExport(RAW, BIS, {}, [], MYTH, (id) => "Thing " + id);
+        expect(out).toContain("# Thing 300 (334)\n# chest=,id=300,bonus_id=12854,ilevel=334");
+    });
+
+    // The candidates are items the player does not have. Pasting this text back
+    // into the tracker must not mark those slots owned, so they sit under a
+    // header of our own that parseSimC deliberately does not recognise.
+    it("does not read back as owned gear if pasted into the tracker", async () => {
         const { parseSimC } = await import("../src/data/shared.js");
         const out = buildRaidbotsExport(RAW, BIS, {}, [], MYTH, (id) => "Thing " + id);
         const parsed = parseSimC(out);
-        const bagIds = parsed.bag.map((b) => b.id).sort();
-        expect(bagIds).toEqual([100, 200, 300, 400]);
-        const chest = parsed.bag.find((b) => b.id === 300);
-        expect(chest.name).toBe("Thing 300");
-        expect(chest.ilvl).toBe(334);
+        expect(parsed.bag).toEqual([]);
+        expect(parsed.vault).toEqual([]);
+        expect(parsed.gear.head.id).toBe(100);
+    });
+});
+
+describe("buildRaidbotsExport re-export", () => {
+    // The SimC box is prefilled with the stored text and selects itself on
+    // focus, so the export sitting on the clipboard is one paste away from
+    // becoming the stored text. Appending a second candidate block to it put
+    // every unowned BiS into the paste twice.
+    it("replaces an earlier candidate block instead of stacking another", () => {
+        const once = buildRaidbotsExport(RAW, BIS, {}, [], MYTH, (id) => "Thing " + id);
+        const twice = buildRaidbotsExport(once, BIS, {}, [], MYTH, (id) => "Thing " + id);
+        expect((twice.match(/### BiS candidates/g) || []).length).toBe(1);
+        expect((twice.match(/id=300/g) || []).length).toBe(1);
+        expect(twice).toBe(once);
+    });
+
+    it("keeps anything the addon wrote after our block", () => {
+        const withTail = buildRaidbotsExport(RAW, BIS, {}, [], MYTH) + "\n### Additional Character Info\n# talents\n";
+        const out = buildRaidbotsExport(withTail, BIS, {}, [], MYTH);
+        expect(out).toContain("### Additional Character Info");
+        expect((out.match(/### BiS candidates/g) || []).length).toBe(1);
     });
 });

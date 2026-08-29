@@ -271,7 +271,11 @@
         "browsing": "浏览",
         "selectClass": "选择职业",
         "selectSpec": "选择专精",
-        "altOptions": "Alt — 该部位的其他选择"
+        "altOptions": "Alt — 该部位的其他选择",
+        "vaultTitle": "本周的巨龙宝库",
+        "vaultVerdictVoidcore": "本周没有你还缺的 BiS — 奖励掷骰更划算",
+        "vaultOwned": "已拥有，{ilvl}",
+        "vaultReminder": "在游戏中打开巨龙宝库，然后重新复制 SimC 导出文本，即可看到本周的选项。"
     },
     "primaryStats": {
         "str": "力量",

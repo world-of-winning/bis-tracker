@@ -2,11 +2,13 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { load, save as persist } from '../storage.js';
 import { DUNGEONS, TIERS, DEFAULT_TIER, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS, SPEC_PRIMARY_STAT } from '../data/shared.js';
 import { findSpecBySimC } from '../data/specs.js';
-import { useLocale } from '../i18n/index.jsx';
+import { useLocale, LOCALE_META } from '../i18n/index.jsx';
 import { matchBiS } from '../logic/matching.js';
 import { getSource, calcPriority, calcAltPriority, autoSelectTier, sortByPriority, calcSourceFarmCount } from '../logic/priority.js';
 import { dungeonExpectation, gainContext, slotGain } from '../logic/expectation.js';
 import { buildRaidbotsExport, RAIDBOTS_URL } from '../logic/raidbots.js';
+import { vaultVerdict, isVaultStale } from '../logic/vault.js';
+import { pasteAction } from '../logic/simc-paste.js';
 import ItemCard from './ItemCard.jsx';
 import FilterButton from './FilterButton.jsx';
 
@@ -150,13 +152,51 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     return c;
   }, [activeItems, mergedAlts, sr, targetInfo.max, allStats, PRIORITY_STATS, acq]);
 
+  // The week's vault verdict. Deliberately outside every priority
+  // computation — three choices are offered and at most one is taken, so
+  // counting them as owned would call a slot finished on an item the player
+  // is about to decline. A vault read before the region's last weekly reset,
+  // or one the player never opened before running /simc, gives nothing to
+  // show and asks for a fresh export.
+  // A farming tracker gets left open for days, and the reset happens while it
+  // is. Without a tick the block would still be showing last week's choices,
+  // "Take this" badge and all, on a page that has not been reloaded since.
+  var [vaultTick, setVaultTick] = useState(0);
+  useEffect(function() {
+    var id = setInterval(function() { setVaultTick(function(n) { return n + 1; }); }, 10 * 60 * 1000);
+    return function() { clearInterval(id); };
+  }, []);
+  var vault = useMemo(function() {
+    if (!sr || !sr.vault || !sr.vault.length) return null;
+    if (isVaultStale(sr.importedAt, Date.now(), sr.ci && sr.ci.region)) return null;
+    return vaultVerdict(sr.vault, BIS, sr.gear, sr.bag || [], acq);
+  }, [sr, BIS, acq, vaultTick]);
+
   useEffect(function() {
     var d = load(STORAGE_KEY);
     if (d) {
       setAcq(d.acq || {});
-      if (d.sr) { setSr(d.sr); setSimcOpen(false); if (onCharDetected && d.sr.ci) onCharDetected(d.sr.ci.name); } else { setSimcOpen(true); }
       var cached = load(STAT_CACHE_KEY);
       if (cached) setRuntimeStats(cached);
+      if (d.sr) {
+        // Saves written before the SimC sections were split have the vault,
+        // the merchant's stock and items other people linked all sitting in
+        // `bag`, where the priority tiers read them as owned. The original
+        // text is kept, so re-reading it repairs the save in place. A save
+        // from before rawSimc was stored has to wait for the next import.
+        var restored = d.sr;
+        if (d.sr.rawSimc) {
+          var reparsed = parseSimC(d.sr.rawSimc);
+          if (reparsed.cnt) {
+            restored = buildImportSr(reparsed.gear, reparsed.bag, reparsed.ci, Object.assign({}, KNOWN_STATS, cached || {}), {
+              rawSimc: d.sr.rawSimc, vault: reparsed.vault, importedAt: d.sr.importedAt, crossSpecSource: d.sr.crossSpecSource,
+            }).sr;
+          }
+        }
+        if (restored !== d.sr) persist(STORAGE_KEY, { acq: d.acq || {}, sr: restored, targetTier: d.targetTier, filter: d.filter });
+        setSr(restored); setSimcOpen(false);
+        if (onCharDetected && restored.ci) onCharDetected(restored.ci.name);
+      } else { setSimcOpen(true); }
       var cachedAT = load(STAT_CACHE_KEY + "-armor");
       if (cachedAT) setRuntimeArmorTypes(cachedAT);
       var cachedPS = load(STAT_CACHE_KEY + "-primary-v4");
@@ -249,7 +289,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     var currentStats = Object.assign({}, KNOWN_STATS, runtimeStats);
     var unknownIds = collectUnknownIds(parsed.gear, parsed.bag, currentStats, runtimeArmorTypes);
     function finishImport(mergedStats) {
-      var imp = buildImportSr(parsed.gear, parsed.bag, parsed.ci, mergedStats, { rawSimc: text });
+      var imp = buildImportSr(parsed.gear, parsed.bag, parsed.ci, mergedStats, { rawSimc: text, vault: parsed.vault, importedAt: Date.now() });
       var importName = parsed.ci.name || charName;
       var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
       if (importName === charName) setSr(imp.sr);
@@ -300,14 +340,21 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     if (importing) return;
     var d = load(source.storageKey);
     if (!d || !d.sr || !d.sr.gear) return;
-    var sourceGear = d.sr.gear;
-    var sourceBag = d.sr.bag || [];
-    var sourceCi = d.sr.ci;
+    // The source save may predate the section split, with the vault, a
+    // vendor's stock and other people's linked items all in its bag. Its own
+    // spec repairs it when that spec is next opened; this path may get there
+    // first, so it re-reads the text too.
+    var sourceParsed = d.sr.rawSimc ? parseSimC(d.sr.rawSimc) : null;
+    if (sourceParsed && !sourceParsed.cnt) sourceParsed = null;
+    var sourceGear = sourceParsed ? sourceParsed.gear : d.sr.gear;
+    var sourceBag = sourceParsed ? sourceParsed.bag : (d.sr.bag || []);
+    var sourceVault = sourceParsed ? sourceParsed.vault : (d.sr.vault || []);
+    var sourceCi = sourceParsed ? sourceParsed.ci : d.sr.ci;
     var sourceCachedStats = load(source.statCacheKey) || {};
     var currentStats = Object.assign({}, KNOWN_STATS, sourceCachedStats, runtimeStats);
     var unknownIds = collectUnknownIds(sourceGear, sourceBag, currentStats, runtimeArmorTypes);
     function finish(mergedStats) {
-      var imp = buildImportSr(sourceGear, sourceBag, sourceCi, mergedStats, { crossSpecSource: { specKey: source.specKey, charName: source.charName, simcSpec: source.simcSpec } });
+      var imp = buildImportSr(sourceGear, sourceBag, sourceCi, mergedStats, { vault: sourceVault, importedAt: d.sr.importedAt, crossSpecSource: { specKey: source.specKey, charName: source.charName, simcSpec: source.simcSpec } });
       var importName = sourceCi.name || charName;
       var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
       if (importName === charName || !charName) { setSr(imp.sr); }
@@ -324,15 +371,14 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     } else { finish(currentStats); }
   }, [importing, BIS, KNOWN_STATS, PRIORITY_STATS, runtimeStats, runtimeArmorTypes, runtimePrimaryStats, knownBisIds, STAT_CACHE_KEY, BASE_STORAGE_KEY, STORAGE_KEY, charName, t, onCharDetected]);
   var handlePaste = useCallback(function(e) {
-    var text = e.clipboardData.getData('text');
-    if (!text || !text.trim()) return;
-    var parsed = parseSimC(text);
+    var el = e.target;
+    var act = pasteAction(el.value, el.selectionStart, el.selectionEnd, e.clipboardData.getData('text'));
+    // Only a paste that replaces the whole box is an import. Everything else
+    // is an edit and belongs to the browser, which is what a textarea is for.
+    if (act.action === "edit") return;
+    if (act.action === "warn") { setFeedback({ ok: false, msg: t("ui.noGearData") }); return; }
+    var text = act.next, parsed = act.parsed;
     e.preventDefault();
-    if (parsed.cnt === 0) {
-      setSimcText(text);
-      setFeedback({ ok: false, msg: t("ui.noGearData") });
-      return;
-    }
     if (parsed.ci.className && parsed.ci.spec) {
       var detected = findSpecBySimC(parsed.ci.className, parsed.ci.spec);
       if (!detected) {
@@ -349,7 +395,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     }
     setSimcText(text);
     doImport(text);
-  }, [doImport, spec.SPEC_KEY, onSpecSwitch]);
+  }, [doImport, spec.SPEC_KEY, onSpecSwitch, t]);
   useEffect(function() {
     setSimcText(""); setFeedback(null); setImporting(false);
     var d = load(STORAGE_KEY);
@@ -427,6 +473,12 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     return { prep: prep, raid: raid };
   }, [activeItems]);
 
+  // The button lights up after an import, and stays lit for as long as the
+  // vault is holding a strong candidate. Opening the dialog clears the
+  // import's nudge; it cannot clear the vault's, because that one is not a
+  // notification about something new — it is a standing reason to sim.
+  var raidbotsLit = raidbotsAttn || !!(vault && vault.take);
+
   if (!loaded) return (<div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0a0a12", color: theme.accent }}><span style={{ fontFamily: "'Cinzel', serif", fontSize: 18 }}>{t("ui.loading")}</span></div>);
 
   return (
@@ -445,7 +497,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#445566" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: "auto", transition: "transform .2s", transform: simcOpen ? "rotate(180deg)" : "rotate(0)" }}><polyline points="6 9 12 15 18 9" /></svg>
         </div>
         {GUIDE_URL && <a href={GUIDE_URL} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "8px 12px", borderRadius: 8, background: "#0c0c16", border: "1px solid #1e1e30", textDecoration: "none", fontSize: 11, fontWeight: 600, color: "#778888", whiteSpace: "nowrap" }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#778888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>{t("ui.guideLink")}</a>}
-        {sr && <button className={"sb" + (raidbotsAttn ? " rb-attn" : "")} onClick={openRaidbots} title={!sr.rawSimc ? t("ui.raidbotsReimport") : undefined} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "8px 12px", borderRadius: 8, background: raidbotsAttn ? theme.accentBg : "#0c0c16", border: "1px solid " + (raidbotsAttn ? theme.accentBorder : "#1e1e30"), fontSize: 11, fontWeight: 600, color: raidbotsAttn ? theme.accent : (sr.rawSimc ? "#778888" : "#445555"), whiteSpace: "nowrap", cursor: "pointer", "--rb-glow-lo": theme.accent + "33", "--rb-glow-hi": theme.accent + "77" }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>{t("ui.raidbotsCompare")}</button>}
+        {sr && <button className={"sb" + (raidbotsLit ? " rb-attn" : "")} onClick={openRaidbots} title={!sr.rawSimc ? t("ui.raidbotsReimport") : undefined} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "8px 12px", borderRadius: 8, background: raidbotsLit ? theme.accentBg : "#0c0c16", border: "1px solid " + (raidbotsLit ? theme.accentBorder : "#1e1e30"), fontSize: 11, fontWeight: 600, color: raidbotsLit ? theme.accent : (sr.rawSimc ? "#778888" : "#445555"), whiteSpace: "nowrap", cursor: "pointer", "--rb-glow-lo": theme.accent + "66", "--rb-glow-hi": theme.accent }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>{t("ui.raidbotsCompare")}</button>}
         </div>
         {simcOpen && (
           <div style={{ marginTop: 8, padding: 16, background: "#0c0c16", border: "1px solid #1e1e30", borderRadius: 8, overflow: "hidden" }}>
@@ -489,6 +541,31 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           {"ilvl " + sr.ci.avgIlvl}
         </span>}
       </div>
+      {sr && (
+        <div style={{ marginTop: 10, padding: "10px 14px", borderRadius: 8, background: "#0f0f18", border: "1px solid #1e1e30" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+            <span style={{ fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 700, color: theme.accent }}>{t("ui.vaultTitle")}</span>
+            {vault && !vault.take && <span style={{ fontSize: 11, fontWeight: 600, color: "#ffd479" }}>{t("ui.vaultVerdictVoidcore")}</span>}
+          </div>
+          {vault ? (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
+              {vault.candidates.map(function(c, idx) {
+                var lit = c.take;
+                return (
+                  <a key={idx + "-" + c.slot + "-" + c.id} href={"https://www.wowhead.com" + ((LOCALE_META[locale] || LOCALE_META.en).whPath) + "/item=" + c.id + (c.bonus ? "&bonus=" + c.bonus : "") + (c.ilvl ? "&ilvl=" + c.ilvl : "")} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 6, textDecoration: "none", background: lit ? "#2a2210" : "#14141f", border: "1px solid " + (lit ? "#ffd47966" : "#26263a") }}>
+                    {lit && <span style={{ fontSize: 11, color: "#ffd479" }}>{"\u2605"}</span>}
+                    <span style={{ fontSize: 12, fontWeight: 700, color: lit ? "#ffd479" : "#8899aa" }}>{knownItemName(c.id) || c.name}</span>
+                    {c.ilvl && <span style={{ fontSize: 10, color: "#556666" }}>{c.ilvl}</span>}
+                    {!lit && c.isBis && c.ownedIlvl > 0 && <span style={{ fontSize: 10, color: "#556644" }}>{t("ui.vaultOwned", { ilvl: c.ownedIlvl })}</span>}
+                  </a>
+                );
+              })}
+            </div>
+          ) : (
+            <div style={{ marginTop: 6, fontSize: 11, color: "#556666" }}>{t("ui.vaultReminder")}</div>
+          )}
+        </div>
+      )}
       <div data-tutorial="dungeon-filters" style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
         <button className={"fbtn" + (filter === "all" ? " active" : "")} onClick={function() { changeFilter("all"); }} style={{ padding: "4px 12px", borderRadius: 6, background: filter === "all" ? theme.accentBg : "#0f0f18", color: filter === "all" ? theme.accent : "#556666", fontSize: 12, fontWeight: 600 }}>{t("ui.all")}</button>
         {nonDungeonSources.prep.map(function(ns) {

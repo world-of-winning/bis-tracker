@@ -11,7 +11,21 @@
 @keyframes urgPulse { 0%, 100% { box-shadow: 0 0 4px rgba(255,107,107,0.1); } 50% { box-shadow: 0 0 12px rgba(255,107,107,0.2); } }
 @keyframes wrongArmorPulse { 0%, 100% { box-shadow: 0 0 8px rgba(255,32,32,0.3), inset 0 0 20px rgba(255,0,0,0.05); } 50% { box-shadow: 0 0 20px rgba(255,32,32,0.5), inset 0 0 30px rgba(255,0,0,0.1); } }
 @keyframes altGlow { 0%, 100% { box-shadow: 0 0 4px rgba(232,168,76,0.1); } 50% { box-shadow: 0 0 12px rgba(232,168,76,0.2); } }
-@keyframes rbPulse { 0%, 100% { box-shadow: 0 0 4px var(--rb-glow-lo); } 50% { box-shadow: 0 0 16px var(--rb-glow-hi); } }
+/* A blurred glow alone reads only as brightly as the theme accent allows, and
+   the dimmer class themes barely showed it. The solid 0-blur ring in front of
+   the blur is what carries the pulse at any accent, and the border animates
+   with it — a CSS animation outranks the inline border-color the button
+   carries, so the outline itself blinks rather than just its halo. */
+@keyframes rbPulse {
+  0%, 100% {
+    border-color: var(--rb-glow-lo);
+    box-shadow: 0 0 0 1px var(--rb-glow-lo), 0 0 6px var(--rb-glow-lo);
+  }
+  50% {
+    border-color: var(--rb-glow-hi);
+    box-shadow: 0 0 0 2px var(--rb-glow-hi), 0 0 22px var(--rb-glow-hi);
+  }
+}
 .rb-attn { animation: rbPulse 1.6s ease-in-out infinite; }
 
 .card-enter { animation: fadeIn 0.35s ease-out both; }
@@ -167,6 +181,8 @@
   .landing-emblem { animation: none; filter: drop-shadow(0 0 16px rgba(120,50,200,0.35)); }
   .landing-particle { animation: none; display: none; }
   .landing-mist { animation: none; }
+  /* The inline border and background keep the button lit without the pulse. */
+  .rb-attn { animation: none; }
 }
 
 /* Wowhead tooltip z-index */

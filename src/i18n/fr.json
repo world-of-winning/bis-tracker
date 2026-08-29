@@ -271,7 +271,11 @@
         "browsing": "Parcourir",
         "selectClass": "Sélectionner une classe",
         "selectSpec": "Sélectionner une spécialisation",
-        "altOptions": "Alt — Autres options pour cet emplacement"
+        "altOptions": "Alt — Autres options pour cet emplacement",
+        "vaultTitle": "Grand coffre de la semaine",
+        "vaultVerdictVoidcore": "Aucun BiS qui vous manque encore — le jet bonus vaut mieux",
+        "vaultOwned": "déjà possédé en {ilvl}",
+        "vaultReminder": "Ouvrez le Grand coffre en jeu, puis copiez à nouveau votre export SimC pour voir les choix de cette semaine."
     },
     "primaryStats": {
         "str": "Force",

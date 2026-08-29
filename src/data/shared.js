@@ -117,14 +117,30 @@ export var GEAR_SLOTS = [
   "legs", "feet", "finger1", "finger2", "trinket1", "trinket2", "main_hand", "off_hand",
 ];
 
+// The addon writes its commented item lines under '### ' headers, and every one
+// of those lines has the same shape. Only two of the sections are items the
+// player has any claim on: what is in their bags, and what the Great Vault is
+// offering. A vendor's stock and an item someone linked in chat are neither, so
+// they are dropped here rather than read as owned further down.
+var SIMC_SECTIONS = {
+  "gear from bags": "bag",
+  "weekly reward choices": "vault",
+};
+
 export function parseSimC(text) {
-  var lines = text.split("\n"), gear = {}, bag = [], ci = {}, pend = null, sp = GEAR_SLOTS.join("|");
+  var lines = text.split("\n"), gear = {}, bag = [], vault = [], ci = {}, pend = null, sp = GEAR_SLOTS.join("|");
+  // Exports predating the headers put bag items straight after the equipped
+  // gear with nothing above them, so the bag is where an unlabelled line goes.
+  var section = "bag";
   for (var i = 0; i < lines.length; i++) {
     var t = lines[i].trim();
+    var sm = t.match(/^###\s*(.+?)\s*$/);
+    if (sm) { section = SIMC_SECTIONS[sm[1].toLowerCase()] || null; pend = null; continue; }
     var cm0 = t.match(/^(paladin|warrior|mage|priest|shaman|druid|hunter|warlock|rogue|monk|deathknight|demonhunter|evoker)="(.+)"$/);
     if (cm0) { ci.className = cm0[1]; ci.name = cm0[2]; continue; }
     if (t.indexOf("level=") === 0) { ci.level = t.split("=")[1]; continue; }
     if (t.indexOf("spec=") === 0) { ci.spec = t.split("=")[1]; continue; }
+    if (t.indexOf("region=") === 0) { ci.region = t.split("=")[1]; continue; }
     var cm = t.match(/^#\s+(.+?)\s*\((\d+)\)\s*$/);
     if (cm) { pend = { name: cm[1], ilvl: parseInt(cm[2], 10) }; continue; }
     var gm = t.match(new RegExp("^(" + sp + ")=([^,]*),id=(\\d+)"));
@@ -136,14 +152,17 @@ export function parseSimC(text) {
     }
     var bm = t.match(new RegExp("^#\\s*(" + sp + ")=([^,]*),id=(\\d+)"));
     if (bm) {
-      var brn = bm[2], bfb = brn ? brn.replace(/_/g, " ").replace(/\b\w/g, function(c) { return c.toUpperCase(); }) : null;
-      var bMatch2 = t.match(/bonus_id=([0-9/]+)/);
-      bag.push({ slot: bm[1], id: parseInt(bm[3], 10), name: pend ? pend.name : (bfb || "Item #" + bm[3]), ilvl: pend ? pend.ilvl : null, bonus: bMatch2 ? bMatch2[1].replace(/\//g, ":") : null });
+      var target = section === "bag" ? bag : section === "vault" ? vault : null;
+      if (target) {
+        var brn = bm[2], bfb = brn ? brn.replace(/_/g, " ").replace(/\b\w/g, function(c) { return c.toUpperCase(); }) : null;
+        var bMatch2 = t.match(/bonus_id=([0-9/]+)/);
+        target.push({ slot: bm[1], id: parseInt(bm[3], 10), name: pend ? pend.name : (bfb || "Item #" + bm[3]), ilvl: pend ? pend.ilvl : null, bonus: bMatch2 ? bMatch2[1].replace(/\//g, ":") : null });
+      }
       pend = null; continue;
     }
     if (t.charAt(0) !== "#") pend = null;
   }
   var ilvls = Object.values(gear).map(function(g) { return g.ilvl || 0; }).filter(function(v) { return v > 0; });
   ci.avgIlvl = ilvls.length > 0 ? Math.round(ilvls.reduce(function(a, b) { return a + b; }, 0) / ilvls.length) : 0;
-  return { ci: ci, gear: gear, bag: bag, cnt: Object.keys(gear).length };
+  return { ci: ci, gear: gear, bag: bag, vault: vault, cnt: Object.keys(gear).length };
 }
