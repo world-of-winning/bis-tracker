@@ -24,18 +24,26 @@ describe("buildRaidbotsExport", () => {
         expect(buildRaidbotsExport("   \n", BIS, {}, [], MYTH)).toBe(null);
     });
 
-    it("appends only the BiS items absent from gear and bags", () => {
-        const gear = { head: { id: 100 }, finger2: { id: 200 } };
-        const out = buildRaidbotsExport(RAW, BIS, gear, [{ id: 400 }], MYTH);
+    it("appends only the BiS items not owned at the export ilvl", () => {
+        const gear = { head: { id: 100, ilvl: 334 }, finger2: { id: 200, ilvl: 334 } };
+        const out = buildRaidbotsExport(RAW, BIS, gear, [{ id: 400, ilvl: 334 }], MYTH);
         expect(out).toContain("# chest=,id=300,bonus_id=12854,ilevel=334");
         expect(out).not.toContain("id=100,bonus_id=12854");
         expect(out).not.toContain("# finger2=");
         expect(out).not.toContain("# main_hand=");
     });
 
-    it("treats a BiS ring equipped on the other finger as owned", () => {
+    it("still appends a BiS the player wears below the export ilvl", () => {
+        // Equipped at Hero 321: the original text sims the real copy, but only
+        // a candidate line can show what the item is worth at its ceiling.
+        const gear = { head: { id: 100, ilvl: 321 } };
+        const out = buildRaidbotsExport(RAW, BIS, gear, [], MYTH);
+        expect(out).toContain("# head=,id=100,bonus_id=12854,ilevel=334");
+    });
+
+    it("treats a BiS ring equipped at max on the other finger as owned", () => {
         // BIS lists the ring under finger2; the player wears it on finger1.
-        const gear = { finger1: { id: 200 } };
+        const gear = { finger1: { id: 200, ilvl: 334 } };
         const out = buildRaidbotsExport(RAW, BIS, gear, [], MYTH);
         expect(out).not.toContain("# finger2=");
     });
@@ -62,9 +70,9 @@ describe("buildRaidbotsExport", () => {
         expect(out).toContain("### BiS candidates (bis-tracker)");
     });
 
-    it("returns the raw text untouched when every BiS is owned", () => {
-        const gear = { head: { id: 100 }, finger2: { id: 200 }, chest: { id: 300 } };
-        const out = buildRaidbotsExport(RAW, BIS, gear, [{ id: 400 }], MYTH);
+    it("returns the raw text untouched when every BiS is owned at max", () => {
+        const gear = { head: { id: 100, ilvl: 334 }, finger2: { id: 200, ilvl: 334 }, chest: { id: 300, ilvl: 334 } };
+        const out = buildRaidbotsExport(RAW, BIS, gear, [{ id: 400, ilvl: 334 }], MYTH);
         expect(out).toBe(RAW);
     });
 

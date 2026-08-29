@@ -12,10 +12,12 @@ export var RAIDBOTS_URL = "https://www.raidbots.com/simbot/topgear";
  * upgrade-track bonus_id), not the tracker's target filter: every candidate
  * then sims at its ceiling, which matches the question the sim answers.
  *
- * An item already in the parsed gear or bags is skipped — the original text
- * carries the real copy. The acquired (✓) marks deliberately do not matter
- * here: ✓ means "stop farming", not "equipped", and a BiS sitting in the
- * bank still deserves a sim line.
+ * An item is skipped only when the parsed gear or bags carry it at the
+ * export ilvl already — a BiS equipped at a lower grade still gets a
+ * candidate line, or the sim could never show what its ceiling is worth.
+ * The acquired (✓) marks deliberately do not matter here: ✓ means "stop
+ * farming", not "equipped", and a BiS sitting in the bank still deserves
+ * a sim line.
  *
  * @param {string} rawSimc  the pasted SimC text, verbatim
  * @param {Array}  bis      BIS entries ({ slot, simcSlot?, id })
@@ -30,9 +32,9 @@ export function buildRaidbotsExport(rawSimc, bis, gear, bag, tier, itemName) {
   var owned = {};
   Object.keys(gear || {}).forEach(function(slot) {
     var g = gear[slot];
-    if (g && g.id) owned[g.id] = true;
+    if (g && g.id && g.ilvl >= tier.max) owned[g.id] = true;
   });
-  (bag || []).forEach(function(b) { if (b && b.id) owned[b.id] = true; });
+  (bag || []).forEach(function(b) { if (b && b.id && b.ilvl >= tier.max) owned[b.id] = true; });
   var missing = (bis || []).filter(function(b) { return !owned[b.id]; });
   if (!missing.length) return rawSimc;
   var lines = ["", "### BiS candidates (bis-tracker)", "#"];
