@@ -433,7 +433,12 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     <div style={{ paddingTop: 16, paddingBottom: 24 }}>
       <div style={{ marginBottom: 14 }}>
         <div style={{ display: "flex", gap: 8, alignItems: "stretch" }}>
-        <div data-tutorial="simc-import" className="tog" onClick={function() { setSimcOpen(!simcOpen); }} style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", borderRadius: 8, background: sr ? "#0c0c16" : theme.accentBg, border: "1px solid " + (sr ? "#1e1e30" : theme.accentBorder) }}>
+        <div data-tutorial="simc-import" className="tog" onClick={function() {
+          // Opening the panel shows the stored import, the way Raidbots does —
+          // the user sees what the tracker is working from and can edit in place.
+          if (!simcOpen && !simcText && sr && sr.rawSimc) setSimcText(sr.rawSimc);
+          setSimcOpen(!simcOpen);
+        }} style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", borderRadius: 8, background: sr ? "#0c0c16" : theme.accentBg, border: "1px solid " + (sr ? "#1e1e30" : theme.accentBorder) }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
           <span style={{ fontSize: 13, fontWeight: 600, color: sr ? theme.accent + "cc" : theme.accent }}>{t("ui.simcImport")}</span>
           {!sr && <span style={{ fontSize: 11, color: theme.accent + "88" }}>{t("ui.simcPasteHint")}</span>}
