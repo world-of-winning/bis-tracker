@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.3.0
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v2.2.0...v2.3.0)
+
+### 🚀 Enhancements
+
+- Read the Great Vault from the SimC export and judge it against BiS ([#21](https://github.com/world-of-winning/bis-tracker/pull/21))
+
+### ❤️ Contributors
+
+- World Of Winning <wow-qol@proton.me>
+
 ## v2.2.0
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v2.1.1...v2.2.0)
