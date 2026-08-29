@@ -2,6 +2,13 @@
 // { date: "YYYY-MM-DD", text: { ko, en } }
 export var CHANGELOG = [
     {
+        date: "2026-08-29",
+        text: {
+            ko: "Raidbots에서 BiS 비교 — 가져온 SimC에 미보유 BiS를 가방 아이템 형식의 후보로 붙여 복사하고, Top Gear가 현재 장비 대비 DPS 차이를 보여준다",
+            en: "Compare BiS on Raidbots — the imported SimC is copied with missing BiS appended as bag-style candidates, and Top Gear shows the DPS difference against current gear",
+        },
+    },
+    {
         date: "2026-08-25",
         text: {
             ko: "던전 추천 순서를 내 장비 기준 기대 이득으로 교체 — 한 번 돌 때 얻을 아이템 레벨의 평균으로 정렬하고, 강화만 하면 되는 부위는 세지 않는다. Alt 목록도 교체 대상과 그 차이를 다시 표시",
