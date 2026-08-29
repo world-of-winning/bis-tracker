@@ -105,6 +105,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var [simcText, setSimcText] = useState("");
   var [sr, setSr] = useState(null);
   var [feedback, setFeedback] = useState(null);
+  var [raidbotsOpen, setRaidbotsOpen] = useState(false);
   var [targetTier, setTargetTier] = useState(DEFAULT_TIER);
   var [loaded, setLoaded] = useState(false);
   var [runtimeStats, setRuntimeStats] = useState({});
@@ -268,14 +269,19 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     } else { finishImport(currentStats); }
   }, [simcText, acq, targetTier, sv, BIS, KNOWN_STATS, runtimeStats, importing, STAT_CACHE_KEY, BASE_STORAGE_KEY, STORAGE_KEY, charName]);
   var clearSimc = useCallback(function() { setSr(null); setFeedback(null); setSimcOpen(true); persist(STORAGE_KEY, null); if (onClear) onClear(); }, [STORAGE_KEY, onClear]);
-  var exportRaidbots = useCallback(function() {
+  var openRaidbots = useCallback(function() {
     var s = stateRef.current.sr;
     if (!s) return;
     // Imports from before rawSimc was stored (and cross-spec imports) have no
     // original text — steer the user back to the paste box instead of no-oping.
     if (!s.rawSimc) { setSimcOpen(true); setFeedback({ ok: false, msg: t("ui.raidbotsReimport") }); return; }
+    setRaidbotsOpen(true);
+  }, [t]);
+  var exportRaidbots = useCallback(function() {
+    var s = stateRef.current.sr;
+    if (!s || !s.rawSimc) { setRaidbotsOpen(false); return; }
     var text = buildRaidbotsExport(s.rawSimc, BIS, s.gear, s.bag || [], TIERS[TIERS.length - 1], knownItemName);
-    if (!text) return;
+    if (!text) { setRaidbotsOpen(false); return; }
     // Copy first, open second: writeText must be issued while this document
     // still has focus, and window.open in the same tick keeps the user gesture.
     navigator.clipboard.writeText(text).then(function() {
@@ -284,6 +290,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       setSimcOpen(true); setFeedback({ ok: false, msg: t("ui.raidbotsCopyFailed") });
     });
     window.open(RAIDBOTS_URL, "_blank", "noopener");
+    setRaidbotsOpen(false);
   }, [BIS, knownItemName, t]);
   var doCrossSpecImport = useCallback(function(source) {
     if (importing) return;
@@ -429,7 +436,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#445566" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: "auto", transition: "transform .2s", transform: simcOpen ? "rotate(180deg)" : "rotate(0)" }}><polyline points="6 9 12 15 18 9" /></svg>
         </div>
         {GUIDE_URL && <a href={GUIDE_URL} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "8px 12px", borderRadius: 8, background: "#0c0c16", border: "1px solid #1e1e30", textDecoration: "none", fontSize: 11, fontWeight: 600, color: "#778888", whiteSpace: "nowrap" }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#778888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>{t("ui.guideLink")}</a>}
-        {sr && <button className="sb" onClick={exportRaidbots} title={!sr.rawSimc ? t("ui.raidbotsReimport") : undefined} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "8px 12px", borderRadius: 8, background: "#0c0c16", border: "1px solid #1e1e30", fontSize: 11, fontWeight: 600, color: sr.rawSimc ? "#778888" : "#445555", whiteSpace: "nowrap", cursor: "pointer" }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>{t("ui.raidbotsCompare")}</button>}
+        {sr && <button className="sb" onClick={openRaidbots} title={!sr.rawSimc ? t("ui.raidbotsReimport") : undefined} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "8px 12px", borderRadius: 8, background: "#0c0c16", border: "1px solid #1e1e30", fontSize: 11, fontWeight: 600, color: sr.rawSimc ? "#778888" : "#445555", whiteSpace: "nowrap", cursor: "pointer" }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>{t("ui.raidbotsCompare")}</button>}
         </div>
         {simcOpen && (
           <div style={{ marginTop: 8, padding: 16, background: "#0c0c16", border: "1px solid #1e1e30", borderRadius: 8, overflow: "hidden" }}>
@@ -549,6 +556,23 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           </div>
         )}
       </div>
+      {raidbotsOpen && (
+        <div onClick={function() { setRaidbotsOpen(false); }} style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.75)", zIndex: 10000, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+          <div onClick={function(e) { e.stopPropagation(); }} style={{ background: "#0c0c16", border: "1px solid #2a2a3a", borderRadius: 12, maxWidth: 480, width: "100%", maxHeight: "80vh", overflow: "auto", padding: "28px 24px" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+              <h2 style={{ fontSize: 17, fontWeight: 700, color: theme.accent, fontFamily: "'Cinzel',serif" }}>{t("ui.raidbotsCompare")}</h2>
+              <button onClick={function() { setRaidbotsOpen(false); }} style={{ background: "none", border: "1px solid #2a2a3a", borderRadius: 6, color: "#556666", fontSize: 18, cursor: "pointer", padding: "2px 10px", lineHeight: 1.2 }}>&times;</button>
+            </div>
+            <p style={{ fontSize: 13, color: "#99aaaa", lineHeight: 1.7, marginBottom: 14 }}>{t("ui.raidbotsGuideIntro")}</p>
+            <ol style={{ margin: 0, marginBottom: 20, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 8 }}>
+              {[1, 2, 3, 4].map(function(n) {
+                return <li key={n} style={{ fontSize: 13, color: "#778888", lineHeight: 1.6 }}>{t("ui.raidbotsGuideStep" + n)}</li>;
+              })}
+            </ol>
+            <button className="sb" onClick={exportRaidbots} style={{ width: "100%", padding: "10px 16px", borderRadius: 8, background: theme.btnBg, border: "none", color: "#0c0c16", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>{t("ui.raidbotsGuideGo")}</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
