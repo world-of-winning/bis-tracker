@@ -106,6 +106,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var [sr, setSr] = useState(null);
   var [feedback, setFeedback] = useState(null);
   var [raidbotsOpen, setRaidbotsOpen] = useState(false);
+  var [raidbotsAttn, setRaidbotsAttn] = useState(false);
   var [targetTier, setTargetTier] = useState(DEFAULT_TIER);
   var [loaded, setLoaded] = useState(false);
   var [runtimeStats, setRuntimeStats] = useState({});
@@ -260,6 +261,8 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       var msg = t("ui.gearUpdated");
       if (empty.length > 0) msg += "\n" + t("ui.emptySlots", { slots: empty.map(function(s) { return t("slots." + s); }).join(", ") });
       setFeedback({ ok: empty.length === 0, msg: msg }); setSimcText(""); setImporting(false); setSimcOpen(false);
+      // Nudge the freshly unlocked next step: sim the import against the BiS list.
+      if (importName === charName) setRaidbotsAttn(true);
       if (onCharDetected) onCharDetected(importName);
     }
     if (unknownIds.length > 0) {
@@ -275,6 +278,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     // Imports from before rawSimc was stored (and cross-spec imports) have no
     // original text — steer the user back to the paste box instead of no-oping.
     if (!s.rawSimc) { setSimcOpen(true); setFeedback({ ok: false, msg: t("ui.raidbotsReimport") }); return; }
+    setRaidbotsAttn(false);
     setRaidbotsOpen(true);
   }, [t]);
   var exportRaidbots = useCallback(function() {
@@ -436,7 +440,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#445566" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: "auto", transition: "transform .2s", transform: simcOpen ? "rotate(180deg)" : "rotate(0)" }}><polyline points="6 9 12 15 18 9" /></svg>
         </div>
         {GUIDE_URL && <a href={GUIDE_URL} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "8px 12px", borderRadius: 8, background: "#0c0c16", border: "1px solid #1e1e30", textDecoration: "none", fontSize: 11, fontWeight: 600, color: "#778888", whiteSpace: "nowrap" }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#778888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>{t("ui.guideLink")}</a>}
-        {sr && <button className="sb" onClick={openRaidbots} title={!sr.rawSimc ? t("ui.raidbotsReimport") : undefined} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "8px 12px", borderRadius: 8, background: "#0c0c16", border: "1px solid #1e1e30", fontSize: 11, fontWeight: 600, color: sr.rawSimc ? "#778888" : "#445555", whiteSpace: "nowrap", cursor: "pointer" }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>{t("ui.raidbotsCompare")}</button>}
+        {sr && <button className={"sb" + (raidbotsAttn ? " rb-attn" : "")} onClick={openRaidbots} title={!sr.rawSimc ? t("ui.raidbotsReimport") : undefined} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "8px 12px", borderRadius: 8, background: raidbotsAttn ? theme.accentBg : "#0c0c16", border: "1px solid " + (raidbotsAttn ? theme.accentBorder : "#1e1e30"), fontSize: 11, fontWeight: 600, color: raidbotsAttn ? theme.accent : (sr.rawSimc ? "#778888" : "#445555"), whiteSpace: "nowrap", cursor: "pointer", "--rb-glow-lo": theme.accent + "33", "--rb-glow-hi": theme.accent + "77" }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>{t("ui.raidbotsCompare")}</button>}
         </div>
         {simcOpen && (
           <div style={{ marginTop: 8, padding: 16, background: "#0c0c16", border: "1px solid #1e1e30", borderRadius: 8, overflow: "hidden" }}>
