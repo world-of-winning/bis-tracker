@@ -93,3 +93,24 @@ describe("buildRaidbotsExport", () => {
         expect(parsed.gear.head.id).toBe(100);
     });
 });
+
+describe("buildRaidbotsExport re-export", () => {
+    // The SimC box is prefilled with the stored text and selects itself on
+    // focus, so the export sitting on the clipboard is one paste away from
+    // becoming the stored text. Appending a second candidate block to it put
+    // every unowned BiS into the paste twice.
+    it("replaces an earlier candidate block instead of stacking another", () => {
+        const once = buildRaidbotsExport(RAW, BIS, {}, [], MYTH, (id) => "Thing " + id);
+        const twice = buildRaidbotsExport(once, BIS, {}, [], MYTH, (id) => "Thing " + id);
+        expect((twice.match(/### BiS candidates/g) || []).length).toBe(1);
+        expect((twice.match(/id=300/g) || []).length).toBe(1);
+        expect(twice).toBe(once);
+    });
+
+    it("keeps anything the addon wrote after our block", () => {
+        const withTail = buildRaidbotsExport(RAW, BIS, {}, [], MYTH) + "\n### Additional Character Info\n# talents\n";
+        const out = buildRaidbotsExport(withTail, BIS, {}, [], MYTH);
+        expect(out).toContain("### Additional Character Info");
+        expect((out.match(/### BiS candidates/g) || []).length).toBe(1);
+    });
+});

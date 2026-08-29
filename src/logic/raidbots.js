@@ -27,8 +27,29 @@ export var RAIDBOTS_URL = "https://www.raidbots.com/simbot/topgear";
  * @param {Function} [itemName]  id → localized name, for the comment line
  * @returns {string|null}   the augmented text, or null without raw text
  */
+// The header our candidate block is written under. parseSimC does not list it
+// among the addon's own sections, so re-reading this text never counts the
+// candidates as owned.
+var CANDIDATE_HEADER = "### BiS candidates (bis-tracker)";
+
+// Drop a candidate block this function wrote earlier. The SimC box is
+// prefilled with the stored text and selects itself on focus, so the export
+// sitting on the clipboard is one paste away from becoming the stored text —
+// and appending a second block to it put every unowned BiS in the paste twice.
+// Only our own block goes: the cut stops at the next '### ' header, so
+// anything the addon wrote after it survives.
+function stripCandidates(text) {
+  var lines = text.split("\n");
+  var start = lines.indexOf(CANDIDATE_HEADER);
+  if (start < 0) return text;
+  var end = start + 1;
+  while (end < lines.length && lines[end].indexOf("### ") !== 0) end++;
+  return lines.slice(0, start).concat(lines.slice(end)).join("\n");
+}
+
 export function buildRaidbotsExport(rawSimc, bis, gear, bag, tier, itemName) {
   if (!rawSimc || !rawSimc.trim()) return null;
+  rawSimc = stripCandidates(rawSimc);
   var owned = {};
   Object.keys(gear || {}).forEach(function(slot) {
     var g = gear[slot];
@@ -37,7 +58,7 @@ export function buildRaidbotsExport(rawSimc, bis, gear, bag, tier, itemName) {
   (bag || []).forEach(function(b) { if (b && b.id && b.ilvl >= tier.max) owned[b.id] = true; });
   var missing = (bis || []).filter(function(b) { return !owned[b.id]; });
   if (!missing.length) return rawSimc;
-  var lines = ["", "### BiS candidates (bis-tracker)", "#"];
+  var lines = ["", CANDIDATE_HEADER, "#"];
   missing.forEach(function(b) {
     var name = (itemName && itemName(b.id)) || "Item " + b.id;
     lines.push("# " + name + " (" + tier.max + ")");
