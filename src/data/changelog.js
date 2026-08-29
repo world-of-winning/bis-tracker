@@ -4,6 +4,13 @@ export var CHANGELOG = [
     {
         date: "2026-08-29",
         text: {
+            ko: "위대한 금고 판정 — 가져온 SimC에서 이번 주 금고 후보를 읽어, 최상위 등급의 미보유 BiS만 강력 후보로 표시하고 그런 것이 없으면 주사위 쪽을 권한다. 지역별 주간 리셋에 맞춰 지난 주 후보는 사라진다",
+            en: "Great Vault verdict — this week's vault choices are read from the imported SimC, with a top-grade BiS you do not have marked as a strong candidate and the bonus roll recommended when there is none. Last week's choices go at the region's own weekly reset",
+        },
+    },
+    {
+        date: "2026-08-29",
+        text: {
             ko: "Raidbots에서 BiS 비교 — 가져온 SimC에 미보유 BiS를 가방 아이템 형식의 후보로 붙여 복사하고, Top Gear가 현재 장비 대비 DPS 차이를 보여준다",
             en: "Compare BiS on Raidbots — the imported SimC is copied with missing BiS appended as bag-style candidates, and Top Gear shows the DPS difference against current gear",
         },
