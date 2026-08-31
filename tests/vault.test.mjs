@@ -253,3 +253,109 @@ describe("vaultVerdict grade floor", () => {
         expect(take.id).toBe(120);
     });
 });
+
+describe("vaultVerdict grade of the held copy", () => {
+    const BIS4 = [{ slot: "chest", id: 120 }, { slot: "hands", id: 121 }];
+    const MYTH = "12849";   // Myth 1/6, ilvl 318
+    const HERO = "12841";   // Hero track, ceiling 321
+
+    // The bug this block exists for. A Hero 6/6 is finished at 321 and a Myth
+    // 1/6 at 318 upgrades to 334, so the offer is worth thirteen item levels
+    // even though it reads three lower. Comparing the two on the number alone
+    // told the player to spend the pick on a Voidcore.
+    it("takes a Myth offer over a Hero copy that reads higher", () => {
+        const gear = { chest: { id: 120, ilvl: 321, bonus: HERO } };
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: 318, bonus: MYTH }], BIS4, gear, []);
+        expect(take.id).toBe(120);
+        expect(take.gain).toBe(13);
+    });
+
+    it("takes the Voidcore over a Myth copy already above the offer", () => {
+        const gear = { chest: { id: 120, ilvl: 320, bonus: MYTH } };
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: 318, bonus: MYTH }], BIS4, gear, []);
+        expect(take).toBe(null);
+    });
+
+    it("still compares on item level inside the top grade", () => {
+        const gear = { chest: { id: 120, ilvl: 316, bonus: MYTH } };
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: 318, bonus: MYTH }], BIS4, gear, []);
+        expect(take.id).toBe(120);
+        expect(take.gain).toBe(2);
+    });
+
+    it("reads the grade of a copy sitting in the bags too", () => {
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: 318, bonus: MYTH }], BIS4, {},
+            [{ id: 120, ilvl: 321, bonus: HERO }]);
+        expect(take.id).toBe(120);
+    });
+
+    // Two copies of the same id: the better one is the one that blocks, and
+    // better means grade first. A Myth in the bank is not beaten by a Hero
+    // worn at a higher item level.
+    it("keeps the best held copy by grade, not by item level", () => {
+        const gear = { chest: { id: 120, ilvl: 321, bonus: HERO } };
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: 318, bonus: MYTH }], BIS4, gear,
+            [{ id: 120, ilvl: 320, bonus: MYTH }]);
+        expect(take).toBe(null);
+    });
+
+    // Nothing to read the grade from, on the held side: spending a pick on
+    // evidence we do not have is the expensive error, so it counts as top.
+    it("treats a held copy of unknown grade as top grade", () => {
+        const gear = { chest: { id: 120, ilvl: 318, bonus: null } };
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: 318, bonus: MYTH }], BIS4, gear, []);
+        expect(take).toBe(null);
+    });
+
+    it("falls back to item level when the offer's grade cannot be read", () => {
+        const gear = { chest: { id: 120, ilvl: 318, bonus: MYTH } };
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: null, bonus: null }], BIS4, gear, []);
+        expect(take).toBe(null);
+    });
+
+    it("prefers a grade upgrade over a push inside a grade", () => {
+        const gear = {
+            chest: { id: 120, ilvl: 321, bonus: HERO },
+            hands: { id: 121, ilvl: 318, bonus: MYTH },
+        };
+        const { take } = vaultVerdict([
+            { slot: "hands", id: 121, ilvl: 334, bonus: MYTH },
+            { slot: "chest", id: 120, ilvl: 318, bonus: MYTH },
+        ], BIS4, gear, []);
+        expect(take.id).toBe(120);
+    });
+
+    it("still prefers an item never looted over a grade upgrade", () => {
+        const gear = { chest: { id: 120, ilvl: 321, bonus: HERO } };
+        const { take } = vaultVerdict([
+            { slot: "chest", id: 120, ilvl: 318, bonus: MYTH },
+            { slot: "hands", id: 121, ilvl: 318, bonus: MYTH },
+        ], BIS4, gear, []);
+        expect(take.id).toBe(121);
+    });
+});
+
+describe("vaultVerdict held copies the addon described badly", () => {
+    const BIS5 = [{ slot: "chest", id: 120 }];
+    const MYTH = "12849";
+
+    // An equipped line with no bonus_id and no cached name comment gives
+    // itemTierIdx nothing to work with at all, and it says so with -1. Read
+    // literally that is a grade below every track, which would make any offer
+    // a grade upgrade and send the ceiling arithmetic off the end of TIERS.
+    it("survives a held copy with neither bonus id nor item level", () => {
+        const gear = { chest: { id: 120, ilvl: null, bonus: null } };
+        const { take } = vaultVerdict(
+            [{ slot: "chest", id: 120, ilvl: 318, bonus: MYTH }], BIS5, gear, []);
+        expect(take.id).toBe(120);
+        expect(take.gradeUp).toBe(false);
+        expect(take.gain).toBe(318);
+    });
+});
