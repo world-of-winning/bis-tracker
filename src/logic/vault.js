@@ -18,9 +18,12 @@ var TOP_GRADE = TIERS.length - 1;
  * the tab is a stand-in for a check the reader cannot make. We can make it.
  *
  * A candidate is worth taking when it is a BiS item at the top grade that the
- * player does not already hold at that item level or better. An equivalent-
- * stat fit, an ALTS entry and a BiS already owned at the offered level all
- * lose to the Voidcore — the roll can reach items none of them improve on.
+ * player does not already hold at that grade or better. Grade decides and the
+ * item level only breaks a tie inside one, so a Myth 1/6 at 318 beats a Hero
+ * 6/6 at 321 in hand: the offer climbs to 334 and the copy held is finished.
+ * An equivalent-stat fit, an ALTS entry and a BiS already owned at the offered
+ * grade and level all lose to the Voidcore — the roll can reach items none of
+ * them improve on.
  *
  * So does a BiS below the top grade, which is the one exclusion that reads
  * oddly against the tracker's own target filter: a player aiming at Hero is
@@ -38,13 +41,25 @@ var TOP_GRADE = TIERS.length - 1;
  * is whether one vault pick is worth spending, and the bank is not in the
  * addon's bag section — so ✓ is the only signal that the item is already had.
  *
- * @param {Array}  vault  parseSimC vault list ({ slot, id, ilvl, name })
+ * Every item passed in carries its `bonus` as well as its `ilvl`, on the gear
+ * and bag sides as much as the vault's: bonus id is what states a grade, and
+ * ilvl is only the fallback when it is absent. Handing this function ilvl-only
+ * objects does not fail, it quietly grades every copy by the fallback.
+ *
+ * `gain` here is not CONTEXT.md's slot gain, which measures a candidate against
+ * the item it displaces in the farming list. This one ranks vault rows against
+ * each other and nothing renders it.
+ *
+ * @param {Array}  vault  parseSimC vault list ({ slot, id, ilvl, bonus, name })
  * @param {Array}  bis    BIS entries ({ slot, id })
- * @param {Object} gear   parseSimC gear map (slot → { id, ilvl })
- * @param {Array}  bag    parseSimC bag list ({ id, ilvl })
+ * @param {Object} gear   parseSimC gear map (slot → { id, ilvl, bonus })
+ * @param {Array}  bag    parseSimC bag list ({ id, ilvl, bonus })
  * @param {Object} [acquired]  the tracker's ✓ marks, id → true
  * @returns {{ candidates: Array, take: Object|null }}
- *   candidates carry `isBis`, `bisSlot`, `ownedIlvl`, `acquired` and `gain`;
+ *   candidates carry `isBis`, `bisSlot`, `ownedIlvl`, `acquired`, `gradeUp`
+ *   and `gain`. `ownedIlvl` names the copy that decided — the best held by
+ *   grade, then by item level — which is what the screen wants: on a row that
+ *   is not being taken, that copy is the reason it is not;
  *   `take` is the strongest of them, or null when the Voidcore wins. Every
  *   candidate worth putting forward carries its own `take` — the screen
  *   marks them all, and stops there. Which of two BiS items is worth more
@@ -55,12 +70,21 @@ export function vaultVerdict(vault, bis, gear, bag, acquired) {
   var bisSlotById = {};
   (bis || []).forEach(function(b) { if (!(b.id in bisSlotById)) bisSlotById[b.id] = b.slot; });
 
-  // Best item level the player already holds for each id, wherever it sits.
-  var heldIlvl = {};
+  // Best copy the player already holds for each id, wherever it sits. Best
+  // means grade first: a Hero 6/6 at 321 reads above a Myth 1/6 at 318 and is
+  // still the worse of the two, because 318 upgrades to 334 and 321 is done.
+  var held = {};
   function hold(item) {
     if (!item || !item.id) return;
     var lv = item.ilvl || 0;
-    if (!(item.id in heldIlvl) || lv > heldIlvl[item.id]) heldIlvl[item.id] = lv;
+    var g = itemTierIdx(item.bonus, item.ilvl);
+    // Nothing to read the grade from is not evidence of a low one. On the
+    // offered item that argues for putting it forward; here it argues the
+    // other way, because the expensive error is spending a pick on a copy
+    // already at the top of its track.
+    if (g < 0) g = TOP_GRADE;
+    var prev = held[item.id];
+    if (!prev || g > prev.grade || (g === prev.grade && lv > prev.ilvl)) held[item.id] = { grade: g, ilvl: lv };
   }
   Object.keys(gear || {}).forEach(function(slot) { hold(gear[slot]); });
   (bag || []).forEach(hold);
@@ -68,19 +92,25 @@ export function vaultVerdict(vault, bis, gear, bag, acquired) {
   var candidates = (vault || []).map(function(v) {
     var isBis = v.id in bisSlotById;
     var ticked = !!(acquired && acquired[v.id]);
-    var ownedIlvl = v.id in heldIlvl ? heldIlvl[v.id] : null;
+    var holding = v.id in held ? held[v.id] : null;
+    var ownedIlvl = holding ? holding.ilvl : null;
     var lv = v.ilvl || 0;
     // The addon writes the "# Name (ilvl)" comment only when it knows both,
     // so an item the client has not cached arrives with no item level at all.
     // Ownership decides, not the number: an item never looted is worth taking
-    // whether or not its level parsed, and a copy already held is only beaten
-    // by an offer that reads higher than it.
+    // whether or not its level parsed, and a copy already held is beaten by an
+    // offer on a higher track, or by one that reads higher on the same track.
     var owned = ticked || ownedIlvl !== null;
     // Nothing to read the grade from is not evidence the grade is low, so only
     // a grade we can see falling short excludes the item — the same call the
     // missing item level gets.
     var gradeIdx = itemTierIdx(v.bonus, v.ilvl);
     var belowTopGrade = gradeIdx >= 0 && gradeIdx < TOP_GRADE;
+    // A grade the copy in hand cannot reach by upgrading. Measured to the
+    // offer's ceiling rather than to the offer, because what the pick buys is
+    // the track, not the item level it lands on — which can read lower than
+    // what the player is already wearing.
+    var gradeUp = holding !== null && gradeIdx >= 0 && gradeIdx > holding.grade;
     return {
       slot: v.slot,
       id: v.id,
@@ -91,19 +121,22 @@ export function vaultVerdict(vault, bis, gear, bag, acquired) {
       bisSlot: isBis ? bisSlotById[v.id] : null,
       ownedIlvl: ownedIlvl,
       acquired: ticked,
-      gain: ownedIlvl !== null ? lv - ownedIlvl : lv,
-      take: isBis && !belowTopGrade && (!owned || (ownedIlvl !== null && lv > ownedIlvl)),
+      gradeUp: gradeUp,
+      gain: holding === null ? lv : Math.max(0, (gradeUp ? TIERS[gradeIdx].max : lv) - holding.ilvl),
+      take: isBis && !belowTopGrade && (!owned || gradeUp || (holding !== null && lv > holding.ilvl)),
     };
   });
 
-  // An item never looted beats a copy being pushed a few item levels, and
-  // between two of a kind the larger gain wins.
+  // An item never looted beats one that only crosses a grade, which in turn
+  // beats a copy being pushed a few item levels inside the grade it is in.
+  // Between two of a kind the larger gain wins.
   var take = null;
   candidates.forEach(function(c) {
     if (!c.take) return;
     if (!take) { take = c; return; }
     if (c.ownedIlvl === null && take.ownedIlvl !== null) { take = c; return; }
     if (c.ownedIlvl !== null && take.ownedIlvl === null) return;
+    if (c.gradeUp !== take.gradeUp) { if (c.gradeUp) take = c; return; }
     if (c.gain > take.gain) take = c;
   });
   return { candidates: candidates, take: take };
