@@ -4,7 +4,9 @@ Date: 2026-08-25
 
 ## Status
 
-Accepted.
+Accepted, revised by [ADR 0005](0005-farming-difficulty-sets-the-drop-grade.md): the target item level
+this document computes gain against is now a per-item drop grade, derived from the
+player's farming difficulty rather than chosen as a grade.
 
 ## Context
 

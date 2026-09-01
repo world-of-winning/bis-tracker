@@ -224,7 +224,7 @@
         "tierUpgradeNeeded": "Amélioration nécessaire",
         "tierReacquireNeeded": "Palier supérieur nécessaire",
         "wrongArmorType": "Porte un équipement {actual} !",
-        "deficitInfo": "(−N) = Écart avec la cible {max}",
+        "deficitInfo": "(−N) = Écart avec ce que votre contenu fait tomber",
         "supportedSpecs": "Spécialisations prises en charge",
         "changelog": "Journal des modifications",
         "avg": "Moy",
@@ -276,7 +276,8 @@
         "vaultVerdictVoidcore": "Aucun BiS qui vous manque encore — le jet bonus vaut mieux",
         "vaultOwned": "déjà possédé en {ilvl}",
         "vaultReminder": "Ouvrez le Grand coffre en jeu, puis copiez à nouveau votre export SimC pour voir les choix de cette semaine.",
-        "vaultDismiss": "Masquer jusqu'à la prochaine réinitialisation"
+        "vaultDismiss": "Masquer jusqu'à la prochaine réinitialisation",
+        "gainNoPlan": "Aucun contenu choisi"
     },
     "primaryStats": {
         "str": "Force",
@@ -385,8 +386,8 @@
             "desc": "Collez le texte de la commande /simc en jeu pour détecter automatiquement votre équipement.\nDes données d'exemple sont déjà chargées pour cette démo."
         },
         "tier": {
-            "title": "Niveau d'objet cible",
-            "desc": "Définissez le palier de niveau d'objet que vous visez.\nLes priorités se mettent à jour selon votre sélection, et les emplacements qui atteignent déjà la cible sont marqués comme terminés."
+            "title": "Ce que vous jouez",
+            "desc": "Indiquez les clés que vous poussez et la difficulté de raid que vous terminez.\nLe palier que chacune donne sert de référence à chaque emplacement : un objet de donjon selon votre clé, un objet de raid selon votre difficulté."
         },
         "progress": {
             "title": "Taux de complétion",
@@ -424,5 +425,14 @@
             "title": "Envie de comparer votre équipement ?",
             "desc": "Tapez /simc en jeu, collez le résultat ici,\net votre équipement sera comparé au BiS avec des priorités de farm triées automatiquement."
         }
+    },
+    "difficulty": {
+        "mplus": "Mythique+",
+        "raid": "Raid",
+        "keys2": "+2–5",
+        "keys6": "+6 et plus",
+        "normal": "Normal",
+        "heroic": "Héroïque",
+        "mythic": "Mythique"
     }
 }

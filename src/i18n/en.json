@@ -224,7 +224,7 @@
         "tierUpgradeNeeded": "Enhance needed",
         "tierReacquireNeeded": "Next tier needed",
         "wrongArmorType": "Wearing {actual} gear!",
-        "deficitInfo": "(−N) = Gap from target {max}",
+        "deficitInfo": "(−N) = Gap from what your content drops",
         "supportedSpecs": "Supported Specializations",
         "changelog": "Changelog",
         "avg": "Avg",
@@ -276,7 +276,8 @@
         "vaultVerdictVoidcore": "No BiS you still need this week — the bonus roll is the better use",
         "vaultOwned": "already owned at {ilvl}",
         "vaultReminder": "Open the Great Vault in-game, then copy your SimC export again to see this week's choices.",
-        "vaultDismiss": "Hide until the next reset"
+        "vaultDismiss": "Hide until the next reset",
+        "gainNoPlan": "No content chosen"
     },
     "primaryStats": {
         "str": "Strength",
@@ -385,8 +386,8 @@
             "desc": "Paste the text from the /simc command in-game to auto-detect your equipped gear.\nSample data is already loaded for this demo."
         },
         "tier": {
-            "title": "Target Item Level",
-            "desc": "Set your farming goal item level tier.\nPriorities update based on your selection, and slots that already meet the target are marked done."
+            "title": "What You Run",
+            "desc": "Say which keys you push and which raid difficulty you clear.\nThe grade each of them hands over is what every slot is measured against — a dungeon item against your key band, a raid item against your difficulty."
         },
         "progress": {
             "title": "Completion Rate",
@@ -424,5 +425,14 @@
             "title": "Want to compare gear?",
             "desc": "Type /simc in-game, paste the output here,\nand your equipped gear will be compared to BiS with auto-sorted farming priorities."
         }
+    },
+    "difficulty": {
+        "mplus": "Mythic+",
+        "raid": "Raid",
+        "keys2": "+2–5",
+        "keys6": "+6 and up",
+        "normal": "Normal",
+        "heroic": "Heroic",
+        "mythic": "Mythic"
     }
 }

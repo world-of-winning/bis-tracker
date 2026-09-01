@@ -61,10 +61,44 @@ the index of its equivalence group. The item is an equivalent fit when that mult
 equals the BiS item's. Equal size is therefore required, and a one-stat item can only
 stand in for a one-stat BiS item.
 
+## Farming plan
+
+**Farming difficulty (파밍 난이도)** — the content the player intends to run, stated as
+a key level for Mythic+ and a difficulty for the raid. Two independent choices, because
+a player who pushes keys and a player who clears Mythic raid are not the same player and
+either may be neither.
+
+It is not a goal. Every player's goal is Myth; saying so orders nothing. What the player
+actually decides is where they are going to spend the week, and every number this tracker
+reports follows from that.
+
+The player states it. Nothing in the SimC export carries a key level or a raid lockout,
+so there is nothing to infer it from, and inferring it from average item level would be
+guessing at a plan from a history.
+
+**Drop grade (드랍 등급)** — the grade a farming difficulty actually hands over. One
+difficulty yields two of them: the end-of-dungeon chest and the Great Vault sit a grade
+apart, so a +10 gives Hero 311 from the chest and Myth 318 from the vault.
+
+Not the same as how far a player can get. A +10 runner reaches Myth by way of the vault;
+their drop grade is Hero, which is what a run puts in their hands. Naming the two alike
+is what makes the vault impossible to explain.
+
+A drop grade is a **grade**. Where a single item level is wanted of it, it resolves to
+the top of that track — crests close the gap inside a track, and only a track boundary
+forces the item to be farmed again.
+
+**Acquisition path (획득 방식)** — the kind of content an item comes from: dungeon, raid,
+crafted, or catalyst. It decides which farming difficulty applies to that item, and
+crafted has none — it is capped where it is capped whatever the player runs.
+
+Distinct from **source (출처)**, which names the specific place (`"Kings' Rest"`). The
+path is the family the source belongs to.
+
 ## Expected gain
 
 **Slot gain (슬롯 이득)** — how many item levels a candidate item would add over the
-one it displaces, at the player's target grade. Item levels are the unit because they
+one it displaces, at the candidate's drop grade. Item levels are the unit because they
 are the only cardinal number in this domain; secondary stats are ordinal and gate the
 gain rather than adding to it. A slot that needs only an upgrade has no gain: upgrade
 currency is not a dungeon run.

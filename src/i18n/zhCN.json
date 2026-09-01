@@ -224,7 +224,7 @@
         "tierUpgradeNeeded": "需要强化",
         "tierReacquireNeeded": "需要更高阶",
         "wrongArmorType": "穿着{actual}装备!",
-        "deficitInfo": "(−N) = 与目标 {max} 的差距",
+        "deficitInfo": "(−N) = 与你所打内容掉落的差距",
         "supportedSpecs": "支持的专精",
         "changelog": "更新日志",
         "avg": "平均",
@@ -276,7 +276,8 @@
         "vaultVerdictVoidcore": "本周没有你还缺的 BiS — 奖励掷骰更划算",
         "vaultOwned": "已拥有，{ilvl}",
         "vaultReminder": "在游戏中打开巨龙宝库，然后重新复制 SimC 导出文本，即可看到本周的选项。",
-        "vaultDismiss": "隐藏至下次重置"
+        "vaultDismiss": "隐藏至下次重置",
+        "gainNoPlan": "未选择内容"
     },
     "primaryStats": {
         "str": "力量",
@@ -385,8 +386,8 @@
             "desc": "在游戏中输入 /simc 命令，将输出文本粘贴到这里，即可自动检测你的已装备物品。\n此演示已预加载了示例数据。"
         },
         "tier": {
-            "title": "目标物品等级",
-            "desc": "设置你的刷取目标物品等级阶段。\n优先级会根据你的选择自动更新，已达到目标的栏位将标记为完成。"
+            "title": "你打什么",
+            "desc": "选择你推的钥石层数和你通关的团本难度。\n它们各自给出的装备等级就是每个部位的标尺——地下城装备按你的钥石层数看，团本装备按你的难度看。"
         },
         "progress": {
             "title": "完成率",
@@ -424,5 +425,14 @@
             "title": "想要对比装备？",
             "desc": "在游戏中输入 /simc，将输出粘贴到这里，\n你的已装备物品将与 BiS 进行对比，并自动排列刷取优先级。"
         }
+    },
+    "difficulty": {
+        "mplus": "史诗钥石",
+        "raid": "团队副本",
+        "keys2": "+2–5",
+        "keys6": "+6 及以上",
+        "normal": "普通",
+        "heroic": "英雄",
+        "mythic": "史诗"
     }
 }

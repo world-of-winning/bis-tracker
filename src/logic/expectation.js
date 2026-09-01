@@ -1,6 +1,6 @@
-import { ARMOR_SLOTS, TIERS, resolveSlots } from '../data/shared.js';
+import { ARMOR_SLOTS, resolveSlots } from '../data/shared.js';
 import { scoreStats } from './matching.js';
-import { getSource, itemTierIdx } from './priority.js';
+import { dropIlvl, getSource, itemTierIdx, targetTierIdx } from './priority.js';
 
 /**
  * What one run of a dungeon is worth, given the gear the player is standing in.
@@ -89,13 +89,11 @@ function wrongEquipped(eq, slotName, ctx) {
  * settledIds for every row of a forty-item grid.
  */
 export function gainContext(opts) {
-  var targetIlvl = opts.targetIlvl;
-  var targetTierIdx = -1;
-  for (var k = 0; k < TIERS.length; k++) { if (targetIlvl <= TIERS[k].max) { targetTierIdx = k; break; } }
   return {
     sr: opts.sr,
-    targetIlvl: targetIlvl,
-    targetTierIdx: targetTierIdx,
+    // The baseline is per candidate now, not per screen: a dungeon item and a
+    // raid item are measured against different content (ADR 0005).
+    plan: opts.plan,
     stats: opts.stats || {},
     priorityStats: opts.priorityStats,
     knownBisIds: opts.knownBisIds,
@@ -133,7 +131,7 @@ export function gainContext(opts) {
  * the reason travels with the number rather than being re-derived by the caller.
  */
 export function assessGain(item, ctx) {
-  var T = ctx.targetIlvl;
+  var T = dropIlvl(item, ctx.plan);
   var slotName = slotNameOf(item);
   var eq = replacedItem(item, ctx.sr, ctx.settled);
   var replaceable = !!eq && !wrongEquipped(eq, slotName, ctx);
@@ -145,9 +143,13 @@ export function assessGain(item, ctx) {
     && scoreStats(item.stats, ctx.priorityStats) < scoreStats(ctx.stats[eq.id], ctx.priorityStats));
   var out = function(gain, reason) { return { gain: gain, reason: reason, statsRegress: regress }; };
 
+  // The player has not set the axis this item answers to, so there is no
+  // baseline to measure it against. A zero has to say which zero it is
+  // (ADR 0004), and this one is not a judgement about the item.
+  if (T === null) return out(0, "noPlan");
   if (replaceable) {
     if (T - (eq.ilvl || 0) <= 0) return out(0, "atTarget");
-    if (itemTierIdx(eq.bonus, eq.ilvl || 0) >= ctx.targetTierIdx) return out(0, "enhance");
+    if (itemTierIdx(eq.bonus, eq.ilvl || 0) >= targetTierIdx(T)) return out(0, "enhance");
   }
   var base = replaceable ? T - (eq.ilvl || 0) : T;
   // A weapon's value is its item level; its secondaries are a rounding error

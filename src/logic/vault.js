@@ -26,11 +26,11 @@ var TOP_GRADE = TIERS.length - 1;
  * them improve on.
  *
  * So does a BiS below the top grade, which is the one exclusion that reads
- * oddly against the tracker's own target filter: a player aiming at Hero is
- * told a Hero item on offer is not worth the pick. It is not, and the target
- * has no say in it. Grades cannot be crossed by upgrading, so that item is a
- * re-farm already scheduled, and the roll it would be spent instead of lands
- * at vault item level whatever the player is aiming for.
+ * oddly beside the rest of the tracker: a player whose farming difficulty tops
+ * out at Hero is told a Hero item on offer is not worth the pick. It is not,
+ * and the farming difficulty has no say in it. Grades cannot be crossed by
+ * upgrading, so that item is a re-farm already scheduled, and the roll it
+ * would be spent instead of lands at vault item level regardless.
  *
  * Nothing here feeds the priority tiers. Three candidates are offered and at
  * most one is taken, so counting them as owned would say a slot is finished
