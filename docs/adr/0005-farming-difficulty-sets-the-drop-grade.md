@@ -88,10 +88,17 @@ was aiming at and defaulted from average item level — a different question res
 same evidence. This one asks what they run, and opens on what they have evidently been
 running.
 
-**The gate is per item, not per screen.** A player who clears an axis still gets verdicts
-and a dungeon order for everything the other axis covers, and a bare row for the rest.
-Withholding the whole screen would hide answers the player has already given enough to
-compute.
+**The gate is per item, not per screen.** The baseline is resolved per item from that
+item's own axis, so the two axes never have to agree and neither one can blank the other's
+rows.
+
+**Neither axis is ever unset on screen.** The buttons do not toggle off, and an axis with
+nothing stored falls back to the gear's proposal before anything reads it — `fillPlan` in
+`BisTracker`, over the `plan` that was stored. An empty axis was reachable two ways and
+both were dead ends: clicking the selected notch cleared it, and a save written before
+this decision has no `plan` at all, so every returning player opened on a screen of bare
+rows until they clicked. The stored plan still keeps its holes — an axis the player has
+never answered is what tells the next import its proposal is still wanted, per axis.
 
 **Veteran stops being named in the UI but stays in `TIERS`.** No notch on either axis
 hands it over, so it joins Adventurer in `HIDDEN_TRACKS` — and stays in the table, for
