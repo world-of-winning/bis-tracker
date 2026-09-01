@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { load, save as persist } from '../storage.js';
-import { DUNGEONS, TIERS, DEFAULT_TIER, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS, SPEC_PRIMARY_STAT } from '../data/shared.js';
+import { DUNGEONS, TIERS, FARMING_DIFFICULTY, GEAR_SLOTS, fetchItemStats, resolveSlots, parseSimC, CLASS_ARMOR, ARMOR_SLOTS, SPEC_PRIMARY_STAT } from '../data/shared.js';
 import { findSpecBySimC } from '../data/specs.js';
 import { useLocale, LOCALE_META } from '../i18n/index.jsx';
 import { matchBiS } from '../logic/matching.js';
-import { getSource, calcPriority, calcAltPriority, autoSelectTier, sortByPriority, calcSourceFarmCount } from '../logic/priority.js';
+import { getSource, calcPriority, calcAltPriority, defaultPlan, dropIlvl, planProgress, sortByPriority, calcSourceFarmCount, targetTierIdx } from '../logic/priority.js';
 import { dungeonExpectation, gainContext, slotGain } from '../logic/expectation.js';
 import { buildRaidbotsExport, RAIDBOTS_URL } from '../logic/raidbots.js';
 import { vaultVerdict, isVaultStale } from '../logic/vault.js';
@@ -51,7 +51,21 @@ var PREP_COLORS = Object.assign({}, NON_DUNGEON_COLORS, { dot: "#aa88cc" });
 // build knows about. Season 2 retires every Season 1 dungeon, so restoring an
 // old filter unchecked leaves the user on an empty grid with no active button.
 function validFilter(f, sources) { return f && (f === "all" || sources.has(f)) ? f : "all"; }
-function validTier(k) { return TIERS.some(function(t) { return t.key === k && !t.hidden; }) ? k : DEFAULT_TIER; }
+// What the player says they are going to run. An import proposes one from the
+// grades in the equipped gear and the player corrects it; null on an axis is a
+// player who cleared it, not a starting state (ADR 0005).
+var EMPTY_PLAN = { mplus: null, raid: null };
+// A plan the player has stated outranks the one an import proposes. Clearing
+// both axes is itself a statement, so this asks whether anything is set rather
+// than whether the object exists.
+function planAfterImport(current, proposed) { return current && (current.mplus || current.raid) ? current : proposed; }
+function validNotch(axis, key) { return FARMING_DIFFICULTY[axis].some(function(n) { return n.key === key; }) ? key : null; }
+function validPlan(p) {
+  // A stored target grade from before ADR 0005 is a string, and it named a
+  // goal rather than a plan. There is nothing in it to carry over.
+  if (!p || typeof p !== "object") return EMPTY_PLAN;
+  return { mplus: validNotch("mplus", p.mplus), raid: validNotch("raid", p.raid) };
+}
 
 var dungeonFilterColorCache = {};
 function getDungeonFilterColors(c) {
@@ -110,13 +124,12 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var [raidbotsOpen, setRaidbotsOpen] = useState(false);
   var [raidbotsAttn, setRaidbotsAttn] = useState(false);
   var [vaultDismissedAt, setVaultDismissedAt] = useState(null);
-  var [targetTier, setTargetTier] = useState(DEFAULT_TIER);
+  var [plan, setPlan] = useState(EMPTY_PLAN);
   var [loaded, setLoaded] = useState(false);
   var [runtimeStats, setRuntimeStats] = useState({});
   var [runtimeArmorTypes, setRuntimeArmorTypes] = useState({});
   var [runtimePrimaryStats, setRuntimePrimaryStats] = useState({});
   var [importing, setImporting] = useState(false);
-  var targetInfo = TIERS.find(function(t) { return t.key === targetTier; }) || TIERS.find(function(t) { return t.key === DEFAULT_TIER; });
   var expectedArmor = sr && sr.ci && sr.ci.className ? CLASS_ARMOR[sr.ci.className] : null;
   var expectedPrimary = SPEC_PRIMARY_STAT[SPEC_KEY] || null;
   var allStats = useMemo(function() { return Object.assign({}, KNOWN_STATS, runtimeStats); }, [KNOWN_STATS, runtimeStats]);
@@ -127,11 +140,11 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   // about which equipped item a drop would replace.
   var gainCtx = useMemo(function() {
     return gainContext({
-      sr: sr, targetIlvl: targetInfo.max, stats: allStats, priorityStats: PRIORITY_STATS,
+      sr: sr, plan: plan, stats: allStats, priorityStats: PRIORITY_STATS,
       knownBisIds: knownBisIds, armorTypes: runtimeArmorTypes, expectedArmor: expectedArmor,
       primaryStats: runtimePrimaryStats, expectedPrimary: expectedPrimary, acq: acq,
     });
-  }, [sr, targetInfo.max, allStats, PRIORITY_STATS, knownBisIds, runtimeArmorTypes, expectedArmor, runtimePrimaryStats, expectedPrimary, acq]);
+  }, [sr, plan, allStats, PRIORITY_STATS, knownBisIds, runtimeArmorTypes, expectedArmor, runtimePrimaryStats, expectedPrimary, acq]);
   // What a source can drop, both lists at once — a BiS item is a drop like any
   // other, and the mean is over the whole chest.
   var dropPool = useMemo(function() { return activeItems.concat(mergedAlts); }, [activeItems, mergedAlts]);
@@ -148,10 +161,10 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     activeItems.forEach(function(i) { seen[getSource(i)] = true; });
     mergedAlts.forEach(function(a) { seen[getSource(a)] = true; });
     Object.keys(seen).forEach(function(s) {
-      c[s] = calcSourceFarmCount(s, activeItems, sr, targetInfo.max, allStats, PRIORITY_STATS, acq);
+      c[s] = calcSourceFarmCount(s, activeItems, sr, plan, allStats, PRIORITY_STATS, acq);
     });
     return c;
-  }, [activeItems, mergedAlts, sr, targetInfo.max, allStats, PRIORITY_STATS, acq]);
+  }, [activeItems, mergedAlts, sr, plan, allStats, PRIORITY_STATS, acq]);
 
   // The week's vault verdict. Deliberately outside every priority
   // computation — three choices are offered and at most one is taken, so
@@ -204,7 +217,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             }).sr;
           }
         }
-        if (restored !== d.sr) persist(STORAGE_KEY, { acq: d.acq || {}, sr: restored, targetTier: d.targetTier, filter: d.filter });
+        if (restored !== d.sr) persist(STORAGE_KEY, { acq: d.acq || {}, sr: restored, plan: d.plan, filter: d.filter });
         setSr(restored); setSimcOpen(false);
         if (onCharDetected && restored.ci) onCharDetected(restored.ci.name);
       } else { setSimcOpen(true); }
@@ -213,7 +226,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       var cachedPS = load(STAT_CACHE_KEY + "-primary-v4");
       if (cachedPS) setRuntimePrimaryStats(cachedPS);
       setVaultDismissedAt(d.vaultDismissedAt || null);
-      setTargetTier(validTier(d.targetTier));
+      setPlan(validPlan(d.plan));
       setFilter(validFilter(d.filter, itemSources));
     } else {
       var cached2 = load(STAT_CACHE_KEY);
@@ -259,20 +272,27 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   useEffect(function() {
     var t = setTimeout(function() { if (window.$WowheadPower && window.$WowheadPower.refreshLinks) { try { window.$WowheadPower.refreshLinks(); } catch(e) {} } }, 500);
     return function() { clearTimeout(t); };
-  }, [filter, sr, targetTier, STORAGE_KEY]);
+  }, [filter, sr, plan, STORAGE_KEY]);
   var stateRef = useRef({});
-  stateRef.current = { acq: acq, sr: sr, targetTier: targetTier, filter: filter, vaultDismissedAt: vaultDismissedAt };
-  var sv = useCallback(function(overrides) { var d = Object.assign({}, stateRef.current, overrides); persist(STORAGE_KEY, { acq: d.acq, sr: d.sr, targetTier: d.targetTier, filter: d.filter, vaultDismissedAt: d.vaultDismissedAt }); }, [STORAGE_KEY]);
+  stateRef.current = { acq: acq, sr: sr, plan: plan, filter: filter, vaultDismissedAt: vaultDismissedAt };
+  var sv = useCallback(function(overrides) { var d = Object.assign({}, stateRef.current, overrides); persist(STORAGE_KEY, { acq: d.acq, sr: d.sr, plan: d.plan, filter: d.filter, vaultDismissedAt: d.vaultDismissedAt }); }, [STORAGE_KEY]);
   function changeFilter(f) { setFilter(f); sv({ filter: f }); }
   var toggle = useCallback(function(id) { setAcq(function(prev) { var next = Object.assign({}, prev); next[id] = !next[id]; sv({ acq: next }); return next; }); }, [sv]);
-  var changeTarget = useCallback(function(key) { setTargetTier(key); sv({ targetTier: key }); }, [sv]);
+  var changeNotch = useCallback(function(axis, key) {
+    setPlan(function(prev) {
+      var next = Object.assign({}, prev);
+      next[axis] = prev[axis] === key ? null : key;
+      sv({ plan: next });
+      return next;
+    });
+  }, [sv]);
 
   // Shared import helpers
   function buildImportSr(gear, bag, ci, mergedStats, extraFields) {
     var result = matchBiS(BIS, gear, bag, mergedStats, knownBisIds, PRIORITY_STATS);
     var newSr = { ci: ci, gear: gear, bag: bag, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched, weaponMismatch: result.weaponMismatch };
     if (extraFields) Object.assign(newSr, extraFields);
-    return { sr: newSr, autoTier: autoSelectTier(ci.avgIlvl) };
+    return { sr: newSr, plan: defaultPlan(newSr.gear) };
   }
 
   function fetchAndCacheStats(unknownIds, callback) {
@@ -304,9 +324,9 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       var imp = buildImportSr(parsed.gear, parsed.bag, parsed.ci, mergedStats, { rawSimc: text, vault: parsed.vault, importedAt: Date.now() });
       var importName = parsed.ci.name || charName;
       var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
-      if (importName === charName) setSr(imp.sr);
-      if (importName === charName) { setTargetTier(imp.autoTier); }
-      persist(saveKey, { acq: importName !== charName ? {} : acq, sr: imp.sr, targetTier: imp.autoTier, filter: "all" });
+      var nextPlan = importName !== charName ? imp.plan : planAfterImport(stateRef.current.plan, imp.plan);
+      if (importName === charName) { setSr(imp.sr); setPlan(nextPlan); }
+      persist(saveKey, { acq: importName !== charName ? {} : acq, sr: imp.sr, plan: nextPlan, filter: "all" });
       var bisSlots = {};
       BIS.forEach(function(b) { bisSlots[b.slot] = true; });
       var empty = Object.keys(bisSlots).filter(function(s) { return !parsed.gear[s]; });
@@ -322,7 +342,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         finishImport(Object.assign({}, KNOWN_STATS, newRuntime));
       });
     } else { finishImport(currentStats); }
-  }, [simcText, acq, targetTier, sv, BIS, KNOWN_STATS, runtimeStats, importing, STAT_CACHE_KEY, BASE_STORAGE_KEY, STORAGE_KEY, charName]);
+  }, [simcText, acq, sv, BIS, KNOWN_STATS, runtimeStats, importing, STAT_CACHE_KEY, BASE_STORAGE_KEY, STORAGE_KEY, charName]);
   var clearSimc = useCallback(function() { setSr(null); setFeedback(null); setSimcOpen(true); persist(STORAGE_KEY, null); if (onClear) onClear(); }, [STORAGE_KEY, onClear]);
   var openRaidbots = useCallback(function() {
     var s = stateRef.current.sr;
@@ -369,9 +389,9 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       var imp = buildImportSr(sourceGear, sourceBag, sourceCi, mergedStats, { vault: sourceVault, importedAt: d.sr.importedAt, crossSpecSource: { specKey: source.specKey, charName: source.charName, simcSpec: source.simcSpec } });
       var importName = sourceCi.name || charName;
       var saveKey = importName !== charName ? BASE_STORAGE_KEY + ":" + importName : STORAGE_KEY;
-      if (importName === charName || !charName) { setSr(imp.sr); }
-      if (importName === charName || !charName) { setTargetTier(imp.autoTier); }
-      persist(saveKey, { acq: {}, sr: imp.sr, targetTier: imp.autoTier, filter: "all" });
+      var nextPlan = importName !== charName ? imp.plan : planAfterImport(stateRef.current.plan, imp.plan);
+      if (importName === charName || !charName) { setSr(imp.sr); setPlan(nextPlan); }
+      persist(saveKey, { acq: {}, sr: imp.sr, plan: nextPlan, filter: "all" });
       setFeedback({ ok: true, msg: t("ui.crossSpecImported") });
       setImporting(false); setSimcOpen(false);
       if (onCharDetected) onCharDetected(importName);
@@ -417,9 +437,9 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     if (d) {
       setAcq(d.acq || {}); setSr(d.sr || null); setSimcOpen(!d.sr);
       setVaultDismissedAt(d.vaultDismissedAt || null);
-      setTargetTier(validTier(d.targetTier));
+      setPlan(validPlan(d.plan));
       setFilter(validFilter(d.filter, itemSources));
-    } else { setAcq({}); setSr(null); setTargetTier(DEFAULT_TIER); setSimcOpen(false); setFilter("all"); setVaultDismissedAt(null); }
+    } else { setAcq({}); setSr(null); setPlan(EMPTY_PLAN); setSimcOpen(false); setFilter("all"); setVaultDismissedAt(null); }
   }, [STORAGE_KEY, STAT_CACHE_KEY, itemSources]);
   var initialImportDone = useRef(false);
   useEffect(function() {
@@ -428,19 +448,17 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       doImport(initialSimcText);
     }
   }, [initialSimcText, doImport]);
+  // Wowhead renders an item at a grade; which grade depends on the content
+  // this particular item comes out of.
+  var dropTier = useCallback(function(item) {
+    var lv = dropIlvl(item, plan);
+    return lv === null ? null : TIERS[targetTierIdx(lv)];
+  }, [plan]);
   var progressCounts = useMemo(function() {
-    var done = 0, green = 0;
-    activeItems.forEach(function(b) {
-      if (acq[b.id]) { done++; green++; return; }
-      if (!sr) return;
-      var p = calcPriority(b, sr, targetInfo.max, allStats, PRIORITY_STATS);
-      if (p.tier === 4) done++;
-      if (p.color === "#4dca6b") green++;
-    });
-    return { done: done, green: green };
-  }, [acq, sr, targetInfo.max, allStats, activeItems, PRIORITY_STATS]);
-  var doneCount = progressCounts.done, greenCount = progressCounts.green;
-  var displayBis = useMemo(function() { var items = filter === "all" ? activeItems : activeItems.filter(function(i) { return getSource(i) === filter; }); return sr ? sortByPriority(items, sr, targetInfo.max, allStats, PRIORITY_STATS) : items; }, [filter, sr, targetInfo.max, allStats, activeItems, PRIORITY_STATS]);
+    return planProgress(activeItems, sr, plan, allStats, PRIORITY_STATS, acq);
+  }, [acq, sr, plan, allStats, activeItems, PRIORITY_STATS]);
+  var doneCount = progressCounts.done, greenCount = progressCounts.green, slotCount = progressCounts.total;
+  var displayBis = useMemo(function() { var items = filter === "all" ? activeItems : activeItems.filter(function(i) { return getSource(i) === filter; }); return sr ? sortByPriority(items, sr, plan, allStats, PRIORITY_STATS) : items; }, [filter, sr, plan, allStats, activeItems, PRIORITY_STATS]);
   var displayAlts = useMemo(function() {
     if (filter === "all") return [];
     var items = mergedAlts.filter(function(a) { return getSource(a) === filter; });
@@ -453,7 +471,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     var ranked = items.map(function(a, i) {
       return {
         item: a, order: i,
-        owned: calcAltPriority(a, sr, targetInfo.max, acq).tier === 4,
+        owned: calcAltPriority(a, sr, plan, acq).tier === 4,
         gain: slotGain(a, gainCtx),
       };
     });
@@ -463,7 +481,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
       return a.order - b.order;
     });
     return ranked.map(function(r) { return r.item; });
-  }, [filter, mergedAlts, sr, acq, gainCtx, targetInfo.max]);
+  }, [filter, mergedAlts, sr, acq, gainCtx, plan]);
   // Dungeons only. The raid runs on a weekly lockout and a per-boss table, and
   // tier/crafted/vault are not drops, so their per-run value is not on this
   // scale — they keep their place in the row.
@@ -538,15 +556,30 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           </div>
         )}
       </div>
-      <div data-tutorial="tier-buttons" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-        {TIERS.filter(function(ti) { return !ti.hidden; }).map(function(ti) { var sel = targetTier === ti.key; return (<button key={ti.key} className="tier-btn" onClick={function() { changeTarget(ti.key); }} style={{ borderColor: sel ? ti.color : ti.color + "44", color: ti.color, opacity: sel ? 1 : 0.5, background: sel ? ti.color + "22" : "transparent" }}>{t("tiers." + ti.key) + " (" + ti.max + ")"}</button>); })}
+      <div data-tutorial="tier-buttons">
+        {["mplus", "raid"].map(function(axis) {
+          return (
+            <div key={axis} style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: axis === "raid" ? 6 : 0 }}>
+              <span style={{ fontSize: 11, color: "#667788", minWidth: 54 }}>{t("difficulty." + axis)}</span>
+              {FARMING_DIFFICULTY[axis].map(function(n) {
+                var ti = TIERS.find(function(x) { return x.key === n.grade; });
+                var sel = plan[axis] === n.key;
+                return (
+                  <button key={n.key} className="tier-btn" onClick={function() { changeNotch(axis, n.key); }} style={{ borderColor: sel ? ti.color : ti.color + "44", color: ti.color, opacity: sel ? 1 : 0.5, background: sel ? ti.color + "22" : "transparent" }}>
+                    {t("difficulty." + n.key) + " (" + t("tiers." + n.grade) + ")"}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
       <div data-tutorial="progress-bar" style={{ marginTop: 8, position: "relative" }}>
         <div style={{ height: 20, background: "#1a1a28", borderRadius: 6, overflow: "hidden", position: "relative" }}>
-          <div style={{ position: "absolute", height: "100%", width: (greenCount / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: "#4dca6b", opacity: 0.15 }} />
-          <div className="pfill" style={{ position: "absolute", height: "100%", width: (doneCount / activeItems.length * 100) + "%", borderRadius: 6, transition: "width .4s", background: theme.shimmer, backgroundSize: "200% 100%", opacity: 0.35 }} />
+          <div style={{ position: "absolute", height: "100%", width: (greenCount / slotCount * 100) + "%", borderRadius: 6, transition: "width .4s", background: "#4dca6b", opacity: 0.15 }} />
+          <div className="pfill" style={{ position: "absolute", height: "100%", width: (doneCount / slotCount * 100) + "%", borderRadius: 6, transition: "width .4s", background: theme.shimmer, backgroundSize: "200% 100%", opacity: 0.35 }} />
           <div style={{ position: "relative", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: doneCount === activeItems.length ? "#8dffaa" : theme.accent, letterSpacing: 1, textShadow: "0 1px 3px #0008" }}>{doneCount + " / " + activeItems.length}</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: greenCount === slotCount ? "#8dffaa" : theme.accent, letterSpacing: 1, textShadow: "0 1px 3px #0008" }}>{greenCount + " / " + slotCount}</span>
           </div>
         </div>
         {sr && sr.ci && sr.ci.avgIlvl > 0 && <span style={{ position: "absolute", right: 6, top: 0, height: "100%", display: "inline-flex", alignItems: "center", gap: 6, fontSize: 10, color: "#556666", pointerEvents: "none", textShadow: "0 1px 3px #000" }}>
@@ -610,7 +643,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
           <span><span style={{ color: "#4dca6b" }}>{"\u2713"}</span>{" " + t("ui.tierDone")}</span>
           <span><span style={{ color: "#ffd479" }}>{"\u2605"}</span>{" " + t("ui.bestExpected")}</span>
           <span><span style={{ color: "#a06a6a" }}>{"\u2193"}</span>{" " + t("ui.statsDowngrade")}</span>
-          <span style={{ color: "#445555" }}>{t("ui.deficitInfo", { max: targetInfo.max })}</span>
+          <span style={{ color: "#445555" }}>{t("ui.deficitInfo")}</span>
         </div>
       ) : (
         <div style={{ marginTop: 8, padding: "8px 14px", borderRadius: 6, background: theme.accentBg, border: "1px solid " + theme.accentBorder, fontSize: 11, color: theme.accent + "aa" }}>
@@ -636,9 +669,10 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
         {filter !== "all" && displayBis.length > 0 && <div style={{ fontSize: 11, fontWeight: 700, color: theme.accent, marginBottom: 6, letterSpacing: 1, textTransform: "uppercase" }}>{t("ui.bisItems")}</div>}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
           {displayBis.map(function(item, idx) {
-            var p = sr ? calcPriority(item, sr, targetInfo.max, allStats, PRIORITY_STATS) : null;
+            var p = sr ? calcPriority(item, sr, plan, allStats, PRIORITY_STATS) : null;
+            var dt = dropTier(item);
             if (acq[item.id]) { if (!p || p.tier !== 4) p = { tier: 4, deficit: 0, ilvl: p ? p.ilvl : 0, labelKey: "done", color: "#4dca6b", worst: false }; }
-            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} gainCtx={gainCtx} simcNames={simcNames} />;
+            return <ItemCard key={item.slot + "-" + item.id} item={item} isAlt={false} priority={p} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats}  targetBonus={dt ? dt.tooltipBonus : null} targetIlvl={dt ? dt.max : 0} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} gainCtx={gainCtx} simcNames={simcNames} />;
           })}
         </div>
         {displayAlts.length > 0 && (
@@ -648,9 +682,10 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
               {displayAlts.map(function(item, idx) {
-                var altP = sr ? calcAltPriority(item, sr, targetInfo.max, acq) : null;
+                var altP = sr ? calcAltPriority(item, sr, plan, acq) : null;
+                var dt = dropTier(item);
                 if (acq[item.id] && (!altP || altP.tier !== 4)) altP = { tier: 4, deficit: 0, ilvl: 0, labelKey: "done", color: "#4dca6b" };
-                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={targetInfo.tooltipBonus} targetIlvl={targetInfo.max} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} gainCtx={gainCtx} simcNames={simcNames} />;
+                return <ItemCard key={item.forSlot + "-" + item.id} item={item} isAlt={true} priority={altP} sr={sr} onToggle={toggle} idx={idx} theme={theme} allStats={allStats} targetBonus={dt ? dt.tooltipBonus : null} targetIlvl={dt ? dt.max : 0} whSpecId={whSpecId} armorTypes={runtimeArmorTypes} expectedArmor={expectedArmor} simcSpec={spec.SIMC_SPEC} primaryStats={runtimePrimaryStats} expectedPrimary={expectedPrimary} gainCtx={gainCtx} simcNames={simcNames} />;
               })}
             </div>
           </div>

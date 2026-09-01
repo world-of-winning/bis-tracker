@@ -224,7 +224,7 @@
         "tierUpgradeNeeded": "需要強化",
         "tierReacquireNeeded": "需要下一階",
         "wrongArmorType": "穿戴了{actual}裝備！",
-        "deficitInfo": "(−N) = 與目標 {max} 的差距",
+        "deficitInfo": "(−N) = 與你所打內容掉落的差距",
         "supportedSpecs": "已支援的專精",
         "changelog": "更新紀錄",
         "avg": "平均",
@@ -276,7 +276,8 @@
         "vaultVerdictVoidcore": "本週沒有你還缺的 BiS — 獎勵擲骰更划算",
         "vaultOwned": "已擁有，{ilvl}",
         "vaultReminder": "在遊戲中打開巨龍寶庫，然後重新複製 SimC 匯出文字，即可看到本週的選項。",
-        "vaultDismiss": "隱藏至下次重置"
+        "vaultDismiss": "隱藏至下次重置",
+        "gainNoPlan": "未選擇內容"
     },
     "primaryStats": {
         "str": "力量",
@@ -385,8 +386,8 @@
             "desc": "在遊戲中輸入 /simc 指令，將輸出文字貼上即可自動偵測你的裝備。\n此範例已預先載入資料。"
         },
         "tier": {
-            "title": "目標物品等級",
-            "desc": "設定你的刷裝目標等級階層。\n優先度會根據你的選擇更新，已達標的欄位會標記為完成。"
+            "title": "你打什麼",
+            "desc": "選擇你推的鑰石層數和你通關的團本難度。\n它們各自給出的裝備等級就是每個部位的標尺——地城裝備按你的鑰石層數看，團本裝備按你的難度看。"
         },
         "progress": {
             "title": "完成率",
@@ -424,5 +425,14 @@
             "title": "想比較裝備嗎？",
             "desc": "在遊戲中輸入 /simc，將輸出貼在這裡，\n你的裝備將與 BiS 進行比較，並自動排序刷裝優先度。"
         }
+    },
+    "difficulty": {
+        "mplus": "傳奇鑰石",
+        "raid": "團隊副本",
+        "keys2": "+2–5",
+        "keys6": "+6 以上",
+        "normal": "普通",
+        "heroic": "英雄",
+        "mythic": "傳奇"
     }
 }

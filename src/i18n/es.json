@@ -223,7 +223,7 @@
         "tierUpgradeNeeded": "Mejora necesaria",
         "tierReacquireNeeded": "Siguiente nivel necesario",
         "wrongArmorType": "¡Llevas equipo de {actual}!",
-        "deficitInfo": "(−N) = Diferencia con objetivo {max}",
+        "deficitInfo": "(−N) = Diferencia con lo que suelta tu contenido",
         "supportedSpecs": "Especializaciones soportadas",
         "changelog": "Historial de cambios",
         "avg": "Prom",
@@ -275,7 +275,8 @@
         "vaultVerdictVoidcore": "Ningún BiS que te falte — la tirada extra vale más",
         "vaultOwned": "ya lo tienes a {ilvl}",
         "vaultReminder": "Abre la Gran Cámara en el juego y vuelve a copiar tu exportación de SimC para ver las opciones de esta semana.",
-        "vaultDismiss": "Ocultar hasta el próximo reinicio"
+        "vaultDismiss": "Ocultar hasta el próximo reinicio",
+        "gainNoPlan": "Sin contenido elegido"
     },
     "primaryStats": {
         "str": "Fuerza",
@@ -384,8 +385,8 @@
             "desc": "Pega el texto del comando /simc del juego para detectar automáticamente tu equipo.\nLos datos de ejemplo ya están cargados para esta demo."
         },
         "tier": {
-            "title": "Nivel de objeto objetivo",
-            "desc": "Establece tu objetivo de nivel de objeto para el farmeo.\nLas prioridades se actualizan según tu selección, y las ranuras que ya cumplen el objetivo se marcan como listas."
+            "title": "Qué juegas",
+            "desc": "Indica qué llaves subes y qué dificultad de banda completas.\nEl nivel que da cada una es el listón de cada ranura: un objeto de mazmorra según tu llave, uno de banda según tu dificultad."
         },
         "progress": {
             "title": "Tasa de progreso",
@@ -423,5 +424,14 @@
             "title": "¿Quieres comparar equipo?",
             "desc": "Escribe /simc en el juego, pega la salida aquí,\ny tu equipo equipado se comparará con BiS con prioridades de farmeo ordenadas automáticamente."
         }
+    },
+    "difficulty": {
+        "mplus": "Mítica+",
+        "raid": "Banda",
+        "keys2": "+2–5",
+        "keys6": "+6 o superior",
+        "normal": "Normal",
+        "heroic": "Heroica",
+        "mythic": "Mítica"
     }
 }

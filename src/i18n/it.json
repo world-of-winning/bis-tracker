@@ -224,7 +224,7 @@
         "tierUpgradeNeeded": "Potenziamento necessario",
         "tierReacquireNeeded": "Grado successivo necessario",
         "wrongArmorType": "Stai indossando equipaggiamento {actual}!",
-        "deficitInfo": "(−N) = Differenza dall'obiettivo {max}",
+        "deficitInfo": "(−N) = Distanza da ciò che il tuo contenuto rilascia",
         "supportedSpecs": "Specializzazioni supportate",
         "changelog": "Registro modifiche",
         "avg": "Media",
@@ -276,7 +276,8 @@
         "vaultVerdictVoidcore": "Nessun BiS che ti manchi — il tiro bonus rende di più",
         "vaultOwned": "già posseduto a {ilvl}",
         "vaultReminder": "Apri la Grande Cripta nel gioco, poi copia di nuovo il tuo export SimC per vedere le scelte di questa settimana.",
-        "vaultDismiss": "Nascondi fino al prossimo reset"
+        "vaultDismiss": "Nascondi fino al prossimo reset",
+        "gainNoPlan": "Nessun contenuto scelto"
     },
     "primaryStats": {
         "str": "Forza",
@@ -385,8 +386,8 @@
             "desc": "Incolla il testo dal comando /simc nel gioco per rilevare automaticamente il tuo equipaggiamento.\nI dati di esempio sono già caricati per questa demo."
         },
         "tier": {
-            "title": "Livello oggetto obiettivo",
-            "desc": "Imposta il grado obiettivo del tuo farming.\nLe priorità si aggiornano in base alla tua selezione, e gli slot che hanno già raggiunto l'obiettivo vengono segnati come completati."
+            "title": "Cosa giochi",
+            "desc": "Indica quali chiavi spingi e quale difficoltà di incursione completi.\nIl livello che ciascuna concede è il metro di ogni slot: un oggetto da dungeon sulla tua chiave, uno da incursione sulla tua difficoltà."
         },
         "progress": {
             "title": "Percentuale di completamento",
@@ -424,5 +425,14 @@
             "title": "Vuoi confrontare l'equipaggiamento?",
             "desc": "Digita /simc nel gioco, incolla l'output qui,\ne il tuo equipaggiamento verrà confrontato con il BiS con priorità di farming ordinate automaticamente."
         }
+    },
+    "difficulty": {
+        "mplus": "Mitica+",
+        "raid": "Incursione",
+        "keys2": "+2–5",
+        "keys6": "+6 e oltre",
+        "normal": "Normale",
+        "heroic": "Eroica",
+        "mythic": "Mitica"
     }
 }

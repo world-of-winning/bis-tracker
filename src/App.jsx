@@ -4,8 +4,9 @@ import { CHANGELOG } from './data/changelog.js';
 import { getSampleChars, SAMPLE_CHARS } from './data/sample.js';
 import { load, save as persist, remove } from './storage.js';
 import { parseSimC } from './data/shared.js';
-import { autoSelectTier } from './logic/priority.js';
 import { matchBiS } from './logic/matching.js';
+import { defaultPlan } from './logic/priority.js';
+
 import { useLocale, LOCALE_META, LOCALE_KEYS } from './i18n/index.jsx';
 import BisTracker from './components/BisTracker.jsx';
 import TutorialOverlay from './components/TutorialOverlay.jsx';
@@ -388,7 +389,7 @@ export default function App() {
     // Pre-set target tier based on sample ilvl for the first character
     var firstKey = first.spec.STORAGE_KEY + ":" + first.name;
     var existing = load(firstKey);
-    if (!existing) persist(firstKey, { acq: {}, sr: null, targetTier: null });
+    if (!existing) persist(firstKey, { acq: {}, sr: null, plan: null });
     setSpecKey(first.spec.SPEC_KEY);
     setCharName(first.name);
     setSelectedClass(null);
@@ -410,7 +411,7 @@ export default function App() {
         var knownBisIds = new Set(s.spec.BIS.map(function(b) { return b.id; }));
         if (s.spec.MYTHIC) s.spec.MYTHIC.forEach(function(m) { knownBisIds.add(m.id); });
         var result = matchBiS(s.spec.BIS, gear, parsed.bag || [], s.spec.KNOWN_STATS, knownBisIds, s.spec.PRIORITY_STATS);
-        persist(key, { acq: {}, sr: { ci: ci, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched, weaponMismatch: result.weaponMismatch }, targetTier: autoSelectTier(ci.avgIlvl) });
+        persist(key, { acq: {}, sr: { ci: ci, eqSlot: result.eqSlot, bisInBag: result.bisInBag, altItems: result.altItems, matched: result.matched, weaponMismatch: result.weaponMismatch }, plan: defaultPlan(gear) });
       }
     });
     setSampleMode(true);

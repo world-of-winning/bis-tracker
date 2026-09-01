@@ -29,15 +29,39 @@ export var CURRENT_RAID = "The Venomous Abyss";
 // hidden: graded like any other track, but never offered as a target.
 export var TIERS = [
   { key: "adventurer", min: 266, max: 282, color: "#8a8a8a", bonusMin: 12817, bonusMax: 12824, tooltipBonus: 12822, hidden: true },
-  { key: "veteran", min: 279, max: 295, color: "#6daa6d", bonusMin: 12825, bonusMax: 12832, tooltipBonus: 12830 },
+  { key: "veteran", min: 279, max: 295, color: "#6daa6d", bonusMin: 12825, bonusMax: 12832, tooltipBonus: 12830, hidden: true },
   { key: "champion", min: 292, max: 308, color: "#4d8ecf", bonusMin: 12833, bonusMax: 12840, tooltipBonus: 12838 },
   { key: "hero", min: 305, max: 321, color: "#9b4dca", bonusMin: 12841, bonusMax: 12848, tooltipBonus: 12846 },
   { key: "myth", min: 318, max: 334, color: "#ca7a3d", bonusMin: 12849, bonusMax: 12856, tooltipBonus: 12854 },
 ];
 
-// Target tier a fresh tracker starts on, and the landing spot whenever a
-// stored targetTier no longer names a visible track.
-export var DEFAULT_TIER = "hero";
+// What the player says they are going to run, and the upgrade track each piece
+// of that content hands over. The item level is not stated here — it is read
+// off TIERS — because a track's ceiling is the honest baseline: everything
+// below it is reachable with crests, everything above it needs the item
+// farmed again (ADR 0005).
+//
+// The Mythic+ axis has two bands rather than one per key level because the
+// track is all that separates them. Rewards start at +2 on Champion and the
+// chest turns Hero at +6; from there to +10 and beyond the chest stays Hero.
+// What +10 adds is a Myth slot in the Great Vault, and the vault verdict reads
+// the top grade directly and has never consulted this.
+//
+// Season swap: update this alongside DUNGEONS, CURRENT_RAID and TIERS.
+export var FARMING_DIFFICULTY = {
+  mplus: [
+    { key: "keys2", grade: "champion" },
+    { key: "keys6", grade: "hero" },
+  ],
+  raid: [
+    { key: "normal", grade: "champion" },
+    { key: "heroic", grade: "hero" },
+    { key: "mythic", grade: "myth" },
+  ],
+};
+
+// Crafting caps below the Myth ceiling and answers to neither axis.
+export var CRAFTED_ILVL = 331;
 
 // Class → expected armor type mapping
 export var CLASS_ARMOR = {

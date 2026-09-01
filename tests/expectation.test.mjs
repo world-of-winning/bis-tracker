@@ -4,15 +4,18 @@ import { assessGain, dungeonExpectation, gainContext, replacedItem, settledIds, 
 // Protection Paladin's groups: haste alone, then mastery and crit together.
 const PRIORITY = [["haste"], ["mastery", "crit"], ["vers"]];
 
-// Target is Hero, whose ceiling is 321. Grades below it, by bonus id:
+// Grades below Hero, by bonus id:
 const CHAMPION = "12833";  // ilvl 292–308
 const HERO = "12841";      // ilvl 305–321
+// Both axes on Hero, so every candidate here has the same ceiling whichever
+// path its source takes, and these cases test gain rather than the baseline.
+const PLAN = { mplus: "keys6", raid: "heroic" };
 const T = 321;
 
 function ctxFor(gear, extra) {
     return gainContext(Object.assign({
         sr: { gear: gear, altItems: {}, eqSlot: {} },
-        targetIlvl: T,
+        plan: PLAN,
         stats: {},
         priorityStats: PRIORITY,
         knownBisIds: new Set(),
@@ -236,5 +239,50 @@ describe("dungeonExpectation", () => {
     it("is zero with no imported gear", () => {
         const ctx = gainContext({ sr: null, targetIlvl: T, priorityStats: PRIORITY });
         expect(dungeonExpectation("A", [{ forSlot: "head", id: 1, source: "A", stats: ["haste"] }], ctx)).toBe(0);
+    });
+});
+
+describe("a baseline per candidate", () => {
+    // The whole point of ADR 0005: one screen, two kinds of content, and a
+    // dungeon drop is not measured against what a Mythic raid hands over.
+    const SPLIT = { mplus: "keys6", raid: "mythic" };   // Hero 321 / Myth 334
+
+    function splitCtx(gear) {
+        return gainContext({
+            sr: { gear: gear, altItems: {}, eqSlot: {} },
+            plan: SPLIT,
+            stats: {},
+            priorityStats: PRIORITY,
+            knownBisIds: new Set(),
+        });
+    }
+
+    it("measures a dungeon candidate and a raid candidate against their own content", () => {
+        const ctx = splitCtx({});
+        const dungeon = { forSlot: "head", id: 1, stats: ["haste"], source: "Kings' Rest" };
+        const raid = { forSlot: "head", id: 2, stats: ["haste"], source: "The Venomous Abyss" };
+        expect(slotGain(dungeon, ctx)).toBe(321);
+        expect(slotGain(raid, ctx)).toBe(334);
+    });
+
+    it("calls a slot finished for the dungeon that the raid can still improve", () => {
+        // Hero 6/6. Nothing a key can do for it; a Mythic raid boss can.
+        const gear = { head: { id: 9, ilvl: 321, bonus: HERO } };
+        const ctx = splitCtx(gear);
+        expect(slotGain({ forSlot: "head", id: 1, stats: ["haste"], source: "Kings' Rest" }, ctx)).toBe(0);
+        expect(slotGain({ forSlot: "head", id: 2, stats: ["haste"], source: "The Venomous Abyss" }, ctx)).toBe(13);
+    });
+
+    it("reports nothing at all until the player has said what they run", () => {
+        const ctx = gainContext({
+            sr: { gear: {}, altItems: {}, eqSlot: {} },
+            plan: { mplus: null, raid: null },
+            stats: {},
+            priorityStats: PRIORITY,
+            knownBisIds: new Set(),
+        });
+        const r = assessGain({ forSlot: "head", id: 1, stats: ["haste"], source: "Kings' Rest" }, ctx);
+        expect(r.gain).toBe(0);
+        expect(r.reason).toBe("noPlan");
     });
 });

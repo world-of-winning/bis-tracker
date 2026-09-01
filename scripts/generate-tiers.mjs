@@ -21,12 +21,16 @@ const SHARED_JS = resolve(__dirname, "../src/data/shared.js");
 
 const BONUSES_URL = "https://www.raidbots.com/static/data/live/bonuses.json";
 
-// Tracks that get no target button. Adventurer sits below every BiS target,
-// so offering it as a goal would be noise — but it still has to be in TIERS.
-// Dropping it would leave its bonus_ids unmatched, and itemTierIdx() would
-// fall through to the ilvl guess and grade an Adventurer item as Veteran,
-// claiming a 282-capped item can be upgraded to 295.
-const HIDDEN_TRACKS = new Set(["adventurer"]);
+// Tracks no farming difficulty hands over, so nothing in the UI names them —
+// but they still have to be in TIERS. Drop a row and its bonus_ids match
+// nothing, and itemTierIdx() falls through to the ilvl guess and grades the
+// item one track too high: an Adventurer capped at 282 read as Veteran, a
+// Veteran capped at 295 read as Champion. Either way the tracker tells the
+// player to upgrade an item that cannot be upgraded.
+//
+// Veteran joins Adventurer because no content this tracker's audience runs
+// drops it — the lowest key band is already Champion (ADR 0005).
+const HIDDEN_TRACKS = new Set(["adventurer", "veteran"]);
 
 // Used only for tracks that have no color in the current shared.js.
 const FALLBACK_COLORS = ["#6daa6d", "#4d8ecf", "#9b4dca", "#ca7a3d"];

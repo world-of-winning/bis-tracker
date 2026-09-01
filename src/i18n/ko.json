@@ -224,7 +224,7 @@
         "tierUpgradeNeeded": "강화 필요",
         "tierReacquireNeeded": "등급↑ 필요",
         "wrongArmorType": "{actual} 장비 착용 중!",
-        "deficitInfo": "（−N） = 목표 {max} 대비 갭",
+        "deficitInfo": "（−N） = 도는 콘텐츠가 주는 등급 대비 갭",
         "supportedSpecs": "지원 전문화",
         "changelog": "변경 기록",
         "avg": "평균",
@@ -276,7 +276,8 @@
         "vaultVerdictVoidcore": "이번 주 금고에 아직 필요한 BiS가 없습니다 — 주사위 쪽이 낫습니다",
         "vaultOwned": "이미 {ilvl}로 보유",
         "vaultReminder": "게임에서 위대한 금고를 연 뒤 SimC를 다시 복사하면 이번 주 후보가 보입니다.",
-        "vaultDismiss": "다음 리셋까지 숨기기"
+        "vaultDismiss": "다음 리셋까지 숨기기",
+        "gainNoPlan": "도는 콘텐츠 미선택"
     },
     "primaryStats": {
         "str": "힘",
@@ -385,8 +386,8 @@
             "desc": "게임에서 /simc 명령어로 복사한 텍스트를 여기에 붙여넣으면 현재 장비를 자동으로 인식합니다.\n지금은 샘플 데이터가 이미 입력된 상태입니다."
         },
         "tier": {
-            "title": "목표 아이템 레벨",
-            "desc": "파밍 목표로 삼을 아이템 레벨 등급입니다.\n선택한 등급에 따라 아이템별 우선순위가 바뀌고, 이미 달성한 슬롯은 완료 처리됩니다."
+            "title": "도는 콘텐츠",
+            "desc": "미는 쐐기 단수와 도는 레이드 난이도를 고릅니다.\n각 콘텐츠가 주는 등급이 슬롯의 판정 기준이 됩니다. 던전 아이템은 쐐기 단수 기준으로, 레이드 아이템은 레이드 난이도 기준으로 봅니다."
         },
         "progress": {
             "title": "달성률",
@@ -424,5 +425,14 @@
             "title": "장비 비교하려면?",
             "desc": "게임에서 /simc를 입력하고 여기에 붙여넣으면\n현재 장착 장비와 BiS를 비교하여 파밍 우선순위를 자동으로 정렬합니다."
         }
+    },
+    "difficulty": {
+        "mplus": "쐐기",
+        "raid": "레이드",
+        "keys2": "+2~+5",
+        "keys6": "+6 이상",
+        "normal": "일반",
+        "heroic": "영웅",
+        "mythic": "신화"
     }
 }

@@ -224,7 +224,7 @@
         "tierUpgradeNeeded": "Aufwertung nötig",
         "tierReacquireNeeded": "Nächste Stufe nötig",
         "wrongArmorType": "Trägt {actual}-Ausrüstung!",
-        "deficitInfo": "(−N) = Abstand zum Ziel {max}",
+        "deficitInfo": "(−N) = Abstand zu dem, was dein Inhalt fallen lässt",
         "supportedSpecs": "Unterstützte Spezialisierungen",
         "changelog": "Änderungsprotokoll",
         "avg": "Ø",
@@ -276,7 +276,8 @@
         "vaultVerdictVoidcore": "Kein BiS, das dir noch fehlt — der Bonuswurf ist die bessere Wahl",
         "vaultOwned": "bereits auf {ilvl} vorhanden",
         "vaultReminder": "Öffne im Spiel die Große Schatzkammer und kopiere danach deinen SimC-Export erneut, um die Auswahl dieser Woche zu sehen.",
-        "vaultDismiss": "Bis zum nächsten Reset ausblenden"
+        "vaultDismiss": "Bis zum nächsten Reset ausblenden",
+        "gainNoPlan": "Kein Inhalt gewählt"
     },
     "primaryStats": {
         "str": "Stärke",
@@ -385,8 +386,8 @@
             "desc": "Füge den Text des /simc-Befehls aus dem Spiel ein, um deine angelegte Ausrüstung automatisch zu erkennen.\nFür diese Demo sind bereits Beispieldaten geladen."
         },
         "tier": {
-            "title": "Zielgegenstandsstufe",
-            "desc": "Lege dein Farmziel für die Gegenstandsstufe fest.\nPrioritäten werden basierend auf deiner Auswahl aktualisiert, und Plätze, die das Ziel bereits erreichen, werden als fertig markiert."
+            "title": "Was du spielst",
+            "desc": "Gib an, welche Schlüssel du spielst und welchen Schlachtzug-Schwierigkeitsgrad du abschließt.\nDie Stufe, die jeder davon hergibt, ist der Maßstab für jeden Platz — ein Dungeon-Gegenstand an deiner Schlüsselstufe, ein Schlachtzug-Gegenstand an deinem Schwierigkeitsgrad."
         },
         "progress": {
             "title": "Fortschrittsrate",
@@ -424,5 +425,14 @@
             "title": "Ausrüstung vergleichen?",
             "desc": "Gib /simc im Spiel ein, füge die Ausgabe hier ein,\nund deine angelegte Ausrüstung wird mit BiS verglichen und automatisch nach Farmingpriorität sortiert."
         }
+    },
+    "difficulty": {
+        "mplus": "Mythisch+",
+        "raid": "Schlachtzug",
+        "keys2": "+2–5",
+        "keys6": "+6 und höher",
+        "normal": "Normal",
+        "heroic": "Heroisch",
+        "mythic": "Mythisch"
     }
 }

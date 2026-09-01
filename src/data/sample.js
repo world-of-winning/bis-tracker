@@ -2,8 +2,14 @@
 // Shows: multiple characters, same name + different specs, all priority tiers
 
 import { SPECS } from './specs.js';
-import { TIERS, DEFAULT_TIER } from './shared.js';
+import { TIERS } from './shared.js';
+
 import enItems from '../i18n/items/en.json';
+
+// The track a sample character's gear sits on when the demo does not say. Not
+// a target — the tracker has no target grade any more (ADR 0005) — just where
+// the made-up gear is, so the demo shows a list with something left to do.
+var SAMPLE_TIER = "hero";
 
 // Curated sample specs: diverse classes, some share names to demo multi-spec
 // tier: the grade the character has finished. Items one grade below it show as
@@ -47,7 +53,7 @@ function generateSampleSimC(spec, charName, tierKey) {
   var BIS = spec.BIS;
   var ALTS = spec.ALTS;
   var doneIdx = TIERS.findIndex(function(t) { return t.key === tierKey; });
-  if (doneIdx < 0) doneIdx = TIERS.findIndex(function(t) { return t.key === DEFAULT_TIER; });
+  if (doneIdx < 0) doneIdx = TIERS.findIndex(function(t) { return t.key === SAMPLE_TIER; });
   var doneTier = TIERS[doneIdx];
   var upgradeTier = TIERS[doneIdx - 1] || TIERS[0];
 
@@ -209,6 +215,6 @@ function generateSampleSimC(spec, charName, tierKey) {
 export function getSampleChars() {
   return SAMPLE_CHARS.map(function(c) {
     var spec = SPECS.find(function(s) { return s.SPEC_KEY === c.specKey; });
-    return { spec: spec, name: c.name, simcText: generateSampleSimC(spec, c.name, c.tier || DEFAULT_TIER) };
+    return { spec: spec, name: c.name, simcText: generateSampleSimC(spec, c.name, c.tier || SAMPLE_TIER) };
   });
 }
