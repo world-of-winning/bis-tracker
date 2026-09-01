@@ -52,19 +52,29 @@ var PREP_COLORS = Object.assign({}, NON_DUNGEON_COLORS, { dot: "#aa88cc" });
 // old filter unchecked leaves the user on an empty grid with no active button.
 function validFilter(f, sources) { return f && (f === "all" || sources.has(f)) ? f : "all"; }
 // What the player says they are going to run. An import proposes one from the
-// grades in the equipped gear and the player corrects it; null on an axis is a
-// player who cleared it, not a starting state (ADR 0005).
+// grades in the equipped gear and the player corrects it; null on an axis is
+// an axis the player has not answered, which `fillPlan` covers before anything
+// reads it (ADR 0005). It is never a state the screen shows.
 var EMPTY_PLAN = { mplus: null, raid: null };
-// A plan the player has stated outranks the one an import proposes. Clearing
-// both axes is itself a statement, so this asks whether anything is set rather
-// than whether the object exists.
-function planAfterImport(current, proposed) { return current && (current.mplus || current.raid) ? current : proposed; }
+// A plan the player has stated outranks the one an import proposes, per axis:
+// an untouched axis follows the fresh gear, an answered one stays answered.
+function planAfterImport(current, proposed) {
+  return { mplus: (current && current.mplus) || proposed.mplus, raid: (current && current.raid) || proposed.raid };
+}
 function validNotch(axis, key) { return FARMING_DIFFICULTY[axis].some(function(n) { return n.key === key; }) ? key : null; }
 function validPlan(p) {
   // A stored target grade from before ADR 0005 is a string, and it named a
   // goal rather than a plan. There is nothing in it to carry over.
   if (!p || typeof p !== "object") return EMPTY_PLAN;
   return { mplus: validNotch("mplus", p.mplus), raid: validNotch("raid", p.raid) };
+}
+// What the screen runs on. An axis the player has answered is kept; one they
+// have not falls back to the plan the equipped gear proposes, so no axis is
+// ever unset. The stored plan keeps its holes: they are what tells an import
+// its proposal is still wanted.
+function fillPlan(p, gear) {
+  var proposed = defaultPlan(gear);
+  return { mplus: (p && p.mplus) || proposed.mplus, raid: (p && p.raid) || proposed.raid };
 }
 
 var dungeonFilterColorCache = {};
@@ -124,7 +134,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var [raidbotsOpen, setRaidbotsOpen] = useState(false);
   var [raidbotsAttn, setRaidbotsAttn] = useState(false);
   var [vaultDismissedAt, setVaultDismissedAt] = useState(null);
-  var [plan, setPlan] = useState(EMPTY_PLAN);
+  var [storedPlan, setPlan] = useState(EMPTY_PLAN);
   var [loaded, setLoaded] = useState(false);
   var [runtimeStats, setRuntimeStats] = useState({});
   var [runtimeArmorTypes, setRuntimeArmorTypes] = useState({});
@@ -133,6 +143,7 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
   var expectedArmor = sr && sr.ci && sr.ci.className ? CLASS_ARMOR[sr.ci.className] : null;
   var expectedPrimary = SPEC_PRIMARY_STAT[SPEC_KEY] || null;
   var allStats = useMemo(function() { return Object.assign({}, KNOWN_STATS, runtimeStats); }, [KNOWN_STATS, runtimeStats]);
+  var plan = useMemo(function() { return fillPlan(storedPlan, sr && sr.gear); }, [storedPlan, sr]);
   // Attach primary stat info to sr for calcPriority to use in weapon mismatch checks
   if (sr) { sr._expectedPrimary = expectedPrimary; sr._primaryStats = runtimePrimaryStats; }
   // Everything the expected-gain model needs, resolved once. Both the dungeon
@@ -274,14 +285,17 @@ export default function BisTracker({ spec, charName, initialSimcText, onSpecSwit
     return function() { clearTimeout(t); };
   }, [filter, sr, plan, STORAGE_KEY]);
   var stateRef = useRef({});
-  stateRef.current = { acq: acq, sr: sr, plan: plan, filter: filter, vaultDismissedAt: vaultDismissedAt };
+  stateRef.current = { acq: acq, sr: sr, plan: storedPlan, filter: filter, vaultDismissedAt: vaultDismissedAt };
   var sv = useCallback(function(overrides) { var d = Object.assign({}, stateRef.current, overrides); persist(STORAGE_KEY, { acq: d.acq, sr: d.sr, plan: d.plan, filter: d.filter, vaultDismissedAt: d.vaultDismissedAt }); }, [STORAGE_KEY]);
   function changeFilter(f) { setFilter(f); sv({ filter: f }); }
   var toggle = useCallback(function(id) { setAcq(function(prev) { var next = Object.assign({}, prev); next[id] = !next[id]; sv({ acq: next }); return next; }); }, [sv]);
   var changeNotch = useCallback(function(axis, key) {
     setPlan(function(prev) {
+      // No unselect. An axis with nothing on it is not a statement the player
+      // can make here — every item on that axis would lose its baseline and
+      // read as a bare row.
       var next = Object.assign({}, prev);
-      next[axis] = prev[axis] === key ? null : key;
+      next[axis] = key;
       sv({ plan: next });
       return next;
     });

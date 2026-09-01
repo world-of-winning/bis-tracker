@@ -72,9 +72,12 @@ It is not a goal. Every player's goal is Myth; saying so orders nothing. What th
 actually decides is where they are going to spend the week, and every number this tracker
 reports follows from that.
 
-The player states it. Nothing in the SimC export carries a key level or a raid lockout,
-so there is nothing to infer it from, and inferring it from average item level would be
-guessing at a plan from a history.
+The player states it, and an import proposes it. Nothing in the SimC export carries a key
+level or a raid lockout, so the proposal reads the best grade in the equipped gear — the
+residue of the content they have been running — and the player corrects it in a click.
+A proposal, never a blank: both axes always carry a notch, the buttons do not toggle off,
+and a save with no plan in it falls back to the same proposal rather than opening on bare
+rows.
 
 **Drop grade (드랍 등급)** — the grade a farming difficulty actually hands over. One
 difficulty yields two of them: the end-of-dungeon chest and the Great Vault sit a grade
