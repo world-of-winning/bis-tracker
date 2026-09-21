@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.4.1
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v2.4.0...v2.4.1)
+
+### 🩹 Fixes
+
+- **i18n:** Name the publisher the guide button actually opens ([#34](https://github.com/world-of-winning/bis-tracker/pull/34))
+
+### ❤️ Contributors
+
+- World Of Winning <wow-qol@proton.me>
+
 ## v2.4.0
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v2.3.0...v2.4.0)
