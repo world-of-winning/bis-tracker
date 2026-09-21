@@ -17,7 +17,7 @@ export var THEME = {
 
 export var BIS = [
   { slot: "head", id: 271875, source: "Ula'tek", stats: ["haste"] },
-  { slot: "neck", id: 271537, source: "Tier", stats: ["crit","mastery"] },
+  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit","haste","mastery","vers"] },
   { slot: "shoulder", id: 271535, source: "Tier", stats: ["crit","vers"] },
   { slot: "back", id: 268253, source: "The Coiled Altar", stats: ["haste","mastery"] },
   { slot: "chest", id: 271540, source: "Tier", stats: ["haste","vers"] },
@@ -85,7 +85,6 @@ export var ALTS = [
   { forSlot: "neck", id: 251142, source: "Murder Row", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 268251, source: "The Venomous Abyss", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251234, source: "Voidscar Arena", stats: ["crit","mastery"] },
-  { forSlot: "neck", id: 268265, source: "The Venomous Abyss", stats: ["crit"] },
   { forSlot: "ring", id: 252258, source: "Voidscar Arena", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 251136, source: "Murder Row", stats: ["crit","mastery"] },
   { forSlot: "ring", id: 158366, source: "Temple of Sethraliss", stats: ["crit","mastery"] },
@@ -172,7 +171,7 @@ export var KNOWN_STATS = {
   268235:["haste","mastery"],268240:["crit","haste"],268246:["crit","mastery"],268248:["crit","vers"],
   268249:["crit","mastery"],268250:["crit","haste"],268251:["haste","mastery"],268252:["crit","haste"],
   268253:["haste","mastery"],268256:["haste","mastery"],268261:["crit","haste"],268264:["crit","mastery"],
-  268265:["crit"],270160:[],270164:[],270165:[],
+  268265:["crit","haste","mastery","vers"],270160:[],270164:[],270165:[],
   270166:[],270168:["mastery"],270169:["haste"],270171:["crit"],
   270173:[],270174:["mastery"],270175:["crit"],270930:["crit","haste"],
   271093:["crit"],271535:["crit","vers"],271536:["crit","mastery"],271537:["crit","mastery"],
