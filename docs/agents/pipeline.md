@@ -12,11 +12,18 @@ have run first, and what breaks when it hasn't.
 | `wowhead-cache.mjs` | Wowhead tooltip fetch with a cache. Exports `fetchTooltip`, `saveCache`, `cacheGet/Set/Delete`, `isStale`. |
 | `wago-db2.mjs` | The client's DB2 tables as CSV from wago.tools: an RFC 4180 parser, a cached fetch, a name index, and `dropTable()` — the `JournalEncounterItem` → `JournalEncounter` → `JournalInstance` join that says what drops where. |
 | `priority-groups.mjs` | The stat-priority derivation: murlok's published chart → equivalence groups. No network, no disk, so it is testable against fixtures. |
+| `wowhead-guide.mjs` | Reading a Wowhead BiS guide page: `guideMarkup`, `bisItemsBlock`, `pickGearTab`, `parseGearRows`. Pure text in, rows out — no network, tested against three stored pages. |
+| `wowhead-guide-cache.mjs` | The other half of that: `guideUrl`, and `fetchGuidePage` with the browser headers Wowhead's edge insists on and a page cache in `scripts/.wowhead-guide-cache/`. |
+| `wowhead-gear-tabs.mjs` | `GEAR_TABS` — the four specs whose page publishes more than one gear table, and which tab each is played as. By hand, on purpose. |
+| `gear-slots.mjs` | Which slot a guide row is about: `resolveSlot`, `detectWeaponType`, `assignSlots`. Shared by the build and by change detection, so the two cannot disagree about which rows reach the file. |
+| `tier-source.mjs` | The one encoding of when a row's source reads `"Tier"`. Generation and `--fix` both go through it; they used to answer separately and drifted. |
+| `cache-expiry.mjs` | When a cached tooltip stops being worth trusting, and which account of an item's stats `--fix` may write. |
 | `src/logic/matching.js` | `fitKind`, `fitRank`, `statGroups`. **The scripts import the app's logic**, not a copy of it — that is what keeps the pipeline and the tracker agreeing on what counts as a fit. |
 
 `wowhead-cache` is used by `generate-spec-data`, `find-alts`, `generate-item-names`.
 `wago-db2` is used by `find-alts` (the loot table) and `generate-source-names` (the names).
 `priority-groups` is used by `generate-priority-stats`, `generate-spec-data`, and the tests.
+The five Wowhead/slot libraries are used by `generate-spec-data` alone, and by their own tests.
 
 ## Layer 2 — season prep (by hand, before any generator)
 
@@ -38,7 +45,8 @@ generate-priority-stats.mjs --write
     │             →  PRIORITY_STATS in every src/data/{spec}.js
     ▼
 generate-spec-data.mjs
-    │  maxroll + Wowhead  →  src/data/{spec}.js  (BIS, KNOWN_STATS, ALTS)
+    │  Wowhead BiS guide  →  BIS      in src/data/{spec}.js
+    │  maxroll M+ guide   →  MYTHIC   in src/data/{spec}.js
     │  reads priority-stats.json for PRIORITY_STATS
     └─ calls find-alts in-process for every spec it wrote
     ▼
@@ -62,8 +70,22 @@ spec — the worst case keeps the priority already on disk.
 
 ### 2. `generate-spec-data.mjs`
 
-The big one. Scrapes Maxroll guides, resolves items through Wowhead, writes the
-whole spec file.
+The big one. Scrapes both publishers and writes the whole spec file.
+
+`BIS` comes from Wowhead's `bis-gear` guide, whose cells name their items by id, so
+nothing there needs resolving — the tooltip is fetched only for what the page does not
+say (stats, the tier marker, the slot the item itself claims). `MYTHIC` still comes
+from Maxroll's Mythic+ guide, which names items in prose, so that half keeps the whole
+name-to-id layer. See `docs/adr/0006-wowhead-primary-maxroll-second-witness.md`.
+
+A page publishing several gear tabs stops that spec with the tab names listed, unless
+`GEAR_TABS` says which one the spec is played as. That refusal is the mechanism by
+which the table gets filled in — one spec failing leaves the other thirty-nine alone.
+
+Change detection compares **item ids**, not names: names left the data files for
+`src/i18n/items` and the comparison that read them had nothing left to read, so every
+spec rebuilt from scratch on every run. A Maxroll name that does not resolve exactly
+makes the comparison fail and the spec rebuild — the safe direction.
 
 The link to priority is two-way. It reads `priority-stats.json` for the spec's
 groups; if there is no entry it falls back to Maxroll's own stat-priority widget
@@ -120,15 +142,17 @@ only warn.
 
 ## Off the pipeline
 
-- `make-fixture.mjs <spec-key>` — cuts the stat charts out of a cached guide page into `tests/fixtures/`. Only when adding a priority test. Never commit a whole page.
+- `make-fixture.mjs <spec-key>` — cuts the stat charts out of a cached murlok page into `tests/fixtures/`. Only when adding a priority test. Never commit a whole page.
+- `make-wowhead-fixture.mjs <spec-key>` — the same for a cached Wowhead BiS page: the `bis_items` block and enough of its call site to parse, as `tests/fixtures/wowhead-{key}.html`.
 - `check-secrets.sh` — the husky `pre-commit` hook calls it. Nothing to run by hand.
 
-## The three caches
+## The four caches
 
 | Path | Expiry | Bypass |
 |---|---|---|
 | `scripts/.wowhead-cache.json` | Tooltips: `fetchedAt` in `.wowhead-cache-index.json`, 14 days. Name lookups: never | Delete the file, or `generate-spec-data --regenerate` |
 | `scripts/.murlok-cache/` | `fetchedAt` in `index.json`, 14 days default | `--refresh` / `--max-age` |
+| `scripts/.wowhead-guide-cache/` | `fetchedAt` in `index.json`, 14 days | Delete the entry |
 | `scripts/.wago-cache/` | Never — the tables change when Blizzard patches | `--refresh` |
 
 File mtime is never expiry: anything that touches a file rewrites it.

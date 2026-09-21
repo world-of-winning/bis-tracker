@@ -1,6 +1,6 @@
 export var SPEC_LABEL = "Vengeance Demon Hunter";
 export var SPEC_KEY = "veng-dh";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/vengeance-demon-hunter-raid-guide";
+export var GUIDE_URL = "https://www.wowhead.com/guide/classes/demon-hunter/vengeance/bis-gear";
 export var SIMC_CLASS = "demonhunter";
 export var SIMC_SPEC = "vengeance";
 export var SPEC_ICON = "ability_demonhunter_spectank";
@@ -16,22 +16,22 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", id: 271875, source: "Ula'tek", stats: ["haste"] },
+  { slot: "main_hand", id: 268209, source: "The Coiled Altar", stats: ["haste","mastery"] },
+  { slot: "off_hand", id: 237840, source: "Crafted", stats: [] },
+  { slot: "head", id: 271537, source: "Tier", stats: ["crit","mastery"], originalItemId: 271875 },
   { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit","haste","mastery","vers"] },
-  { slot: "shoulder", id: 271535, source: "Tier", stats: ["crit","vers"] },
+  { slot: "shoulder", id: 271535, source: "Tier", stats: ["crit","vers"], originalItemId: 251223 },
   { slot: "back", id: 268253, source: "The Coiled Altar", stats: ["haste","mastery"] },
   { slot: "chest", id: 271540, source: "Tier", stats: ["haste","vers"] },
   { slot: "wrist", id: 244576, source: "Crafted", stats: [] },
-  { slot: "hands", id: 271538, source: "Tier", stats: ["crit","mastery"] },
+  { slot: "hands", id: 271538, source: "Tier", stats: ["crit","mastery"], originalItemId: 251124 },
   { slot: "waist", id: 268256, source: "The Coiled Altar", stats: ["haste","mastery"] },
-  { slot: "legs", id: 271536, source: "Tier", stats: ["crit","mastery"] },
+  { slot: "legs", id: 271536, source: "Tier", stats: ["crit","mastery"], originalItemId: 268225 },
   { slot: "feet", id: 251153, source: "Den of Nalorakk", stats: ["crit","haste"] },
   { slot: "finger1", id: 268252, source: "Sszorak", stats: ["crit","haste"] },
   { slot: "finger2", id: 159459, source: "Kings' Rest", stats: ["haste","vers"] },
   { slot: "trinket1", id: 270164, source: "The Lost Explorers", stats: [] },
-  { slot: "trinket2", id: 270173, source: "The Coiled Altar", stats: [] },
-  { slot: "main_hand", id: 268209, source: "The Coiled Altar", stats: ["haste","mastery"] },
-  { slot: "off_hand", id: 237840, source: "Crafted", stats: [] },
+  { slot: "trinket2", id: 270175, source: "Ula'tek", stats: ["crit"] },
 ];
 
 export var MYTHIC = [
@@ -72,6 +72,7 @@ export var ALTS = [
   { forSlot: "head", id: 239033, source: "Temple of Sethraliss", stats: ["crit","haste"] },
   { forSlot: "head", id: 251140, source: "Murder Row", stats: ["haste","mastery"] },
   { forSlot: "head", id: 193751, source: "Ruby Life Pools", stats: ["crit","vers"] },
+  { forSlot: "head", id: 271875, source: "The Venomous Abyss", stats: ["haste"] },
   { forSlot: "head", id: 268219, source: "The Venomous Abyss", stats: ["mastery","vers"] },
   { forSlot: "head", id: 275937, source: "The Venomous Abyss", stats: [] },
   { forSlot: "head", id: 275938, source: "The Venomous Abyss", stats: [] },
@@ -100,7 +101,6 @@ export var ALTS = [
   { forSlot: "trinket", id: 250229, source: "Den of Nalorakk", stats: ["crit"] },
   { forSlot: "trinket", id: 193748, source: "Ruby Life Pools", stats: ["crit"] },
   { forSlot: "trinket", id: 270171, source: "The Venomous Abyss", stats: ["crit"] },
-  { forSlot: "trinket", id: 270175, source: "The Venomous Abyss", stats: ["crit"] },
   { forSlot: "trinket", id: 270168, source: "The Venomous Abyss", stats: ["mastery"] },
   { forSlot: "trinket", id: 270174, source: "The Venomous Abyss", stats: ["mastery"] },
   { forSlot: "trinket", id: 273796, source: "Altar of Fangs", stats: [] },
@@ -116,6 +116,7 @@ export var ALTS = [
   { forSlot: "trinket", id: 270160, source: "The Venomous Abyss", stats: [] },
   { forSlot: "trinket", id: 270165, source: "The Venomous Abyss", stats: [] },
   { forSlot: "trinket", id: 270166, source: "The Venomous Abyss", stats: [] },
+  { forSlot: "trinket", id: 270173, source: "The Venomous Abyss", stats: [] },
   { forSlot: "trinket", id: 250224, source: "Voidscar Arena", stats: [] },
   { forSlot: "trinket", id: 250225, source: "Voidscar Arena", stats: [] },
   { forSlot: "trinket", id: 250245, source: "Voidscar Arena", stats: [] },

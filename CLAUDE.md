@@ -182,6 +182,12 @@ distance that only the measured means can make.
   - The cache in `scripts/.murlok-cache/` holds each **page as it arrived**, not a trimmed copy, with `index.json` carrying the fetch times that decide expiry. Trimming happens on the way out, so widening what the parser reads does not mean refetching forty specs through the rate limit. Do not use file mtime for expiry — anything that touches a file rewrites it.
   - Test fixtures come out of that cache via `node scripts/make-fixture.mjs <key>`. A fixture keeps **both** charts, tertiary included: picking the right one is part of what the parser does, and a fixture that had already picked would not test it.
   - `PRIORITY_STATS` in each spec data file carries the same groups. Everything that reads it goes through `statGroups()` in `src/logic/matching.js`, which lifts a flat array of four into four groups of one, so a spec the generator never reached still works.
+- **`BIS` comes from Wowhead, `MYTHIC` from Maxroll.** One publisher for both was one account of the same fact, and a wrong row had nothing to contradict it — Maxroll filed a tier helm in Vengeance Demon Hunter's Neck row and the tracker carried it for a season. See `docs/adr/0006-wowhead-primary-maxroll-second-witness.md`.
+  - Wowhead's `https://www.wowhead.com/guide/classes/{class}/{spec}/bis-gear` names every gear cell by **item id**, so the BIS half resolves no names at all; the tooltip is fetched only for the stats, the tier marker and the slot the item itself claims. Maxroll's Mythic+ guide names items in prose, so `MYTHIC` keeps the whole name-to-id layer alive.
+  - Requests carry browser headers. A plain user-agent is answered `403`.
+  - **A page with several gear tabs stops that spec** unless `GEAR_TABS` (`scripts/wowhead-gear-tabs.mjs`) says which one the spec is played as. Blood Death Knight splits its gear by hero talent and publishes no overall table; taking the first tab would commit the tracker to Deathbringer silently. Refusing is how the table gets filled in, and one spec stopping leaves the other thirty-nine alone.
+  - **Change detection compares item ids.** Names left the data files for `src/i18n/items`, so the comparison that read them had nothing left to read and every spec rebuilt on every run. A Maxroll name that does not resolve exactly fails the comparison and rebuilds the spec — the safe direction.
+  - Which slot a guide row is about is decided once, in `scripts/gear-slots.mjs`, by both the build and change detection. Two answers there means a spec whose extra rows are always dropped reads as changed forever.
 - **`find-alts.mjs`** builds the season pool once — `buildSeasonPool()` joins the client's `JournalEncounterItem` through `JournalEncounter` to `JournalInstance` (via `scripts/wago-db2.mjs`) and keeps the instances named in `DUNGEONS` plus `CURRENT_RAID`. Non-gear drops (recipes, consumables, furnishings) have no inventory slot and fall out on their own. Then, per spec, every pool item the spec can *wear* becomes an alt: armour class, primary stat, class lock, weapon type and hand count are the gate. **Secondary stats are not a gate**, only the sort order. Nothing is preserved between runs — the pool is regenerated whole, which is what stops ALTS becoming append-only.
 - **The season gate is the pool, not a filter.** A retired dungeon is not in `DUNGEONS`, so its loot never enters. This replaced a cross-referenced index that needed stale-guide detection by spec and by row; none of that is needed now, because a lagging Maxroll guide can no longer contribute items to anyone else.
 - **`CURRENT_RAID`** (in `shared.js`) is maintained by hand beside `DUNGEONS`. The loot table carries every raid ever shipped and marks no season — `DisplaySeasonID` is 0 on 23,902 of its 23,978 rows. `buildSeasonPool` cross-checks it against the instance holding the highest item id and warns on a mismatch, but that heuristic assumes Blizzard never adds an item to an older raid, so it does not get to decide.
@@ -208,13 +214,15 @@ i
 ```js
 export var SPEC_LABEL = "Spec Name";
 export var SPEC_KEY = "url-safe-key";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/{spec}-raid-guide";
+export var GUIDE_URL = "https://www.wowhead.com/guide/classes/{class}/{spec}/bis-gear";
 export var STORAGE_KEY = "bis-{key}-v1";
 export var STAT_CACHE_KEY = "{key}-stat-cache-v1";
 export var THEME = { accent, accentLight, accentBg, accentBorder, shimmer, btnBg };
 export var PRIORITY_STATS = [["mastery"],["haste","crit"],["vers"]];  // equivalence groups
 export var KNOWN_STATS = { itemId: ["crit","haste"], ... };  // BiS+Alt only
-export var BIS = [ { slot, simcSlot?, id, source, stats }, ... ];
+export var BIS = [ { slot, simcSlot?, id, source, stats, originalItemId? }, ... ];
+// originalItemId is the catalyst base — the item farmed and converted into id.
+// It goes AFTER stats: find-alts.mjs reads id → source → stats contiguously.
 export var ALTS = [ { forSlot, id, source, stats }, ... ];  // every pool item the spec can wear, best stats first
 // Item names are not in these files — they come from src/i18n/items/*.json.
 export var DUNGEONS = [ ... ];  // Midnight first, legacy dungeons after
@@ -260,7 +268,7 @@ Issues live as GitHub issues on `world-of-winning/bis-tracker`, via the `gh` CLI
 
 ### Domain docs
 
-Single-context layout — `CONTEXT.md` + `docs/adr/` at repo root. See `docs/agents/domain.md`.
+Single-context layout — `CONTEXT.md` + `docs/adr/` at repo root, with the measurements an ADR cites in `docs/research/`. See `docs/agents/domain.md`.
 
 ### Data pipeline
 
