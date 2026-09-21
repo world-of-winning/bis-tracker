@@ -1,6 +1,6 @@
 export var SPEC_LABEL = "Devastation Evoker";
 export var SPEC_KEY = "dev-evoker";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/devastation-evoker-raid-guide";
+export var GUIDE_URL = "https://www.wowhead.com/guide/classes/evoker/devastation/bis-gear";
 export var SIMC_CLASS = "evoker";
 export var SIMC_SPEC = "devastation";
 export var SPEC_ICON = "classicon_evoker_devastation";
@@ -16,22 +16,22 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", id: 271501, source: "Tier", stats: ["haste","vers"] },
-  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit"] },
-  { slot: "shoulder", id: 271499, source: "Tier", stats: ["crit","vers"] },
+  { slot: "main_hand", id: 271092, source: "Ula'tek", stats: ["haste"] },
+  { slot: "off_hand", id: 245769, source: "Crafted", stats: [] },
+  { slot: "head", id: 271501, source: "Tier", stats: ["haste","vers"], originalItemId: 268230 },
+  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit","haste","mastery","vers"] },
+  { slot: "shoulder", id: 271499, source: "Tier", stats: ["crit","vers"], originalItemId: 268231 },
   { slot: "back", id: 268253, source: "The Coiled Altar", stats: ["haste","mastery"] },
-  { slot: "chest", id: 271876, source: "Ula'tek", stats: ["crit"] },
+  { slot: "chest", id: 271504, source: "Tier", stats: ["crit","mastery"], originalItemId: 271876 },
   { slot: "wrist", id: 244584, source: "Crafted", stats: [] },
-  { slot: "hands", id: 271502, source: "Tier", stats: ["haste","mastery"] },
+  { slot: "hands", id: 271502, source: "Tier", stats: ["haste","mastery"], originalItemId: 193752 },
   { slot: "waist", id: 268254, source: "Vashnik the Malignant", stats: ["haste","mastery"] },
-  { slot: "legs", id: 271500, source: "Tier", stats: ["crit","haste"] },
+  { slot: "legs", id: 271500, source: "Tier", stats: ["crit","haste"], originalItemId: 268237 },
   { slot: "feet", id: 268233, source: "Sszorak", stats: ["haste","mastery"] },
   { slot: "finger1", id: 268249, source: "Vashnik the Malignant", stats: ["crit","mastery"] },
   { slot: "finger2", id: 158366, source: "Temple of Sethraliss", stats: ["crit","mastery"] },
   { slot: "trinket1", id: 270164, source: "The Lost Explorers", stats: [] },
-  { slot: "trinket2", id: 273796, source: "Altar of Fangs", stats: [] },
-  { slot: "main_hand", id: 271092, source: "Ula'tek", stats: ["haste"] },
-  { slot: "off_hand", id: 245769, source: "Crafted", stats: [] },
+  { slot: "trinket2", id: 270167, source: "Nymrissa Wavecaller", stats: ["haste"] },
 ];
 
 export var MYTHIC = [
@@ -61,6 +61,7 @@ export var ALTS = [
   { forSlot: "chest", id: 268223, source: "The Venomous Abyss", stats: ["crit","haste"] },
   { forSlot: "chest", id: 239046, source: "Kings' Rest", stats: ["crit","vers"] },
   { forSlot: "chest", id: 239034, source: "Temple of Sethraliss", stats: ["mastery","vers"] },
+  { forSlot: "chest", id: 271876, source: "The Venomous Abyss", stats: ["mastery"] },
   { forSlot: "feet", id: 268258, source: "The Venomous Abyss", stats: ["crit","mastery"] },
   { forSlot: "feet", id: 251125, source: "Murder Row", stats: ["crit","vers"] },
   { forSlot: "feet", id: 251145, source: "Den of Nalorakk", stats: ["haste","vers"] },
@@ -163,13 +164,14 @@ export var KNOWN_STATS = {
   268216:["crit","vers"],268223:["crit","haste"],268230:["crit","mastery"],268231:["crit","mastery"],
   268233:["haste","mastery"],268237:["haste","mastery"],268248:["crit","vers"],268249:["crit","mastery"],
   268250:["crit","haste"],268251:["haste","mastery"],268252:["crit","haste"],268253:["haste","mastery"],
-  268254:["haste","mastery"],268258:["crit","mastery"],268265:["crit"],270161:[],
-  270162:[],270164:[],270168:["mastery"],270169:["haste"],
-  270170:[],270171:["crit"],270174:["mastery"],270175:["crit"],
-  271092:["haste"],271499:["crit","vers"],271500:["crit","haste"],271501:["haste","vers"],
-  271502:["haste","mastery"],271681:["crit","mastery"],271876:["crit"],273649:[],
-  273775:["mastery","vers"],273778:["haste","mastery"],273779:["crit","haste"],273780:["crit","mastery"],
-  273781:["crit","haste"],273789:["crit","haste"],273792:["crit","haste"],273794:[],
-  273796:[],275937:[],275938:[],281227:[],
+  268254:["haste","mastery"],268258:["crit","mastery"],268265:["crit","haste","mastery","vers"],270161:[],
+  270162:[],270164:[],270167:["haste"],270168:["mastery"],
+  270169:["haste"],270170:[],270171:["crit"],270174:["mastery"],
+  270175:["crit"],271092:["haste"],271499:["crit","vers"],271500:["crit","haste"],
+  271501:["haste","vers"],271502:["haste","mastery"],271504:["crit","mastery"],271681:["crit","mastery"],
+  271876:["mastery"],273649:[],273775:["mastery","vers"],273778:["haste","mastery"],
+  273779:["crit","haste"],273780:["crit","mastery"],273781:["crit","haste"],273789:["crit","haste"],
+  273792:["crit","haste"],273794:[],273796:[],275937:[],
+  275938:[],281227:[],
 };
 

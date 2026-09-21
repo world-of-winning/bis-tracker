@@ -1,38 +1,62 @@
 import { describe, expect, it } from "vitest";
 import {
     crossCheck,
+    formatReport,
     rowFaults,
     sourceNamesTheDrop,
 } from "../scripts/cross-check.mjs";
 
-const HELM = { invSlot: "Head", drop: { instance: "Ula'tek", encounter: "Vashnik the Malignant" } };
-const NECK = { invSlot: "Neck", drop: { instance: "Ula'tek", encounter: "Ula'tek" } };
+const HELM = {
+    invSlot: "Head",
+    drops: [{ instance: "Ula'tek", encounter: "Vashnik the Malignant" }],
+};
+const NECK = {
+    invSlot: "Neck",
+    drops: [{ instance: "Ula'tek", encounter: "Ula'tek" }],
+};
 
 describe("sourceNamesTheDrop", () => {
     it("accepts a source naming the dungeon", () => {
-        expect(sourceNamesTheDrop("Ula'tek", HELM.drop)).toBe(true);
+        expect(sourceNamesTheDrop("Ula'tek", HELM.drops)).toBe(true);
     });
 
     it("accepts a source naming the boss instead", () => {
-        expect(sourceNamesTheDrop("Vashnik the Malignant", HELM.drop)).toBe(true);
+        expect(sourceNamesTheDrop("Vashnik the Malignant", HELM.drops)).toBe(true);
     });
 
     it("accepts either half of a two-place source", () => {
-        expect(sourceNamesTheDrop("Murder Row & Ula'tek", HELM.drop)).toBe(true);
+        expect(sourceNamesTheDrop("Murder Row & Ula'tek", HELM.drops)).toBe(true);
     });
 
     it("rejects a source naming somewhere the item does not drop", () => {
-        expect(sourceNamesTheDrop("Murder Row", HELM.drop)).toBe(false);
+        expect(sourceNamesTheDrop("Murder Row", HELM.drops)).toBe(false);
     });
 
     it("asks nothing of a source that names no place", () => {
         // A catalysed or crafted item has no drop to disagree with.
-        expect(sourceNamesTheDrop("Tier", HELM.drop)).toBe(true);
-        expect(sourceNamesTheDrop("Crafted", HELM.drop)).toBe(true);
+        expect(sourceNamesTheDrop("Tier", HELM.drops)).toBe(true);
+        expect(sourceNamesTheDrop("Crafted", HELM.drops)).toBe(true);
+    });
+
+    it("accepts a source naming either of two places an item drops", () => {
+        // Some trinkets drop from two bosses, and a guide names one of them.
+        const drops = [
+            { instance: "Kings' Rest", encounter: "The Golden Serpent" },
+            { instance: "Murder Row", encounter: "Zaen Bladesorrow" },
+        ];
+        expect(sourceNamesTheDrop("Murder Row", drops)).toBe(true);
+        expect(sourceNamesTheDrop("The Golden Serpent", drops)).toBe(true);
+        expect(sourceNamesTheDrop("Pit of Saron", drops)).toBe(false);
+    });
+
+    it("treats a row that names nowhere as one to fill in", () => {
+        // What a stripped [npc=259446] leaves behind. The loot table knows the
+        // answer, so silence here is a gap rather than an exemption.
+        expect(sourceNamesTheDrop("", HELM.drops)).toBe(false);
     });
 
     it("asks nothing about an item outside the season pool", () => {
-        expect(sourceNamesTheDrop("Somewhere Retired", null)).toBe(true);
+        expect(sourceNamesTheDrop("Somewhere Retired", [])).toBe(true);
     });
 });
 
@@ -63,7 +87,7 @@ describe("rowFaults", () => {
         expect(
             rowFaults({ slot: "main_hand", itemId: 2, source: "Ula'tek" }, {
                 invSlot: "Two-Hand",
-                drop: NECK.drop,
+                drops: NECK.drops,
             }),
         ).toEqual([]);
     });
@@ -104,7 +128,7 @@ describe("crossCheck", () => {
             faultsOf,
         });
         expect(rows.map((r) => r.itemId)).toEqual([268265]);
-        expect(reports[0]).toMatchObject({ slot: "neck", rejected: 271537, took: "maxroll" });
+        expect(reports[0]).toMatchObject({ slot: "neck", rejected: 271537, took: "witness" });
     });
 
     it("keeps the data file's row when both publishers are contradicted", () => {
@@ -142,7 +166,7 @@ describe("crossCheck", () => {
             correctionOf: () => "Ula'tek",
         });
         expect(rows[0].itemId).toBe(268265);
-        expect(reports[0].took).toBe("maxroll");
+        expect(reports[0].took).toBe("witness");
     });
 
     it("keeps a contradicted row with nowhere to fall back to, and reports it", () => {
@@ -156,6 +180,46 @@ describe("crossCheck", () => {
         expect(reports[0]).toMatchObject({ took: null, rejected: 271537 });
     });
 
+    it("fills a slot the primary list never names", () => {
+        // Wowhead's Beast Mastery page lists no helm. Nothing contradicts a
+        // row that is not there, so the gap has to be looked for.
+        const { rows, reports } = crossCheck({
+            primary: [{ slot: "neck", itemId: 268265, source: "Ula'tek" }],
+            secondary: [
+                { slot: "neck", itemId: 268265, source: "Ula'tek" },
+                { slot: "head", itemId: 271537, source: "Ula'tek" },
+            ],
+            faultsOf,
+        });
+        expect(rows.map((r) => r.slot)).toEqual(["neck", "head"]);
+        expect(reports[0]).toMatchObject({ slot: "head", took: "witness", rejected: null });
+        expect(reports[0].faults[0].kind).toBe("gap");
+    });
+
+    it("falls back to the data file for a slot neither publisher names", () => {
+        const { rows, reports } = crossCheck({
+            primary: [{ slot: "neck", itemId: 268265, source: "Ula'tek" }],
+            existing: [
+                { slot: "neck", itemId: 268265, source: "Ula'tek" },
+                { slot: "head", itemId: 271537, source: "Ula'tek" },
+            ],
+            faultsOf,
+        });
+        expect(rows.map((r) => r.slot)).toEqual(["neck", "head"]);
+        expect(reports[0]).toMatchObject({ slot: "head", took: "file" });
+    });
+
+    it("does not fill a gap with a row the game contradicts", () => {
+        // A helm offered for the neck slot is not a neck.
+        const { rows, reports } = crossCheck({
+            primary: [{ slot: "head", itemId: 271537, source: "Ula'tek" }],
+            secondary: [{ slot: "neck", itemId: 271537, source: "Ula'tek" }],
+            faultsOf,
+        });
+        expect(rows.map((r) => r.slot)).toEqual(["head"]);
+        expect(reports).toEqual([]);
+    });
+
     it("does not offer a slot the same contradicted item back as its own fallback", () => {
         const { rows, reports } = crossCheck({
             primary: [{ slot: "neck", itemId: 271537, source: "Ula'tek" }],
@@ -165,5 +229,23 @@ describe("crossCheck", () => {
         });
         expect(rows.map((r) => r.itemId)).toEqual([271537]);
         expect(reports[0].took).toBe(null);
+    });
+});
+
+describe("formatReport", () => {
+    it("names the list the second opinion came from", () => {
+        // BIS is read against Maxroll; MYTHIC, itself Maxroll's, is read
+        // against Wowhead. A fixed label credited Maxroll for both.
+        const report = {
+            slot: "neck",
+            rejected: 271537,
+            itemId: 268265,
+            took: "witness",
+            faults: [{ kind: "slot", says: "the item is a Head item" }],
+        };
+        expect(formatReport("veng-dh", report, "Maxroll")).toContain("took Maxroll's 268265");
+        expect(formatReport("veng-dh MYTHIC", report, "Wowhead")).toContain(
+            "took Wowhead's 268265",
+        );
     });
 });

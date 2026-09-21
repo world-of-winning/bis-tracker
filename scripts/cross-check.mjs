@@ -16,6 +16,10 @@
  * replaced: the item is right, and the loot table that caught the label also
  * holds the answer.
  *
+ * A slot the primary list never names is the same harm as a contradicted row
+ * and gets the same treatment — Wowhead's Beast Mastery page lists no helm at
+ * all — so the other publisher, then the data file, fills it.
+ *
  * Everything here is a pure function over rows and facts. Fetching the facts —
  * tooltips, the client's loot table — is the caller's job, which is what makes
  * the rule testable without a network. See ADR 0006.
@@ -34,19 +38,24 @@ const bare = (s) =>
         .trim();
 
 /**
- * Whether a row's source names the place its item actually comes from.
+ * Whether a row's source names a place its item actually comes from.
  *
- * A source may name the dungeon or the boss, and may name two of either where
- * an item drops in more than one place, so any part naming either is enough.
+ * A source may name the dungeon or the boss, and an item may drop in more than
+ * one place, so any part of the source naming any of the drops is enough.
  */
-export function sourceNamesTheDrop(source, drop) {
-    if (!source || NO_PLACE.test(source)) return true;
-    if (!drop) return true; // an item outside the season pool cannot be checked
+export function sourceNamesTheDrop(source, drops) {
+    if (source && NO_PLACE.test(source)) return true;
+    if (!drops || !drops.length) return true; // nothing to check against
+    // A row that names nowhere, against an item whose drops are known, is a
+    // row to fill in — that is what a stripped [npc=…] leaves behind.
+    if (!source) return false;
     const parts = source.split(/\s*[/&]\s*/).map(bare);
-    return parts.some(
-        (p) =>
-            (drop.instance && p === bare(drop.instance)) ||
-            (drop.encounter && p === bare(drop.encounter)),
+    return drops.some((drop) =>
+        parts.some(
+            (p) =>
+                (drop.instance && p === bare(drop.instance)) ||
+                (drop.encounter && p === bare(drop.encounter)),
+        ),
     );
 }
 
@@ -67,11 +76,16 @@ export function rowFaults(row, fact) {
     if (!fact) return faults;
     if (!slotFitsInvSlot(row.slot, fact.invSlot))
         faults.push({ kind: "slot", says: `the item is a ${fact.invSlot} item` });
-    if (!sourceNamesTheDrop(row.source, fact.drop))
+    if (!sourceNamesTheDrop(row.source, fact.drops)) {
+        const [first] = fact.drops;
         faults.push({
             kind: "source",
-            says: `it drops from ${fact.drop.encounter} in ${fact.drop.instance}, not ${row.source}`,
+            says:
+                `it drops from ${first.encounter} in ${first.instance}` +
+                (fact.drops.length > 1 ? ` (and ${fact.drops.length - 1} more)` : "") +
+                (row.source ? `, not ${row.source}` : `, and the row names nowhere`),
         });
+    }
     return faults;
 }
 
@@ -122,7 +136,7 @@ export function crossCheck({
 
         const other = witness.get(row.slot);
         if (other && other.itemId !== row.itemId && !faultsOf(other).length) {
-            reports.push({ ...report(row, faults), took: "maxroll", itemId: other.itemId });
+            reports.push({ ...report(row, faults), took: "witness", itemId: other.itemId });
             rows.push({ ...other, slot: row.slot });
             continue;
         }
@@ -138,6 +152,25 @@ export function crossCheck({
         rows.push(row);
     }
 
+    // Slots the primary list never names at all. A publisher omitting a slot
+    // leaves it blank, which is what the fallback exists to prevent, so the
+    // same order applies: the other publisher if its row stands up, then
+    // whatever the data file already holds.
+    const named = new Set(rows.map((r) => r.slot));
+    const gap = [{ kind: "gap", says: "the primary list names no such slot" }];
+    for (const [slot, row] of witness) {
+        if (named.has(slot) || faultsOf(row).length) continue;
+        named.add(slot);
+        rows.push(row);
+        reports.push({ slot, rejected: null, faults: gap, took: "witness", itemId: row.itemId });
+    }
+    for (const [slot, row] of held) {
+        if (named.has(slot)) continue;
+        named.add(slot);
+        rows.push(row);
+        reports.push({ slot, rejected: null, faults: gap, took: "file", itemId: row.itemId });
+    }
+
     return { rows, reports };
 }
 
@@ -145,16 +178,24 @@ function report(row, faults) {
     return { slot: row.slot, rejected: row.itemId, faults };
 }
 
-/** One line per contradiction, for the summary at the end of a run. */
-export function formatReport(specKey, report) {
+/**
+ * One line per contradiction, for the summary at the end of a run.
+ *
+ * `witness` names the list the second opinion came from, because it is not
+ * always the same one: BIS is read against Maxroll, and MYTHIC — itself
+ * Maxroll's — is read against Wowhead. A fixed label here said "Maxroll's"
+ * over rows that came from Wowhead.
+ */
+export function formatReport(specKey, report, witness = "the other list") {
     const where =
         report.took === "correction"
             ? `corrected the source to ${report.source}`
-            : report.took === "maxroll"
-              ? `took Maxroll's ${report.itemId}`
+            : report.took === "witness"
+              ? `took ${witness}'s ${report.itemId}`
               : report.took === "file"
                 ? `kept the file's ${report.itemId}`
                 : `no sound alternative, kept it`;
     const says = report.faults.map((f) => f.says).join("; ");
-    return `  ${specKey} ${report.slot}: ${report.rejected} — ${says} → ${where}`;
+    const subject = report.rejected === null ? "" : `${report.rejected} — `;
+    return `  ${specKey} ${report.slot}: ${subject}${says} → ${where}`;
 }

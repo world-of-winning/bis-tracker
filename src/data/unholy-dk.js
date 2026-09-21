@@ -1,6 +1,6 @@
 export var SPEC_LABEL = "Unholy Death Knight";
 export var SPEC_KEY = "unholy-dk";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/unholy-death-knight-raid-guide";
+export var GUIDE_URL = "https://www.wowhead.com/guide/classes/death-knight/unholy/bis-gear";
 export var SIMC_CLASS = "deathknight";
 export var SIMC_SPEC = "unholy";
 export var SPEC_ICON = "spell_deathknight_unholypresence";
@@ -16,21 +16,21 @@ export var THEME = {
 };
 
 export var BIS = [
+  { slot: "main_hand", id: 268213, source: "The Coiled Altar", stats: ["crit","mastery"] },
   { slot: "head", id: 271474, source: "Tier", stats: ["crit","mastery"] },
-  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit"] },
+  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit","haste","mastery","vers"] },
   { slot: "shoulder", id: 271472, source: "Tier", stats: ["haste","vers"] },
   { slot: "back", id: 268253, source: "The Coiled Altar", stats: ["haste","mastery"] },
   { slot: "chest", id: 271477, source: "Tier", stats: ["crit","mastery"] },
   { slot: "wrist", id: 237834, source: "Crafted", stats: [] },
   { slot: "hands", id: 271475, source: "Tier", stats: ["crit","mastery"] },
   { slot: "waist", id: 268259, source: "The Coiled Altar", stats: ["crit","mastery"] },
-  { slot: "legs", id: 271878, source: "Ula'tek", stats: ["mastery"] },
+  { slot: "legs", id: 271878, source: "Ula'tek", stats: ["crit"] },
   { slot: "feet", id: 237828, source: "Crafted", stats: [] },
-  { slot: "finger1", id: 273792, source: "Altar of Fangs", stats: ["crit","haste"] },
+  { slot: "finger1", id: 268249, source: "Vashnik the Malignant", stats: ["crit","mastery"] },
   { slot: "finger2", id: 252258, source: "Voidscar Arena", stats: ["haste","mastery"] },
-  { slot: "trinket1", id: 270173, source: "The Coiled Altar", stats: [] },
-  { slot: "trinket2", id: 270175, source: "Ula'tek", stats: ["crit"] },
-  { slot: "main_hand", id: 268213, source: "The Coiled Altar", stats: ["crit","mastery"] },
+  { slot: "trinket1", id: 270175, source: "Ula'tek", stats: ["crit"] },
+  { slot: "trinket2", id: 270173, source: "The Coiled Altar", stats: [] },
 ];
 
 export var MYTHIC = [
@@ -85,7 +85,6 @@ export var ALTS = [
   { forSlot: "neck", id: 251142, source: "Murder Row", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 268251, source: "The Venomous Abyss", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 251136, source: "Murder Row", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 268249, source: "The Venomous Abyss", stats: ["crit","mastery"] },
   { forSlot: "ring", id: 268252, source: "The Venomous Abyss", stats: ["crit","haste"] },
   { forSlot: "ring", id: 251148, source: "Den of Nalorakk", stats: ["crit","vers"] },
   { forSlot: "ring", id: 162544, source: "Temple of Sethraliss", stats: ["mastery","vers"] },
@@ -153,10 +152,10 @@ export var KNOWN_STATS = {
   268224:["haste","mastery"],268229:["crit","haste"],268239:["crit","mastery"],268245:["crit","haste"],
   268248:["crit","vers"],268249:["crit","mastery"],268250:["crit","haste"],268251:["haste","mastery"],
   268252:["crit","haste"],268253:["haste","mastery"],268259:["crit","mastery"],268260:["haste","mastery"],
-  268265:["crit"],270160:[],270163:[],270164:[],
+  268265:["crit","haste","mastery","vers"],270160:[],270163:[],270164:[],
   270165:[],270168:["mastery"],270169:["haste"],270171:["crit"],
   270173:[],270174:["mastery"],270175:["crit"],271472:["haste","vers"],
-  271474:["crit","mastery"],271475:["crit","mastery"],271477:["crit","mastery"],271878:["mastery"],
+  271474:["crit","mastery"],271475:["crit","mastery"],271477:["crit","mastery"],271878:["crit"],
   273776:["crit","haste"],273777:["haste","vers"],273781:["crit","haste"],273782:["crit","haste"],
   273787:["crit","vers"],273792:["crit","haste"],273795:[],273796:[],
   273797:[],275937:[],275938:[],281227:[],

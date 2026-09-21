@@ -1,6 +1,6 @@
 export var SPEC_LABEL = "Affliction Warlock";
 export var SPEC_KEY = "aff-lock";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/affliction-warlock-raid-guide";
+export var GUIDE_URL = "https://www.wowhead.com/guide/classes/warlock/affliction/bis-gear";
 export var SIMC_CLASS = "warlock";
 export var SIMC_SPEC = "affliction";
 export var SPEC_ICON = "spell_shadow_deathcoil";
@@ -16,8 +16,10 @@ export var THEME = {
 };
 
 export var BIS = [
+  { slot: "main_hand", id: 271092, source: "Ula'tek", stats: ["haste"] },
+  { slot: "off_hand", id: 273779, source: "Altar of Fangs", stats: ["crit","haste"] },
   { slot: "head", id: 271874, source: "Ula'tek", stats: ["mastery"] },
-  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit"] },
+  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit","haste","mastery","vers"] },
   { slot: "shoulder", id: 271544, source: "Tier", stats: ["haste","vers"] },
   { slot: "back", id: 268253, source: "The Coiled Altar", stats: ["haste","mastery"] },
   { slot: "chest", id: 271549, source: "Tier", stats: ["haste","mastery"] },
@@ -28,10 +30,8 @@ export var BIS = [
   { slot: "feet", id: 268255, source: "The Coiled Altar", stats: ["haste","mastery"] },
   { slot: "finger1", id: 268252, source: "Sszorak", stats: ["crit","haste"] },
   { slot: "finger2", id: 273792, source: "Altar of Fangs", stats: ["crit","haste"] },
-  { slot: "trinket1", id: 273796, source: "Altar of Fangs", stats: [] },
-  { slot: "trinket2", id: 270164, source: "The Lost Explorers", stats: [] },
-  { slot: "main_hand", id: 271092, source: "Ula'tek", stats: ["haste"] },
-  { slot: "off_hand", id: 273779, source: "Altar of Fangs", stats: ["crit","haste"] },
+  { slot: "trinket1", id: 270164, source: "The Lost Explorers", stats: [] },
+  { slot: "trinket2", id: 273649, source: "Kings' Rest", stats: [] },
 ];
 
 export var MYTHIC = [
@@ -50,6 +50,7 @@ export var MYTHIC = [
   { slot: "trinket1", id: 273649, source: "Kings' Rest", stats: [] },
   { slot: "trinket2", id: 273794, source: "Altar of Fangs", stats: [] },
   { slot: "main_hand", id: 251123, source: "Murder Row", stats: ["crit","haste"] },
+  { slot: "off_hand", id: 273779, source: "Altar of Fangs", stats: ["crit","haste"] },
 ];
 
 export var ALTS = [
@@ -105,6 +106,7 @@ export var ALTS = [
   { forSlot: "trinket", id: 270175, source: "The Venomous Abyss", stats: ["crit"] },
   { forSlot: "trinket", id: 270168, source: "The Venomous Abyss", stats: ["mastery"] },
   { forSlot: "trinket", id: 270174, source: "The Venomous Abyss", stats: ["mastery"] },
+  { forSlot: "trinket", id: 273796, source: "Altar of Fangs", stats: [] },
   { forSlot: "trinket", id: 250244, source: "Den of Nalorakk", stats: [] },
   { forSlot: "trinket", id: 250248, source: "Den of Nalorakk", stats: [] },
   { forSlot: "trinket", id: 250215, source: "Murder Row", stats: [] },
@@ -165,7 +167,7 @@ export var KNOWN_STATS = {
   268236:["mastery","vers"],268241:["haste","vers"],268242:["crit","haste"],268243:["crit","haste"],
   268248:["crit","vers"],268249:["crit","mastery"],268250:["crit","haste"],268251:["haste","mastery"],
   268252:["crit","haste"],268253:["haste","mastery"],268255:["haste","mastery"],268257:["haste","mastery"],
-  268265:["crit"],270161:[],270162:[],270164:[],
+  268265:["crit","haste","mastery","vers"],270161:[],270162:[],270164:[],
   270168:["mastery"],270169:["haste"],270170:[],270171:["crit"],
   270174:["mastery"],270175:["crit"],271092:["haste"],271544:["haste","vers"],
   271545:["haste","mastery"],271547:["crit","haste"],271549:["haste","mastery"],271681:["crit","mastery"],

@@ -116,7 +116,13 @@ const CELL = /\[td[^\]]*\]([^]*?)\[\/td\]/g;
 // trace leaves the row with no source at all.
 const SKILL = /\[skill=\d+\]/g;
 const ITEM_LINK = /\[item=\d+[^\]]*\]/g;
-const TAGS = /\[\/?(?:url|icon|color|i|b|span|symbol|center|tooltip)[^\]]*\]/g;
+// Everything else in square brackets goes, named or not. A closed list of tags
+// to strip was the earlier shape, and it leaked twice: [npc=259446] and
+// [zone=16425] are how some authors name a boss and a dungeon, and both
+// reached the data files as literal markup. A tag carrying no text is a source
+// this parser cannot read, and saying nothing is better than saying "[npc=…]"
+// — the cross-check has the loot table and fills such a row in.
+const TAGS = /\[[^\]]*\]/g;
 
 /**
  * The gear rows of one tab: slot name, item id, catalyst base, source.

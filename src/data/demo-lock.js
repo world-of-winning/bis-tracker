@@ -1,6 +1,6 @@
 export var SPEC_LABEL = "Demonology Warlock";
 export var SPEC_KEY = "demo-lock";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/demonology-warlock-raid-guide";
+export var GUIDE_URL = "https://www.wowhead.com/guide/classes/warlock/demonology/bis-gear";
 export var SIMC_CLASS = "warlock";
 export var SIMC_SPEC = "demonology";
 export var SPEC_ICON = "spell_shadow_metamorphosis";
@@ -16,22 +16,22 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", id: 271874, source: "Ula'tek", stats: ["mastery"] },
-  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit"] },
-  { slot: "shoulder", id: 271544, source: "Tier", stats: ["haste","vers"] },
+  { slot: "main_hand", id: 271092, source: "Ula'tek", stats: ["haste"] },
+  { slot: "off_hand", id: 268197, source: "Entombed Sentinels", stats: ["haste","mastery"] },
+  { slot: "head", id: 271874, source: "Ula'tek", stats: ["mastery"], originalItemId: 34252 },
+  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit","haste","mastery","vers"] },
+  { slot: "shoulder", id: 271544, source: "Tier", stats: ["haste","vers"], originalItemId: 34262 },
   { slot: "back", id: 268253, source: "The Coiled Altar", stats: ["haste","mastery"] },
-  { slot: "chest", id: 271549, source: "Tier", stats: ["haste","mastery"] },
+  { slot: "chest", id: 271549, source: "Tier", stats: ["haste","mastery"], originalItemId: 34264 },
   { slot: "wrist", id: 239648, source: "Crafted", stats: [] },
-  { slot: "hands", id: 271547, source: "Tier", stats: ["crit","haste"] },
+  { slot: "hands", id: 271547, source: "Tier", stats: ["crit","haste"], originalItemId: 34251 },
   { slot: "waist", id: 239649, source: "Crafted", stats: [] },
-  { slot: "legs", id: 271545, source: "Tier", stats: ["haste","mastery"] },
+  { slot: "legs", id: 271545, source: "Tier", stats: ["haste","mastery"], originalItemId: 34264 },
   { slot: "feet", id: 268255, source: "The Coiled Altar", stats: ["haste","mastery"] },
   { slot: "finger1", id: 268252, source: "Sszorak", stats: ["crit","haste"] },
   { slot: "finger2", id: 158366, source: "Temple of Sethraliss", stats: ["crit","mastery"] },
   { slot: "trinket1", id: 270164, source: "The Lost Explorers", stats: [] },
   { slot: "trinket2", id: 273796, source: "Altar of Fangs", stats: [] },
-  { slot: "main_hand", id: 271092, source: "Ula'tek", stats: ["haste"] },
-  { slot: "off_hand", id: 268197, source: "Entombed Sentinels", stats: ["haste","mastery"] },
 ];
 
 export var MYTHIC = [
@@ -157,7 +157,7 @@ export var KNOWN_STATS = {
   268211:["haste","mastery"],268218:["crit","mastery"],268228:["crit","mastery"],268236:["mastery","vers"],
   268241:["haste","vers"],268242:["crit","haste"],268243:["crit","haste"],268248:["crit","vers"],
   268249:["crit","mastery"],268250:["crit","haste"],268251:["haste","mastery"],268252:["crit","haste"],
-  268253:["haste","mastery"],268255:["haste","mastery"],268257:["haste","mastery"],268265:["crit"],
+  268253:["haste","mastery"],268255:["haste","mastery"],268257:["haste","mastery"],268265:["crit","haste","mastery","vers"],
   270161:[],270162:[],270164:[],270168:["mastery"],
   270169:["haste"],270170:[],270171:["crit"],270174:["mastery"],
   270175:["crit"],271092:["haste"],271544:["haste","vers"],271545:["haste","mastery"],

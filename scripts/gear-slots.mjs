@@ -13,20 +13,32 @@
  * a change on every run.
  */
 
+// Both publishers' spellings, and the in-game words beside the guide words.
+// A label missing from here is dropped outright, and a dropped label is a spec
+// shipped with fifteen slots — four specs came out of one pass that way, short
+// a helm, a cloak and a pair of bracers.
 const SLOT_MAP = {
     Head: "head",
+    Helm: "head",
     Neck: "neck",
     Shoulder: "shoulder",
     // Wowhead writes the armour slots plural where Maxroll writes them
     // singular. Both spellings name the same slot.
     Shoulders: "shoulder",
     Cloak: "back",
+    Cape: "back",
+    Back: "back",
     Chest: "chest",
     Wrist: "wrist",
+    Wrists: "wrist",
+    Bracers: "wrist",
     Gloves: "hands",
+    Hands: "hands",
     Belt: "waist",
+    Waist: "waist",
     Legs: "legs",
     Boots: "feet",
+    Feet: "feet",
     "Ring 1": "finger1",
     "Ring 2": "finger2",
     "Trinket 1": "trinket1",
@@ -42,6 +54,12 @@ export const WEAPON_SLOTS = {
     ranged: ["main_hand"],
 };
 
+// Lowercase, and with the separators and brackets gone, so that "Weapon (2h)",
+// "Weapon 2H" and "2h-weapon" are one string to match against.
+const normSlot = (s) => s.toLowerCase().replace(/[\s\-_()]+/g, "");
+const TWO_HAND = /twohand|2h/;
+const ONE_HAND = /onehand|1h/;
+
 // Handle numbered Ring/Trinket slots (some guide pages use "Ring" without number)
 let ringCount = 0;
 let trinketCount = 0;
@@ -50,8 +68,7 @@ export function resolveSlot(slotName, weaponType) {
     // Standard armor slots
     if (SLOT_MAP[slotName]) return SLOT_MAP[slotName];
 
-    // Normalize: lowercase, strip spaces/hyphens/underscores for fuzzy matching
-    const norm = slotName.toLowerCase().replace(/[\s\-_]+/g, "");
+    const norm = normSlot(slotName);
 
     // Numbered-less Ring/Trinket
     if (/^ring\d?$/.test(norm)) {
@@ -71,10 +88,12 @@ export function resolveSlot(slotName, weaponType) {
     const mainSlot = weaponSlots[0];
     const offSlot = weaponSlots.length > 1 ? weaponSlots[1] : null;
 
-    // Two-Hand variants: "Two-Hand Weapon", "Two-Hand", "2h Weapon", "2H", etc.
-    if (/twohand|^2h/.test(norm)) return mainSlot;
-    // One-Hand variants: "One-Hand Weapon", "1h Weapon", "1H", etc.
-    if (/onehand|^1h/.test(norm)) return mainSlot;
+    // Two-Hand variants: "Two-Hand Weapon", "Two-Hand", "2h Weapon", "2H", and
+    // "Weapon (2h)" — the hand count is as often a qualifier as a prefix, so
+    // it is looked for anywhere in the label rather than at its start.
+    if (TWO_HAND.test(norm)) return mainSlot;
+    // One-Hand variants: "One-Hand Weapon", "1h Weapon", "Weapons (1h)", "1H".
+    if (ONE_HAND.test(norm)) return mainSlot;
     // Off hand variants: "Off Hand", "Offhand", "Shield", "Weapon 2", "Weapon Off-Hand", etc.
     // (must check before main hand — "offhand" contains "hand")
     if (/offhand|shield|weapon2/.test(norm)) return offSlot || mainSlot;
@@ -122,11 +141,10 @@ export function slotFitsInvSlot(slot, invSlot) {
  */
 export function detectWeaponType(gearRows) {
     for (const row of gearRows) {
-        const norm = row.slotName.toLowerCase().replace(/[\s\-_]+/g, "");
+        const norm = normSlot(row.slotName);
         if (/shield/.test(norm)) return "1h+shield";
-        if (/^(twohand|2h)(weapon)?$/.test(norm)) return "2h";
-        if (/^(onehand|1h)(weapon)?$/.test(norm) || /offhand/.test(norm))
-            return "1h+oh";
+        if (TWO_HAND.test(norm)) return "2h";
+        if (ONE_HAND.test(norm) || /offhand/.test(norm)) return "1h+oh";
     }
     return "2h"; // single "Weapon"/"Main Hand" = 2H
 }
@@ -145,10 +163,10 @@ export function detectWeaponType(gearRows) {
  * ALTS whole from the season's drop tables and already has them.
  */
 export function assignSlots(gearRows, weaponType) {
-    const norm = (s) => s.toLowerCase().replace(/[\s\-_]+/g, "");
+    const norm = normSlot;
     const normSlots = gearRows.map((r) => norm(r.slotName));
-    const has2H = normSlots.some((s) => /^(twohand|2h)(weapon)?$/.test(s));
-    const has1H = normSlots.some((s) => /^(onehand|1h)(weapon)?$/.test(s));
+    const has2H = normSlots.some((s) => TWO_HAND.test(s));
+    const has1H = normSlots.some((s) => ONE_HAND.test(s));
     const skipTwoHand = has2H && has1H && weaponType !== "2h";
     const skipOneHand = has2H && has1H && weaponType === "2h";
 
@@ -164,8 +182,8 @@ export function assignSlots(gearRows, weaponType) {
             continue;
         }
         if (
-            (/twohand|^2h/.test(n) && skipTwoHand) ||
-            (/onehand|^1h/.test(n) && skipOneHand)
+            (TWO_HAND.test(n) && skipTwoHand) ||
+            (ONE_HAND.test(n) && skipOneHand)
         ) {
             skipped.push(row);
             continue;

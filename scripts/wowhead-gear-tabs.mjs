@@ -22,4 +22,15 @@ export const GEAR_TABS = {
     // San'layn, in the same page the stat priorities are read from. One
     // measurement, one season — which is why this is a table and not a rule.
     "blood-dk": "San'layn BiS",
+
+    // Restoration druid publishes "Overall BiS" beside a "Mythic+ Only" table.
+    // BIS means the best gear over all content, so the overall one is the
+    // answer; the Mythic+ list is what MYTHIC already covers from Maxroll.
+    "resto-druid": "Overall BiS",
+
+    // Mistweaver splits raid from Mythic+ and publishes no overall table. The
+    // raid list is the nearer of the two to "best over all content" — its gear
+    // comes off the higher track — and taking the Mythic+ one would make BIS
+    // and MYTHIC near-copies of each other, with nothing left to cross-check.
+    "mw-monk": "Raid BiS",
 };

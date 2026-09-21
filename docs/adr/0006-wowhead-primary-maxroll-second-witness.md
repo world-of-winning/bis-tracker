@@ -134,3 +134,9 @@ drops — and the loot table that caught it holds the answer, so the label is re
 the item kept. Swapping the item out over a wrong dungeon name would be the larger error.
 On the first three specs regenerated this fired three times, all on Maxroll `MYTHIC` rows
 sourcing Voidscar Arena drops to other dungeons.
+
+**A slot the primary omits is filled, not left blank.** The decision speaks only of rows
+that fail a check. A row that is absent fails nothing — Wowhead's Beast Mastery page lists
+no helm — and the harm is the same, so the fallback order applies there too: the second
+witness, then the data file. Five slots across forty specs were filled this way on the
+first pass that looked.

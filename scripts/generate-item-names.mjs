@@ -91,6 +91,20 @@ async function fetchLocaleNames(ids, localeKey) {
   return names;
 }
 
+// The names a locale file already holds. --missing asks only for what is not
+// in here, and the merge below is what keeps the rest: writeLocaleFile writes
+// exactly what it is handed, so a partial fetch written straight out would
+// delete every name it did not ask for.
+function readLocaleFile(localeKey) {
+  const filePath = resolve(ITEMS_DIR, `${localeKey}.json`);
+  if (!existsSync(filePath)) return {};
+  try {
+    return JSON.parse(readFileSync(filePath, 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
 // ─── Write locale JSON file ─────────────────────────────────
 function writeLocaleFile(localeKey, names) {
   mkdirSync(ITEMS_DIR, { recursive: true });
@@ -117,25 +131,31 @@ async function main() {
     return;
   }
 
-  // Determine which locales to generate
-  const targetLocales = args.length > 0
-    ? args.filter(a => LOCALES[a])
+  // Determine which locales to generate. Flags are not locale names, and
+  // reading them as such is how `--missing` came to select no locale at all
+  // and do nothing at all, while the usage note above promised otherwise.
+  const onlyMissing = args.includes('--missing');
+  const named = args.filter(a => !a.startsWith('--'));
+  const targetLocales = named.length > 0
+    ? named.filter(a => LOCALES[a])
     : Object.keys(LOCALES);
 
-  if (args.length > 0) {
-    const unknown = args.filter(a => !LOCALES[a]);
-    if (unknown.length) {
-      console.warn(`Unknown locales: ${unknown.join(', ')}`);
-      console.warn(`Available: ${Object.keys(LOCALES).join(', ')}`);
-    }
+  const unknown = named.filter(a => !LOCALES[a]);
+  if (unknown.length) {
+    console.warn(`Unknown locales: ${unknown.join(', ')}`);
+    console.warn(`Available: ${Object.keys(LOCALES).join(', ')}`);
   }
 
   const ids = collectItemIds();
   console.log(`Found ${ids.length} unique item IDs across all spec files`);
 
   for (const localeKey of targetLocales) {
-    const names = await fetchLocaleNames(ids, localeKey);
-    writeLocaleFile(localeKey, names);
+    const existing = onlyMissing ? readLocaleFile(localeKey) : {};
+    const wanted = onlyMissing ? ids.filter(id => !existing[id]) : ids;
+    if (onlyMissing)
+      console.log(`\n${localeKey}: ${wanted.length} of ${ids.length} not yet named`);
+    const names = wanted.length ? await fetchLocaleNames(wanted, localeKey) : {};
+    writeLocaleFile(localeKey, { ...existing, ...names });
   }
 
   saveCache();

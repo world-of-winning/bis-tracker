@@ -45,6 +45,7 @@ import {
 } from "./wowhead-guide-cache.mjs";
 import { GEAR_TABS } from "./wowhead-gear-tabs.mjs";
 import { crossCheck, formatReport, rowFaults } from "./cross-check.mjs";
+import { dropTable } from "./wago-db2.mjs";
 import {
     assignSlots,
     detectWeaponType,
@@ -677,6 +678,13 @@ function toGearRows(rows) {
 // so it cannot be assumed to mean "Tier" from text alone. Real Tier-set
 // detection happens via the item's Wowhead "item-set=" marker (see
 // hasItemSet/TIER_SLOTS) at generation time and in normalizeDataFiles.
+// Anything naming a profession, however it is phrased. Wowhead writes the
+// crafted rows as "Crafting / Misc", "Crafting Blacksmithing" and a bare
+// [skill=164]; there is no profession whose name is also a place, so a source
+// mentioning one is a crafted item and nothing else.
+const CRAFTING =
+    /\b(crafting|crafted|craft|blacksmithing|leatherworking|tailoring|jewelcrafting|inscription|engineering|alchemy|enchanting)\b/i;
+
 const SOURCE_FIXES = {
     "Tier Set": "Tier",
     "Tier/Catalyst": "Tier",
@@ -750,8 +758,14 @@ function stripSourcePrefix(s) {
     return m ? normalizeDungeon(m[1].trim()) : s;
 }
 
+// A difficulty or a content type written after the place: "Ula'tek (Raid)",
+// "Kings' Rest (Mythic)". The tracker files an item by where it drops and
+// grades the difficulty separately, so the qualifier is noise here — and left
+// in, it makes every raid row read as naming a place no item drops.
+const QUALIFIER = /\s*\((?:raid|mythic\+?|heroic|normal|m\+|vault|lfr)\)\s*$/i;
+
 function normalizeSourcePart(part) {
-    const trimmed = stripSourcePrefix(part.trim());
+    const trimmed = stripSourcePrefix(part.trim().replace(QUALIFIER, ""));
     if (PART_FIXES[trimmed]) return PART_FIXES[trimmed];
     const noTier = trimmed.replace(/\s+Tier$/i, "");
     if (noTier !== trimmed) {
@@ -764,7 +778,8 @@ function normalizeSourcePart(part) {
 }
 
 function normalizeSource(rawInput) {
-    const raw = stripSourcePrefix(rawInput.trim());
+    const raw = stripSourcePrefix(rawInput.trim().replace(QUALIFIER, ""));
+    if (CRAFTING.test(raw)) return "Crafted";
     if (SOURCE_FIXES[raw]) return SOURCE_FIXES[raw];
     if (PART_FIXES[raw]) return PART_FIXES[raw];
     const whole = normalizeDungeon(raw);
@@ -800,11 +815,8 @@ function normalizeSource(rawInput) {
     return raw;
 }
 
-// The season's loot table, built once and shared.
-//
-// Cross-checking needs it per spec, and find-alts needs it again at the end of
-// the run. Building it twice would mean a second pass over three hundred
-// tooltips for an answer that cannot have changed in the meantime.
+// The season's alt pool, built once and shared between the two places the run
+// hands it to find-alts. Three hundred tooltips; it cannot change mid-run.
 let _pool = null;
 async function seasonPool() {
     if (!_pool) _pool = await buildSeasonPool();
@@ -812,23 +824,27 @@ async function seasonPool() {
 }
 
 /**
- * Where each pool item drops, by item id.
+ * Where each item drops, by item id, from the client's own loot table.
  *
- * An item outside the pool — a catalyst piece, a crafted one, anything from a
- * retired dungeon — is simply absent, and a row about it goes unchecked.
- * A pool that cannot be built at all costs the source check and keeps the
- * slot check, rather than stopping the run.
+ * The whole table, not the season pool. Which season an instance belongs to
+ * gates what may become an alt; it says nothing about where an item comes
+ * from, and gating the facts too left three rows unfixable — items from a raid
+ * wing outside CURRENT_RAID, whose guide cells named their boss only as an
+ * [npc=…] link, so the row ended up naming nowhere at all.
+ *
+ * A table that cannot be read costs the source check and keeps the slot check,
+ * rather than stopping the run.
  */
 async function dropsById() {
     try {
-        const bySlot = await seasonPool();
+        const { byInstance } = await dropTable();
         const drops = new Map();
-        for (const items of bySlot.values())
-            for (const item of items)
-                drops.set(item.id, {
-                    instance: item.source,
-                    encounter: item.encounter,
-                });
+        for (const [instance, items] of byInstance) {
+            for (const [itemId, drop] of items) {
+                if (!drops.has(itemId)) drops.set(itemId, []);
+                drops.get(itemId).push({ instance, encounter: drop.encounter });
+            }
+        }
         return drops;
     } catch (err) {
         console.warn(`  WARNING: no loot table (${err.message}) — sources go unchecked`);
@@ -1252,7 +1268,7 @@ async function gatherFacts(rowSets, drops) {
             const { invSlot } = await fetchItemTooltip(row.itemId);
             facts.set(row.itemId, {
                 invSlot,
-                drop: drops.get(row.itemId) ?? null,
+                drops: drops.get(row.itemId) ?? [],
             });
         }
     }
@@ -1269,10 +1285,12 @@ async function gatherFacts(rowSets, drops) {
  */
 function correctedSource(facts) {
     return (row) => {
-        const drop = facts.get(row.itemId)?.drop;
-        if (!drop) return null;
-        if (VALID_DUNGEONS.includes(drop.instance)) return drop.instance;
-        return drop.encounter || null;
+        const drops = facts.get(row.itemId)?.drops ?? [];
+        if (!drops.length) return null;
+        // An item dropping in two places is named by the one this season runs.
+        const seasonal = drops.find((d) => VALID_DUNGEONS.includes(d.instance));
+        if (seasonal) return seasonal.instance;
+        return drops[0].encounter || drops[0].instance || null;
     };
 }
 
@@ -1343,24 +1361,29 @@ async function crossCheckMythic(spec, items, bisRows, existingItems) {
         correctionOf: correctedSource(facts),
     });
     for (const r of reports) {
-        const line = formatReport(`${spec.key} MYTHIC`, r);
+        const line = formatReport(`${spec.key} MYTHIC`, r, "Wowhead");
         console.warn(line);
         contradictions.push(line);
     }
 
+    // Rows come back in a different order and a different number than they
+    // went in — a slot the list omitted is filled here — so they are matched
+    // back by slot rather than by position.
+    const bySlot = new Map(items.map((i) => [i.slot, i]));
     const out = [];
-    for (let i = 0; i < rows.length; i++) {
-        if (rows[i].itemId === items[i].id) {
+    for (const row of rows) {
+        const had = bySlot.get(row.slot);
+        if (had && had.id === row.itemId) {
             // A corrected source is the whole change on such a row; the stats
             // and the tier verdict the build already reached still stand.
-            out.push({ ...items[i], source: rows[i].source });
+            out.push({ ...had, source: row.source });
             continue;
         }
-        const { stats, isTier } = await fetchItemTooltip(rows[i].itemId);
+        const { stats, isTier } = await fetchItemTooltip(row.itemId);
         out.push({
-            slot: rows[i].slot,
-            id: rows[i].itemId,
-            source: tierSource(rows[i].slot, isTier, rows[i].source),
+            slot: row.slot,
+            id: row.itemId,
+            source: tierSource(row.slot, isTier, row.source),
             stats,
         });
     }
@@ -1885,7 +1908,7 @@ async function processSpec(spec, { force = false } = {}) {
             );
             decidedBis = rows;
             for (const r of reports) {
-                const line = formatReport(spec.key, r);
+                const line = formatReport(spec.key, r, "Maxroll");
                 console.warn(line);
                 contradictions.push(line);
             }

@@ -35,6 +35,24 @@ describe("resolveSlot", () => {
         expect(resolveSlot("Shoulder", "2h")).toBe("shoulder");
     });
 
+    it("reads the in-game words for a slot as well as the guide words", () => {
+        // Seven pages write Helm, Cape and Bracers. An unresolved label is
+        // dropped outright, and four specs came out of one pass with fifteen
+        // slots because of exactly these three.
+        resetSlotCounters();
+        expect(resolveSlot("Helm", "2h")).toBe("head");
+        expect(resolveSlot("Cape", "2h")).toBe("back");
+        expect(resolveSlot("Bracers", "2h")).toBe("wrist");
+        expect(resolveSlot("Hands", "2h")).toBe("hands");
+        expect(resolveSlot("Feet", "2h")).toBe("feet");
+    });
+
+    it("reads a hand count written as a qualifier, not only as a prefix", () => {
+        resetSlotCounters();
+        expect(resolveSlot("Weapon (2h)", "2h")).toBe("main_hand");
+        expect(resolveSlot("Weapons (1h)", "1h+oh")).toBe("main_hand");
+    });
+
     it("numbers unnumbered rings and trinkets in the order they appear", () => {
         resetSlotCounters();
         expect(resolveSlot("Ring", "2h")).toBe("finger1");
@@ -56,6 +74,11 @@ describe("detectWeaponType", () => {
 
     it("reads an off-hand row as one-hand plus off-hand", () => {
         expect(detectWeaponType([row("Weapon"), row("Offhand")])).toBe("1h+oh");
+    });
+
+    it("reads a parenthesised hand count", () => {
+        expect(detectWeaponType([row("Weapon (2h)"), row("Head")])).toBe("2h");
+        expect(detectWeaponType([row("Weapons (1h)"), row("Head")])).toBe("1h+oh");
     });
 });
 
@@ -95,6 +118,17 @@ describe("assignSlots", () => {
             ["main_hand", 2],
             ["off_hand", 3],
         ]);
+        expect(skipped.map((r) => r.itemId)).toEqual([1]);
+    });
+
+    it("takes the hand count the spec wields where the page offers both", () => {
+        // Brewmaster's page lists "Weapon (2h)" and "Weapons (1h)" as two
+        // layouts. Read positionally the two-hander wins by being first.
+        const { rows, skipped } = assignSlots(
+            [row("Weapon (2h)", 1), row("Weapons (1h)", 2)],
+            "1h+oh",
+        );
+        expect(rows.map((r) => [r.slot, r.itemId])).toEqual([["main_hand", 2]]);
         expect(skipped.map((r) => r.itemId)).toEqual([1]);
     });
 
