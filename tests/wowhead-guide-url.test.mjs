@@ -21,9 +21,14 @@ describe("guideUrl", () => {
     });
 
     it("keeps specs that share a name apart by their class", () => {
-        // druid/restoration and shaman/restoration are different pages.
-        expect(guideUrl("druid", "restoration")).not.toBe(
-            guideUrl("shaman", "restoration"),
+        // Comparing the two to each other only restates that the class is
+        // interpolated. What can actually break is a slug fix aimed at one
+        // spec landing on every spec of that name, so both are named.
+        expect(guideUrl("druid", "restoration")).toBe(
+            "https://www.wowhead.com/guide/classes/druid/restoration/bis-gear",
+        );
+        expect(guideUrl("shaman", "restoration")).toBe(
+            "https://www.wowhead.com/guide/classes/shaman/restoration/bis-gear",
         );
     });
 });

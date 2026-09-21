@@ -40,7 +40,16 @@ describe("normalizeSourceFields", () => {
     });
 
     it("reads an ALTS row's forSlot as the slot", () => {
-        const row = `  { forSlot: "neck", id: 271537, source: "Ula'tek", stats: ["crit"] },`;
-        expect(normalizeSourceFields(row, deps).content).toBe(row);
+        // Asserting only that a forSlot neck row is left alone proves
+        // nothing: a pattern that does not match an ALTS row at all returns
+        // the content unchanged too. The head row is what tells the two
+        // apart — it can only be rewritten if forSlot was read as the slot.
+        const neck = `  { forSlot: "neck", id: 271537, source: "Ula'tek", stats: ["crit"] },`;
+        expect(normalizeSourceFields(neck, deps).content).toBe(neck);
+
+        const head = `  { forSlot: "head", id: 271537, source: "Ula'tek", stats: ["crit"] },`;
+        expect(normalizeSourceFields(head, deps).content).toContain(
+            'source: "Tier"',
+        );
     });
 });

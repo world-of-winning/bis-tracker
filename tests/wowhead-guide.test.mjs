@@ -74,6 +74,27 @@ describe("bisItemsBlock", () => {
         expect(bisItemsBlock(wide)).toContain("Season 2 Best-in-Slot");
     });
 
+    it("runs past a nested tabs block to its own closing tag", () => {
+        // Restoration shaman nests tabs inside the gear block — an AOTC
+        // question, with Great Vault and Crafting under each answer. Stopping
+        // at the first [/tabs] cuts the block off inside the nest, and the
+        // flat tab scan then reads sub-tabs as siblings of the gear tab.
+        const nested = [
+            "[tabs name=bis_items]",
+            '[tab name="Overall BiS"]',
+            "[tabs name=aotc]",
+            '[tab name="Great Vault"]',
+            "[/tabs]",
+            "the gear table",
+            "[/tabs]",
+            "[tabs name=crafted_gear]",
+            "[/tabs]",
+        ].join("\n");
+        const block = bisItemsBlock(nested);
+        expect(block).toContain("the gear table");
+        expect(block).not.toContain("crafted_gear");
+    });
+
     it("answers with null when the page has no gear block", () => {
         expect(bisItemsBlock("[tabs name=crafted_gear]\n[/tabs]")).toBe(null);
     });

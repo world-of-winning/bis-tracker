@@ -50,9 +50,20 @@ export function guideMarkup(html) {
 export function bisItemsBlock(body) {
     const open = body.search(/\[tabs[^\]]*\bname=bis_items\b[^\]]*\]/);
     if (open < 0) return null;
-    const close = body.indexOf("[/tabs]", open);
-    if (close < 0) return null;
-    return body.slice(open, close + "[/tabs]".length);
+
+    // Tabs blocks nest: restoration shaman asks whether the player will get
+    // AOTC early and puts a whole gear layout under each answer. Taking the
+    // first [/tabs] cuts the block off inside that nest, and everything
+    // downstream then reads sub-tabs as siblings of the gear tab.
+    const MARKER = /\[tabs[^\]]*\]|\[\/tabs\]/g;
+    MARKER.lastIndex = open;
+    let depth = 0;
+    let m;
+    while ((m = MARKER.exec(body))) {
+        depth += m[0] === "[/tabs]" ? -1 : 1;
+        if (depth === 0) return body.slice(open, m.index + m[0].length);
+    }
+    return null;
 }
 
 /**
