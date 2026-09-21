@@ -73,6 +73,8 @@
         "Vaelgor & Ezzorak": "Vaelgor & Ezzorak",
         "Imperator Averzian": "Averzian",
         "The Great Vault": "Great Vault",
+        "The Venomous Abyss": "Venomous Abyss",
+        "The Tidebound Grotto": "Tidebound Grotto",
         "Ula'tek": "Ula'tek",
         "The Coiled Altar": "Coiled Altar",
         "The Twin Fangs": "Twin Fangs",
@@ -104,7 +106,9 @@
         "The Twin Fangs": "The Twin Fangs",
         "Nek'zali the Soulcoiler": "Nek'zali the Soulcoiler",
         "The Lost Explorers": "The Lost Explorers",
-        "Ula'tek": "Ula'tek"
+        "Ula'tek": "Ula'tek",
+        "The Venomous Abyss": "The Venomous Abyss",
+        "The Tidebound Grotto": "The Tidebound Grotto"
     },
     "dungeonsFull": {
         "Pit of Saron": "Pit of Saron",

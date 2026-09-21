@@ -1,6 +1,6 @@
 export var SPEC_LABEL = "Protection Warrior";
 export var SPEC_KEY = "prot-warrior";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/protection-warrior-raid-guide";
+export var GUIDE_URL = "https://www.wowhead.com/guide/classes/warrior/protection/bis-gear";
 export var SIMC_CLASS = "warrior";
 export var SIMC_SPEC = "protection";
 export var SPEC_ICON = "ability_warrior_defensivestance";
@@ -16,22 +16,22 @@ export var THEME = {
 };
 
 export var BIS = [
+  { slot: "main_hand", id: 268209, source: "The Coiled Altar", stats: ["haste","mastery"] },
+  { slot: "off_hand", id: 268196, source: "The Lost Explorers", stats: ["crit","haste"] },
   { slot: "head", id: 271456, source: "Tier", stats: ["crit","haste"] },
-  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit"] },
+  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit","haste","mastery","vers"] },
   { slot: "shoulder", id: 271454, source: "Tier", stats: ["crit","mastery"] },
   { slot: "back", id: 268253, source: "The Coiled Altar", stats: ["haste","mastery"] },
   { slot: "chest", id: 271459, source: "Tier", stats: ["crit","mastery"] },
   { slot: "wrist", id: 237834, source: "Crafted", stats: [] },
-  { slot: "hands", id: 251214, source: "Den of Nalorakk", stats: ["crit","haste"] },
+  { slot: "hands", id: 271457, source: "Tier", stats: ["crit","haste"] },
   { slot: "waist", id: 268259, source: "The Coiled Altar", stats: ["crit","mastery"] },
-  { slot: "legs", id: 271455, source: "Tier", stats: ["mastery","vers"] },
+  { slot: "legs", id: 271878, source: "Ula'tek", stats: ["crit"] },
   { slot: "feet", id: 237828, source: "Crafted", stats: [] },
-  { slot: "finger1", id: 252258, source: "Voidscar Arena", stats: ["haste","mastery"] },
-  { slot: "finger2", id: 273792, source: "Altar of Fangs", stats: ["crit","haste"] },
+  { slot: "finger1", id: 268252, source: "Sszorak", stats: ["crit","haste"] },
+  { slot: "finger2", id: 268249, source: "Vashnik the Malignant", stats: ["crit","mastery"] },
   { slot: "trinket1", id: 270173, source: "The Coiled Altar", stats: [] },
   { slot: "trinket2", id: 270175, source: "Ula'tek", stats: ["crit"] },
-  { slot: "main_hand", id: 268209, source: "The Coiled Altar", stats: ["haste","mastery"] },
-  { slot: "off_hand", id: 268196, source: "The Lost Explorers", stats: ["crit","haste"] },
 ];
 
 export var MYTHIC = [
@@ -50,7 +50,7 @@ export var MYTHIC = [
   { slot: "trinket1", id: 273796, source: "Altar of Fangs", stats: [] },
   { slot: "trinket2", id: 250228, source: "Murder Row", stats: [] },
   { slot: "main_hand", id: 251195, source: "The Blinding Vale", stats: ["crit","haste"] },
-  { slot: "off_hand", id: 159664, source: "The Blinding Vale", stats: ["crit","vers"] },
+  { slot: "off_hand", id: 159664, source: "Temple of Sethraliss", stats: ["crit","vers"] },
 ];
 
 export var ALTS = [
@@ -67,6 +67,7 @@ export var ALTS = [
   { forSlot: "feet", id: 268260, source: "The Venomous Abyss", stats: ["haste","mastery"] },
   { forSlot: "feet", id: 273777, source: "Altar of Fangs", stats: ["haste","vers"] },
   { forSlot: "feet", id: 193728, source: "Ruby Life Pools", stats: ["mastery","vers"] },
+  { forSlot: "hands", id: 251214, source: "Den of Nalorakk", stats: ["crit","haste"] },
   { forSlot: "hands", id: 268220, source: "The Venomous Abyss", stats: ["crit","haste"] },
   { forSlot: "hands", id: 159437, source: "Temple of Sethraliss", stats: ["haste","mastery"] },
   { forSlot: "hands", id: 251197, source: "The Blinding Vale", stats: ["mastery","vers"] },
@@ -80,22 +81,23 @@ export var ALTS = [
   { forSlot: "legs", id: 268224, source: "The Venomous Abyss", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 159435, source: "Temple of Sethraliss", stats: ["crit","vers"] },
   { forSlot: "legs", id: 251182, source: "The Blinding Vale", stats: ["crit","vers"] },
-  { forSlot: "legs", id: 271878, source: "The Venomous Abyss", stats: ["mastery"] },
   { forSlot: "neck", id: 251173, source: "Den of Nalorakk", stats: ["crit","haste"] },
   { forSlot: "neck", id: 268250, source: "The Venomous Abyss", stats: ["crit","haste"] },
   { forSlot: "neck", id: 251142, source: "Murder Row", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 268251, source: "The Venomous Abyss", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 251234, source: "Voidscar Arena", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 268252, source: "The Venomous Abyss", stats: ["crit","haste"] },
+  { forSlot: "ring", id: 252258, source: "Voidscar Arena", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 159459, source: "Kings' Rest", stats: ["haste","vers"] },
   { forSlot: "ring", id: 158366, source: "Temple of Sethraliss", stats: ["crit","mastery"] },
-  { forSlot: "ring", id: 268249, source: "The Venomous Abyss", stats: ["crit","mastery"] },
+  { forSlot: "ring", id: 268266, source: "The Tidebound Grotto", stats: ["haste","vers"] },
   { forSlot: "ring", id: 251148, source: "Den of Nalorakk", stats: ["crit","vers"] },
   { forSlot: "ring", id: 162544, source: "Temple of Sethraliss", stats: ["mastery","vers"] },
   { forSlot: "ring", id: 251194, source: "The Blinding Vale", stats: ["mastery","vers"] },
   { forSlot: "shoulder", id: 239037, source: "Temple of Sethraliss", stats: ["crit","haste"] },
+  { forSlot: "shoulder", id: 268226, source: "The Tidebound Grotto", stats: ["crit","mastery"] },
   { forSlot: "shoulder", id: 239051, source: "Kings' Rest", stats: ["mastery","vers"] },
   { forSlot: "trinket", id: 193762, source: "Ruby Life Pools", stats: ["haste"] },
+  { forSlot: "trinket", id: 270167, source: "The Tidebound Grotto", stats: ["haste"] },
   { forSlot: "trinket", id: 270169, source: "The Venomous Abyss", stats: ["haste"] },
   { forSlot: "trinket", id: 250229, source: "Den of Nalorakk", stats: ["crit"] },
   { forSlot: "trinket", id: 193748, source: "Ruby Life Pools", stats: ["crit"] },
@@ -117,10 +119,12 @@ export var ALTS = [
   { forSlot: "trinket", id: 270165, source: "The Venomous Abyss", stats: [] },
   { forSlot: "trinket", id: 250224, source: "Voidscar Arena", stats: [] },
   { forSlot: "trinket", id: 250245, source: "Voidscar Arena", stats: [] },
+  { forSlot: "waist", id: 268244, source: "The Tidebound Grotto", stats: ["haste","vers"] },
   { forSlot: "waist", id: 251144, source: "Den of Nalorakk", stats: ["mastery","vers"] },
   { forSlot: "waist", id: 159442, source: "Temple of Sethraliss", stats: ["mastery","vers"] },
   { forSlot: "weapon", id: 158373, source: "Temple of Sethraliss", stats: ["crit","haste"] },
   { forSlot: "weapon", id: 251150, source: "Den of Nalorakk", stats: ["haste","mastery"] },
+  { forSlot: "weapon", id: 268262, source: "The Tidebound Grotto", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 251218, source: "Voidscar Arena", stats: ["haste","mastery"] },
   { forSlot: "weapon", id: 268208, source: "The Venomous Abyss", stats: ["crit","mastery"] },
   { forSlot: "weapon", id: 251196, source: "The Blinding Vale", stats: ["crit","vers"] },
@@ -153,15 +157,16 @@ export var KNOWN_STATS = {
   251218:["haste","mastery"],251221:["mastery","vers"],251229:["crit","mastery"],251234:["crit","mastery"],
   252258:["haste","mastery"],268196:["crit","haste"],268202:["haste"],268208:["crit","mastery"],
   268209:["haste","mastery"],268220:["crit","haste"],268222:["haste","mastery"],268224:["haste","mastery"],
-  268229:["crit","haste"],268239:["crit","mastery"],268245:["crit","haste"],268248:["crit","vers"],
-  268249:["crit","mastery"],268250:["crit","haste"],268251:["haste","mastery"],268252:["crit","haste"],
-  268253:["haste","mastery"],268259:["crit","mastery"],268260:["haste","mastery"],268265:["crit"],
+  268226:["crit","mastery"],268229:["crit","haste"],268239:["crit","mastery"],268244:["haste","vers"],
+  268245:["crit","haste"],268248:["crit","vers"],268249:["crit","mastery"],268250:["crit","haste"],
+  268251:["haste","mastery"],268252:["crit","haste"],268253:["haste","mastery"],268259:["crit","mastery"],
+  268260:["haste","mastery"],268262:["haste","mastery"],268265:["crit","haste","mastery","vers"],268266:["haste","vers"],
   270160:[],270163:[],270164:[],270165:[],
-  270168:["mastery"],270169:["haste"],270171:["crit"],270173:[],
-  270174:["mastery"],270175:["crit"],271454:["crit","mastery"],271455:["mastery","vers"],
-  271456:["crit","haste"],271459:["crit","mastery"],271878:["mastery"],273776:["crit","haste"],
-  273777:["haste","vers"],273781:["crit","haste"],273787:["crit","vers"],273792:["crit","haste"],
-  273795:[],273796:[],273797:[],275937:[],
-  275938:[],281227:[],
+  270167:["haste"],270168:["mastery"],270169:["haste"],270171:["crit"],
+  270173:[],270174:["mastery"],270175:["crit"],271454:["crit","mastery"],
+  271456:["crit","haste"],271457:["crit","haste"],271459:["crit","mastery"],271878:["crit"],
+  273776:["crit","haste"],273777:["haste","vers"],273781:["crit","haste"],273787:["crit","vers"],
+  273792:["crit","haste"],273795:[],273796:[],273797:[],
+  275937:[],275938:[],281227:[],
 };
 

@@ -4,8 +4,10 @@ Glossary for the BiS tracker's domain. Terms only — no implementation detail.
 
 ## Stat priority
 
-**Secondary stat** — one of crit, haste, mastery, versatility. Every gear item carries
-zero, one, or two of them. (Three-stat items do not exist in this game's itemisation.)
+**Secondary stat** — one of crit, haste, mastery, versatility. A gear item carries
+zero to four of them. Two is the ordinary case, but items spreading their budget across
+all four exist — Aqirbane Reliquary, a neck, carries an equal share of each — so no rule
+here may assume a count of two.
 
 **Stat priority** — a per-spec ordering of the four secondary stats, best first.
 Historically stored as a flat array of four. It is an *ordinal* statement: it says
@@ -50,6 +52,22 @@ over-represented when the season's dungeons happen to itemise toward it.
 The upstream source publishes the raw roster, not a ranking — characters with their
 full equipment and per-item stat ratings. The ranking, and the grouping, are ours to
 compute. Nobody else's judgement sits in between.
+
+**BiS list (BiS 목록)** — the one item per slot a spec would end up wearing, taken over
+every kind of content at once: dungeon, raid, crafted, catalyst. It is the thing a
+player's equipped gear is graded against, so it states a destination, not a week's plan.
+
+**Mythic+ list (M+ 목록)** — the best item per slot reachable by a player who runs only
+keys. It matches the BiS list wherever that item drops in a dungeon and falls short of it
+wherever the BiS item drops in a raid. A list of its own rather than the BiS list with
+the unreachable rows removed, because removing a row leaves a slot unanswered rather than
+answering it more modestly.
+
+**Structural contradiction (구조적 모순)** — a published row that disagrees with the game
+itself: a table naming a slot the item cannot occupy, or a source naming a place the item
+does not drop. Not the same thing as two publishers naming different items for one slot,
+which is judgement rather than error. Only a contradiction is worth reporting; disagreement
+is the reason for reading two publishers at all.
 
 **Sample** — the characters an observed priority was computed from. Not a constant:
 it runs from fourteen to fifty depending on how many people play the spec at the top.
@@ -97,6 +115,15 @@ crafted has none — it is capped where it is capped whatever the player runs.
 
 Distinct from **source (출처)**, which names the specific place (`"Kings' Rest"`). The
 path is the family the source belongs to.
+
+**Catalyst base (촉매 기반)** and **catalyzed item (촉매화 아이템)** — the catalyst turns
+one item into another, and the two are different items. The base drops; the catalyzed one
+never does. A slot whose BiS is a catalyzed piece therefore names two items at once: the
+one the player ends up wearing, and the one they have to farm to get it.
+
+The base is what a chest can contain; the catalyzed item is what the player ends up
+wearing. A catalyzed slot names no place to farm — the catalyst is currency spent, not a
+destination run — so its source is the tier set it yields rather than a dungeon.
 
 ## Expected gain
 

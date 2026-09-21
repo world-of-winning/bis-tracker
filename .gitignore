@@ -5,6 +5,8 @@ dist
 .claude
 package-lock.json
 scripts/.wowhead-cache.json
+scripts/.wowhead-cache-index.json
+scripts/.wowhead-guide-cache/
 
 # wrangler files
 .wrangler

@@ -83,7 +83,9 @@
         "Vashnik the Malignant": "Vashnik",
         "Sszorak": "Sszorak",
         "Catalyst": "Catalyst",
-        "Rotmire": "Necrocharco"
+        "Rotmire": "Necrocharco",
+        "The Venomous Abyss": "Abismo Peçonhento",
+        "The Tidebound Grotto": "Gruta Marejante"
     },
     "sourcesFull": {
         "Midnight Falls": "Queda da Meia-noite",
@@ -104,7 +106,9 @@
         "The Twin Fangs": "As Presas Gêmeas",
         "Nek'zali the Soulcoiler": "Nek'zali, a Enrosca-almas",
         "The Lost Explorers": "Exploradores Perdidos",
-        "Ula'tek": "Ula'tek"
+        "Ula'tek": "Ula'tek",
+        "The Venomous Abyss": "Abismo Peçonhento",
+        "The Tidebound Grotto": "Gruta Marejante"
     },
     "dungeonsFull": {
         "Pit of Saron": "Fosso de Saron",

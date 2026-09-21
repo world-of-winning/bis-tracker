@@ -83,7 +83,9 @@
         "Vashnik the Malignant": "Вашник Тлетворный",
         "Sszorak": "Ссзорак",
         "Catalyst": "Catalyst",
-        "Rotmire": "Гнилотоп"
+        "Rotmire": "Гнилотоп",
+        "The Venomous Abyss": "Отравленная бездна",
+        "The Tidebound Grotto": "Приливный грот"
     },
     "sourcesFull": {
         "Midnight Falls": "Торжество Полуночи",
@@ -104,7 +106,9 @@
         "The Twin Fangs": "Два Клыка",
         "Nek'zali the Soulcoiler": "Нек'зали Душительница Душ",
         "The Lost Explorers": "Потерявшиеся исследователи",
-        "Ula'tek": "Ула'тек"
+        "Ula'tek": "Ула'тек",
+        "The Venomous Abyss": "Отравленная бездна",
+        "The Tidebound Grotto": "Приливный грот"
     },
     "dungeonsFull": {
         "Pit of Saron": "Яма Сарона",

@@ -14,7 +14,7 @@ import { fileURLToPath } from 'url';
 import { fetchTooltip, saveCache } from './wowhead-cache.mjs';
 import { dropTable } from './wago-db2.mjs';
 import { scoreStats } from '../src/logic/matching.js';
-import { DUNGEONS, CURRENT_RAID } from '../src/data/shared.js';
+import { DUNGEONS, CURRENT_RAIDS } from '../src/data/shared.js';
 
 // ─── Wowhead class restriction check ────────────────────────
 const CLASS_NAME_MAP = {
@@ -264,7 +264,7 @@ function parseSpecFile(filePath) {
  */
 async function buildSeasonPool() {
   const { byInstance } = await dropTable();
-  const instances = [...Object.keys(DUNGEONS), CURRENT_RAID];
+  const instances = [...Object.keys(DUNGEONS), ...CURRENT_RAIDS];
 
   for (const name of instances) {
     if (!byInstance.has(name)) {
@@ -336,22 +336,56 @@ function dropReissuedOriginals(items) {
 }
 
 /**
- * CURRENT_RAID is maintained by hand because the loot table marks no season.
- * The instance holding the highest ItemID is the right answer today, so it is
- * worth cross-checking — but it assumes Blizzard never adds an item to an older
- * raid, which is too weak a thing to decide on.
+ * CURRENT_RAIDS is maintained by hand because the loot table marks no season:
+ * DisplaySeasonID is 0 almost everywhere and JournalInstance carries none at
+ * all. Two cheap checks, both of which warn and neither of which decides.
+ *
+ * The first asks whether the newest instance in the game is one the pool
+ * admits. Item ids only say when an item was added, so that is weak on its own
+ * — and against a *list* of raids it is weaker still, since a second raid a few
+ * thousand ids below the first looks like every retired instance from here.
+ *
+ * The second is the one that would have caught the case this exists for. The
+ * whole of The Tidebound Grotto sat outside the pool while both publishers
+ * named six of its items in BIS and MYTHIC: an instance the guides draw from
+ * and the pool does not admit is a contradiction between two things we already
+ * have, needing no threshold and no guess about what "recent" means.
  */
 function warnIfRaidLooksWrong(byInstance) {
+  const admitted = new Set([...Object.keys(DUNGEONS), ...CURRENT_RAIDS]);
+
   let newest = null, newestId = -1;
   for (const [name, items] of byInstance) {
     for (const id of items.keys()) if (id > newestId) { newestId = id; newest = name; }
   }
-  if (newest && newest !== CURRENT_RAID) {
-    console.warn(`  ! CURRENT_RAID is ${CURRENT_RAID}, but ${newest} holds the highest item id (${newestId}). Check shared.js against the season.`);
+  if (newest && !admitted.has(newest)) {
+    console.warn(`  ! ${newest} holds the highest item id (${newestId}) and is in neither DUNGEONS nor CURRENT_RAIDS. Check shared.js against the season.`);
+  }
+
+  const named = itemIdsNamedBySpecs();
+  for (const [name, items] of byInstance) {
+    if (admitted.has(name)) continue;
+    const hits = [...items.keys()].filter((id) => named.has(id));
+    if (!hits.length) continue;
+    console.warn(`  ! ${name} is not in the pool, but the spec files name ${hits.length} of its items as BiS (${hits.slice(0, 3).join(', ')}${hits.length > 3 ? ', …' : ''}). Nothing from it can become an alt.`);
   }
 }
 
-/** Which of our slots a pool item belongs to, or null if it is not gear. */
+/** Every item id the spec files name in BIS or MYTHIC — ALTS excluded, since
+ *  those are what the pool produced and would make the check answer itself. */
+function itemIdsNamedBySpecs() {
+  const ids = new Set();
+  for (const file of readdirSync(DATA_DIR).filter((f) => f.endsWith('.js'))) {
+    const content = readFileSync(resolve(DATA_DIR, file), 'utf8');
+    for (const varName of ['BIS', 'MYTHIC']) {
+      const m = content.match(new RegExp(`export var ${varName} = \\[([^]*?)\\];`));
+      if (!m) continue;
+      for (const hit of m[1].matchAll(/\bid: (\d+)/g)) ids.add(Number(hit[1]));
+    }
+  }
+  return ids;
+}
+
 function poolSlot(info) {
   if (info.invSlot) return INV_SLOT_TO_SLOT[info.invSlot] || null;
   if (info.weaponType || info.hand) return 'weapon';
@@ -430,6 +464,17 @@ async function findAltsForSpec(specKey, pool) {
 }
 
 // ─── Update spec file ────────────────────────────────────────
+/** Every item id a written spec file names, across BIS, MYTHIC and ALTS. */
+function referencedIds(content) {
+  const ids = new Set();
+  for (const varName of ['BIS', 'MYTHIC', 'ALTS']) {
+    const m = content.match(new RegExp(`export var ${varName} = \\[([^]*?)\\];`));
+    if (!m) continue;
+    for (const hit of m[1].matchAll(/\bid: (\d+)/g)) ids.add(Number(hit[1]));
+  }
+  return ids;
+}
+
 function updateSpecFile(specKey, alts) {
   const filePath = resolve(DATA_DIR, `${specKey}.js`);
   let content = readFileSync(filePath, 'utf8');
@@ -459,7 +504,12 @@ function updateSpecFile(specKey, alts) {
     for (const alt of alts) {
       if (!existing[alt.id]) existing[alt.id] = alt.stats;
     }
-    const entries = Object.entries(existing);
+    // Scoped to the ids this file names. Rewriting ALTS whole is what keeps
+    // the alt list from becoming append-only, and KNOWN_STATS has to follow it
+    // or the deletions land in one place and their stats stay in the other —
+    // an id nothing references, that nothing ever rechecks.
+    const referenced = referencedIds(content);
+    const entries = Object.entries(existing).filter(([id]) => referenced.has(Number(id)));
     let ksStr = 'export var KNOWN_STATS = {\n';
     const perLine = 4;
     for (let i = 0; i < entries.length; i += perLine) {

@@ -83,7 +83,9 @@
         "Vashnik the Malignant": "Vashnik",
         "Sszorak": "Sszorak",
         "Catalyst": "Catalyst",
-        "Rotmire": "Embourbe-pourri"
+        "Rotmire": "Embourbe-pourri",
+        "The Venomous Abyss": "L’abîme Venimeux",
+        "The Tidebound Grotto": "Grotte des Marées"
     },
     "sourcesFull": {
         "Midnight Falls": "Glas de minuit",
@@ -104,7 +106,9 @@
         "The Twin Fangs": "Les crochets jumeaux",
         "Nek'zali the Soulcoiler": "Nek’zali l’Entortillâme",
         "The Lost Explorers": "L’expédition perdue",
-        "Ula'tek": "Ula’tek"
+        "Ula'tek": "Ula’tek",
+        "The Venomous Abyss": "L’abîme Venimeux",
+        "The Tidebound Grotto": "La grotte des Marées"
     },
     "dungeonsFull": {
         "Pit of Saron": "Fosse de Saron",
