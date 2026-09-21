@@ -44,6 +44,7 @@ import {
     guideUrl as wowheadGuideUrl,
 } from "./wowhead-guide-cache.mjs";
 import { GEAR_TABS } from "./wowhead-gear-tabs.mjs";
+import { crossCheck, formatReport, rowFaults } from "./cross-check.mjs";
 import {
     assignSlots,
     detectWeaponType,
@@ -799,6 +800,42 @@ function normalizeSource(rawInput) {
     return raw;
 }
 
+// The season's loot table, built once and shared.
+//
+// Cross-checking needs it per spec, and find-alts needs it again at the end of
+// the run. Building it twice would mean a second pass over three hundred
+// tooltips for an answer that cannot have changed in the meantime.
+let _pool = null;
+async function seasonPool() {
+    if (!_pool) _pool = await buildSeasonPool();
+    return _pool;
+}
+
+/**
+ * Where each pool item drops, by item id.
+ *
+ * An item outside the pool — a catalyst piece, a crafted one, anything from a
+ * retired dungeon — is simply absent, and a row about it goes unchecked.
+ * A pool that cannot be built at all costs the source check and keeps the
+ * slot check, rather than stopping the run.
+ */
+async function dropsById() {
+    try {
+        const bySlot = await seasonPool();
+        const drops = new Map();
+        for (const items of bySlot.values())
+            for (const item of items)
+                drops.set(item.id, {
+                    instance: item.source,
+                    encounter: item.encounter,
+                });
+        return drops;
+    } catch (err) {
+        console.warn(`  WARNING: no loot table (${err.message}) — sources go unchecked`);
+        return new Map();
+    }
+}
+
 /**
  * The BiS rows of one spec's Wowhead guide page.
  *
@@ -1175,6 +1212,162 @@ async function catalystBase(row, slot) {
 }
 
 /**
+ * Maxroll's raid-guide rows as a second witness: slot, item id, source.
+ *
+ * Read for nothing but the cross-check. A name that does not resolve to an id
+ * is left out, and that row simply goes uncross-checked — the alternative is
+ * treating Maxroll's prose failing to parse as evidence against Wowhead.
+ */
+async function fetchMaxrollWitness(spec) {
+    try {
+        const { bis } = await fetchMaxrollGearTables(spec.slug, "raid-guide");
+        if (!bis) return [];
+        const type = spec.weaponType ?? detectWeaponType(bis);
+        const rows = [];
+        for (const row of assignSlots(bis, type).rows) {
+            const name = ITEM_NAME_FIXES[row.itemName] || row.itemName;
+            const id = await searchItemId(name, true);
+            if (id) rows.push({ slot: row.slot, itemId: id, source: row.source });
+        }
+        return rows;
+    } catch (err) {
+        // One publisher being down is not a reason to stop reading the other.
+        console.warn(`  WARNING: no second witness (${err.message})`);
+        return [];
+    }
+}
+
+/**
+ * What the game says about each candidate item: its slot, and where it drops.
+ *
+ * Every id both publishers named, fetched once. The tooltips are cached and
+ * the build fetches most of them again anyway, so this is a pass over the
+ * cache rather than a second crawl.
+ */
+async function gatherFacts(rowSets, drops) {
+    const facts = new Map();
+    for (const rows of rowSets) {
+        for (const row of rows) {
+            if (facts.has(row.itemId)) continue;
+            const { invSlot } = await fetchItemTooltip(row.itemId);
+            facts.set(row.itemId, {
+                invSlot,
+                drop: drops.get(row.itemId) ?? null,
+            });
+        }
+    }
+    return facts;
+}
+
+/**
+ * The source a mislabelled row should have carried.
+ *
+ * The loot table that caught the label holds the answer, and the answer is the
+ * dungeon rather than the boss: DUNGEONS keys the badge colour and the filter
+ * row, and a player queues for an instance. Raid drops keep their boss names,
+ * which is how the guides write them and how the rest of the file reads.
+ */
+function correctedSource(facts) {
+    return (row) => {
+        const drop = facts.get(row.itemId)?.drop;
+        if (!drop) return null;
+        if (VALID_DUNGEONS.includes(drop.instance)) return drop.instance;
+        return drop.encounter || null;
+    };
+}
+
+/**
+ * One spec's BiS rows, decided between the two publishers and the game.
+ *
+ * Returns the rows to build from, and the contradictions worth a human's
+ * attention. The rows keep their slot, so the build does not assign them
+ * again — a row taken from Maxroll must land in the slot the Wowhead row it
+ * replaced was about, not in whatever the ring counter says next.
+ */
+async function decideBisRows(spec, wowheadRows, existingItems) {
+    const type = spec.weaponType ?? detectWeaponType(wowheadRows);
+    const { rows: primary, unknown } = assignSlots(wowheadRows, type);
+    for (const row of unknown)
+        console.warn(`    WARNING: Unknown slot "${row.slotName}", skipping`);
+
+    const secondary = await fetchMaxrollWitness(spec);
+    const existing = existingItems.map((i) => ({
+        slot: i.slot,
+        itemId: i.id,
+        source: i.source,
+        originalItemId: i.originalItemId,
+    }));
+    const drops = await dropsById();
+    const facts = await gatherFacts([primary, secondary, existing], drops);
+
+    return crossCheck({
+        primary,
+        secondary,
+        existing,
+        faultsOf: (row) => rowFaults(row, facts.get(row.itemId) ?? null),
+        correctionOf: correctedSource(facts),
+    });
+}
+
+/**
+ * MYTHIC read against the part of Wowhead's list that overlaps it.
+ *
+ * Wowhead publishes no Mythic+-only table. Filtering its Overall BiS down to
+ * dungeon sources gives six to nine rows — too few to be a list, enough to
+ * check that many of MYTHIC's sixteen slots. The rest rests on one publisher,
+ * as all of BIS did before, but the fault check itself does not need a second
+ * witness: a row the game contradicts is caught whether or not anything else
+ * covers that slot.
+ */
+async function crossCheckMythic(spec, items, bisRows, existingItems) {
+    if (!items) return items;
+    const primary = items.map((i) => ({
+        slot: i.slot,
+        itemId: i.id,
+        source: i.source,
+    }));
+    const secondary = bisRows.filter((r) => isDungeonSource(r.source));
+    const existing = existingItems.map((i) => ({
+        slot: i.slot,
+        itemId: i.id,
+        source: i.source,
+    }));
+    const drops = await dropsById();
+    const facts = await gatherFacts([primary, secondary, existing], drops);
+
+    const { rows, reports } = crossCheck({
+        primary,
+        secondary,
+        existing,
+        faultsOf: (row) => rowFaults(row, facts.get(row.itemId) ?? null),
+        correctionOf: correctedSource(facts),
+    });
+    for (const r of reports) {
+        const line = formatReport(`${spec.key} MYTHIC`, r);
+        console.warn(line);
+        contradictions.push(line);
+    }
+
+    const out = [];
+    for (let i = 0; i < rows.length; i++) {
+        if (rows[i].itemId === items[i].id) {
+            // A corrected source is the whole change on such a row; the stats
+            // and the tier verdict the build already reached still stand.
+            out.push({ ...items[i], source: rows[i].source });
+            continue;
+        }
+        const { stats, isTier } = await fetchItemTooltip(rows[i].itemId);
+        out.push({
+            slot: rows[i].slot,
+            id: rows[i].itemId,
+            source: tierSource(rows[i].slot, isTier, rows[i].source),
+            stats,
+        });
+    }
+    return out;
+}
+
+/**
  * Gear rows that already name their items by id, resolved into BIS entries.
  *
  * The long way round in buildGearData below is all name resolution — dual
@@ -1182,25 +1375,17 @@ async function catalystBase(row, slot) {
  * guide pages carry ids, so none of that applies and the tooltip is fetched
  * for what only it knows: the stats, the tier marker, and the slot the item
  * itself claims.
+ *
+ * The rows arrive with their slots already settled, by decideBisRows.
  */
-async function buildGearDataFromIds(gearRows, weaponType) {
-    if (!weaponType) weaponType = detectWeaponType(gearRows);
-    const { rows, unknown } = assignSlots(gearRows, weaponType);
-    for (const row of unknown)
-        console.warn(`    WARNING: Unknown slot "${row.slotName}", skipping`);
-
+async function buildGearDataFromIds(rows, weaponType) {
     const items = [];
     const knownStats = {};
     for (const row of rows) {
-        const { stats, isTier, invSlot, name } = await fetchItemTooltip(
-            row.itemId,
-        );
-        warnSlotMismatch(
-            row.slot,
-            invSlot,
-            name || String(row.itemId),
-            "Wowhead",
-        );
+        // No slot warning here: every row reaching this point has been through
+        // the cross-check, which reports a contradicted slot and says what it
+        // did about it. Warning again would say the same thing with less.
+        const { stats, isTier } = await fetchItemTooltip(row.itemId);
         const item = {
             slot: row.slot,
             id: row.itemId,
@@ -1597,6 +1782,19 @@ function arraysEqual(a, b) {
 }
 
 // ─── Main ────────────────────────────────────────────────────
+// Every structural contradiction the run found. Each is warned about where it
+// happens and listed again at the end: a cold pass over forty specs scrolls
+// for minutes, and the list is what a human actually reads.
+const contradictions = [];
+
+function reportContradictions() {
+    if (!contradictions.length) return;
+    console.log(
+        `\n${contradictions.length} structural contradiction(s) — a row the game disagrees with:`,
+    );
+    for (const line of contradictions) console.log(line);
+}
+
 async function processSpec(spec, { force = false } = {}) {
     console.log(`\n=== Processing ${spec.key} (${spec.label}) ===`);
 
@@ -1675,12 +1873,25 @@ async function processSpec(spec, { force = false } = {}) {
             : [];
 
         // Build BiS data from Wowhead's Overall BiS table — the whole slot
-        // list, whatever content each piece comes from.
+        // list, whatever content each piece comes from — after reading it
+        // against Maxroll's raid guide and against the game itself.
         const altWeapons = [];
+        let decidedBis = [];
         if (bisRows.length >= 14) {
-            const { items, knownStats } = await buildGearDataFromIds(
+            const { rows, reports } = await decideBisRows(
+                spec,
                 bisRows,
-                spec.weaponType,
+                existingBisItems,
+            );
+            decidedBis = rows;
+            for (const r of reports) {
+                const line = formatReport(spec.key, r);
+                console.warn(line);
+                contradictions.push(line);
+            }
+            const { items, knownStats } = await buildGearDataFromIds(
+                rows,
+                spec.weaponType ?? detectWeaponType(bisRows),
             );
             bisItems = resolveDuplicateIds(items, existingBisItems, "BIS");
             Object.assign(allKnownStats, knownStats);
@@ -1701,6 +1912,13 @@ async function processSpec(spec, { force = false } = {}) {
                 existingMythicItems,
                 "MYTHIC",
             );
+            mythicItems = await crossCheckMythic(
+                spec,
+                mythicItems,
+                decidedBis,
+                existingMythicItems,
+            );
+            for (const item of mythicItems) allKnownStats[item.id] = item.stats;
             altWeapons.push(...skippedWeapons);
             Object.assign(allKnownStats, knownStats);
             console.log(
@@ -2100,13 +2318,14 @@ if (args.includes("--regenerate")) {
     console.log(
         `\nDone: ${success} succeeded (${writtenKeys.length} written), ${fail} failed`,
     );
+    reportContradictions();
 
     // Run find-alts
     if (writtenKeys.length > 0) {
         console.log(
             `\n=== Running find-alts for ${writtenKeys.length} specs ===`,
         );
-        const pool = await buildSeasonPool();
+        const pool = await seasonPool();
         for (const key of writtenKeys) {
             try {
                 const alts = await findAltsForSpec(key, pool);
@@ -2229,13 +2448,14 @@ if (failed.length > 0) {
 console.log(
     `\nDone: ${success} succeeded (${writtenKeys.length} written), ${fail} failed out of ${targets.length}`,
 );
+reportContradictions();
 
 // Run find-alts for all processed specs + specs with empty ALTS
 const allNeedAlts = [...new Set([...targets.map((s) => s.key), ...needsAlts])];
 
 if (allNeedAlts.length > 0) {
     console.log(`\n=== Running find-alts for ${allNeedAlts.length} specs ===`);
-    const pool = await buildSeasonPool();
+    const pool = await seasonPool();
     let totalAlts = 0;
     for (const key of allNeedAlts) {
         try {

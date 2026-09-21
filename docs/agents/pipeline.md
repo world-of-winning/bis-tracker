@@ -16,6 +16,7 @@ have run first, and what breaks when it hasn't.
 | `wowhead-guide-cache.mjs` | The other half of that: `guideUrl`, and `fetchGuidePage` with the browser headers Wowhead's edge insists on and a page cache in `scripts/.wowhead-guide-cache/`. |
 | `wowhead-gear-tabs.mjs` | `GEAR_TABS` — the four specs whose page publishes more than one gear table, and which tab each is played as. By hand, on purpose. |
 | `gear-slots.mjs` | Which slot a guide row is about: `resolveSlot`, `detectWeaponType`, `assignSlots`. Shared by the build and by change detection, so the two cannot disagree about which rows reach the file. |
+| `cross-check.mjs` | Reading the two publishers' rows against the game: `rowFaults`, `crossCheck`. Pure — the caller fetches the tooltips and the loot table and hands them in. |
 | `tier-source.mjs` | The one encoding of when a row's source reads `"Tier"`. Generation and `--fix` both go through it; they used to answer separately and drifted. |
 | `cache-expiry.mjs` | When a cached tooltip stops being worth trusting, and which account of an item's stats `--fix` may write. |
 | `src/logic/matching.js` | `fitKind`, `fitRank`, `statGroups`. **The scripts import the app's logic**, not a copy of it — that is what keeps the pipeline and the tracker agreeing on what counts as a fit. |
@@ -81,6 +82,21 @@ name-to-id layer. See `docs/adr/0006-wowhead-primary-maxroll-second-witness.md`.
 A page publishing several gear tabs stops that spec with the tab names listed, unless
 `GEAR_TABS` says which one the spec is played as. That refusal is the mechanism by
 which the table gets filled in — one spec failing leaves the other thirty-nine alone.
+
+Maxroll's raid guide is fetched too, and read only as a second witness. Disagreement
+between publishers is not reported; a **structural contradiction** is — a row whose slot
+the item's own tooltip denies, or whose source names a place the loot table says it does
+not drop. Where the two disagree and only one row survives that check, the survivor is
+taken; failing that the data file's existing row holds the slot. A row that only mislabels
+where its item drops is corrected from the loot table instead of replaced — the item is
+right. Every contradiction is warned about where it happens and listed again at the end of
+the run.
+
+`MYTHIC` gets the same treatment against the dungeon rows of Wowhead's list, which cover
+six to nine of its sixteen slots; the fault check itself covers all sixteen.
+
+The loot table this needs is the same season pool `find-alts` uses, built once per run and
+shared, so cross-checking costs no second pass over three hundred tooltips.
 
 Change detection compares **item ids**, not names: names left the data files for
 `src/i18n/items` and the comparison that read them had nothing left to read, so every

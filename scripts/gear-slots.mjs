@@ -89,6 +89,30 @@ export function resetSlotCounters() {
     trinketCount = 0;
 }
 
+// What an item's own tooltip says its inventory slot is, per slot we file it
+// under. Accessories and armour only: a weapon's tooltip names a weapon type
+// rather than a slot, and which hand it goes in is the spec's business.
+const SLOT_INV_TYPES = {
+    head: ["Head"], neck: ["Neck"], shoulder: ["Shoulder"], back: ["Back"],
+    chest: ["Chest"], wrist: ["Wrist"], hands: ["Hands"], waist: ["Waist"],
+    legs: ["Legs"], feet: ["Feet"],
+    finger1: ["Finger"], finger2: ["Finger"],
+    trinket1: ["Trinket"], trinket2: ["Trinket"],
+};
+
+/**
+ * Whether the item's own tooltip agrees with the slot a guide filed it under.
+ *
+ * True where there is nothing to disagree about — an unknown inventory slot,
+ * or a slot this map says nothing about. A check that cannot be made is not a
+ * failed check, and treating it as one would throw away every weapon row.
+ */
+export function slotFitsInvSlot(slot, invSlot) {
+    const expected = SLOT_INV_TYPES[slot];
+    if (!expected || !invSlot) return true;
+    return expected.includes(invSlot);
+}
+
 /**
  * What the spec wields, read off the slot names its guide uses.
  *

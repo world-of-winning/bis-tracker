@@ -117,3 +117,20 @@ that the id is a real item in the matching slot and warns when it is not.
 
 **Every spec data file is regenerated under a new meaning of `BIS`.** Any row a reader
 remembers may legitimately change.
+
+**The source check reads the client's loot table, not the `guide=NNNNN` ids.** The decision
+above says the id and the text are two witnesses that must agree. On implementation a third
+was available and better: `find-alts` already builds the season's drop table out of the
+client's own DB2 tables, so a row's source can be checked against where the item actually
+drops rather than against Wowhead's tag for it. That subsumes the id check — a wrong text is
+caught by the game, and a wrong id behind a right text is read by nothing. The ids are
+therefore not parsed at all, which is the strongest form of "not trusted as a lookup".
+
+**A mislabelled source is corrected, not replaced.** The decision above treats every
+contradiction alike: fall back to the other source, then to the file. Implementation
+separated the two kinds. A slot fault says the row names the wrong item, and only another
+row can fix that. A source fault says the row names the right item and mislabels where it
+drops — and the loot table that caught it holds the answer, so the label is rewritten and
+the item kept. Swapping the item out over a wrong dungeon name would be the larger error.
+On the first three specs regenerated this fired three times, all on Maxroll `MYTHIC` rows
+sourcing Voidscar Arena drops to other dungeons.

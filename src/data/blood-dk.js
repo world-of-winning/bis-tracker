@@ -1,6 +1,6 @@
 export var SPEC_LABEL = "Blood Death Knight";
 export var SPEC_KEY = "blood-dk";
-export var GUIDE_URL = "https://maxroll.gg/wow/class-guides/blood-death-knight-raid-guide";
+export var GUIDE_URL = "https://www.wowhead.com/guide/classes/death-knight/blood/bis-gear";
 export var SIMC_CLASS = "deathknight";
 export var SIMC_SPEC = "blood";
 export var SPEC_ICON = "spell_deathknight_bloodpresence";
@@ -16,21 +16,21 @@ export var THEME = {
 };
 
 export var BIS = [
-  { slot: "head", id: 271474, source: "Tier", stats: ["crit","mastery"] },
-  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit"] },
-  { slot: "shoulder", id: 271472, source: "Tier", stats: ["haste","vers"] },
-  { slot: "back", id: 239656, source: "Crafted", stats: [] },
-  { slot: "chest", id: 268222, source: "The Coiled Altar", stats: ["haste","mastery"] },
+  { slot: "main_hand", id: 268213, source: "The Coiled Altar", stats: ["crit","mastery"] },
+  { slot: "head", id: 271474, source: "Tier", stats: ["crit","mastery"], originalItemId: 268229 },
+  { slot: "neck", id: 268265, source: "Ula'tek", stats: ["crit","haste","mastery","vers"] },
+  { slot: "shoulder", id: 271472, source: "Tier", stats: ["haste","vers"], originalItemId: 239037 },
+  { slot: "back", id: 268253, source: "The Coiled Altar", stats: ["haste","mastery"] },
+  { slot: "chest", id: 271477, source: "Tier", stats: ["crit","mastery"], originalItemId: 268222 },
   { slot: "wrist", id: 237834, source: "Crafted", stats: [] },
-  { slot: "hands", id: 271475, source: "Tier", stats: ["crit","mastery"] },
+  { slot: "hands", id: 271475, source: "Tier", stats: ["crit","mastery"], originalItemId: 159413 },
   { slot: "waist", id: 268259, source: "The Coiled Altar", stats: ["crit","mastery"] },
-  { slot: "legs", id: 271473, source: "Tier", stats: ["crit","mastery"] },
+  { slot: "legs", id: 271878, source: "Ula'tek", stats: ["crit"] },
   { slot: "feet", id: 273777, source: "Altar of Fangs", stats: ["haste","vers"] },
-  { slot: "finger1", id: 159459, source: "Kings' Rest", stats: ["haste","vers"] },
-  { slot: "finger2", id: 252258, source: "Voidscar Arena", stats: ["haste","mastery"] },
+  { slot: "finger1", id: 240949, source: "Crafted", stats: [] },
+  { slot: "finger2", id: 159459, source: "Kings' Rest", stats: ["haste","vers"] },
   { slot: "trinket1", id: 270175, source: "Ula'tek", stats: ["crit"] },
   { slot: "trinket2", id: 270173, source: "The Coiled Altar", stats: [] },
-  { slot: "main_hand", id: 268213, source: "The Coiled Altar", stats: ["crit","mastery"] },
 ];
 
 export var MYTHIC = [
@@ -53,11 +53,11 @@ export var MYTHIC = [
 
 export var ALTS = [
   { forSlot: "back", id: 251190, source: "The Blinding Vale", stats: ["haste","mastery"] },
-  { forSlot: "back", id: 268253, source: "The Venomous Abyss", stats: ["haste","mastery"] },
   { forSlot: "back", id: 251132, source: "Murder Row", stats: ["crit","mastery"] },
   { forSlot: "back", id: 159288, source: "Kings' Rest", stats: ["mastery","vers"] },
   { forSlot: "back", id: 268248, source: "The Venomous Abyss", stats: ["crit","vers"] },
   { forSlot: "chest", id: 193753, source: "Ruby Life Pools", stats: ["haste","mastery"] },
+  { forSlot: "chest", id: 268222, source: "The Venomous Abyss", stats: ["haste","mastery"] },
   { forSlot: "chest", id: 251151, source: "Den of Nalorakk", stats: ["crit","mastery"] },
   { forSlot: "chest", id: 239036, source: "Temple of Sethraliss", stats: ["crit","mastery"] },
   { forSlot: "chest", id: 273787, source: "Altar of Fangs", stats: ["crit","vers"] },
@@ -79,7 +79,6 @@ export var ALTS = [
   { forSlot: "legs", id: 273776, source: "Altar of Fangs", stats: ["crit","haste"] },
   { forSlot: "legs", id: 268224, source: "The Venomous Abyss", stats: ["haste","mastery"] },
   { forSlot: "legs", id: 251182, source: "The Blinding Vale", stats: ["crit","vers"] },
-  { forSlot: "legs", id: 271878, source: "The Venomous Abyss", stats: ["mastery"] },
   { forSlot: "neck", id: 273781, source: "Altar of Fangs", stats: ["crit","haste"] },
   { forSlot: "neck", id: 251142, source: "Murder Row", stats: ["haste","mastery"] },
   { forSlot: "neck", id: 268250, source: "The Venomous Abyss", stats: ["crit","haste"] },
@@ -87,6 +86,7 @@ export var ALTS = [
   { forSlot: "neck", id: 251234, source: "Voidscar Arena", stats: ["crit","mastery"] },
   { forSlot: "ring", id: 273792, source: "Altar of Fangs", stats: ["crit","haste"] },
   { forSlot: "ring", id: 268252, source: "The Venomous Abyss", stats: ["crit","haste"] },
+  { forSlot: "ring", id: 252258, source: "Voidscar Arena", stats: ["haste","mastery"] },
   { forSlot: "ring", id: 251136, source: "Murder Row", stats: ["crit","mastery"] },
   { forSlot: "ring", id: 158366, source: "Temple of Sethraliss", stats: ["crit","mastery"] },
   { forSlot: "ring", id: 268249, source: "The Venomous Abyss", stats: ["crit","mastery"] },
@@ -141,7 +141,7 @@ export var KNOWN_STATS = {
   159618:[],159644:[],162544:["mastery","vers"],193728:["mastery","vers"],
   193748:["crit"],193753:["haste","mastery"],193755:["crit","haste"],193757:[],
   193762:["haste"],193763:["crit","haste"],237834:[],239036:["crit","mastery"],
-  239037:["crit","haste"],239050:["haste","vers"],239051:["mastery","vers"],239656:[],
+  239037:["crit","haste"],239050:["haste","vers"],239051:["mastery","vers"],240949:[],
   250224:[],250228:[],250229:["crit"],250238:[],
   250243:[],250244:[],250245:[],250259:[],
   251126:["crit","mastery"],251132:["crit","mastery"],251133:["crit","haste"],251134:["crit","haste"],
@@ -154,10 +154,10 @@ export var KNOWN_STATS = {
   268224:["haste","mastery"],268229:["crit","haste"],268239:["crit","mastery"],268245:["crit","haste"],
   268248:["crit","vers"],268249:["crit","mastery"],268250:["crit","haste"],268251:["haste","mastery"],
   268252:["crit","haste"],268253:["haste","mastery"],268259:["crit","mastery"],268260:["haste","mastery"],
-  268265:["crit"],270160:[],270163:[],270164:[],
+  268265:["crit","haste","mastery","vers"],270160:[],270163:[],270164:[],
   270165:[],270168:["mastery"],270169:["haste"],270171:["crit"],
   270173:[],270174:["mastery"],270175:["crit"],271472:["haste","vers"],
-  271473:["crit","mastery"],271474:["crit","mastery"],271475:["crit","mastery"],271878:["mastery"],
+  271474:["crit","mastery"],271475:["crit","mastery"],271477:["crit","mastery"],271878:["crit"],
   273776:["crit","haste"],273777:["haste","vers"],273781:["crit","haste"],273782:["crit","haste"],
   273787:["crit","vers"],273792:["crit","haste"],273795:[],273796:[],
   273797:[],275937:[],275938:[],281227:[],
