@@ -1,5 +1,28 @@
 # Changelog
 
+## v2.4.0
+
+[compare changes](https://github.com/world-of-winning/bis-tracker/compare/v2.3.0...v2.4.0)
+
+### 🚀 Enhancements
+
+- Let the player hide the vault block until the next reset ([#23](https://github.com/world-of-winning/bis-tracker/pull/23))
+- Pick the content you run, and let the grade follow from it ([9e1dc38](https://github.com/world-of-winning/bis-tracker/commit/9e1dc38))
+- Take BIS from Wowhead, and read Maxroll against the game ([#32](https://github.com/world-of-winning/bis-tracker/pull/32))
+
+### 🩹 Fixes
+
+- Read the grade of the copy already held before refusing a vault pick ([119035f](https://github.com/world-of-winning/bis-tracker/commit/119035f))
+- Never leave a farming axis unset ([feee65f](https://github.com/world-of-winning/bis-tracker/commit/feee65f))
+
+### 📖 Documentation
+
+- Add the in-app changelog entry for the Wowhead switch ([a109a21](https://github.com/world-of-winning/bis-tracker/commit/a109a21))
+
+### ❤️ Contributors
+
+- World Of Winning ([@world-of-winning](https://github.com/world-of-winning))
+
 ## v2.3.0
 
 [compare changes](https://github.com/world-of-winning/bis-tracker/compare/v2.2.0...v2.3.0)
