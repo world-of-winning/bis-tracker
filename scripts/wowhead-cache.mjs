@@ -1,18 +1,34 @@
 /**
  * Wowhead tooltip API cache.
  * Caches nether.wowhead.com responses by item ID + locale to a local JSON file.
- * Cache is persistent across runs — delete the file to invalidate.
+ *
+ * Fetch times live in a sidecar index rather than in the entries themselves,
+ * so the cache file stays exactly what arrived from Wowhead. File mtime is not
+ * usable for this — anything that rewrites the cache rewrites every entry's
+ * apparent age at once.
+ *
+ * Name lookups are permanent; tooltips expire. See ./cache-expiry.mjs.
  */
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { tooltipExpired } from './cache-expiry.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CACHE_FILE = resolve(__dirname, '.wowhead-cache.json');
+const INDEX_FILE = resolve(__dirname, '.wowhead-cache-index.json');
 
 let cache = {};
 if (existsSync(CACHE_FILE)) {
   try { cache = JSON.parse(readFileSync(CACHE_FILE, 'utf8')); } catch { cache = {}; }
+}
+
+// key -> epoch ms. Entries written before this index existed are absent, and
+// tooltipExpired reads that absence as expired: those are precisely the ones
+// holding stats nobody has rechecked.
+let fetchedAt = {};
+if (existsSync(INDEX_FILE)) {
+  try { fetchedAt = JSON.parse(readFileSync(INDEX_FILE, 'utf8')); } catch { fetchedAt = {}; }
 }
 
 let dirty = false;
@@ -31,7 +47,7 @@ function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
  */
 export async function fetchTooltip(itemId, locale = 0, retries = 5) {
   const key = cacheKey(itemId, locale);
-  if (cache[key]) return cache[key];
+  if (cache[key] && !isStale(key)) return cache[key];
 
   const url = `https://nether.wowhead.com/tooltip/item/${itemId}?dataEnv=1&locale=${locale}`;
   for (let i = 0; i < retries; i++) {
@@ -64,6 +80,7 @@ export async function fetchTooltip(itemId, locale = 0, retries = 5) {
         throw new Error('Non-JSON response');
       }
       cache[key] = data;
+      fetchedAt[key] = Date.now();
       dirty = true;
       return data;
     } catch (err) {
@@ -82,12 +99,23 @@ export function cacheGet(key) {
 
 export function cacheSet(key, value) {
   cache[key] = value;
+  fetchedAt[key] = Date.now();
   dirty = true;
+}
+
+/**
+ * Whether a cached entry has passed its expiry. cacheGet still returns it —
+ * --fix reads the cache with no network and has nothing better to use — so a
+ * caller that cares has to ask.
+ */
+export function isStale(key, now = Date.now()) {
+  return tooltipExpired(key, fetchedAt[key] ?? null, now);
 }
 
 export function cacheDelete(key) {
   if (key in cache) {
     delete cache[key];
+    delete fetchedAt[key];
     dirty = true;
   }
 }
@@ -96,6 +124,7 @@ export function cacheDelete(key) {
 export function saveCache() {
   if (!dirty) return;
   writeFileSync(CACHE_FILE, JSON.stringify(cache), 'utf8');
+  writeFileSync(INDEX_FILE, JSON.stringify(fetchedAt), 'utf8');
   const count = Object.keys(cache).length;
   console.log(`Cache saved: ${count} entries`);
 }
