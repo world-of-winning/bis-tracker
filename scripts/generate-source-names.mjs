@@ -125,7 +125,8 @@ const SOURCE_IDS = {
     "Belo'ren": { table: "JournalEncounter", id: 2739 },
     "Chimaerus": { table: "JournalEncounter", id: 2795 },
     "Rotmire": { table: "JournalEncounter", id: 2711 },
-    // The Tidebound Grotto (1317)
+    // The Tidebound Grotto (1317) — the instance and its one boss
+    "The Tidebound Grotto": { table: "JournalInstance", id: 1317 },
     "Nymrissa Wavecaller": { table: "JournalEncounter", id: 2849 },
     // The Venomous Abyss (1320). The instance itself is a source too, not only
     // its bosses: find-alts files a raid drop under the instance, which is what

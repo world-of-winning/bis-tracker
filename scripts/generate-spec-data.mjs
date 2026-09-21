@@ -829,7 +829,7 @@ async function seasonPool() {
  * The whole table, not the season pool. Which season an instance belongs to
  * gates what may become an alt; it says nothing about where an item comes
  * from, and gating the facts too left three rows unfixable — items from a raid
- * wing outside CURRENT_RAID, whose guide cells named their boss only as an
+ * wing outside CURRENT_RAIDS, whose guide cells named their boss only as an
  * [npc=…] link, so the row ended up naming nowhere at all.
  *
  * A table that cannot be read costs the source check and keeps the slot check,

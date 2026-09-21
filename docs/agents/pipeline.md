@@ -29,9 +29,9 @@ The five Wowhead/slot libraries are used by `generate-spec-data` alone, and by t
 ## Layer 2 — season prep (by hand, before any generator)
 
 1. `node scripts/generate-tiers.mjs --write` — Raidbots bonus data → the `TIERS` block in `src/data/shared.js`. Depends on nothing else; print-only without `--write`.
-2. By hand: `VALID_DUNGEONS` (inside `generate-spec-data.mjs`), `DUNGEONS` and `CURRENT_RAID` (`src/data/shared.js`), and `PART_FIXES` rebuilt from scratch.
+2. By hand: `VALID_DUNGEONS` (inside `generate-spec-data.mjs`), `DUNGEONS` and `CURRENT_RAIDS` (`src/data/shared.js`), and `PART_FIXES` rebuilt from scratch.
 
-`DUNGEONS` and `CURRENT_RAID` are load-bearing twice over now: they name the guides to
+`DUNGEONS` and `CURRENT_RAIDS` are load-bearing twice over now: they name the guides to
 scrape, *and* they are the season gate on the alt pool. Get them wrong and `find-alts`
 either builds an empty pool or fills it with a retired dungeon's loot.
 
@@ -124,7 +124,7 @@ whose `ALTS` is empty. You do not normally invoke `find-alts` separately.
 ### 3. `find-alts.mjs` — standalone when only the alt lists need rebuilding
 
 `buildSeasonPool()` joins the client's loot table and keeps the instances named in
-`DUNGEONS` plus `CURRENT_RAID`, then reads each item's slot, armour class, primary
+`DUNGEONS` plus `CURRENT_RAIDS`, then reads each item's slot, armour class, primary
 stat and weapon type off its Wowhead tooltip. Non-gear drops — recipes, consumables,
 furnishings — have no inventory slot and fall out there. The legacy dungeons carry
 both an item and its Midnight re-issue under one name; the re-issue is the one that
@@ -138,8 +138,10 @@ files, so `node scripts/find-alts.mjs blood-dk` is a complete answer for one spe
 Nothing is preserved between runs: the pool is rebuilt whole, which is what keeps
 `ALTS` from becoming append-only.
 
-It warns if `CURRENT_RAID` disagrees with the instance holding the highest item id.
-That is a cross-check, not a correction — go and look at the constant.
+`CURRENT_RAIDS` is a list, because a season runs more than one raid. Two warnings guard
+it, neither of which corrects anything: the instance holding the highest item id should be
+one the pool admits, and — the one that earns its keep — an instance the spec files name
+BiS items from while the pool excludes it. Go and look at the constant.
 
 ### 4. `generate-item-names.mjs`
 
@@ -218,7 +220,7 @@ node scripts/generate-spec-data.mjs --fix
 # One spec is wrong upstream and has been fixed.
 node scripts/generate-spec-data.mjs blood-dk    # runs find-alts for it
 
-# Alt lists only — after a DUNGEONS or CURRENT_RAID change, say.
+# Alt lists only — after a DUNGEONS or CURRENT_RAIDS change, say.
 node scripts/find-alts.mjs                      # all specs
 node scripts/find-alts.mjs blood-dk             # or one
 

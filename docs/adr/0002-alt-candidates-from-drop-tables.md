@@ -54,19 +54,23 @@ does not address the pool being 283 items of mostly unusable gear.
 **Candidates come from `JournalEncounterItem`**, the game client's own loot table,
 served as CSV by wago.tools beside the two tables `generate-source-names` already
 reads. Joined through `JournalEncounter` to `JournalInstance` and filtered to the
-instances named in `DUNGEONS` plus `CURRENT_RAID`, it yields the season's pool
-exactly — 306 pieces of gear, with `source` falling out of the join rather than
+instances named in `DUNGEONS` plus `CURRENT_RAIDS`, it yields the season's pool
+exactly — 318 pieces of gear, with `source` falling out of the join rather than
 being inferred. Non-gear drops carry no inventory slot and fall out on their own.
 
 The season gate is the pool itself. A retired dungeon is not in `DUNGEONS`, so its
 loot cannot enter. It is not a sample, so a spec's popularity does not affect its
 coverage.
 
-`CURRENT_RAID` is maintained by hand in `shared.js`, beside `DUNGEONS`. The loot
-table holds every raid ever shipped and marks no season — `DisplaySeasonID` is 0 on
-23,902 of its 23,978 rows. Taking the instance with the highest item id gives the
-right answer today but assumes Blizzard never adds an item to an older raid; that
-runs as a cross-check that warns, not as the source of truth.
+`CURRENT_RAIDS` is maintained by hand in `shared.js`, beside `DUNGEONS`, and is a
+**list**: a season runs more than one raid, and this one runs two. The loot table
+holds every raid ever shipped and marks no season — `DisplaySeasonID` is 0 on
+23,902 of its 23,978 rows, and `JournalInstance` carries no season at all. Taking
+the instance with the highest item id names one of them and cannot name the second;
+it runs as a cross-check that warns, not as the source of truth. The check worth
+having compares the pool against the spec files: an instance whose items the guides
+name as BiS, while the pool excludes it, is a contradiction between two things
+already on disk.
 
 **`fitKind` no longer gates the list.** What gates is whether the item can go in the
 slot at all: armour class, primary stat, class lock, weapon type, hand count. The

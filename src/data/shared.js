@@ -13,18 +13,29 @@ export var DUNGEONS = {
   "Ruby Life Pools": { b: "#aa6d9b", t: "#dda0cc", g: "#280f22" },
 };
 
-// The raid whose loot is farmable this season, named exactly as JournalInstance
-// names it. Dungeons get the hand-maintained DUNGEONS list above; the raid needs
+// The raids whose loot is farmable this season, named exactly as JournalInstance
+// names them. Dungeons get the hand-maintained DUNGEONS list above; raids need
 // the same treatment, because the client's loot table has every raid ever shipped
 // in it and nothing in the data marks which one is current — DisplaySeasonID is 0
-// on 23,902 of its 23,978 rows.
+// on 23,902 of its 23,978 rows, and JournalInstance carries no season at all.
 //
-// Deriving it instead (the instance holding the highest ItemID) happens to be
-// right today, but it assumes Blizzard never adds an item to an older raid. The
-// pipeline uses that only to cross-check this constant and warn on a mismatch.
+// A season runs more than one. This one runs two: the Vaults of Atal'Utek hold
+// The Venomous Abyss, and The Tidebound Grotto sits beneath the same waves with
+// Nymrissa Wavecaller in it. Both hand over gear at ilvl 334, the Myth cap in
+// TIERS below, and both publishers name items from both. Holding one name meant
+// a whole boss's loot could never become an alt.
+//
+// Sporefall is the nearest thing left out, deliberately: its gear tops out at
+// 298, it sits in Harandar rather than Atal'Utek, and no guide picks anything
+// from it. If that changes, it belongs here.
+//
+// Deriving the list instead (the instance holding the highest ItemID) happens to
+// name one of these today, but it assumes Blizzard never adds an item to an older
+// raid, and it cannot name a second raid at all. The pipeline uses it only to
+// cross-check this constant and warn on a mismatch.
 //
 // Season swap: update this alongside DUNGEONS, before running the pipeline.
-export var CURRENT_RAID = "The Venomous Abyss";
+export var CURRENT_RAIDS = ["The Venomous Abyss", "The Tidebound Grotto"];
 
 // hidden: graded like any other track, but never offered as a target.
 export var TIERS = [
@@ -47,7 +58,7 @@ export var TIERS = [
 // What +10 adds is a Myth slot in the Great Vault, and the vault verdict reads
 // the top grade directly and has never consulted this.
 //
-// Season swap: update this alongside DUNGEONS, CURRENT_RAID and TIERS.
+// Season swap: update this alongside DUNGEONS, CURRENT_RAIDS and TIERS.
 export var FARMING_DIFFICULTY = {
   mplus: [
     { key: "keys2", grade: "champion" },
