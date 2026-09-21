@@ -9,7 +9,7 @@ have run first, and what breaks when it hasn't.
 
 | File | Role |
 |---|---|
-| `wowhead-cache.mjs` | Wowhead tooltip fetch with a persistent cache. Exports `fetchTooltip`, `saveCache`, `cacheGet/Set/Delete`. |
+| `wowhead-cache.mjs` | Wowhead tooltip fetch with a cache. Exports `fetchTooltip`, `saveCache`, `cacheGet/Set/Delete`, `isStale`. |
 | `wago-db2.mjs` | The client's DB2 tables as CSV from wago.tools: an RFC 4180 parser, a cached fetch, a name index, and `dropTable()` — the `JournalEncounterItem` → `JournalEncounter` → `JournalInstance` join that says what drops where. |
 | `priority-groups.mjs` | The stat-priority derivation: murlok's published chart → equivalence groups. No network, no disk, so it is testable against fixtures. |
 | `src/logic/matching.js` | `fitKind`, `fitRank`, `statGroups`. **The scripts import the app's logic**, not a copy of it — that is what keeps the pipeline and the tracker agreeing on what counts as a fit. |
@@ -127,11 +127,29 @@ only warn.
 
 | Path | Expiry | Bypass |
 |---|---|---|
-| `scripts/.wowhead-cache.json` | Never — persistent across runs | Delete the file, or `generate-spec-data --regenerate` |
+| `scripts/.wowhead-cache.json` | Tooltips: `fetchedAt` in `.wowhead-cache-index.json`, 14 days. Name lookups: never | Delete the file, or `generate-spec-data --regenerate` |
 | `scripts/.murlok-cache/` | `fetchedAt` in `index.json`, 14 days default | `--refresh` / `--max-age` |
 | `scripts/.wago-cache/` | Never — the tables change when Blizzard patches | `--refresh` |
 
 File mtime is never expiry: anything that touches a file rewrites it.
+
+The tooltip cache holds two kinds of entry under one namespace, and they expire
+differently. A name lookup (`search:<name>` to an item id) answers a question whose
+answer cannot change, so it is kept forever. A tooltip answers one that does change:
+Blizzard re-itemised `268265` mid-season from a single 428-point crit stat to four
+secondaries at 107 each, and a cache documented as permanent carried the old answer
+into every judgement about that slot. Tooltips therefore expire at 14 days, the same
+window the page cache uses.
+
+Entries written before the index existed carry no fetch time and count as expired.
+That is deliberate — those are exactly the ones nobody has rechecked — and it means
+the first full pass after this change refetches about 4,500 tooltips, roughly eleven
+minutes at the 150 ms pacing. Once.
+
+`--fix` cannot refetch, so an expired tooltip is all it can read. It reads one and
+does not write from it: rebuilding `KNOWN_STATS` off a stale entry reinstates whatever
+the cache last saw over any correction made since. Expired items keep the value the
+file already holds, and the run reports how many did.
 
 The 14-day default on the page cache suits a figure that moves slowly — murlok
 restamps a spec every day or so, and the gear behind a group boundary shifts over

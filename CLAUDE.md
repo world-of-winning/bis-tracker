@@ -186,7 +186,7 @@ distance that only the measured means can make.
 - **The season gate is the pool, not a filter.** A retired dungeon is not in `DUNGEONS`, so its loot never enters. This replaced a cross-referenced index that needed stale-guide detection by spec and by row; none of that is needed now, because a lagging Maxroll guide can no longer contribute items to anyone else.
 - **`CURRENT_RAID`** (in `shared.js`) is maintained by hand beside `DUNGEONS`. The loot table carries every raid ever shipped and marks no season — `DisplaySeasonID` is 0 on 23,902 of its 23,978 rows. `buildSeasonPool` cross-checks it against the instance holding the highest item id and warns on a mismatch, but that heuristic assumes Blizzard never adds an item to an older raid, so it does not get to decide.
 - **Wrong slots upstream**: an item whose Wowhead tooltip contradicts the slot Maxroll filed it under is warned about during generation and kept out of the alt index, but left in its own spec's data. Do not invent a replacement.
-- **`--fix`**: Read-only cache, normalize data only, no network calls. Safe to run anytime.
+- **`--fix`**: Read-only cache, normalize data only, no network calls. Safe to run anytime. It will not write a value derived from an expired tooltip — those items keep what the file already holds, and the run says how many. "No network" is the contract; repeating a stale claim is not part of it.
 - **`--regenerate`**: Purges Wowhead cache for target specs, full re-fetch. Slow and should be used sparingly.
 - **Duplicate item IDs**: When same ID appears in multiple slots, prefer existing file's version for stability.
 - **Item source/dungeon names**: Do NOT arbitrarily replace when source doesn't match expectations — verify with Wowhead first.
