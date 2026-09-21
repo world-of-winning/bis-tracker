@@ -799,7 +799,7 @@ export default function App() {
 
       <div style={{ marginTop: 24, paddingBottom: 40, textAlign: "center", fontSize: 11, color: "#334444" }}>
         <div>wowbis.gg</div>
-        <div style={{ marginTop: 4, color: "#223333" }}>{t("ui.bisAttribution")} <a href="https://maxroll.gg/wow/class-guides" target="_blank" rel="noopener noreferrer" style={{ color: "#445555", textDecoration: "underline" }}>Maxroll.gg</a></div>
+        <div style={{ marginTop: 4, color: "#223333" }}>{t("ui.bisAttribution")} <a href="https://www.wowhead.com/guides/classes" target="_blank" rel="noopener noreferrer" style={{ color: "#445555", textDecoration: "underline" }}>Wowhead</a> · <a href="https://maxroll.gg/wow/class-guides" target="_blank" rel="noopener noreferrer" style={{ color: "#445555", textDecoration: "underline" }}>Maxroll.gg</a></div>
         <div style={{ marginTop: 6, display: "flex", justifyContent: "center", gap: 4 }}>
           <button onClick={function() { setLegalPage("terms"); }} style={{ background: "none", border: "none", color: "#445555", fontSize: 11, cursor: "pointer", textDecoration: "underline", fontFamily: "'Noto Sans KR',sans-serif" }}>{t("ui.terms")}</button>
           <span>·</span>
