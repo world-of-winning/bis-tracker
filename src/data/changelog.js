@@ -2,6 +2,13 @@
 // { date: "YYYY-MM-DD", text: { ko, en } }
 export var CHANGELOG = [
     {
+        date: "2026-09-21",
+        text: {
+            ko: "BiS 목록을 Wowhead에서 가져오고 게임 데이터와 대조 — 목록의 뜻이 레이드 BiS에서 전 콘텐츠 BiS로 바뀌었다. 아이템 툴팁이나 전리품 테이블과 어긋나는 48개 행을 바로잡았고, 그중에는 한 시즌 내내 목 자리에 있던 투구가 있다. 지난 시즌 던전을 가리키던 행은 지웠다. 해일결속 동굴이 Alt 목록에 들어와 39개 스펙이 147개 항목을 얻었다",
+            en: "BiS lists now come from Wowhead and are read against the game's own data — the list means best over all content, not raid BiS. 48 rows contradicting an item's tooltip or the loot table are corrected, among them a helm that sat in a neck slot for a season. Rows naming last season's dungeons are gone. The Tidebound Grotto joins the alt lists, adding 147 rows across 39 specs",
+        },
+    },
+    {
         date: "2026-08-29",
         text: {
             ko: "Raidbots에서 BiS 비교 — 가져온 SimC에 미보유 BiS를 가방 아이템 형식의 후보로 붙여 복사하고, Top Gear가 현재 장비 대비 DPS 차이를 보여준다",
