@@ -171,7 +171,7 @@ export var KNOWN_STATS = {
   270175:["crit"],271490:["crit","haste"],271491:["haste","mastery"],271492:["haste","mastery"],
   271493:["haste","vers"],271680:["crit","vers"],271876:["mastery"],273775:["mastery","vers"],
   273781:["crit","haste"],273784:["haste","mastery"],273789:["crit","haste"],273792:["crit","haste"],
-  273796:[],273797:[],275070:["crit","haste"],275937:[],
-  275938:[],281227:[],
+  273796:[],273797:[],275937:[],275938:[],
+  281227:[],
 };
 

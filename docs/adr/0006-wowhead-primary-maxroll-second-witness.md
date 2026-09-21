@@ -140,3 +140,13 @@ that fail a check. A row that is absent fails nothing — Wowhead's Beast Master
 no helm — and the harm is the same, so the fallback order applies there too: the second
 witness, then the data file. Five slots across forty specs were filled this way on the
 first pass that looked.
+
+**Gear the season does not hand out is dropped, not kept.** The fallback rule above ends
+in "keep it and report", on the reasoning that a spec short a slot reads as finished. One
+fault inverts that. A row whose item drops only in instances outside `DUNGEONS` and
+`CURRENT_RAIDS` — Maxroll's Restoration Druid Mythic+ page named an ilvl-289 waist from
+Maisara Caverns, a Season 1 dungeon — would have the tracker send a player somewhere the
+season does not run. Kept, it is a farming order that cannot be filled; dropped, the slot
+simply has no Mythic+ recommendation, which is what a lagging guide actually offers. The
+same check disqualifies the data file as a fallback for such a row, or the run writes the
+item back and the next run offers it as its own justification.

@@ -46,6 +46,7 @@ import {
 import { GEAR_TABS } from "./wowhead-gear-tabs.mjs";
 import { crossCheck, formatReport, rowFaults } from "./cross-check.mjs";
 import { dropTable } from "./wago-db2.mjs";
+import { CURRENT_RAIDS, DUNGEONS } from "../src/data/shared.js";
 import {
     assignSlots,
     detectWeaponType,
@@ -838,11 +839,18 @@ async function seasonPool() {
 async function dropsById() {
     try {
         const { byInstance } = await dropTable();
+        // The same instances the alt pool is gated on, so a row cannot be in
+        // season for one half of the pipeline and out of it for the other.
+        const season = new Set([...Object.keys(DUNGEONS), ...CURRENT_RAIDS]);
         const drops = new Map();
         for (const [instance, items] of byInstance) {
             for (const [itemId, drop] of items) {
                 if (!drops.has(itemId)) drops.set(itemId, []);
-                drops.get(itemId).push({ instance, encounter: drop.encounter });
+                drops.get(itemId).push({
+                    instance,
+                    encounter: drop.encounter,
+                    inSeason: season.has(instance),
+                });
             }
         }
         return drops;
@@ -1290,7 +1298,8 @@ function correctedSource(facts) {
         // An item dropping in two places is named by the one this season runs.
         const seasonal = drops.find((d) => VALID_DUNGEONS.includes(d.instance));
         if (seasonal) return seasonal.instance;
-        return drops[0].encounter || drops[0].instance || null;
+        const current = drops.find((d) => d.inSeason) ?? drops[0];
+        return current.encounter || current.instance || null;
     };
 }
 
@@ -1682,9 +1691,20 @@ function generateFullJs(
     out += `export var STAT_CACHE_KEY = ${JSON.stringify(statCacheKey(spec.key))};\n`;
     out += "\n";
 
-    // KNOWN_STATS
+    // KNOWN_STATS, scoped to the ids this file actually names.
+    //
+    // The map is accumulated while building, and a row can leave after that —
+    // dropped as a duplicate slot, or as gear the season no longer hands out —
+    // taking no entry with it. An id nothing references is an orphan nobody
+    // rechecks, and one sat in Vengeance Demon Hunter's file for a season.
+    const referenced = new Set([
+        ...allItems.map((i) => i.id),
+        ...[...(altsStr ?? "").matchAll(/\bid: (\d+)/g)].map((m) => Number(m[1])),
+    ]);
     out += `export var KNOWN_STATS = {\n`;
-    const entries = Object.entries(knownStats);
+    const entries = Object.entries(knownStats).filter(([id]) =>
+        referenced.has(Number(id)),
+    );
     const perLine = 4;
     for (let i = 0; i < entries.length; i += perLine) {
         const chunk = entries.slice(i, i + perLine);

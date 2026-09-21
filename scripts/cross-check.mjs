@@ -16,6 +16,10 @@
  * replaced: the item is right, and the loot table that caught the label also
  * holds the answer.
  *
+ * A row naming an item this season does not hand out is the one contradiction
+ * that is worse kept than missing — the tracker would send a player to a
+ * retired dungeon — so it is dropped when nothing sound replaces it.
+ *
  * A slot the primary list never names is the same harm as a contradicted row
  * and gets the same treatment — Wowhead's Beast Mastery page lists no helm at
  * all — so the other publisher, then the data file, fills it.
@@ -60,6 +64,19 @@ export function sourceNamesTheDrop(source, drops) {
 }
 
 /**
+ * Whether every place an item drops is content this season does not run.
+ *
+ * `inSeason` is set by the caller against the same DUNGEONS and CURRENT_RAIDS
+ * the alt pool is gated on, so a row cannot be in season here and out of it
+ * there. An item that drops nowhere — crafted, catalysed, a tier piece — says
+ * nothing either way.
+ */
+export function outOfSeason(drops) {
+    if (!drops || !drops.length) return false;
+    return !drops.some((d) => d.inSeason);
+}
+
+/**
  * What the game contradicts in one row.
  *
  * An empty list means the row survived, which includes surviving because
@@ -76,6 +93,11 @@ export function rowFaults(row, fact) {
     if (!fact) return faults;
     if (!slotFitsInvSlot(row.slot, fact.invSlot))
         faults.push({ kind: "slot", says: `the item is a ${fact.invSlot} item` });
+    if (outOfSeason(fact.drops))
+        faults.push({
+            kind: "season",
+            says: `it drops only in ${fact.drops.map((d) => d.instance).join(", ")}, which this season does not run`,
+        });
     if (!sourceNamesTheDrop(row.source, fact.drops)) {
         const [first] = fact.drops;
         faults.push({
@@ -141,13 +163,24 @@ export function crossCheck({
             continue;
         }
 
+        // A fallback the game contradicts too is no fallback. Taking it would
+        // also write it back to the file, where the next run would offer it as
+        // a fallback again, and the bad row would outlive every source of it.
         const kept = held.get(row.slot);
-        if (kept && kept.itemId !== row.itemId) {
+        if (kept && kept.itemId !== row.itemId && !faultsOf(kept).length) {
             reports.push({ ...report(row, faults), took: "file", itemId: kept.itemId });
             rows.push({ ...kept, slot: row.slot });
             continue;
         }
 
+        // Nothing sound left. A slot filled wrongly beats a slot missing — a
+        // spec with fifteen rows reads as finished — except where the row
+        // names gear the season does not hand out, which would have the
+        // tracker send a player to a retired dungeon for it.
+        if (faults.some((f) => f.kind === "season")) {
+            reports.push({ ...report(row, faults), took: "dropped", itemId: row.itemId });
+            continue;
+        }
         reports.push({ ...report(row, faults), took: null, itemId: row.itemId });
         rows.push(row);
     }
@@ -165,7 +198,7 @@ export function crossCheck({
         reports.push({ slot, rejected: null, faults: gap, took: "witness", itemId: row.itemId });
     }
     for (const [slot, row] of held) {
-        if (named.has(slot)) continue;
+        if (named.has(slot) || faultsOf(row).length) continue;
         named.add(slot);
         rows.push(row);
         reports.push({ slot, rejected: null, faults: gap, took: "file", itemId: row.itemId });
@@ -190,6 +223,8 @@ export function formatReport(specKey, report, witness = "the other list") {
     const where =
         report.took === "correction"
             ? `corrected the source to ${report.source}`
+            : report.took === "dropped"
+              ? `dropped the row, having nothing sound to put there`
             : report.took === "witness"
               ? `took ${witness}'s ${report.itemId}`
               : report.took === "file"

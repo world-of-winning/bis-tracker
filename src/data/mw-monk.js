@@ -174,9 +174,8 @@ export var KNOWN_STATS = {
   270168:["mastery"],270169:["haste"],270171:["crit"],270173:[],
   270174:["mastery"],270175:["crit"],270930:["crit","haste"],271517:["haste","mastery"],
   271518:["crit","vers"],271519:["crit","mastery"],271520:["haste","vers"],271522:["haste","mastery"],
-  271875:["haste"],273649:[],273774:["crit","vers"],273778:["haste","mastery"],
-  273779:["crit","haste"],273781:["crit","haste"],273791:["crit","haste"],273792:["crit","haste"],
-  273796:[],273797:[],275937:[],275938:[],
-  281227:[],
+  271875:["haste"],273649:[],273774:["crit","vers"],273781:["crit","haste"],
+  273791:["crit","haste"],273792:["crit","haste"],273796:[],273797:[],
+  275937:[],275938:[],281227:[],
 };
 

@@ -2,17 +2,20 @@ import { describe, expect, it } from "vitest";
 import {
     crossCheck,
     formatReport,
+    outOfSeason,
     rowFaults,
     sourceNamesTheDrop,
 } from "../scripts/cross-check.mjs";
 
+// Both current-season raid drops: `inSeason` is what the caller marks against
+// DUNGEONS and CURRENT_RAIDS, and without it a row reads as retired.
 const HELM = {
     invSlot: "Head",
-    drops: [{ instance: "Ula'tek", encounter: "Vashnik the Malignant" }],
+    drops: [{ instance: "Ula'tek", encounter: "Vashnik the Malignant", inSeason: true }],
 };
 const NECK = {
     invSlot: "Neck",
-    drops: [{ instance: "Ula'tek", encounter: "Ula'tek" }],
+    drops: [{ instance: "Ula'tek", encounter: "Ula'tek", inSeason: true }],
 };
 
 describe("sourceNamesTheDrop", () => {
@@ -41,8 +44,8 @@ describe("sourceNamesTheDrop", () => {
     it("accepts a source naming either of two places an item drops", () => {
         // Some trinkets drop from two bosses, and a guide names one of them.
         const drops = [
-            { instance: "Kings' Rest", encounter: "The Golden Serpent" },
-            { instance: "Murder Row", encounter: "Zaen Bladesorrow" },
+            { instance: "Kings' Rest", encounter: "The Golden Serpent", inSeason: true },
+            { instance: "Murder Row", encounter: "Zaen Bladesorrow", inSeason: true },
         ];
         expect(sourceNamesTheDrop("Murder Row", drops)).toBe(true);
         expect(sourceNamesTheDrop("The Golden Serpent", drops)).toBe(true);
@@ -247,5 +250,63 @@ describe("formatReport", () => {
         expect(formatReport("veng-dh MYTHIC", report, "Wowhead")).toContain(
             "took Wowhead's 268265",
         );
+    });
+});
+
+describe("out of season", () => {
+    const RETIRED = {
+        invSlot: "Waist",
+        drops: [{ instance: "Maisara Caverns", encounter: "Muro'jin and Nekraxx", inSeason: false }],
+    };
+    const CURRENT = {
+        invSlot: "Waist",
+        drops: [{ instance: "Murder Row", encounter: "Zaen Bladesorrow", inSeason: true }],
+    };
+    const facts = new Map([
+        [251166, RETIRED],
+        [251131, CURRENT],
+    ]);
+    const faultsOf = (row) => rowFaults(row, facts.get(row.itemId) ?? null);
+    const stale = { slot: "waist", itemId: 251166, source: "Maisara Caverns" };
+
+    it("reads an item that drops only outside the season as a fault", () => {
+        expect(outOfSeason(RETIRED.drops)).toBe(true);
+        expect(outOfSeason(CURRENT.drops)).toBe(false);
+        // A crafted or catalysed item drops nowhere and says nothing either way.
+        expect(outOfSeason([])).toBe(false);
+    });
+
+    it("does not fault a row whose item also drops in season", () => {
+        expect(outOfSeason([...RETIRED.drops, ...CURRENT.drops])).toBe(false);
+    });
+
+    it("takes the sound row where one publisher is a season behind", () => {
+        const { rows } = crossCheck({
+            primary: [stale],
+            secondary: [{ slot: "waist", itemId: 251131, source: "Murder Row" }],
+            faultsOf,
+        });
+        expect(rows.map((r) => r.itemId)).toEqual([251131]);
+    });
+
+    it("drops a retired row rather than keeping it, when nothing sound replaces it", () => {
+        // Every other contradiction is kept, because a spec short a slot reads
+        // as finished. This one is not: keeping it sends a player to a dungeon
+        // the season does not run.
+        const { rows, reports } = crossCheck({ primary: [stale], faultsOf });
+        expect(rows).toEqual([]);
+        expect(reports[0]).toMatchObject({ took: "dropped", rejected: 251166 });
+        expect(formatReport("resto-druid MYTHIC", reports[0])).toContain("dropped the row");
+    });
+
+    it("refuses the data file's row as a fallback when it is retired too", () => {
+        // Otherwise the run writes it back and the next run offers it again,
+        // and the bad row outlives every source of it.
+        const { rows } = crossCheck({
+            primary: [stale],
+            existing: [{ slot: "waist", itemId: 251166, source: "Maisara Caverns" }],
+            faultsOf,
+        });
+        expect(rows).toEqual([]);
     });
 });

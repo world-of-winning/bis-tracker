@@ -95,8 +95,10 @@ the run.
 `MYTHIC` gets the same treatment against the dungeon rows of Wowhead's list, which cover
 six to nine of its sixteen slots; the fault check itself covers all sixteen.
 
-A slot the primary list never names is filled the same way, from the witness and then from
-the data file. Wowhead's Beast Mastery page lists no helm; nothing contradicts a row that is
+A row whose item drops only outside `DUNGEONS` and `CURRENT_RAIDS` is a third fault, and
+the only one dropped rather than kept when nothing sound replaces it — keeping it would
+send a player to a retired dungeon. A slot the primary list never names is filled the same
+way as a contradicted one, from the witness and then from the data file. Wowhead's Beast Mastery page lists no helm; nothing contradicts a row that is
 not there, so the gap has to be looked for separately.
 
 The loot table this needs is the same season pool `find-alts` uses, built once per run and

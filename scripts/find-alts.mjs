@@ -464,6 +464,17 @@ async function findAltsForSpec(specKey, pool) {
 }
 
 // ─── Update spec file ────────────────────────────────────────
+/** Every item id a written spec file names, across BIS, MYTHIC and ALTS. */
+function referencedIds(content) {
+  const ids = new Set();
+  for (const varName of ['BIS', 'MYTHIC', 'ALTS']) {
+    const m = content.match(new RegExp(`export var ${varName} = \\[([^]*?)\\];`));
+    if (!m) continue;
+    for (const hit of m[1].matchAll(/\bid: (\d+)/g)) ids.add(Number(hit[1]));
+  }
+  return ids;
+}
+
 function updateSpecFile(specKey, alts) {
   const filePath = resolve(DATA_DIR, `${specKey}.js`);
   let content = readFileSync(filePath, 'utf8');
@@ -493,7 +504,12 @@ function updateSpecFile(specKey, alts) {
     for (const alt of alts) {
       if (!existing[alt.id]) existing[alt.id] = alt.stats;
     }
-    const entries = Object.entries(existing);
+    // Scoped to the ids this file names. Rewriting ALTS whole is what keeps
+    // the alt list from becoming append-only, and KNOWN_STATS has to follow it
+    // or the deletions land in one place and their stats stay in the other —
+    // an id nothing references, that nothing ever rechecks.
+    const referenced = referencedIds(content);
+    const entries = Object.entries(existing).filter(([id]) => referenced.has(Number(id)));
     let ksStr = 'export var KNOWN_STATS = {\n';
     const perLine = 4;
     for (let i = 0; i < entries.length; i += perLine) {
